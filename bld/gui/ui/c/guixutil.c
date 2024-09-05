@@ -32,7 +32,6 @@
 
 
 #include "guiwind.h"
-#include <string.h>
 #include "guiscale.h"
 #include "guixutil.h"
 #include "guixdraw.h"
@@ -48,6 +47,7 @@
 #include "guigadgt.h"
 #include "guixhook.h"
 #include "guistat.h"
+#include "guix.h"
 
 
 #define VALIDWINDOW( area, check_min )          \
@@ -492,11 +492,11 @@ void GUIFreeWindowMemory( gui_window *wnd, bool from_parent, bool dialog )
             GUIFreeWindowMemory( curr_child, true, dialog );
         }
     }
-    if( wnd->hgadget != NULL ) {
+    if( IS_HSCROLL_ON( wnd ) ) {
         uifinigadget( wnd->hgadget );
         GUIMemFree( wnd->hgadget );
     }
-    if( wnd->vgadget != NULL ) {
+    if( IS_VSCROLL_ON( wnd ) ) {
         uifinigadget( wnd->vgadget );
         GUIMemFree( wnd->vgadget );
     }

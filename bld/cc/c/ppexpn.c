@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2002-2023 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2002-2024 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -82,8 +82,6 @@
 #define IS_OPERAND( token ) ( IS_ID_OR_KEYWORD( token ) || token == T_CONSTANT )
 
 #ifdef DEVBUILD
-    #define __xstr(x)   #x
-    #define __location " (" __FILE__ "," __xstr(__LINE__) ")"
     #define DbgDefault( msg )   default: CFatal( msg __location )
 #else
     #define DbgDefault( msg )
@@ -388,9 +386,9 @@ static bool COperand( void )
             CErr1( ERR_EXPR_MUST_BE_INTEGRAL );
             done = true;
             if( CHECK_STD( < , C99 ) ) {
-                U32ToU64Set( p, SafeAtof( Buffer ) );
+                U32ToU64Set( p, (signed_32)SafeAtof( Buffer ) );
             } else {
-                I32ToI64( SafeAtof( Buffer ), &(p.u.sval) );
+                p.u.sval.u._64[0] = (long long)SafeAtof( Buffer );
             }
             // add long double support if available
             p.no_sign = 0;
