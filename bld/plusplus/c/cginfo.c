@@ -202,7 +202,9 @@ void FEMessage(                 // MESSAGES FROM CODE-GENERATOR
 const char *FEModuleName(       // RETURN MODULE NAME
     void )
 {
-    return( ModuleName );
+    if( ModuleName != NULL && ModuleName[0] != '\0' )
+        return( ModuleName );
+    return( SrcFName );
 }
 
 
@@ -1004,12 +1006,15 @@ static void addDefaultLibs( void )
                 CgInfoAddCompLib( WCPPLIB_Name );
             }
         }
-        CgInfoAddCompLib( MATHLIB_Name );
+        if( CompFlags.pgm_used_8087
+          || CompFlags.float_used ) {
+            CgInfoAddCompLib( MATHLIB_Name );
 #if _INTEL_CPU
-        if( EmuLib_Name != NULL ) {
-            CgInfoAddCompLib( EmuLib_Name );
-        }
+            if( EmuLib_Name != NULL ) {
+                CgInfoAddCompLib( EmuLib_Name );
+            }
 #endif
+        }
     }
 }
 
@@ -1098,7 +1103,8 @@ static void addDefaultImports( void )
             }
         }
     #endif
-        if( CompFlags.pgm_used_8087 || CompFlags.float_used ) {
+        if( CompFlags.pgm_used_8087
+          || CompFlags.float_used ) {
             if( GET_FPU_EMU( CpuSwitches ) ) {
     #if _CPU == 8086
                 CgInfoAddImport( "__init_87_emulator" );
@@ -1328,18 +1334,18 @@ void *FEAuxInfo(                // REQUEST AUXILLIARY INFORMATION
         break;
 #endif
     case FEINF_SOURCE_NAME:
+      {
+        SRCFILE src_file
+
         DbgNotSym();
         DbgNotRetn();
-        if( strcmp( SrcFName, ModuleName ) == 0 ) {
-            SRCFILE src_file = SrcFileGetPrimary();
-            if( src_file != NULL ) {
-                retn = SrcFileFullName( src_file );
-            } else {
-                retn = IoSuppFullPath( WholeFName, Buffer, sizeof( Buffer ) );
-            }
+        src_file = SrcFileGetPrimary();
+        if( src_file != NULL ) {
+            retn = SrcFileFullName( src_file );
         } else {
-            retn = ModuleName;
+            retn = IoSuppFullPath( WholeFName, Buffer, sizeof( Buffer ) );
         }
+      }
         break;
     case FEINF_CALL_CLASS:
         DbgNotRetn();

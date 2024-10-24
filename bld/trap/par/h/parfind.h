@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2002-2021 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2002-2024 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -25,34 +25,17 @@
 *
 *  ========================================================================
 *
-* Description:  8x8 font definition.
+* Description:  WHEN YOU FIGURE OUT WHAT THIS FILE DOES, PLEASE
+*               DESCRIBE IT HERE!
 *
 ****************************************************************************/
 
 
-typedef _Packed struct font_entry {
-    short                   type;       // 0 == bitmap, 1 == vector
-    short                   ascent;     // distance from top to baseline (in pixels)
-    short                   width;      // character width in pixels, 0 == proportional
-    short                   height;     // character height in pixels
-    short                   avgwidth;   // average character width
-    short                   firstchar;
-    short                   lastchar;
-    char                    filename[ 81 ];
-    char                    facename[ 32 ];
-    char                    filler;
-    short                   version;
-    char _WCI86FAR          *glyph_table;
-    char _WCI86FAR          *bitmap_table;
-    long                    start_offset;
-    long                    glyph_offset;
-    long                    bitmap_offset;
-    unsigned short          bitmap_size;
-    struct font_entry _WCI86FAR  *link;
-} FONT_ENTRY;
+#if defined(__NETWARE__)
+#define PORT_ADDRESSES  0x3bc, 0x378, 0x278
+#else
+#define PORT_ADDRESSES  0x378, 0x3bc, 0x278
+#endif
 
-extern char         _WCI86FAR _8x8Font[];
-#pragma aux _8x8Font "_*"
+#define ACOUNT(a)       (sizeof( a ) / sizeof( a[0] ))
 
-extern FONT_ENTRY   _WCI86FAR _8x8FontDef;
-#pragma aux _8x8FontDef "_*"

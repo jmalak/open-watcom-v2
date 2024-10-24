@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2002-2023 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2002-2024 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -611,9 +611,12 @@ static void addDefaultLibs( void )
           || CompFlags.emit_all_default_libs ) {
             AddLibraryName( CLIB_Name + 1, CLIB_Name[0] );
         }
-        AddLibraryName( MATHLIB_Name + 1, MATHLIB_Name[0] );
-        if( EmuLib_Name != NULL ) {
-            AddLibraryName( EmuLib_Name + 1, EmuLib_Name[0] );
+        if( CompFlags.pgm_used_8087
+          || CompFlags.float_used ) {
+            AddLibraryName( MATHLIB_Name + 1, MATHLIB_Name[0] );
+            if( EmuLib_Name != NULL ) {
+                AddLibraryName( EmuLib_Name + 1, EmuLib_Name[0] );
+            }
         }
     }
 }
@@ -1134,11 +1137,7 @@ CGPOINTER FEAuxInfo( CGPOINTER req_handle, aux_class request )
   #endif
 #endif
     case FEINF_SOURCE_NAME:
-        if( SrcFName == ModuleName ) {
-            return( (CGPOINTER)FNameFullPath( FNames ) );
-        } else {
-            return( (CGPOINTER)ModuleName );
-        }
+        return( (CGPOINTER)FNameFullPath( FNames ) );
     case FEINF_CALL_CLASS:
         return( (CGPOINTER)getCallClass( req_handle ) );
     case FEINF_CALL_CLASS_TARGET:
