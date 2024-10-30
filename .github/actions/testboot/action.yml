@@ -6,8 +6,13 @@ inputs:
     required: false
     default: ''
     type: string
-  gitpath:
-    description: 'git subdirectory'
+  owversion:
+    description: 'Open Watcom version'
+    required: false
+    default: '1.9'
+    type: string
+  owtag:
+    description: 'Open Watcom 2.0 build tag'
     required: false
     default: ''
     type: string
@@ -19,6 +24,12 @@ inputs:
 runs:
   using: composite
   steps:
+  - if: inputs.hostos == 'lnx' || inputs.hostos == 'nt'
+    name: Open Watcom setup
+    uses: open-watcom/setup-watcom@v0
+    with:
+      version: ${{ inputs.owversion }}
+      tag: ${{ inputs.owtag }}
   - if: inputs.hostos == 'lnx'
     name: Test Bootstrap OW
     run: ci/buildx.sh
@@ -26,9 +37,6 @@ runs:
       OWBUILD_STAGE: 'boot'
       OWTOOLS:       'WATCOM'
       OWROOT:        ${{ github.workspace }}
-      WATCOM:        ${{ github.workspace }}/${{ inputs.gitpath }}
-      INCLUDE:       ${{ github.workspace }}/${{ inputs.gitpath }}/lh
-      WATCOM_PATH:   ${{ github.workspace }}/${{ inputs.gitpath }}/binl
       OWDEBUG:       ${{ inputs.owdebug }}
       OWVERBOSE:     1
     shell: bash
@@ -39,9 +47,6 @@ runs:
       OWBUILD_STAGE: 'boot'
       OWTOOLS:       'WATCOM'
       OWROOT:        ${{ github.workspace }}
-      WATCOM:        ${{ github.workspace }}\${{ inputs.gitpath }}
-      INCLUDE:       ${{ github.workspace }}\${{ inputs.gitpath }}\h;${{ github.workspace }}\${{ inputs.gitpath }}\h\nt
-      WATCOM_PATH:   ${{ github.workspace }}\${{ inputs.gitpath }}\binnt
       OWDEBUG:       ${{ inputs.owdebug }}
       OWVERBOSE:     1
     shell: cmd
