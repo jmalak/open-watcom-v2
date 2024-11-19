@@ -150,7 +150,7 @@ global DATA_TYPE    ConstType;
 global unsigned     Constant;
 global uint64       Constant64;
 global FCB          *MainSrcFile;       /* primary source file being compiled */
-global FCB          *SrcFile;
+global FCB          *SrcFiles;
 global char         *SrcFName;          /* source file name without suffix */
 global char         *DefFName;          /* .def file name (prototypes) */
 global char         *WholeFName;        /* whole file name with suffix */
@@ -412,7 +412,6 @@ extern void         CloseSrcFile( FCB * );
 extern void         OpenDefFile( void );
 extern FILE         *OpenBrowseFile( void );
 extern void         CloseFiles( void );
-extern void         CClose( FILE *fp );
 extern void         FreeFNames( void );
 extern char         *ErrFileName( void );
 extern char         *DepFileName( void );
@@ -764,7 +763,7 @@ extern SYMPTR       SymGetPtr( SYM_HANDLE );
 extern void         SymReplace( SYMPTR, SYM_HANDLE );
 extern void         EndBlock( void );
 extern SYM_HANDLE   MakeFunction( const char *, TYPEPTR );
-extern SYM_HANDLE   MakeNewSym( SYMPTR, char, TYPEPTR, stg_classes );
+extern SYM_HANDLE   MakeNewDotSym( SYMPTR, char, TYPEPTR, stg_classes );
 extern LABELPTR     LkLabel( const char * );
 extern void         FreeLabels( void );
 extern XREFPTR      NewXref( XREFPTR );

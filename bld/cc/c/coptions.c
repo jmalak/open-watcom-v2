@@ -453,7 +453,7 @@ static void AnalyseAnyTargetOptions( OPT_STORAGE *data )
     }
     switch( data->cstd ) {
     case OPT_ENUM_cstd_za99:
-        SET_STD( C99 );
+        CompVars.cstd = STD_C99;
         break;
     case OPT_ENUM_cstd_zastd:
         if( data->zastd_value != STD_NONE )
@@ -855,7 +855,7 @@ static char *ReadIndirectFile( const char *fname )
             /*
              * if DOS end of file (^Z) -> mark end of str
              */
-            if( ch == 0x1A ) {
+            if( ch == DOS_EOF_CHAR ) {
                 *str = '\0';
                 break;
             }
