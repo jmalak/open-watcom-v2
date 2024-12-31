@@ -57,7 +57,10 @@ static int              SavedCurrChar;      /* used when get tokens from macro *
 #endif
 static unsigned char    ClassTable[LCHR_MAX];
 
-static unsigned char InitClassTable[] = {
+static struct {
+    unsigned short  chr;
+    unsigned char   cls;
+} InitClassTable[] = {
     '\r',       SCAN_CR,
     '\n',       SCAN_NEWLINE,
     ' ',        SCAN_WHITESPACE,
@@ -93,6 +96,10 @@ static unsigned char InitClassTable[] = {
     '|',        SCAN_DELIM2,        // |, |=, ||
     '_',        SCAN_NAME,
     'L',        SCAN_WIDE,
+    LCHR_EOF,   SCAN_EOF,
+#ifdef CHAR_MACRO
+    LCHR_MACRO, SCAN_MACRO,
+#endif
     '\0',       0
 };
 
@@ -1793,14 +1800,8 @@ static TOKEN ScanInvalid( void )
 
     token = T_BAD_CHAR;
     Buffer[0] = CurrChar;
+    Buffer[1] = '\0';
     TokenLen = 1;
-#ifdef SYS_EOF_CHAR
-    if( CurrChar == SYS_EOF_CHAR ) {
-        CloseSrcFile( SrcFiles );
-        token = T_WHITE_SPACE;
-    }
-#endif
-    Buffer[TokenLen] = '\0';
     NextChar();
     return( token );
 }
@@ -1941,12 +1942,8 @@ void ScanInit( void )
     memset( &ClassTable['A'], SCAN_NAME,    26 );
     memset( &ClassTable['a'], SCAN_NAME,    26 );
     memset( &ClassTable['0'], SCAN_NUM,     10 );
-    ClassTable[LCHR_EOF] = SCAN_EOF;
-#ifdef CHAR_MACRO
-    ClassTable[LCHR_MACRO] = SCAN_MACRO;
-#endif
-    for( i = 0; (c = InitClassTable[i]) != '\0'; i += 2 ) {
-        ClassTable[c] = InitClassTable[i + 1];
+    for( i = 0; (c = InitClassTable[i].chr) != '\0'; i++ ) {
+        ClassTable[c] = InitClassTable[i].cls;
     }
     CurrChar = '\n';
     PPControl = PPCTL_NORMAL;

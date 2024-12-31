@@ -1543,6 +1543,12 @@
     __value [__eax] \
     __modify [__edx]
 
+#pragma aux RdosGetHandleCount = \
+    CallGate_get_handle_count  \
+    "jnc ok" \
+    "mov ecx,256" \
+    "ok: " \ 
+    __value [__ecx]
 
 #pragma aux RdosOpenHandle = \
     CallGate_open_handle  \
@@ -1919,33 +1925,6 @@
     __parm [__edi] [__ecx] \
     __value [__eax]
 
-#pragma aux RdosOpenDir = \
-    CallGate_open_dir  \
-    ValidateHandle \
-    __parm [__edi]  \
-    __value [__ebx]
-
-#pragma aux RdosCloseDir = \
-    CallGate_close_dir  \
-    __parm [__ebx]
-
-// ReadDir here
-
-#pragma aux RdosReadLongDir = \
-    "push eax" \
-    CallGate_read_dir  \
-    "pop edi" \
-    "jc fail" \
-    "mov [esi],ecx" \
-    "movzx ebx,bx" \
-    "mov [edi],ebx" \
-    "jmp done" \
-    "fail:"\
-    "mov eax,-1" \
-    "mov edx,eax" \
-    "done:" \
-    __parm [__ebx] [__edx] [__ecx] [__edi] [__esi] [__eax]
-
 #pragma aux RdosCreateVfsDiscCmd = \
     CallGate_create_vfs_disc_cmd  \
    "jc fail" \
@@ -2252,30 +2231,6 @@
     CallGate_has_global_timer \
     CarryToBool \
     __value [__eax]
-
-#pragma aux RdosStartTimer = \
-    CallGate_start_user_timer \
-    __parm [__edi] [__esi] [__ebx] [__edx __eax]
-
-#pragma aux RdosStartTimeout = \
-    CallGate_start_user_timeout \
-    __parm [__edi] [__esi] [__ebx] [__eax]
-
-#pragma aux RdosUpdateTimer = \
-    CallGate_update_user_timer \
-    CarryToBool \
-    __parm [__ebx] [__edx __eax] \
-    __value [__eax]
-
-#pragma aux RdosUpdateTimeout = \
-    CallGate_update_user_timeout \
-    CarryToBool \
-    __parm [__ebx] [__eax] \
-    __value [__eax]
-
-#pragma aux RdosStopTimer = \
-    CallGate_stop_user_timer \
-    __parm [__ebx]
 
 #pragma aux RdosGetActiveCores = \
     CallGate_get_active_cores \
@@ -2716,32 +2671,6 @@
     "rfDone: " \
     __parm [__ebx] \
     __modify [__eax]
-
-#pragma aux RdosUsedSections = \
-    CallGate_used_user_sections  \
-    ValidateEax \
-    __value [__eax]
-
-#pragma aux RdosCreateSection = \
-    CallGate_create_named_user_section  \
-    "jnc Validate" \
-    CallGate_create_user_section  \
-    "Validate:" \
-    ValidateHandle  \
-    __parm [__edi] \
-    __value [__ebx]
-
-#pragma aux RdosDeleteSection = \
-    CallGate_delete_user_section  \
-    __parm [__ebx]
-
-#pragma aux RdosEnterSection = \
-    CallGate_enter_user_section  \
-    __parm [__ebx]
-
-#pragma aux RdosLeaveSection = \
-    CallGate_leave_user_section  \
-    __parm [__ebx]
 
 #pragma aux RdosGetFreeHandles = \
     CallGate_get_free_handles  \
@@ -3764,14 +3693,14 @@
     __parm [__edi] \
     __value [__eax]
 
-#pragma aux RdosOpenVfsDir = \
-    CallGate_open_vfs_dir  \
+#pragma aux RdosOpenDir = \
+    CallGate_open_dir  \
     ValidateHandle \
     __parm [__edi] [__esi]  \
     __value [__ebx]
 
-#pragma aux RdosCloseVfsDir = \
-    CallGate_close_vfs_dir  \
+#pragma aux RdosCloseDir = \
+    CallGate_close_dir  \
     __parm [__ebx]
 
 #pragma aux RdosCreateCrc = \

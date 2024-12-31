@@ -153,9 +153,9 @@ struct RdosDirEntry
 {
     long long Inode;
     long long Size;
-    long long CreateTime;
-    long long AccessTime;
-    long long ModifyTime;
+    unsigned long long CreateTime;
+    unsigned long long AccessTime;
+    unsigned long long ModifyTime;
     int Attrib;
     int Flags;
     int Uid;
@@ -592,6 +592,7 @@ int RDOSAPI RdosGetCanBridgeVersion(int *MajorVersion, int *MinorVersion, int *S
 int RDOSAPI RdosProgramCanBridge(const char *ProgramName);
 int RDOSAPI RdosWaitForCanBridgeProgramming(int *ErrorCode, int *Position);
 
+int RDOSAPI RdosGetHandleCount();
 int RDOSAPI RdosOpenHandle(const char *Name, int Mode);
 int RDOSAPI RdosCloseHandle(int Handle);
 int RDOSAPI RdosDeleteHandle(int Handle);
@@ -658,10 +659,6 @@ int RDOSAPI RdosRenameFile(const char *ToName, const char *FromName);
 int RDOSAPI RdosDeleteFile(const char *PathName);
 int RDOSAPI RdosGetFileAttribute(const char *PathName, int *Attribute);
 int RDOSAPI RdosSetFileAttribute(const char *PathName, int Attribute);
-int RDOSAPI RdosOpenDir(const char *PathName);
-void RDOSAPI RdosCloseDir(int Handle);
-int RDOSAPI RdosReadDir(int Handle, int EntryNr, int MaxNameSize, char *PathName, long *FileSize, int *Attribute, unsigned long *MsbTime, unsigned long *LsbTime);
-long long RDOSAPI RdosReadLongDir(int Handle, int EntryNr, int MaxNameSize, char *PathName, long *FileSize, int *Attribute);
 
 int RDOSAPI RdosCreateVfsDiscCmd(int DiscNr, const char *Cmd);
 void RDOSAPI RdosCloseVfsCmd(int Handle);
@@ -727,11 +724,10 @@ void RDOSAPI RdosTerminateThread();
 int RDOSAPI RdosGetThreadHandle(void);
 int RDOSAPI RdosGetProcessHandle(void);
 
-void RDOSAPI RdosStartTimer(long long (*Callback)(void *Param, long long Expire), void *Param, int ID, long long Expire);
-void RDOSAPI RdosStartTimeout(long long (*Callback)(void *Param, long long Expire), void *Param, int ID, int Ms);
-int RDOSAPI RdosUpdateTimer(int ID, long long Expire);
-int RDOSAPI RdosUpdateTimeout(int ID, int Ms);
-void RDOSAPI RdosStopTimer(int ID);
+int RDOSAPI RdosStartAppTimer(void (*Start)(void *Param), void *Param, int Ms);
+int RDOSAPI RdosStopAppTimer(int index);
+int RDOSAPI RdosRestartCurrentAppTimer(int Ms);
+int RDOSAPI RdosResetAppTimer(int index, int Ms);
 
 int RDOSAPI RdosHasGlobalTimer();
 int RDOSAPI RdosGetActiveCores();
@@ -792,12 +788,6 @@ void RDOSAPI RdosAddMin(unsigned long *msb, unsigned long *lsb, long min);
 void RDOSAPI RdosAddHour(unsigned long *msb, unsigned long *lsb, long hour);
 void RDOSAPI RdosAddDay(unsigned long *msb, unsigned long *lsb, long day);
 int RDOSAPI RdosSyncTime(long IP);
-
-int RDOSAPI RdosCreateSection(const char *Name);
-void RDOSAPI RdosDeleteSection(int Handle);
-void RDOSAPI RdosEnterSection(int Handle);
-void RDOSAPI RdosLeaveSection(int Handle);
-int RDOSAPI RdosUsedSections();
 
 void RDOSAPI RdosInitFutex(struct RdosFutex *f, const char *n);
 void RDOSAPI RdosEnterFutex(const struct RdosFutex *f);
@@ -997,8 +987,9 @@ long long RDOSAPI RdosGetVfsDriveStart(int DriveNr);
 long long RDOSAPI RdosGetVfsDriveSize(int DriveNr);
 long long RDOSAPI RdosGetVfsDriveFree(int DriveNr);
 int RDOSAPI RdosIsVfsPath(const char *PathName);
-int RDOSAPI RdosOpenVfsDir(const char *PathName, struct RdosDirInfo *Info);
-void RDOSAPI RdosCloseVfsDir(int Handle);
+
+int RDOSAPI RdosOpenDir(const char *PathName, struct RdosDirInfo *Info);
+void RDOSAPI RdosCloseDir(int Handle);
 
 int RDOSAPI RdosCreateCrc(unsigned short int CrcPoly);
 void RDOSAPI RdosCloseCrc(int Handle);
@@ -1099,6 +1090,7 @@ void RDOSAPI RdosStopCanCapture();
 void RDOSAPI RdosStartLonCapture(long FileHandle);
 void RDOSAPI RdosStopLonCapture();
 
+int RDOSAPI RdosGetUsbConfig(int Controller, int Device, int Config, void *ptr, int maxsize);
 int RDOSAPI RdosHasUsbCardReaderError();
 int RDOSAPI RdosHasUsbCardDevReset();
 int RDOSAPI RdosHasUsbCardUsbReset();
