@@ -11,6 +11,16 @@
 _cwRaw  segment para public 'raw kernal code' use16
         assume cs:_cwRaw, ds:_cwRaw
 ;
+VCPI_SwitchData struc
+VCPI_CR3        dd 0            ;CR3
+VCPI_pGDT       dd ?            ;Pointer to GDT descriptor.
+VCPI_pIDT       dd ?            ;Pointer to IDT descriptor.
+VCPI_LDT        dw 0            ;LDTR
+VCPI_TR         dw 0            ;TR
+VCPI_EIP        dd 0            ;CS:EIP client entry point.
+VCPI_CS         dw 0            ;/
+VCPI_SwitchData ends
+;
 InWindows       db 0
 BreakAddress    dd ?
 VMMHandle       dw ?
@@ -30,7 +40,7 @@ SwapFileLength  dd 0
 FreePages       dd 1
 medAllocPages   dd      0
 TotalPages      dd 1
-TotalPhysical   dd 0
+TotalPhysPages  dd 0
 ;
 RawSelBuffer    db 16 dup (?)
 ;
@@ -89,13 +99,7 @@ Big1Flag        DB      0
 ENDIF
 
 ;
-VCPI_CR3        dd 0            ;CR3
-VCPI_pGDT       dd ?            ;Pointer to GDT descriptor.
-VCPI_pIDT       dd ?            ;Pointer to IDT descriptor.
-VCPI_LDT        dw 0            ;LDTR
-VCPI_TR         dw 0            ;TR
-VCPI_EIP        dd 0            ;CS:EIP client entry point.
-VCPI_CS         dw 0            ;/
+VCPISW  VCPI_SwitchData < 0, ?, ?, 0, 0, 0, 0 >
 ;
 VCPI_GDT        df 0            ;GDTR
 VCPI_IDT        df 0            ;IDTR
@@ -138,7 +142,7 @@ LinearLimit     dd ?
 ;
 PageBufferReal  dw ?
 PageBufferLinear dd ?
-PageInt         db size v86CallStruc dup (0)
+PageInt         db size RealRegsStruc dup (0)
 ;
 RawSystemFlags  dw 0,0
 ;
@@ -196,7 +200,7 @@ Dbg     ends
 DbgTable        db 4*size Dbg dup (0)
 ;
 MaxMemLin       dd 1021 shl 20
-MaxMemPhys      dd -1
+MaxMemPhysPages dd -1
 ;
 ExtALLSwitch    db 0
 NoPassFlag      DB      0       ; nonzero if not passing real mode hardware interrupts up to protect mode
@@ -282,8 +286,7 @@ rv1_NoGDTMove:
         mov     esi,PageDirLinear
         mov     eax,0
         mov     ebx,Page1stLinear+8
-        and     ebx,not 4095
-        or      ebx,111b
+        InitUseBits ebx                 ;clear and set user+write+present.
         mov     es:[esi+eax*4],ebx
         call    CR3Flush
 ;
@@ -308,8 +311,7 @@ rv1_No1stMove:
         mov     esi,PageDirLinear
         mov     eax,1023
         mov     ebx,PageAliasLinear+8
-        and     ebx,not 4095
-        or      ebx,111b
+        InitUseBits ebx                 ;clear and set user+write+present.
         mov     es:[esi+eax*4],ebx
         call    CR3Flush
 ;
@@ -331,7 +333,7 @@ rv1_NoALIASMove:
         mov     eax,PageDirLinear+4
         mov     PageDirLinear,eax
         mov     eax,PageDirLinear+8
-        mov     VCPI_CR3,eax
+        mov     VCPISW.VCPI_CR3,eax
         call    CR3Flush
 ;
 ;Release VCPI memory.
@@ -384,7 +386,7 @@ rv1_NoDIRMove:
         ;
         mov     edi,GDTLinear
         add     edi,KernalPL3_2_PL0
-        and     edi,not 7
+        GetDescIndex edi
         push    es
         push    ax
         mov     ax,KernalZero
@@ -402,7 +404,7 @@ rv1_pl0:
         mov     ax,MainDS
         mov     ds,ax
         assume ds:_cwMain
-        cmp     ProtectedType,1 ;VCPI?
+        cmp     ProtectedType,PT_VCPI
         mov     ax,KernalDS
         mov     ds,ax
         assume ds:_cwRaw
@@ -617,7 +619,7 @@ CR3Flush        proc    near
         call    RawPL3toPL0
         ;
 ;       mov     eax,cr3
-        mov     eax,VCPI_CR3
+        mov     eax,VCPISW.VCPI_CR3
         mov     cr3,eax         ;flush page cache.
         ;
         mov     edx,d[rv10_StackAdd]
@@ -732,27 +734,27 @@ rv11_0: or      cx,cx
         push    dx
         push    ax
         mov     ax,w[XMSControl]
-        mov     [edi].v86CallStruc.v86CallIP,ax
+        mov     [edi].RealRegsStruc.Real_IP,ax
         mov     ax,w[XMSControl+2]
-        mov     [edi].v86CallStruc.v86CallCS,ax
+        mov     [edi].RealRegsStruc.Real_CS,ax
         pop     ax
-        mov     [edi].v86CallStruc.v86CallEAX,eax
-        mov     [edi].v86CallStruc.v86CallEDX,edx
-        mov     [edi].v86CallStruc.v86CallSS,0
-        mov     [edi].v86CallStruc.v86CallSP,0
+        mov     [edi].RealRegsStruc.Real_EAX,eax
+        mov     [edi].RealRegsStruc.Real_EDX,edx
+        mov     [edi].RealRegsStruc.Real_SS,0
+        mov     [edi].RealRegsStruc.Real_SP,0
         call    RawSimulateFarCall        ;un-lock it first.
         pop     dx
         mov     ah,0ah
         push    ax
         mov     ax,w[XMSControl]
-        mov     [edi].v86CallStruc.v86CallIP,ax
+        mov     [edi].RealRegsStruc.Real_IP,ax
         mov     ax,w[XMSControl+2]
-        mov     [edi].v86CallStruc.v86CallCS,ax
+        mov     [edi].RealRegsStruc.Real_CS,ax
         pop     ax
-        mov     [edi].v86CallStruc.v86CallEAX,eax
-        mov     [edi].v86CallStruc.v86CallEDX,edx
-        mov     [edi].v86CallStruc.v86CallSS,0
-        mov     [edi].v86CallStruc.v86CallSP,0
+        mov     [edi].RealRegsStruc.Real_EAX,eax
+        mov     [edi].RealRegsStruc.Real_EDX,edx
+        mov     [edi].RealRegsStruc.Real_SS,0
+        mov     [edi].RealRegsStruc.Real_SP,0
         call    RawSimulateFarCall        ;un-lock it first.
         pop     si
         pop     cx
@@ -774,7 +776,7 @@ VCPIRelExtended proc far
         mov     ax,MainCS
         mov     ds,ax
         assume ds:_cwMain
-        cmp     ProtectedType,1
+        cmp     ProtectedType,PT_VCPI
         assume ds:_cwRaw
         pop     ds
         jnz     rv12_9
@@ -791,9 +793,9 @@ VCPIRelExtended proc far
         mov     ecx,1024
         mov     esi,PageDETLinear
 rv12_d0:
-        test    DWORD PTR es:[esi],1            ;present?
+        test    DWORD PTR es:[esi],PAGE_PRESENT ;present?
         jz      rv12_d1
-        test    DWORD PTR es:[esi],1 shl 10     ;VCPI bit set?
+        test    DWORD PTR es:[esi],PAGE_VCPI    ;VCPI bit set?
         jz      rv12_d1
         push    ecx
         push    esi
@@ -801,8 +803,8 @@ rv12_d0:
         push    ds
         push    es
         mov     edx,es:[esi]
-        and     edx,NOT 4095
-        and     DWORD PTR es:[esi],NOT 1;mark as no longer present.
+        ClearUseBits edx
+        and     DWORD PTR es:[esi],NOT PAGE_PRESENT ;mark as no longer present.
         call    CR3Flush
 
         push    edi
@@ -851,7 +853,7 @@ rv12_NoDET:
         mov     edi,1024*4096*1023      ;base of page alias's.
 
 rv12_0:
-        test    DWORD PTR es:[esi],1            ;Page table present?
+        test    DWORD PTR es:[esi],PAGE_PRESENT ;Page table present?
         jz      rv12_1
 
         push    ecx
@@ -859,9 +861,9 @@ rv12_0:
         push    edi
         mov     ecx,1024
 rv12_2:
-        test    DWORD PTR es:[edi],1            ;Page present?
+        test    DWORD PTR es:[edi],PAGE_PRESENT ;Page present?
         jz      rv12_3
-        test    DWORD PTR es:[edi],1 shl 10     ;VCPI bit set?
+        test    DWORD PTR es:[edi],PAGE_VCPI    ;VCPI bit set?
         jz      rv12_3
 
 ; MED 11/05/96
@@ -880,8 +882,8 @@ notzeroth:
         push    ds
         push    es
         mov     edx,es:[edi]
-        and     DWORD PTR es:[edi],NOT 1;mark as no longer present.
-        and     edx,NOT 4095
+        and     DWORD PTR es:[edi],NOT PAGE_PRESENT ;mark as no longer present.
+        ClearUseBits edx
 
         call    CR3Flush
 
@@ -925,7 +927,7 @@ rv12_3:
         pop     esi
         pop     ecx
 
-        test    DWORD PTR es:[esi],1 shl 10     ;VCPI bit set?
+        test    DWORD PTR es:[esi],PAGE_VCPI    ;VCPI bit set?
         jz      rv12_1
 
         push    ecx
@@ -934,8 +936,8 @@ rv12_3:
         push    ds
         push    es
         mov     edx,es:[esi]
-        and     edx,NOT 4095
-        and     DWORD PTR es:[esi],NOT 1;mark as no longer present.
+        ClearUseBits edx
+        and     DWORD PTR es:[esi],NOT PAGE_PRESENT ;mark as no longer present.
 
         call    CR3Flush
 
@@ -1033,7 +1035,7 @@ Int15Rel        proc    far
         mov     ax,MainDS
         mov     ds,ax
         assume ds:_cwMain
-        cmp     ProtectedType,1 ;VCPI?
+        cmp     ProtectedType,PT_VCPI
         assume ds:_cwRaw
         pop     ds
         jnc     rv15_9
@@ -1106,7 +1108,7 @@ RawReal2Prot    proc    near
         mov     CR3Sav,eax
         mov     eax,cr0
         mov     CR0Sav,eax
-        mov     eax,VCPI_CR3            ;PageDirLinear
+        mov     eax,VCPISW.VCPI_CR3     ;PageDirLinear
         mov     cr3,eax                 ;set page dir address.
 
 ; MED 10/15/96
@@ -1232,13 +1234,13 @@ VCPIReal2Prot   proc    near
         pop     w[rv18_Return]
         mov     d[rv18_ReturnStack],edx
         mov     w[rv18_ReturnStack+4],cx
-        mov     VCPI_CS,KernalCS0
-        mov     VCPI_EIP,offset rv18_Resume486
+        mov     VCPISW.VCPI_CS,KernalCS0
+        mov     VCPISW.VCPI_EIP,offset rv18_Resume486
         mov     ax,0de0ch
         mov     si,seg _cwRaw
         movzx   esi,si
         shl     esi,4
-        add     esi,offset VCPI_CR3
+        add     esi,offset VCPISW
         int     67h
         ;
 rv18_Resume486:
@@ -1257,7 +1259,8 @@ rv18_Resume486:
         ;
         pushfd
         pop     eax
-        and     ax,1011111111111111b    ;clear NT.
+        ;clear NT.
+        and     ax,NOT EFLAG_NT
         push    eax
         popfd
         cld
@@ -1325,7 +1328,7 @@ VCPIProt2Real   proc    near
         mov     ds,ax
         mov     ax,0DE0Ch
         assume ds:nothing
-        call    FWORD PTR cs:[VCPI_Entry]       ;switch back.
+        call    FWORD PTR cs:[VCPI_Entry]       ;switch back to RM.
         assume ds:_cwRaw
         ;
 rv19_Resume:
@@ -1355,8 +1358,10 @@ RawPL0toPL3     proc    near
         push    edx             ;ESP
         pushfd          ;EFlags
         pop     eax
-        and     ax,1000111111111111b    ;clear NT & IOPL.
-        or      ax,0011000000000000b    ;force IOPL.
+        ;clear NT & IOPL.
+        and     ax,NOT (EFLAG_NT or EFLAG_IOPL)
+        ;force IOPL 3.
+        or      ax,EFLAG_IOPL
         push    eax
         popfd
         push    eax
@@ -1383,7 +1388,7 @@ RawPL3toPL0     proc    near
         push    edi
         mov     edi,GDTLinear
         add     edi,KernalPL3_2_PL0
-        and     edi,not 7
+        GetDescIndex edi                ;lose RPL & TI
         push    es
         push    ax
         mov     ax,KernalZero
@@ -1696,7 +1701,8 @@ rv29_Its32:
         mov     ax,[ebp+(2+4+4)+(2+2+2+2)+(4+4+4+4+4+4+4+4)+2]
         or      bh,bh           ;int or far?
         jnz     rv29_NoIF
-        and     ax,1111110011111111b    ;clear Trap and INT flag.
+        ;clear IF & TF.
+        and     ax,NOT (EFLAG_IF or EFLAG_TF)
 rv29_NoIF:
         sub     esi,2
         mov     fs:[esi],ax
@@ -1805,7 +1811,7 @@ rv29_Back:
         cli
         cld
         pop     WORD PTR cs:[rv29_IntAdd]
-        and     WORD PTR cs:[rv29_IntAdd],0000110011010101b
+        and     WORD PTR cs:[rv29_IntAdd],EFLAGS_MASK2
 ;
 ;Switch back to old stack.
 ;
@@ -1856,7 +1862,6 @@ rv29_Back:
 ;
 ;Copy new register values into table.
 ;
-
         push    esi
         push    edi
         push    ds
@@ -1868,7 +1873,8 @@ rv29_Back:
         pop     edi
         pop     esi
         mov     bx,[esp+(2+2+2+2)+(4+4+4+4+4+4+4+4)+(4+4+2)+2]
-        and     bx,1111001100101010b
+        ;clear OF & DF & SF & ZF & AF & PF & CF
+        and     bx,NOT (EFLAG_OF or EFLAG_DF or EFLAG_SF or EFLAG_ZF or EFLAG_AF or EFLAG_PF or EFLAG_CF)
         or      es:RealRegsStruc.Real_Flags[edi],bx
         ;
         cmp     w[rv29_ourstack],0
@@ -2057,7 +2063,7 @@ rv30_oops:
         mov     ax,KernalZero
         mov     es,ax
         movzx   eax,w[CallBackStruc.CallBackStackSel+bx]
-        and     ax,not 7
+        GetDescIndex eax
         mov     edi,GDTLinear
         add     edi,eax
         mov     es:[edi+2],si   ;store low word of linear base.
@@ -2200,7 +2206,7 @@ rv31_NotBusy:
         or      cs:CallBackStruc.CallBackFlags[bx],128  ;mark it as busy.
         mov     bx,sp
         mov     ax,ss:[bx+(2+2+2)+(2+2)]
-        and     ax,0000110011010101b
+        and     ax,EFLAGS_MASK2
         or      ax,0000000000000010b
         mov     WORD PTR cs:[rv31_FlagsStore],ax
         pop     dx
@@ -2372,9 +2378,11 @@ rv31_Use16Bit13:
         shl     esi,4
         add     esi,eax
         mov     ax,w[rv31_FlagsStore]
-        and     ax,1111100011111111b
-        and     WORD PTR fs:[(2+2)+esi],0000011100000000b
-        or      fs:[(2+2)+esi],ax
+        ;clear IF & TF & DF
+        and     ax,NOT (EFLAG_IF or EFLAG_TF or EFLAG_DF)
+        ;retain IF & TF & DF
+        and     WORD PTR fs:[esi+IFrame16.i16_flags],EFLAG_IF or EFLAG_TF or EFLAG_DF
+        or      fs:[esi+IFrame16.i16_flags],ax
         ;
         mov     bx,w[rv31_CallTab]      ;restore call back structure.
         and     CallBackStruc.CallBackFlags[bx],255-128 ;clear busy flag.
@@ -2473,7 +2481,7 @@ A20Handler      proc    far
         mov     ax,MainDS
         mov     ds,ax
         assume ds:_cwMain
-        cmp     ProtectedType,0
+        cmp     ProtectedType,PT_RAW
         assume ds:_cwRaw
         pop     ax
         pop     ds
@@ -2485,7 +2493,7 @@ A20Handler      proc    far
         or      ax,ax
         jnz     rv34_XMSA20ON
 rv34_XMSA20OFF:
-        sub     esp,size v86CallStruc.v86CallStruc
+        sub     esp,size RealRegsStruc
         mov     ax,ss
         mov     es,ax
         mov     edi,esp
@@ -2498,11 +2506,11 @@ rv34_XMSA20OFF:
         mov     es:RealRegsStruc.Real_SS[edi],0
         mov     es:RealRegsStruc.Real_SP[edi],0
         call    RawSimulateFarCall
-        add     esp,size v86CallStruc.v86CallStruc
+        add     esp,size RealRegsStruc
         jmp     rv34_A20Done
         ;
 rv34_XMSA20ON:
-        sub     esp,size v86CallStruc.v86CallStruc
+        sub     esp,size RealRegsStruc
         mov     ax,ss
         mov     es,ax
         mov     edi,esp
@@ -2526,7 +2534,7 @@ rv34_XMSA20ON:
         call    RawSimulateFarCall
         mov     eax,es:RealRegsStruc.Real_EAX[edi]
         xor     ax,1
-        add     esp,size v86CallStruc.v86CallStruc
+        add     esp,size RealRegsStruc
         or      ax,ax
         jmp     rv34_A20Done
         ;
@@ -2795,8 +2803,10 @@ EmuRawPL0toPL3  proc    near
         push    edx             ;ESP
         pushfd          ;EFlags
         pop     eax
-        and     ax,1000111111111111b    ;clear NT & IOPL.
-        or      ax,0011000000000000b    ;force IOPL.
+        ;clear NT & IOPL.
+        and     ax,NOT (EFLAG_NT or EFLAG_IOPL)
+        ;force IOPL 3.
+        or      ax,EFLAG_IOPL
         push    eax
         popfd
         push    eax
@@ -2829,13 +2839,13 @@ EmuRawPL3toPL0  proc    near
         pop     ds
         pop     eax
         add     edi,DpmiEmuPL3_2_PL0
-        and     edi,not 7
+        GetDescIndex edi                ;lose RPL & TI
         push    es
         push    ax
         mov     ax,KernalZero
         mov     es,ax
         mov     eax,offset rv45_pl0
-        mov     WORD PTR es:[edi],ax            ;store low word of limit.
+        mov     WORD PTR es:[edi],ax    ;store low word of limit.
         pop     ax
         pop     es
         pop     edi
@@ -2967,7 +2977,8 @@ rv46_000A_0:
         push    es
         push    eax
         mov     edi,offset RawSelBuffer
-        mov     ax,KernalDS     ;DpmiEmuDS
+        Round8UP edi                    ;allign pointer to 8 bytes
+        mov     ax,KernalDS             ;DpmiEmuDS
         mov     es,ax
         call    RawBGetDescriptor       ;copy original details.
         mov     BYTE PTR es:[edi+5],DescPresent+DescPL3+DescMemory+DescRWData
@@ -3052,7 +3063,7 @@ rv46_DPMI_0101:
         cmp     ax,dx
         pop     eax
         push    eax
-        jne     med2_0101       ; not attempting to release SS selector
+        jne     med2_0101               ; not attempting to release SS selector
         stc                             ; flag failure, but no error code update
         jmp     med3_0101
 
@@ -3072,7 +3083,7 @@ rv46_0101_0:
         jmp     rv46_Done
         ;
 rv46_DPMI_0102:
-        cmp     al,02h          ;re-size DOS memory?
+        cmp     al,02h                  ;re-size DOS memory?
         jnz     rv46_NotOurs
         push    ebp
         push    eax
@@ -3094,19 +3105,19 @@ rv46_0102_0:
         jmp     rv46_Done
         ;
 rv46_DPMI_0200:
-        cmp     al,00h          ;get real mode vector?
+        cmp     al,00h                  ;get real mode vector?
         jnz     rv46_DPMI_0201
         call    RawGetRVector
         jmp     rv46_Done
         ;
 rv46_DPMI_0201:
-        cmp     al,01h          ;set real mode vector?
+        cmp     al,01h                  ;set real mode vector?
         jnz     rv46_DPMI_0202
         call    RawSetRVector
         jmp     rv46_Done
         ;
 rv46_DPMI_0202:
-        cmp     al,02h          ;get exception vector?
+        cmp     al,02h                  ;get exception vector?
         jnz     rv46_DPMI_0203
         push    eax
         push    ecx
@@ -3131,7 +3142,7 @@ rv46_0202_1:
         jmp     rv46_Done
         ;
 rv46_DPMI_0203:
-        cmp     al,03h          ;set exception vector?
+        cmp     al,03h                  ;set exception vector?
         jnz     rv46_DPMI_0204
         push    edx
         assume ds:nothing
@@ -3145,7 +3156,7 @@ rv46_0203_0:
         jmp     rv46_Done
         ;
 rv46_DPMI_0204:
-        cmp     al,04h          ;get vector?
+        cmp     al,04h                  ;get vector?
         jnz     rv46_DPMI_0205
         push    eax
         push    ecx
@@ -3170,7 +3181,7 @@ rv46_0204_1:
         jmp     rv46_Done
         ;
 rv46_DPMI_0205:
-        cmp     al,05h          ;set vector?
+        cmp     al,05h                  ;set vector?
         jnz     rv46_NotOurs
         push    edx
         assume ds:nothing
@@ -3184,7 +3195,7 @@ rv46_0205_0:
         jmp     rv46_Done
         ;
 rv46_DPMI_0300:
-        cmp     al,00h          ;Simulate int?
+        cmp     al,00h                  ;Simulate int?
         jnz     rv46_DPMI_0301
 ;
 ;Extend [E]DI to EDI
@@ -3224,13 +3235,15 @@ rv46_0300_0a:
         assume ds:_cwDPMIEMU
         jz      rv46_0300_0
         mov     bx,sp
-        mov     bx,ss:[bx+(4+4+4+2)+(2+2)]      ;get original flags.
+        mov     bx,ss:[bx+(4+4+4+2)+IFrame16.i16_flags] ;get original flags.
         jmp     rv46_0300_1
 rv46_0300_0:
-        mov     bx,ss:[esp+(4+4+4+2)+(4+4)]     ;get original flags.
-        and     bx,0000111000000000b            ;retain IF.
+        mov     bx,ss:[esp+(4+4+4+2)+IFrame.i_eflags]   ;get original flags.
+        ;retain IF & DF & OF.
+        and     bx,EFLAG_IF or EFLAG_DF or EFLAG_OF
 rv46_0300_1:
-        and     es:RealRegsStruc.Real_Flags[edi],1111000111111111b      ;lose IF.
+        ;clear IF & DF & OF.
+        and     es:RealRegsStruc.Real_Flags[edi],NOT (EFLAG_IF or EFLAG_DF or EFLAG_OF)
         or      es:RealRegsStruc.Real_Flags[edi],bx
         popf
 ;
@@ -3282,13 +3295,15 @@ rv46_0301_0a:
         assume ds:_cwDPMIEMU
         jz      rv46_0301_0
         mov     bx,sp
-        mov     bx,ss:[bx+(4+4+4+2)+(2+2)]      ;get original flags.
+        mov     bx,ss:[bx+(4+4+4+2)+IFrame16.i16_flags] ;get original flags.
         jmp     rv46_0301_1
 rv46_0301_0:
-        mov     bx,ss:[esp+(4+4+4+2)+(4+4)]     ;get original flags.
-        and     bx,0000111000000000b            ;retain IF.
+        mov     bx,ss:[esp+(4+4+4+2)+IFrame.i_eflags]   ;get original flags.
+        ;retain IF & DF & OF.
+        and     bx,EFLAG_IF or EFLAG_DF or EFLAG_OF
 rv46_0301_1:
-        and     es:RealRegsStruc.Real_Flags[edi],1111000111111111b      ;lose IF.
+        ;clear IF & DF & OF.
+        and     es:RealRegsStruc.Real_Flags[edi],NOT (EFLAG_IF or EFLAG_DF or EFLAG_OF)
         or      es:RealRegsStruc.Real_Flags[edi],bx
         popf
 ;
@@ -3339,13 +3354,15 @@ rv46_0302_0a:
         assume ds:_cwDPMIEMU
         jz      rv46_0302_0
         mov     bx,sp
-        mov     bx,ss:[bx+(4+4+4+2)+(2+2)]      ;get original flags.
+        mov     bx,ss:[bx+(4+4+4+2)+IFrame16.i16_flags] ;get original flags.
         jmp     rv46_0302_1
 rv46_0302_0:
-        mov     bx,ss:[esp+(4+4+4+2)+(4+4)]     ;get original flags.
-        and     bx,0000111000000000b            ;retain IF.
+        mov     bx,ss:[esp+(4+4+4+2)+IFrame.i_eflags]   ;get original flags.
+        ;retain IF & DF & OF.
+        and     bx,EFLAG_IF or EFLAG_DF or EFLAG_OF
 rv46_0302_1:
-        and     es:RealRegsStruc.Real_Flags[edi],1111000111111111b      ;lose IF.
+        ;clear IF & DF & OF.
+        and     es:RealRegsStruc.Real_Flags[edi],NOT (EFLAG_IF or EFLAG_DF or EFLAG_OF)
         or      es:RealRegsStruc.Real_Flags[edi],bx
         popf
 ;
@@ -3533,8 +3550,8 @@ rv46_500_0:
         jz      rv46_500_1
         mul     cx              ;Get bytes per cluster.
         mul     bx              ;Get bytes available.
-        shl     edx,16
-        mov     dx,ax
+        shl     edx,16          ;dx:ax -> edx
+        mov     dx,ax           ;/
         add     edx,SwapFileLength      ;include current size.
         shr     edx,12
         ;
@@ -3542,7 +3559,7 @@ rv46_500_0:
         ;
         mov     eax,LinearLimit
         sub     eax,LinearBase
-        shr     eax,12
+        GetPageIndex eax
         sub     edx,eax
         ;
 rv46_500_1:
@@ -3563,7 +3580,7 @@ rv46_500_1:
 med2:
         mov     eax,LinearLimit
         sub     eax,LinearBase
-        shr     eax,12
+        GetPageIndex eax
         add     ebx,eax
         mov     DWORD PTR es:[edi+0ch],ebx
 
@@ -3595,7 +3612,7 @@ med3:
         add     DWORD PTR es:[edi+10h],edx      ; MED 01/25/96
 
         mov     eax,TotalPages
-        add     eax,TotalPhysical       ; MED 01/25/96
+        add     eax,TotalPhysPages       ; MED 01/25/96
         mov     DWORD PTR es:[edi+18h],eax
 
         mov     eax,SwapFileLength
@@ -3887,8 +3904,8 @@ rv46_DPMI_0B00:
         mov     ax,KernalDS
         mov     ds,ax
         assume ds:_cwRaw
-        shl     ebx,16
-        mov     bx,cx
+        shl     ebx,16      ;bx:cx -> ebx
+        mov     bx,cx       ;/
         ;
         ;Find a free table entry.
         ;
@@ -4235,23 +4252,26 @@ rv46_Done:
         assume ds:_cwDPMIEMU
         jz      rv46_Use32Bit8
         mov     bx,sp
-        mov     bx,ss:[bx+(4+4)+(2+2)]          ;get original flags.
+        mov     bx,ss:[bx+(4+4)+IFrame16.i16_flags] ;get original flags.
         jmp     rv46_Use16Bit8
 rv46_Use32Bit8:
-        mov     bx,[esp+(4+4)+(4+4)]            ;get original flags.
+        mov     bx,[esp+(4+4)+IFrame.i_eflags]      ;get original flags.
 rv46_Use16Bit8:
-        and     bx,0000111000000000b            ;retain IF.
-        and     ax,1111000111111111b            ;lose IF.
-        or      ax,bx                   ;get old IF.
+        ;retain IF & DF & OF.
+        and     bx,EFLAG_IF or EFLAG_DF or EFLAG_OF
+        ;clear IF & DF & OF.
+        and     ax,NOT (EFLAG_IF or EFLAG_DF or EFLAG_OF)
+        ;get old flags.
+        or      ax,bx
         assume ds:nothing
         test    BYTE PTR cs:DpmiEmuSystemFlags,1
         assume ds:_cwDPMIEMU
         jz      rv46_Use32Bit9
         mov     bx,sp
-        mov     ss:[bx+(4+4)+(2+2)],ax          ;modify stack flags.
+        mov     ss:[bx+(4+4)+IFrame16.i16_flags],ax ;modify stack flags.
         jmp     rv46_Use16Bit9
 rv46_Use32Bit9:
-        mov     [esp+(4+4)+(4+4)],ax            ;modify stack flags.
+        mov     [esp+(4+4)+IFrame.i_eflags],ax      ;modify stack flags.
 rv46_Use16Bit9:
         pop     ebx
         pop     eax
@@ -4365,7 +4385,7 @@ PhysicalGetPage proc near
         mov     ax,KernalDS
         mov     ds,ax
         assume ds:_cwRaw
-        cmp     MaxMemPhys,0
+        cmp     MaxMemPhysPages,0
         assume ds:_cwDPMIEMU
         stc
         jz      rv50_9
@@ -4380,14 +4400,14 @@ PhysicalGetPage proc near
         jnc     rv50_8
         jmp     rv50_9
         ;
-rv50_8: and     edx,not 4095
+rv50_8: ClearUseBits edx
         mov     ax,KernalDS
         mov     ds,ax
         assume ds:_cwRaw
-        dec     MaxMemPhys
-        dec     TotalPhysical
+        dec     MaxMemPhysPages
+        dec     TotalPhysPages
         jns     rv50_nowrap
-        mov     TotalPhysical,0
+        mov     TotalPhysPages,0
 rv50_nowrap:
         assume ds:_cwDPMIEMU
         clc
@@ -4467,10 +4487,10 @@ pgp3:
         mov     ax,KernalDS
         mov     ds,ax
         assume ds:_cwRaw
-        cmp     edx,MaxMemPhys
+        cmp     edx,MaxMemPhysPages
         jc      rv51_0
-        mov     edx,MaxMemPhys
-rv51_0: mov     TotalPhysical,edx
+        mov     edx,MaxMemPhysPages
+rv51_0: mov     TotalPhysPages,edx
         assume ds:_cwDPMIEMU
         clc                     ;exit with success.
         ;
@@ -4508,7 +4528,7 @@ GetVCPIPage     proc    near
         mov     ax,MainDS
         mov     ds,ax
         assume ds:_cwMain
-        cmp     ProtectedType,1 ;VCPI?
+        cmp     ProtectedType,PT_VCPI
         assume ds:_cwDPMIEMU
         jnz     rv52_9
 
@@ -4529,6 +4549,7 @@ GetVCPIPage     proc    near
         or      ah,ah           ;get anything?
         jnz     rv52_9
         mov     edx,RealRegsStruc.Real_EDX[edi]
+        ClearUseBits edx
         mov     ecx,1           ;mark it as VCPI memory.
         clc
         jmp     rv52_10
@@ -4574,7 +4595,7 @@ GetVCPIPages    proc    near
         mov     ax,MainDS
         mov     ds,ax
         assume ds:_cwMain
-        cmp     ProtectedType,1 ;VCPI?
+        cmp     ProtectedType,PT_VCPI
         assume ds:_cwDPMIEMU
         jnz     rv53_9
         ;
@@ -4695,13 +4716,15 @@ rv54_2: add     esi,2+4+4               ;next entry.
         mov     ax,XMSBlockSize
 rv54_SizeOK:
         push    eax
+        ;convert size from 1024 to 4096 bytes pages for comparision
         movzx   eax,ax
         add     eax,3
         shr     eax,2
-        cmp     eax,MaxMemPhys
+        cmp     eax,MaxMemPhysPages
         pop     eax
+        ;restore size in 1024 pages
         jc      rv54_nomaxlimit
-        mov     eax,MaxMemPhys
+        mov     eax,MaxMemPhysPages
         shl     eax,2
 rv54_nomaxlimit:
 
@@ -4756,18 +4779,17 @@ rv54_nomaxlimit:
         ;BP    - Block size in K.
         ;DX:BX - Block linear address.
         ;
-        movzx   edi,dx                  ;get base into 1 reg.
+        movzx   edi,dx                  ;get base into edi reg.
         shl     edi,16                  ;/
         mov     di,bx                   ;/
         mov     ebx,edi                 ;copy into high address.
         movzx   ebp,bp                  ;fetch size.
         shl     ebp,10                  ;*1024 (1k)
         add     ebx,ebp                 ;get real top.
-        add     edi,4095                ;round up to next page.
-        and     edi,NOT 4095            ;/
-        and     ebx,NOT 4095            ;round down to nearest page.
-        mov     2[esi],edi
-        mov     6[esi],ebx              ;store base and end.
+        RoundPageUP edi                 ;round up to next page.
+        RoundPageDN ebx                 ;round down to nearest page.
+        mov     2[esi],edi              ;store base rounded up to 4096 boundary.
+        mov     6[esi],ebx              ;store end rounded down to 4096 boundary.
         jmp     rv54_3                  ;start again.
         ;
 rv54_GotOne:
@@ -4823,7 +4845,7 @@ GetXMSPages     proc    near
         assume ds:_cwMain
 
 ; MED, 11/11/99
-;       cmp     ProtectedType,1 ;VCPI?
+;       cmp     ProtectedType,PT_VCPI
         cmp     VCPIHasNoMem,0  ; see if VCPI provided no memory, bail if it did
 
         assume ds:_cwRaw
@@ -4933,9 +4955,8 @@ rv55_SizeOK:
         movzx   ebp,bp          ;fetch size.
         shl     ebp,10          ;*1024 (1k)
         add     ebx,ebp         ;get real top.
-        add     edi,4095                ;round up to next page.
-        shr     edi,12
-        shr     ebx,12
+        GetPageCount edi        ;round up to next page.
+        GetPageIndex ebx        ;get page number.
         sub     ebx,edi
         js      rv55_1
         dec     ebx
@@ -5127,7 +5148,7 @@ GIGetMem2:
         mov     RealRegsStruc.Real_SP[edi],0
         call    EmuRawSimulateInt
 
-        test    BYTE PTR RealRegsStruc.Real_Flags[edi],1        ; see if carry returned
+        test    BYTE PTR RealRegsStruc.Real_Flags[edi],EFLAG_CF
         je      GIProcess2      ; nope
         cmp     Big1Flag,0
         je      GIProcess2      ; not using alternate extended memory, process anyway
@@ -5169,7 +5190,7 @@ GIComputeBytes2:
         shl     eax,10                  ; * 1024
         add     eax,100000h             ;add in 1 meg base address.
         dec     eax
-        and     eax,NOT 4095            ;round down to nearest page.
+        RoundPageDN eax                 ;round down to nearest page.
         mov     ebx,eax
         pop     esi
         pop     edi
@@ -5193,7 +5214,7 @@ GIComputeBytes2:
         div     ecx                     ;get chunk size.
         inc     eax
         or      Int15Size,-1            ;set chunk size to use.
-        and     eax,not 4095
+        RoundPageDN eax                 ;round down to nearest page.
         jz      rv56_GotSize
         mov     Int15Size,eax           ;set chunk size to use.
 rv56_GotSize:
@@ -5206,11 +5227,10 @@ rv56_GotSize:
 rv56_SizeOK:
 
         mov     eax,ecx
-        add     eax,4095
-        shr     eax,12
-        cmp     eax,MaxMemPhys
+        GetPageCount eax
+        cmp     eax,MaxMemPhysPages
         jc      rv56_nomaxlimit
-        mov     ecx,MaxMemPhys
+        mov     ecx,MaxMemPhysPages
         shl     ecx,12
 rv56_nomaxlimit:
 
@@ -5315,7 +5335,7 @@ GetInt15Pages   proc    near
         mov     ax,MainDS
         mov     ds,ax
         assume ds:_cwMain
-        cmp     ProtectedType,1 ;VCPI?
+        cmp     ProtectedType,PT_VCPI
         assume ds:_cwRaw
         pop     ds
         jnc     rv57_9
@@ -5344,7 +5364,7 @@ GIGetMem1:
         mov     RealRegsStruc.Real_SP[edi],0
         call    EmuRawSimulateInt
 
-        test    BYTE PTR RealRegsStruc.Real_Flags[edi],1        ; see if carry returned
+        test    BYTE PTR RealRegsStruc.Real_Flags[edi],EFLAG_CF
         je      GIProcess1      ; nope
         cmp     Big1Flag,0
         je      GIProcess1      ; not using alternate extended memory, process anyway
@@ -5424,7 +5444,7 @@ rv57_GotBottom:
         shl     eax,10                  ; * 1024
         add     eax,100000h             ;add in 1 meg base address.
         dec     eax
-        and     eax,NOT 4095            ;round down to nearest page.
+        RoundPageDN eax                 ;round down to nearest page.
         mov     ebx,eax
 ;       pop     esi
 
@@ -5461,7 +5481,7 @@ rv57_SizeOK:
         ;EBX - base.
         ;ECX - size.
         ;
-        shr     ecx,12                  ;get number of pages.
+        GetPageIndex ecx                ;get number of pages.
         add     [Int15Total],ecx
         ;
         dec     ebx                     ;move back to previous byte.
@@ -5551,7 +5571,7 @@ GetCONVPage     proc    near
         mov     bl,21h
         call    EmuRawSimulateInt
         mov     eax,es:RealRegsStruc.Real_EAX[edi]      ;get segment address.
-        test    es:RealRegsStruc.Real_Flags[edi],1
+        test    es:RealRegsStruc.Real_Flags[edi],EFLAG_CF
         pop     ebp
         pop     edi
         pop     esi
@@ -5582,7 +5602,7 @@ rv58_0: cmp     w[esi],0        ;This entry in use?
         mov     es:RealRegsStruc.Real_SP[edi],0
         mov     bl,21h
         call    EmuRawSimulateInt
-        test    es:RealRegsStruc.Real_Flags[edi],1
+        test    es:RealRegsStruc.Real_Flags[edi],EFLAG_CF
         pop     edi
         pop     esi
         pop     ecx
@@ -5633,15 +5653,14 @@ rv58_2: add     esi,4           ;next entry.
         mov     bl,21h
         call    EmuRawSimulateInt
         pop     esi
-        test    es:RealRegsStruc.Real_Flags[edi],1
+        test    es:RealRegsStruc.Real_Flags[edi],EFLAG_CF
         jnz     rv58_9
         mov     eax,es:RealRegsStruc.Real_EAX[edi]      ;get segment address.
         mov     [esi],ax                ;store it in the table.
         movzx   eax,ax
         shl     eax,4                   ;linear address.
         mov     ebx,eax
-        add     eax,4095
-        and     eax,NOT 4095            ;round up to next page.
+        RoundPageUP eax                 ;round up to next page.
         sub     eax,ebx
         shr     eax,4
         mov     2[esi],ax               ;store new size.
@@ -5654,12 +5673,12 @@ rv58_GotOne:
         add     ax,2[esi]               ;Add old length.
         add     w[esi+2],4096/16        ;update length.
         shl     eax,4                   ;linear address.
-        shr     eax,12                  ;get page number.
+        GetPageIndex eax                ;get page number.
         mov     bx,KernalZero
         mov     es,bx
         mov     esi,1024*4096*1023      ;base of page alias's.
         mov     eax,es:[esi+eax*4]      ;get physical address.
-        and     eax,NOT 4095            ;lose user bits.
+        ClearUseBits eax                ;lose user bits.
         mov     edx,eax
         ;
         xor     ecx,ecx
@@ -5746,7 +5765,7 @@ GetCONVPages    proc    near
         mov     bl,21h
         call    EmuRawSimulateInt
         mov     eax,es:RealRegsStruc.Real_EAX[edi]      ;get segment address.
-        test    es:RealRegsStruc.Real_Flags[edi],1
+        test    es:RealRegsStruc.Real_Flags[edi],EFLAG_CF
         pop     ebp
         pop     edi
         pop     esi
@@ -5794,7 +5813,7 @@ rv59_0:
         pop     esi
         pop     ecx
         pop     ebx
-        test    es:RealRegsStruc.Real_Flags[edi],1
+        test    es:RealRegsStruc.Real_Flags[edi],EFLAG_CF
         jnz     rv59_2
         ;
         mov     eax,es:RealRegsStruc.Real_EAX[edi]
@@ -5804,9 +5823,8 @@ rv59_0:
         movzx   ebx,bx
         shl     ebx,4
         add     ebx,eax         ;linear limit.
-        add     eax,4095
-        shr     eax,12          ;round up to next page.
-        shr     ebx,12          ;round down to next page.
+        GetPageCount eax        ;round up to next page.
+        GetPageIndex ebx        ;round down to nearest page.
         sub     ebx,eax
         js      rv59_1
         add     d[CONVTotal],ebx
@@ -5907,12 +5925,12 @@ GetCONVPages    endp
 ;
 EMUMakeDesc     proc    near
         pushad
-        and     edi,not 7               ;lose RPL & TI
+        GetDescIndex edi        ;lose RPL & TI
         cmp     ecx,0100000h    ; see if we need to set g bit
         jc      rv60_0
         shr     ecx,12          ; div by 4096
         or      al,80h          ; set g bit
-rv60_0: mov     es:[edi],cx             ;store low word of limit.
+rv60_0: mov     es:[edi],cx     ;store low word of limit.
         shr     ecx,16
         or      cl,al
         mov     es:[edi+6],cl   ;store high bits of limit and gran/code size bits.
@@ -5987,23 +6005,25 @@ rv64_Done:
         assume ds:_cwDPMIEMU
         jz      rv64_Use32Bit8
         mov     bx,sp
-        mov     bx,ss:[bx+(4+4)+(2+2)]          ;get original flags.
+        mov     bx,ss:[bx+(4+4)+IFrame16.i16_flags] ;get original flags.
         jmp     rv64_Use16Bit8
 rv64_Use32Bit8:
-        mov     ebx,[esp+(4+4)+(4+4)]           ;get original flags.
+        mov     ebx,[esp+(4+4)+IFrame.i_eflags]     ;get original flags.
 rv64_Use16Bit8:
-        and     bx,0000111000000000b            ;retain IF.
-        and     ax,1111000111111111b            ;lose IF.
+        ;retain IF & DF & OF.
+        and     bx,EFLAG_IF or EFLAG_DF or EFLAG_OF
+        ;clear IF & DF & OF.
+        and     ax,NOT (EFLAG_IF or EFLAG_DF or EFLAG_OF)
         or      eax,ebx                 ;get old IF.
         assume ds:nothing
         test    BYTE PTR cs:DpmiEmuSystemFlags,1
         assume ds:_cwDPMIEMU
         jz      rv64_Use32Bit9
         mov     bx,sp
-        mov     ss:[bx+(4+4)+(2+2)],ax          ;modify stack flags.
+        mov     ss:[bx+(4+4)+IFrame16.i16_flags],ax ;modify stack flags.
         jmp     rv64_Use16Bit9
 rv64_Use32Bit9:
-        mov     [esp+(4+4+4+4)],eax             ;modify stack flags.
+        mov     [esp+(4+4)+IFrame.i_eflags],eax     ;modify stack flags.
 rv64_Use16Bit9:
         pop     ebx
         pop     eax

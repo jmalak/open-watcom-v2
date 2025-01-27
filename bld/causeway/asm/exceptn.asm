@@ -957,9 +957,9 @@ DebugSegmentDPMI proc near
         push    dx
         mov     ax,0006h
         int     31h
-        mov     ax,cx
-        shl     eax,16
-        mov     ax,dx
+        mov     ax,cx           ;cx:dx -> eax
+        shl     eax,16          ;/
+        mov     ax,dx           ;/
         pop     dx
         pop     cx
         sub     eax,DWORD PTR fs:[EPSP_Struc.EPSP_MemBase]  ;get offset within application.
@@ -2122,8 +2122,7 @@ exc22_mcbmc1:
         ;Update Total memory value and skip this block.
         ;
         mov     eax,es:[esi+8]
-        add     eax,4095
-        and     eax,0fffff000h
+        RoundPageUP eax                 ;round up to next page.
         add     TotalLinearMem+4,eax
         pop     edi
         jmp     exc22_m1
@@ -2145,8 +2144,7 @@ exc22_MEM:
         mov     eax,es:[esi+8]
         add     TotalLinearMem,eax
         push    eax
-        add     eax,4095
-        and     eax,0fffff000h
+        RoundPageUP eax                 ;round up to next page.
         add     TotalLinearMem+4,eax
         pop     eax
         inc     TotalLinearMem+8

@@ -33,6 +33,232 @@ ENGLISH equ     0
 SPANISH equ     0
         endif
 
+EFLAG_CF    equ (1 shl 0)       ; carry
+EFLAG_PF    equ (1 shl 2)       ; parity
+EFLAG_AF    equ (1 shl 4)       ; auxiliary carry
+EFLAG_ZF    equ (1 shl 6)       ; zero
+EFLAG_SF    equ (1 shl 7)       ; sign
+EFLAG_TF    equ (1 shl 8)       ; trace
+EFLAG_IF    equ (1 shl 9)       ; interrupt
+EFLAG_DF    equ (1 shl 10)      ; direction
+EFLAG_OF    equ (1 shl 11)      ; overflow
+EFLAG_IOPL  equ (3 shl 12)      ; I/O privilege level
+EFLAG_NT    equ (1 shl 14)      ; nested task
+
+EFLAGS_UNUSED equ 1000000000101010b
+
+EFLAGS_MASK1 equ (0FFFFh and NOT (EFLAGS_UNUSED or EFLAG_NT))
+EFLAGS_MASK2 equ (0FFFFh and NOT (EFLAGS_UNUSED or EFLAG_NT or EFLAG_IOPL or EFLAG_IF or EFLAG_TF))
+
+PAGE_PRESENT equ (1 shl 0)
+PAGE_WRITE   equ (1 shl 1)
+PAGE_USER    equ (1 shl 2)
+PAGE_ACCESED equ (1 shl 5)
+PAGE_DIRTY   equ (1 shl 6)
+PAGE_VCPI    equ (1 shl 10)
+PAGE_ON_DISK equ (1 shl 11)
+
+PAGE_DEFAULT equ (PAGE_PRESENT or PAGE_WRITE or PAGE_USER)
+
+r32_ax equ eax
+r32_bx equ ebx
+r32_cx equ ecx
+r32_dx equ edx
+r32_di equ edi
+r32_si equ esi
+r16_eax equ ax
+r16_ebx equ bx
+r16_ecx equ cx
+r16_edx equ dx
+r16_edi equ di
+r16_esi equ si
+r8_eax  equ al
+r8_ebx  equ bl
+r8_ecx  equ cl
+r8_edx  equ dl
+r8_ax   equ al
+r8_bx   equ bl
+r8_cx   equ cl
+r8_dx   equ dl
+
+_or_byte macro r,v
+    ifdef r8_&r
+        or      r8_&r,v
+    elseifdef r16_&r
+        or      r16_&r,v
+    else
+        or      r,v
+    endif
+        endm
+
+_and_not_byte macro r,v
+    ifdef r8_&r
+        and     r8_&r,NOT v
+    elseifdef r16_&r
+        and     r16_&r,NOT v
+    else
+        and     r,NOT v
+    endif
+        endm
+
+_and_not_word macro r,v
+    ifdef r16_&r
+        and     r16_&r,NOT v
+    else
+        and     r,NOT v
+    endif
+        endm
+
+_and_not_ffff macro r
+    ifdef r16_&r
+        xor     r16_&r,r16_&r
+    else
+        and     r,NOT 0ffffh
+    endif
+        endm
+
+;_reg16_to_reg32 macro r16hi,r16lo,r32
+;    ifdifi  r16_&r32, r16hi
+;        mov r32,r32_&r16hi
+;    endif
+;        shl r32,16
+;        mov r16_&r32,r16lo
+;        endm
+
+;_reg32_to_reg16 macro r32,r16hi,r16lo
+;        mov r16lo,r16_&r32
+;        shr r32,16
+;    ifdifi  r16_&r32, r16hi
+;        mov r32_&r16hi,r32
+;    endif
+;        endm
+
+_reg16_to_reg32 macro r16hi,r16lo,r32
+    ifidni r16_&r32, r16hi
+        shl r32,16
+        mov r16_&r32,r16lo
+    elseifidni r16_&r32, r16lo
+        shl r32,16
+        mov r16_&r32,r16hi
+        ror r32,16
+    else
+        mov r32, r32_&r16hi
+        shl r32,16
+        mov r16_&r32,r16lo
+    endif
+        endm
+
+_reg32_to_reg16 macro r32,r16hi,r16lo
+    ifdifi r16_&r32, r16hi
+        mov r32_&r16hi,r32
+        shr r32_&r16hi,16
+    endif
+    ifdifi r16_&r32, r16lo
+        movzx r32_&r16lo,r16_&r32
+    endif
+    ifidni r16_&r32, r16hi
+        shr r32,16
+    endif
+    ifidni r16_&r32, r16lo
+        movzx r32,r16_&r32
+    endif
+        endm
+
+RoundDN macro r,v
+        and     r,not (v-1)
+        endm
+
+RoundUP macro r,v
+        add     r,v-1
+        and     r,not (v-1)
+        endm
+
+Round8DN macro r
+        _and_not_7 r
+        endm
+
+Round8UP macro r
+        add     r,7
+        _and_not_byte r,7
+        endm
+
+Round64kDN macro r
+        _and_not_ffff r
+        endm
+
+Round64kUP macro r
+        add     r,0ffffh
+        _and_not_ffff r
+        endm
+
+GetPara64kCount macro r
+        ;register value is in para (16 bytes)
+        add     r,0fffh
+        shr     r,16-4
+        endm
+
+GetPara64kIndex macro r
+        ;register value is in para (16 bytes)
+        shr     r,16-4
+        endm
+
+RoundPageDN macro r
+        _and_not_word r,0fffh
+        endm
+
+RoundPageUP macro r
+        add     r,0fffh
+        _and_not_word r,0fffh
+        endm
+
+GetPageCount macro r
+        add     r,0fffh
+        shr     r,12
+        endm
+
+GetPageIndex macro r
+        shr     r,12
+        endm
+
+SetUseBits  macro r,v
+        _or_byte r,PAGE_DEFAULT ;set user+write+present bits.
+    ifnb    <v>
+        or      r,v             ;set other bits.
+    endif
+        endm
+
+InitUseBits macro r,v
+    ifnb    <v>
+        and     v,1             ;shift VCPI bit to correct place.
+        shl     v,10
+    endif
+        _and_not_word r,0fffh
+        _or_byte r,PAGE_DEFAULT ;set user+write+present bits.
+    ifnb    <v>
+        or      r,v             ;set VCPI bits.
+    endif
+        endm
+
+ClearUseBits macro r
+        _and_not_word r,0fffh
+        endm
+
+GetDescIndex macro r
+        _and_not_byte r,7       ;clear RPL & TI bits
+        endm
+
+ClearDescRPL macro r
+        _and_not_byte r,3       ;clear RPL bits
+        endm
+
+Reg16hiloTo32 macro rhi,rlo,r32
+        _reg16_to_reg32 rhi,rlo,r32
+        endm
+
+Reg32To16hilo macro r32,rhi,rlo
+        _reg32_to_reg16 r32,rhi,rlo
+        endm
+
 b       equ     byte ptr
 w       equ     word ptr
 d       equ     dword ptr
@@ -60,8 +286,15 @@ VersionMinor    db '05'
 ;
 RealPSPSegment  dw ?            ;Real mode PSP segment.
 RealEnvSegment  dw ?            ;Real mode environment segment.
-ProtectedFlags  dw 0            ;Bit significant, 0-DPMI,1-VCPI,2-RAW.
-ProtectedType   dw 0            ;0-RAW,1-VCPI,2-DPMI.
+PF_NONE equ     0
+PF_DPMI equ     1
+PF_VCPI equ     2
+PF_RAW  equ     4
+ProtectedFlags  dw PF_NONE      ;Bit significant, 0-DPMI,1-VCPI,2-RAW.
+PT_RAW  equ     0
+PT_VCPI equ     1
+PT_DPMI equ     2
+ProtectedType   dw PT_RAW       ;0-RAW,1-VCPI,2-DPMI.
 ProtectedForce  db 0
 DOSVersion      dw 0
 SystemFlags     dd 0
@@ -270,7 +503,7 @@ cwOpen  proc    near
         mov     ax,RealPSPSegment
         mov     es:RealRegsStruc.Real_ES[edi],ax
         mov     bx,_cwDPMIEMU
-        cmp     ProtectedType,2
+        cmp     ProtectedType,PT_DPMI
         jnz     cw1_KeepRaw
         mov     bx,_cwRaw
 cw1_KeepRaw:
@@ -282,7 +515,7 @@ cw1_KeepRaw:
         mov     bl,21h
         mov     ErrorNumber,1
         Sys     IntXX
-        test    WORD PTR es:[edi+RealRegsStruc.Real_Flags],1
+        test    WORD PTR es:[edi+RealRegsStruc.Real_Flags],EFLAG_CF
         jnz     cw1_9
         mov     ErrorNumber,0           ;clear error number.
 ;
@@ -533,7 +766,7 @@ cw2_Use0:
         assume es:nothing
         ;
 cw2_noAPI:
-        cmp     ProtectedType,2 ;DPMI?
+        cmp     ProtectedType,PT_DPMI
         jz      cw2_DPMI
 
 ;
@@ -762,7 +995,7 @@ dpmiSelBuffer   db 8 dup (0)
 ;
 apiDataSegi     dw 0
 IProtectedMode  db 0
-IProtectedType  dw 0
+IProtectedType  dw PT_RAW
 DPMISwitch      dw ?,?
 dpmiSelBase     dd 0
 dpmiCodeSel     dw ?
@@ -952,7 +1185,7 @@ chk386:
 ;
         call    GetProtectedType
         mov     cs:IErrorNumber,3
-        cmp     ProtectedFlags,0        ;Any types available?
+        cmp     ProtectedFlags,PF_NONE
         jz      InitError
 ;
 ;Get CAUSEWAY environment variable settings.
@@ -971,7 +1204,7 @@ chk386:
 ;
 ;now see about type specific initialisations.
 ;
-        cmp     ProtectedType,2 ;DPMI initialiseation?
+        cmp     ProtectedType,PT_DPMI
         jz      cw5_InitDPMI
 ;
 ;Useing either RAW or VCPI so do the stuff that's common to both for now.
@@ -1162,8 +1395,7 @@ cw5_A20OFF:
         movzx   eax,ax
         shl     eax,4                   ;linear address.
         mov     ebx,eax
-        add     eax,4095
-        and     eax,NOT 4095            ;round up to next page.
+        RoundPageUP eax                 ;round up to next page.
         sub     eax,ebx
         shr     eax,4
         mov     bx,ax
@@ -1192,8 +1424,7 @@ cw5_OldWay:
         movzx   eax,ax                  ;get segment address.
         shl     eax,4                   ;make linear.
         mov     ebx,eax
-        add     eax,4095
-        and     eax,NOT 4095            ;round up to nearest page.
+        RoundPageUP eax                 ;round up to nearest page.
         mov     ecx,eax
         sub     ecx,ebx
         shr     ecx,4
@@ -1228,7 +1459,7 @@ cw5_GotSeg:
         movzx   eax,PageDirReal
         shl     eax,4
         mov     PageDirLinear,eax
-        mov     VCPI_CR3,eax
+        mov     VCPISW.VCPI_CR3,eax
         movzx   eax,PageAliasReal
         shl     eax,4
         mov     PageAliasLinear,eax
@@ -1332,7 +1563,8 @@ cw5_GDTGot:
         mov     es,Page1stReal
         xor     di,di
         mov     cx,256+16               ;1st 1 meg + 64k.
-        mov     esi,111b                ;user+write+present
+        xor     esi,esi                 ;1st page addr=0
+        SetUseBits esi                  ;user+write+present
 cw5_0:  mov     es:[di],esi
         add     di,4                    ;next page table entry.
         add     esi,4096                ;next physical page address.
@@ -1712,7 +1944,7 @@ END COMMENT !
         mov     ax,_cwMain
         mov     ds,ax
         assume ds:_cwMain
-        cmp     ProtectedType,1         ;VCPI?
+        cmp     ProtectedType,PT_VCPI
         assume ds:_cwRaw
         pop     ds
         jz      cw5_VCPI
@@ -1726,7 +1958,7 @@ cw5_RAW:
 ;
         movzx   eax,Page1stReal
         shl     eax,4
-        or      eax,111b                ;user+write+present
+        SetUseBits eax                  ;user+write+present
         mov     es,PageDirReal
         xor     di,di
         mov     es:[di],eax
@@ -1739,7 +1971,7 @@ cw5_RAW:
         ;
         movzx   eax,PageAliasReal       ;get para address.
         shl     eax,4                   ;make linear.
-        or      eax,111b                ;user+write+present.
+        SetUseBits eax                  ;user+write+present.
         mov     es,PageDirReal
         mov     di,1023*4
         mov     es:[di],eax             ;setup in last page dir entry.
@@ -1757,7 +1989,7 @@ cw5_RAW:
         cli                             ;Don't want interupts interfering.
         lgdt    GDTVal                  ;Setup GDT &
         lidt    f[IDTVal]               ;IDT.
-        mov     eax,VCPI_CR3
+        mov     eax,VCPISW.VCPI_CR3
         mov     cr3,eax                 ;set page dir address.
         mov     eax,cr0                 ;Get machine status &
         or      eax,080000001h          ;set PM+PG bits.
@@ -1787,14 +2019,14 @@ cw5_VCPI:
         xor     di,di                   ;Page table offset.
         mov     es,Page1stReal          ;Page table segment
         mov     si,VCPI_0               ;VCPI GDT entries offset.
-        and     si,not 3
+        ClearDescRPL si
         mov     ds,GDTReal              ;GDT segment.
         mov     ax,0de01h               ;Let VCPI server prepare.
         int     67h
         pop     ds
         or      ah,ah
         jnz     InitError
-        mov     d[VCPI_Entry],ebx       ;Store entry point.
+        mov     d[VCPI_Entry],ebx       ;Store PM VCPI entry point.
 
 ; MED 11/05/96
         mov     FirstUninitPage,di      ; VCPI server advanced to first uninitialized page
@@ -1806,11 +2038,10 @@ cw5_VCPI:
         mov     es,Page1stReal
         movzx   edi,Page1stReal         ;get linear address.
         shl     edi,4                   ;/
-        shr     edi,12                  ;page number.
+        GetPageIndex edi                ;page number.
         shl     edi,2                   ;*4 bytes per entry.
         mov     eax,es:[di]             ;get physical address.
-        and     eax,not 4095            ;clear status bits.
-        or      eax,111b                ;set our bits.
+        InitUseBits eax                 ;clear and set user+write+present.
         mov     es,PageDirReal
         xor     di,di
         mov     es:[di],eax
@@ -1820,11 +2051,11 @@ cw5_VCPI:
         mov     es,Page1stReal
         movzx   edi,PageDirReal         ;get linear address.
         shl     edi,4                   ;/
-        shr     edi,12                  ;page number.
+        GetPageIndex edi                ;page number.
         shl     edi,2                   ;*4 bytes per entry.
         mov     eax,es:[di]             ;get physical address.
-        and     eax,NOT 4095            ;clear status bits.
-        mov     VCPI_CR3,eax            ;set VCPI CR3 value as well.
+        ClearUseBits eax                ;clear use bits.
+        mov     VCPISW.VCPI_CR3,eax     ;set VCPI CR3 value as well.
         mov     es,KernalTSSReal
         xor     di,di
         mov     es:[di].TSSFields.tCR3,eax  ;set CR3 in TSS as well.
@@ -1832,35 +2063,34 @@ cw5_VCPI:
         mov     es,Page1stReal
         movzx   edi,PageAliasReal       ;get linear address.
         shl     edi,4                   ;/
-        shr     edi,12                  ;page number.
+        GetPageIndex edi                ;page number.
         shl     edi,2                   ;*4 bytes per entry.
         mov     eax,es:[di]             ;get physical address.
-        and     eax,NOT 4095            ;clear status bits.
-        or      eax,111b                ;user+write+present.
+        InitUseBits eax                 ;clear and set user+write+present.
         mov     es,PageDirReal
         mov     di,1023*4
         mov     es:[di],eax             ;setup in last page dir entry.
         ;
-        mov     VCPI_LDT,KernalLDT
-        mov     VCPI_EIP,offset cw5_InProt
-        mov     VCPI_TR,KernalTS        ;Get value for task register.
-        mov     VCPI_CS,InitCS0
+        mov     VCPISW.VCPI_LDT,KernalLDT
+        mov     VCPISW.VCPI_EIP,offset cw5_InProt
+        mov     VCPISW.VCPI_TR,KernalTS ;Get value for task register.
+        mov     VCPISW.VCPI_CS,InitCS0
         xor     eax,eax
         mov     ax,seg _cwRaw
         shl     eax,4
         add     eax,offset GDTVal
-        mov     VCPI_pGDT,eax
+        mov     VCPISW.VCPI_pGDT,eax
         xor     eax,eax
         mov     ax,seg _cwRaw
         shl     eax,4
         add     eax,offset IDTVal
-        mov     VCPI_pIDT,eax
+        mov     VCPISW.VCPI_pIDT,eax
         cli
         mov     ax,0de0ch
         mov     si,seg _cwRaw
         movzx   esi,si
         shl     esi,4
-        add     esi,offset VCPI_CR3
+        add     esi,offset VCPISW
         int     67h
         ;
         mov     ax,_cwStack
@@ -1934,8 +2164,10 @@ nosse:
         push    edx                     ;ESP
         pushfd                          ;EFlags
         pop     eax
-        and     ax,1000111111111111b    ;clear NT & IOPL.
-        or      ax,0011000000000000b    ;force IOPL.
+        ;clear NT & IOPL.
+        and     ax,NOT (EFLAG_NT or EFLAG_IOPL)
+        ;force IOPL 3.
+        or      ax,EFLAG_IOPL
         push    eax
         popfd
         push    eax
@@ -2006,12 +2238,7 @@ cw5_1:  jnz     InitError
 ;
         call    d[fPhysicalGetPage]
         jc      InitError
-        and     ecx,1                   ;put user bits in useful place.
-        shl     ecx,10
-        and     edx,not 4095            ;lose user bits.
-
-        or      edx,111b                ;present+user+write.
-        or      edx,ecx                 ;set use flags.
+        InitUseBits edx,ecx             ;clear and set user+write+present+vcpi(cl).
         mov     eax,1
         mov     esi,PageDirLinear
         mov     DWORD PTR es:[esi+eax*4],edx    ;store this tables address.
@@ -2033,11 +2260,7 @@ cw5_1:  jnz     InitError
         call    d[fPhysicalGetPage]     ;get page for new page 1st DET.
         jc      InitError
         mov     LinearEntry+8,edx       ;store physical address.
-        and     ecx,1                   ;put user bits in useful place.
-        shl     ecx,10
-        and     edx,not 4095            ;lose user bits.
-        or      edx,111b                ;present+user+write.
-        or      edx,ecx                 ;set use flags.
+        InitUseBits edx,ecx             ;clear and set user+write+present+vcpi(cl).
         mov     eax,LinearEntry         ;get the entry number again.
         mov     esi,1024*4096*1023      ;base of page alias's.
         mov     DWORD PTR es:[esi+eax*4],edx    ;set physical address.
@@ -2054,7 +2277,7 @@ cw5_1:  jnz     InitError
         mov     eax,1022
         mov     esi,PageDirLinear
         mov     edx,LinearEntry+8       ;get physical address again.
-        or      edx,111b
+        SetUseBits edx                  ;user+write+present
         mov     es:[esi+eax*4],edx      ;put new page into the map.
         mov     esi,PageAliasLinear
         mov     es:[esi+eax*4],edx      ;put new page into the map.
@@ -2066,11 +2289,7 @@ cw5_1:  jnz     InitError
         call    d[fPhysicalGetPage]     ;get page for new page 1st.
         jc      InitError
         mov     LinearEntry+8,edx       ;store physical address.
-        and     ecx,1                   ;put user bits in useful place.
-        shl     ecx,10
-        and     edx,not 4095            ;lose user bits.
-        or      edx,111b                ;present+user+write.
-        or      edx,ecx                 ;set use flags.
+        InitUseBits edx,ecx             ;clear and set user+write+present+vcpi(cl).
         mov     esi,1024*4096*1023      ;base of page alias's.
         mov     eax,LinearEntry         ;get the entry number again.
         mov     DWORD PTR es:[esi+eax*4],edx    ;set physical address.
@@ -2084,7 +2303,7 @@ cw5_1:  jnz     InitError
         mov     esi,PageDETLinear
         mov     eax,0
         mov     edx,LinearEntry+8       ;get physical address again.
-        or      edx,111b
+        SetUseBits edx                  ;user+write+present
         mov     es:[esi+eax*4],edx      ;put new page into the map.
         call    d[fCR3Flush]
         inc     LinearEntry
@@ -2094,11 +2313,7 @@ cw5_1:  jnz     InitError
         call    d[fPhysicalGetPage]     ;get page for new page 1st.
         jc      InitError
         mov     LinearEntry+8,edx       ;store physical address.
-        and     ecx,1                   ;put user bits in useful place.
-        shl     ecx,10
-        and     edx,not 4095            ;lose user bits.
-        or      edx,111b                ;present+user+write.
-        or      edx,ecx                 ;set use flags.
+        InitUseBits edx,ecx             ;clear and set user+write+present+vcpi(cl).
         mov     esi,1024*4096*1023      ;base of page alias's.
         mov     eax,LinearEntry         ;get the entry number again.
         mov     DWORD PTR es:[esi+eax*4],edx    ;set physical address.
@@ -2112,7 +2327,7 @@ cw5_1:  jnz     InitError
         mov     esi,PageDETLinear
         mov     eax,1
         mov     edx,LinearEntry+8       ;get physical address again.
-        or      edx,111b
+        SetUseBits edx                  ;user+write+present
         mov     es:[esi+eax*4],edx      ;put new page into the map.
         call    d[fCR3Flush]
         inc     LinearEntry
@@ -2122,11 +2337,7 @@ cw5_1:  jnz     InitError
         call    d[fPhysicalGetPage]     ;get page for new page 1st.
         jc      InitError
         mov     LinearEntry+8,edx       ;store physical address.
-        and     ecx,1                   ;put user bits in useful place.
-        shl     ecx,10
-        and     edx,not 4095            ;lose user bits.
-        or      edx,111b                ;present+user+write.
-        or      edx,ecx                 ;set use flags.
+        InitUseBits edx,ecx             ;clear and set user+write+present+vcpi(cl).
         mov     eax,LinearEntry         ;get the entry number again.
         mov     esi,1024*4096*1023      ;base of page alias's.
         mov     DWORD PTR es:[esi+eax*4],edx    ;set physical address.
@@ -2149,14 +2360,14 @@ cw5_1:  jnz     InitError
         mov     esi,PageDirLinear
         mov     eax,1023
         mov     edx,LinearEntry+8       ;get physical address again.
-        or      edx,111b
+        SetUseBits edx                  ;user+write+present
         mov     ecx,es:[esi+eax*4]      ;get original value.
         mov     PageAliasLinear+8,ecx
         mov     es:[esi+eax*4],edx      ;put new page into the map.
         mov     esi,PageAliasLinear
         mov     eax,1023
         mov     edx,LinearEntry+8       ;get physical address again.
-        or      edx,111b
+        SetUseBits edx                  ;user+write+present
         mov     es:[esi+eax*4],edx      ;put new page into the map.
         call    d[fCR3Flush]
         inc     LinearEntry
@@ -2169,11 +2380,7 @@ COMMENT !
         call    d[fPhysicalGetPage]     ;get page for new page 1st.
         jc      InitError
         mov     LinearEntry+8,edx       ;store physical address.
-        and     ecx,1                   ;put user bits in useful place.
-        shl     ecx,10
-        and     edx,not 4095            ;lose user bits.
-        or      edx,111b                ;present+user+write.
-        or      edx,ecx                 ;set use flags.
+        InitUseBits edx,ecx             ;clear and set user+write+present+vcpi(cl).
         ;
         ;Map it into general linear address space.
         ;
@@ -2206,7 +2413,7 @@ COMMENT !
         ;Set new address in page dir.
         ;
         mov     edx,LinearEntry+8       ;get physical address again.
-        or      edx,111b
+        SetUseBits edx                  ;user+write+present
         ;
         mov     esi,PageDirLinear
         mov     eax,0
@@ -2230,11 +2437,7 @@ END COMMENT !
         call    d[fPhysicalGetPage]     ;get page for new page DIR.
         jc      InitError
         mov     LinearEntry+8,edx       ;store physical address.
-        and     ecx,1                   ;put user bits in useful place.
-        shl     ecx,10
-        and     edx,not 4095            ;lose user bits.
-        or      edx,111b                ;present+user+write.
-        or      edx,ecx                 ;set use flags.
+        InitUseBits edx,ecx             ;clear and set user+write+present+vcpi(cl).
         ;
         ;Map it into normal linear address space.
         ;
@@ -2263,10 +2466,10 @@ END COMMENT !
         mov     eax,LinearEntry
         shl     eax,12                  ;get linear address.
         mov     PageDirLinear,eax       ;set new value.
-        mov     eax,VCPI_CR3
+        mov     eax,VCPISW.VCPI_CR3
         mov     PageDirLinear+8,eax     ;store old physical address.
         mov     eax,LinearEntry+8
-        mov     VCPI_CR3,eax            ;set new physical address.
+        mov     VCPISW.VCPI_CR3,eax     ;set new physical address.
         movzx   edi,KernalTSSReal
         shl     edi,4
         mov     es:[edi].TSSFields.tCR3,eax ;set CR3 in TSS as well.
@@ -2278,11 +2481,7 @@ END COMMENT !
         call    d[fPhysicalGetPage]     ;get page for new page DIR.
         jc      InitError
         mov     LinearEntry+8,edx       ;store physical address.
-        and     ecx,1                   ;put user bits in useful place.
-        shl     ecx,10
-        and     edx,not 4095            ;lose user bits.
-        or      edx,111b                ;present+user+write.
-        or      edx,ecx                 ;set use flags.
+        InitUseBits edx,ecx             ;clear and set user+write+present+vcpi(cl).
         mov     eax,LinearEntry         ;get the entry number again.
         mov     esi,1024*4096*1023      ;base of page alias's.
         mov     DWORD PTR es:[esi+eax*4],edx    ;set physical address.
@@ -2329,18 +2528,13 @@ cw5_3:  call    MakeDesc2
         pop     ds
         ;
         mov     ebp,offset cwDPMIEMUEnd-cwDPMIEMUStart
-        add     ebp,4095
-        shr     ebp,12                  ;Get number of pages needed.
+        GetPageCount ebp                ;Get number of pages needed.
         mov     eax,LinearEntry
         shl     eax,12
         mov     LinearEntry+4,eax       ;Store start address.
 cw5_2:  call    d[fPhysicalGetPage]     ;try to allocate a page.
         jc      InitError
-        and     ecx,1                   ;put user bits in useful place.
-        shl     ecx,10
-        and     edx,not 4095            ;lose user bits.
-        or      edx,111b                ;present+user+write.
-        or      edx,ecx                 ;set use flags.
+        InitUseBits edx,ecx             ;clear and set user+write+present+vcpi(cl).
         mov     eax,LinearEntry         ;get the entry number again.
         mov     esi,1024*4096*1023      ;base of page alias's.
         mov     DWORD PTR es:[esi+eax*4],edx    ;set physical address.
@@ -2410,17 +2604,13 @@ cw5_2:  call    d[fPhysicalGetPage]     ;try to allocate a page.
         pop     ds
         ;
         mov     ebp,(8192*8)+8192
-        shr     ebp,12                  ;Get number of pages needed.
+        GetPageIndex ebp                ;Get number of pages needed.
         mov     eax,LinearEntry
         shl     eax,12
         mov     LinearEntry+4,eax       ;Store start address.
 cw5_6:  call    d[fPhysicalGetPage]     ;try to allocate a page.
         jc      InitError
-        and     ecx,1                   ;put user bits in useful place.
-        shl     ecx,10
-        and     edx,not 4095            ;lose user bits.
-        or      edx,111b                ;present+user+write.
-        or      edx,ecx                 ;set use flags.
+        InitUseBits edx,ecx             ;clear and set user+write+present+vcpi(cl).
         mov     eax,LinearEntry         ;get the entry number again.
         mov     esi,1024*4096*1023      ;base of page alias's.
         mov     DWORD PTR es:[esi+eax*4],edx    ;set physical address.
@@ -2559,12 +2749,7 @@ cw5_LDT:
         ;
         call    d[fPhysicalGetPage]     ;try to allocate a page.
         jc      InitError
-
-        and     ecx,1                   ;put user bits in useful place.
-        shl     ecx,10
-        and     edx,not 4095            ;lose user bits.
-        or      edx,111b                ;present+user+write.
-        or      edx,ecx                 ;set use flags.
+        InitUseBits edx,ecx             ;clear and set user+write+present+vcpi(cl).
         mov     eax,LinearEntry         ;get the entry number again.
         mov     esi,1024*4096*1023      ;base of page alias's.
         mov     DWORD PTR es:[esi+eax*4],edx    ;set physical address.
@@ -2655,8 +2840,8 @@ drivefree:
         jz      cw5_v7
         mul     cx                      ;Get bytes per cluster.
         mul     bx                      ;Get bytes available.
-        shl     edx,16
-        mov     dx,ax
+        shl     edx,16                  ;dx:ax -> edx
+        mov     dx,ax                   ;/
         cmp     edx,ebp                 ;Enough free space.
         jc      cw5_v7
         ;
@@ -2711,7 +2896,7 @@ medtransloop:
         mov     RealRegsStruc.Real_SP[edi],0
         mov     bl,21h
         call    d[fRawSimulateInt]
-        test    BYTE PTR RealRegsStruc.Real_Flags[edi],1
+        test    BYTE PTR RealRegsStruc.Real_Flags[edi],EFLAG_CF
         mov     eax,RealRegsStruc.Real_EAX[edi]
         pop     di
         jz      cw5_v8
@@ -2732,7 +2917,7 @@ med5a:
         mov     RealRegsStruc.Real_SP[edi],0
         mov     bl,21h
         call    d[fRawSimulateInt]
-        test    BYTE PTR RealRegsStruc.Real_Flags[edi],1
+        test    BYTE PTR RealRegsStruc.Real_Flags[edi],EFLAG_CF
         mov     eax,RealRegsStruc.Real_EAX[edi]
         pop     di
         jz      cw5_v8
@@ -2763,8 +2948,8 @@ cw5_v2: mov     VMMName,al
         je      medpre2
         mov     bx,VMMHandle
         mov     ecx,PreAllocSize
-        mov     dx,cx
-        shr     ecx,16
+        mov     dx,cx                   ;ecx -> cx:dx
+        shr     ecx,16                  ;/
         mov     ax,4200h                ; seek from beginning of file
         int     21h
         xor     cx,cx                   ; write zero bytes (pre-allocating based on seek)
@@ -3094,8 +3279,8 @@ cw5_InProtected:
         mov     ax,0600h
         int     31h                     ;Lock memory.
         jc      InitError
-        shl     ebx,16
-        mov     bx,cx
+        shl     ebx,16                  ;bx:cx -> ebx
+        mov     bx,cx                   ;/
         mov     dpmiSelBase,ebx
 ;
 ;Allocate code selector.
@@ -3726,7 +3911,7 @@ cw6_Use0:
         ;
 cw6_noAPI:
         assume ds:nothing
-        cmp     cs:IProtectedType,2     ;DPMI?
+        cmp     cs:IProtectedType,PT_DPMI
         assume ds:_cwInit
         jz      cw6_DPMI
 ;
@@ -4103,12 +4288,12 @@ cw10_hm1:
         jnc     cw10_3
 
         shl     edx,10                  ;turn K into byte's
-        shr     edx,12                  ;get number of pages.
+        GetPageIndex edx                ;get number of pages.
         push    ds
         mov     bx,_cwRaw
         mov     ds,bx
         assume ds:_cwRaw
-        mov     d[MaxMemPhys],edx
+        mov     d[MaxMemPhysPages],edx
         assume ds:_cwMain
         pop     ds
         jmp     cw10_3
@@ -4681,13 +4866,13 @@ GetProtectedType proc near
 ;
         call    ChkDPMI                 ;32 bit DPMI server present?
         jc      cw13_0
-        or      ProtectedFlags,1
+        or      ProtectedFlags,PF_DPMI
 cw13_0: call    ChkVCPI                 ;VCPI >= v1.0 present?
         jc      cw13_1
-        or      ProtectedFlags,2
+        or      ProtectedFlags,PF_VCPI
 cw13_1: call    ChkRAW                  ;Running in real mode?
         jc      cw13_2
-        or      ProtectedFlags,4
+        or      ProtectedFlags,PF_RAW
 cw13_2: ret
 GetProtectedType endp
 
@@ -4696,19 +4881,19 @@ GetProtectedType endp
 SetProtectedType proc near
         cmp     ProtectedForce,0
         jz      cw14_NoDPMIForce
-        test    BYTE PTR ProtectedFlags,1
+        test    BYTE PTR ProtectedFlags,PF_DPMI
         jnz     cw14_2
         ;
 cw14_NoDPMIForce:
-        test    BYTE PTR ProtectedFlags,4
+        test    BYTE PTR ProtectedFlags,PF_RAW
         jz      cw14_1
-        mov     ProtectedType,0         ;Use real mode.
+        mov     ProtectedType,PT_RAW    ;Use real mode.
         jmp     cw14_3
-cw14_1: test    BYTE PTR ProtectedFlags,2
+cw14_1: test    BYTE PTR ProtectedFlags,PF_VCPI
         jz      cw14_2
-        mov     ProtectedType,1         ;Use VCPI.
+        mov     ProtectedType,PT_VCPI   ;Use VCPI.
         jmp     cw14_3
-cw14_2: mov     ProtectedType,2         ;Use DPMI.
+cw14_2: mov     ProtectedType,PT_DPMI   ;Use DPMI.
 cw14_3: push    es
         mov     ax,_cwInit
         mov     es,ax
@@ -4776,7 +4961,7 @@ cw16_IsHandler:
         mov     es:[(67h*4)+2],di
         sti
         ;
-        cmp     al,0
+        cmp     ah,0
         jne     cw16_NotThere
         or      bx,3030h                ;Turn to ASCII
         cmp     bh,'1'
@@ -4899,7 +5084,7 @@ MakeDesc        proc    near
 ;
         .386
         pushad
-        and     di,not 7                ;lose RPL & TI
+        GetDescIndex di                 ;lose RPL & TI
         cmp     ecx,0100000h            ; see if we need to set g bit
         jc      cw18_0
         shr     ecx,12                  ; div by 4096
@@ -4925,7 +5110,7 @@ MakeDesc        endp
 ;
 ;On Entry:-
 ;
-;ES:DI  - Descriptor entry to use.
+;ES:EDI - Descriptor entry to use.
 ;ESI    - Linear base to set.
 ;ECX    - limit in bytes.
 ;AL     - Code size bit.
@@ -4934,7 +5119,7 @@ MakeDesc        endp
 MakeDesc2       proc    near
         .386
         pushad
-        and     edi,not 7               ;lose RPL & TI
+        GetDescIndex edi                ;lose RPL & TI
         cmp     ecx,0100000h            ; see if we need to set g bit
         jc      cw19_0
         shr     ecx,12                  ; div by 4096
