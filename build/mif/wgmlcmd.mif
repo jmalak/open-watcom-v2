@@ -21,10 +21,8 @@ dosbox = $+$(%OWDOSBOX)$-
 !endif
 
 gendev_tmp_batchfile = gendev.tmp
-wgml_tmp_batchfile = wgml.tmp
 
 dos_gendev_tmp_batch=gendevb.bat
-dos_wgml_tmp_batch=wgmlb.bat
 
 !ifeq proj_name docslib
 gendev_subdir = \gml\owhelp
