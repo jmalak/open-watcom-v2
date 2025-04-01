@@ -77,6 +77,7 @@ cdsay .
 [ INCLUDE "<OWROOT>/bld/win386/wbind/builder.ctl" ]
 [ INCLUDE "<OWROOT>/bld/browser/dlgprs/builder.ctl" ]
 # Build help compilers and tools
+[ INCLUDE "<OWROOT>/bld/wgml1/builder.ctl" ]
 [ INCLUDE "<OWROOT>/bld/hcdos/builder.ctl" ]
 [ INCLUDE "<OWROOT>/bld/hcwin/builder.ctl" ]
 [ INCLUDE "<OWROOT>/bld/wipfc/builder.ctl" ]
