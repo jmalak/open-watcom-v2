@@ -21,10 +21,8 @@ dosbox = $+$(%OWDOSBOX)$-
 !endif
 
 gendev_tmp_batchfile = gendev.tmp
-wgml_tmp_batchfile = wgml.tmp
 
 dos_gendev_tmp_batch=gendevb.bat
-dos_wgml_tmp_batch=wgmlb.bat
 
 !ifeq proj_name docs
 gendev_subdir = \$(dotarget)
@@ -69,39 +67,6 @@ set_sdl : .PROCEDURE .EXPLICIT
     $(noecho)set SDL_VIDEODRIVER=dummy
     $(noecho)set SDL_AUDIODRIVER=disk
     $(noecho)set SDL_DISKAUDIOFILE=$(nulldevice)
-!endif
-
-#-------------------------------------------------------
-# run wgml utility
-#-------------------------------------------------------
-run_wgml : .PROCEDURE .EXPLICIT
-!ifeq verbose 0
-    @echo wgml $@
-!endif
-!ifdef dosbox
-    @%make set_sdl
-    @rm -f dosbox.lst
-    #-------------------------------------------------------
-    # create DOS batch file to run wgml utility
-    #-------------------------------------------------------
-    @%create $(dos_wgml_tmp_batch)
-    @%append $(dos_wgml_tmp_batch) c:
-    @%append $(dos_wgml_tmp_batch) cd $(wgml_subdir)
-    @%append $(dos_wgml_tmp_batch) $(noecho)set GMLINC=$(%GMLINC:/=\)
-    @%append $(dos_wgml_tmp_batch) $(noecho)set GMLLIB=$(%GMLLIB:/=\)
-    @%append $(dos_wgml_tmp_batch) \docs\gml\dos\wgml.exe $(wgml_cmdl_params) >>dosbox.lst
-! ifndef %OWWGMLDEBUG
-    @%append $(dos_wgml_tmp_batch) exit
-! endif
-    -$(noecho)$(dosbox) -conf "$(dosbox_cfg)" $(dosbox_options_$(bld_os)) -c "mount c \"$(%OWROOT)\"" -c "c:$(wgml_subdir)\$(dos_wgml_tmp_batch)"
-    @%ren DOSBOX.LST dosbox.lst
-    @cat dosbox.lst
-!else ifeq bld_os dos
-    -$(noecho)..\gml\dos\wgml $(wgml_cmdl_params)
-!else ifeq bld_os os2
-    -$(noecho)..\gml\os2\wgml $(wgml_cmdl_params)
-!else ifeq bld_os nt
-    -$(noecho)..\gml\dos\wgml $(wgml_cmdl_params)
 !endif
 
 #-------------------------------------------------------
