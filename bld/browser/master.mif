@@ -11,10 +11,7 @@ browser_trmem = 1
 
 docs_host_dir = $(docs_dir)/$(host_os)
 
-additional_clean = *.grc
-!ifndef nowgml
-additional_clean += $(docs_host_dir)/wbrw.gh
-!endif
+additional_clean = *.grc $(docs_host_dir)/wbrw.gh
 
 sys_windowed = 1
 
@@ -50,9 +47,6 @@ extra_cpp_flags += -DDEBUG -DDEBUG_ASSERT -DDEBUGTREE
 !endif
 !ifdef use_virtmem
 extra_cpp_flags += -DUSE_VIRTMEM
-!endif
-!ifdef nowgml
-extra_cpp_flags += -DNOWGML
 !endif
 
 extra_cpp_flags_f_rxwrap = -DALLOC=WBRAlloc
@@ -110,9 +104,7 @@ objs_dbg  = debuglog.obj
 #
 # EXE
 #
-!ifndef nowgml
 exetarg_prebuild_objs = $(docs_host_dir)/wbrw.gh
-!endif
 exetarg_objs          = $(objs) $(objs_dbg)
 exetarg_libs          = $(cli_dwarfr_libs) $(cli_wclass_libs)
 exetarg_res           = $(proj_name).res
