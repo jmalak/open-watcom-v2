@@ -3,11 +3,10 @@
 # =======================================
 #
 # wgml depends on
-#                 bld\trmem            memory tracker
+#   bld\trmem            memory tracker
 #
 
 proj_name = wgml
-name = wgml
 
 !ifndef wgml_autodepends
 wgml_autodepends = .AUTODEPEND

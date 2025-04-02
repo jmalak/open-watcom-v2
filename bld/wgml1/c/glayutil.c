@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-*  Copyright (c) 2004-2009 The Open Watcom Contributors. All Rights Reserved.
+*  Copyright (c) 200-20259 The Open Watcom Contributors. All Rights Reserved.
 *
 *  ========================================================================
 *
@@ -612,7 +612,7 @@ bool    i_int32( char * p, lay_att curr, int32_t * tm )
 
 void    o_int32( FILE * f, lay_att curr, const int32_t * tm )
 {
-    fprintf_s( f, "        %s = %ld\n", att_names[curr], *tm );
+    fprintf_s( f, "        %s = %ld\n", att_names[curr], (long)*tm );
     return;
 }
 

@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-*  Copyright (c) 2004-2009 The Open Watcom Contributors. All Rights Reserved.
+*  Copyright (c) 200-20259 The Open Watcom Contributors. All Rights Reserved.
 *
 *  ========================================================================
 *
@@ -227,18 +227,18 @@ static  void    print_val_entry( gavalentry *wk )
 
     if( flags & val_range ) {
         if( flags & val_def ) {
-            sprintf( opt, "default=%d %d min=%d max=%d",
+            sprintf( opt, "default=%ld %ld min=%ld max=%ld",
                      wk->a.range[2], wk->a.range[3],
                      wk->a.range[0], wk->a.range[1] );
         } else {
-            sprintf( opt, "min=%d max=%d", wk->a.range[0],
+            sprintf( opt, "min=%ld max=%ld", wk->a.range[0],
                      wk->a.range[1] );
         }
         out_msg( "val:        %-10.10s %s\n", " ", opt );
 
     } else if( flags & val_length ) {
 
-        sprintf( opt, "length=%d\n", wk->a.range[0] );
+        sprintf( opt, "length=%ld\n", wk->a.range[0] );
         out_msg( "val:        %-10.10s %s\n", " ", opt );
 
     } else if( flags & val_any ) {

@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-*  Copyright (c) 2004-2010 The Open Watcom Contributors. All Rights Reserved.
+*  Copyright (c) 200-20250 The Open Watcom Contributors. All Rights Reserved.
 *
 *  ========================================================================
 *
@@ -125,7 +125,7 @@ static  void    free_filenames( void )
 {
     fnstack * wk;
     fnstack * wk1;
-    int32_t cnt;
+    long cnt;
 
     wk = fn_stack;
     if( WgmlFlags.statistics ) {
