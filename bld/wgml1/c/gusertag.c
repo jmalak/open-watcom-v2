@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-*  Copyright (c) 2004-2009 The Open Watcom Contributors. All Rights Reserved.
+*  Copyright (c) 200-20259 The Open Watcom Contributors. All Rights Reserved.
 *
 *  ========================================================================
 *
@@ -78,7 +78,7 @@ static void add_defaults_to_dict( gtentry * ge, symdict * dict )
                         }
                     }
                     if( gaval->valflags & val_range ) { // range default
-                        sprintf( token_buf, "%d", gaval->a.range[2] );
+                        sprintf( token_buf, "%ld", gaval->a.range[2] );
                         valp = token_buf;
                     }
                     if( valp != NULL ) {
@@ -294,7 +294,7 @@ bool process_tag( gtentry * ge, mac_entry * me )
                                      }
                                 }
                                 if( gaval != NULL ) {
-                                     sprintf( token_buf, "%d",
+                                     sprintf( token_buf, "%ld",
                                               gaval->a.range[3] );
                                      rc = add_symvar( loc_dict, ga->name,
                                                       token_buf, no_subscript,
@@ -439,7 +439,7 @@ bool process_tag( gtentry * ge, mac_entry * me )
 
     rc = add_symvar( loc_dict, "_tag", ge->name, no_subscript, local_var );
     ge->usecount++;
-    sprintf( longwork, "%d", ge->usecount );
+    sprintf( longwork, "%lu", ge->usecount );
     rc = add_symvar( loc_dict, "_n", longwork, no_subscript, local_var );
 
     add_macro_cb_entry( me, ge );   // prepare GML macro as input

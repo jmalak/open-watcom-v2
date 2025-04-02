@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-*  Copyright (c) 2004-2009 The Open Watcom Contributors. All Rights Reserved.
+*  Copyright (c) 200-20259 The Open Watcom Contributors. All Rights Reserved.
 *
 *  ========================================================================
 *
@@ -941,7 +941,7 @@ static void sysseqnofun( symvar * e )   // seqno current input record
             l = input_cbs->s.m->lineno;
         }
     }
-    sprintf_s( e->sub_0->value, MAX_L_AS_STR, "%.8lu", l );
+    sprintf( e->sub_0->value, "%.8lu", (unsigned long)l );
     return;
 }
 
@@ -1084,17 +1084,13 @@ static void systisetfun( symvar * e )   // dummy routine not needed
 
 static  void    init_date_time( void )
 {
-    time_t  now;
-    struct  tm      tmbuf;
-    char    *   p;
+    time_t      now;
+    struct tm   *tmbuf;
+    char        *p;
 
     now = time( NULL );
-#ifdef _MSC_VER
-    localtime_s( &tmbuf, &now );
-#else
-    localtime_s( &now, &tmbuf );
-#endif
-    strftime( dateval, sizeof( dateval ), "%B %d, %Y", &tmbuf );
+    tmbuf = localtime( &now );
+    strftime( dateval, sizeof( dateval ), "%B %d, %Y", tmbuf );
 
     p = strstr( dateval, " 0" );        // search for leading zero
     if( p != NULL ) {                   // 'September 02, 2009'
@@ -1108,36 +1104,36 @@ static  void    init_date_time( void )
     sysdate0.value = dateval;
     add_symvar( global_dict, "date", dateval, no_subscript, 0 );
 
-    strftime( dayofmval, sizeof( dayofmval ), "%e", &tmbuf );
+    strftime( dayofmval, sizeof( dayofmval ), "%e", tmbuf );
     sysdayofm0.value = dayofmval;
 
-    strftime( dayofwval, sizeof( dayofwval ), "%w", &tmbuf );
+    strftime( dayofwval, sizeof( dayofwval ), "%w", tmbuf );
     dayofwval[0] += 1;                  // make 0-6 sun-sat 1-7
     sysdayofw0.value = dayofwval;
 
-    strftime( dayofyval, sizeof( dayofyval ), "%j", &tmbuf );
+    strftime( dayofyval, sizeof( dayofyval ), "%j", tmbuf );
     sysdayofy0.value = dayofyval;
 
-    strftime( hourval, sizeof( hourval ), "%H", &tmbuf );
+    strftime( hourval, sizeof( hourval ), "%H", tmbuf );
     syshour0.value = hourval;
 
-    strftime( minuteval, sizeof( minuteval ), "%M", &tmbuf );
+    strftime( minuteval, sizeof( minuteval ), "%M", tmbuf );
     sysminute0.value = minuteval;
 
-    strftime( monthval, sizeof( monthval ), "%m", &tmbuf );
+    strftime( monthval, sizeof( monthval ), "%m", tmbuf );
     sysmonth0.value = monthval;
 
-    strftime( pdayofwval, sizeof( pdayofwval ), "%A", &tmbuf );
+    strftime( pdayofwval, sizeof( pdayofwval ), "%A", tmbuf );
     syspdayofw0.value = pdayofwval;
 
-    strftime( pmonthval, sizeof( pmonthval ), "%B", &tmbuf );
+    strftime( pmonthval, sizeof( pmonthval ), "%B", tmbuf );
     syspmonth0.value = pmonthval;
 
-    strftime( pyearval, sizeof( pyearval ), "%Y", &tmbuf );
+    strftime( pyearval, sizeof( pyearval ), "%Y", tmbuf );
     syspyear0.value = pyearval;
     sysyear0.value = &pyearval[2];      // year without century
 
-    strftime( timeval, sizeof( timeval ), "%T", &tmbuf );
+    strftime( timeval, sizeof( timeval ), "%T", tmbuf );
     systime0.value = timeval;
     syssecond0.value = &timeval[6];
 
