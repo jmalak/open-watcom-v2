@@ -2,6 +2,7 @@
 *
 *                            Open Watcom Project
 *
+* Copyright (c) 2025      The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -178,6 +179,7 @@
 #include "wgml.h"
 #include "devfuncs.h"
 #include "outbuff.h"
+#include "watcom.h"
 
 #include "clibext.h"
 
@@ -271,6 +273,15 @@ static record_buffer    uscore_chars    = { 0, 0, NULL };
 
 /* Local function definitions. */
 
+static int16_t round_to_lines( int32_t units, int32_t line_height )
+{
+    /* desired_lines contains the number of lines, rounded up. Note: the
+     * actual rounding algorithm used by wgml 4.0 has yet to be determined;
+     * the rounding used here may require adjustment in the future.
+     */
+    return( (int16_t)( ( 2 * units + line_height ) / ( 2 * line_height ) ) );
+}
+
 /* Function fb_newline().
  * Uses the various :NEWLINE blocks to actually position the device to the
  * desired vertical position.
@@ -285,7 +296,6 @@ static void fb_newline( void )
     newline_block   *current_block   = NULL;
     int16_t         desired_units;
     int16_t         desired_lines;
-    uint16_t        remainder;
     uint16_t        max_advance;
 
     /* Interpret a :LINEPROC :ENDVALUE block if appropriate. */
@@ -315,15 +325,7 @@ static void fb_newline( void )
         internal_err( __FILE__, __LINE__ );
     }
 
-    /* desired_lines contains the number of lines, rounded up. Note: the
-     * actual rounding algorithm used by wgml 4.0 has yet to be determined;
-     * the rounding used here may require adjustment in the future.
-     */
-
-    desired_lines = desired_units / wgml_fonts[active_font].line_height;
-    remainder = desired_lines % wgml_fonts[active_font].line_height;
-    if( 2 * remainder >= wgml_fonts[active_font].line_height )
-        desired_lines++;
+    desired_lines = round_to_lines( desired_units, wgml_fonts[active_font].line_height );
 
     /* Devices using :ABSOLUTEADDRESS may be able to use partial line heights,
      * but devices using :NEWLINE blocks must advance at least one whole line
@@ -444,7 +446,7 @@ static void output_spaces( size_t count )
 
 static void output_uscores( text_chars *in_chars )
 {
-    int         i;
+    unsigned    i;
     uint32_t    count;
     uint32_t    uscore_width;
 
@@ -949,7 +951,7 @@ static void *df_date( void )
 
 static void *df_default_width( void )
 {
-    return( (void *)wgml_fonts[df_font].bin_font->char_width );
+    return( (void *)(pointer_uint)wgml_fonts[df_font].bin_font->char_width );
 }
 
 /* Function df_font_height().
@@ -958,7 +960,7 @@ static void *df_default_width( void )
 
 static void *df_font_height( void )
 {
-    return( (void *)wgml_fonts[df_font].font_height );
+    return( (void *)(pointer_uint)wgml_fonts[df_font].font_height );
 }
 
 /* Function df_font_number().
@@ -1017,7 +1019,7 @@ static void *df_font_resident( void )
 
 static void *df_font_space( void )
 {
-    return( (void *)wgml_fonts[df_font].font_space );
+    return( (void *)(pointer_uint)wgml_fonts[df_font].font_space );
 }
 
 /* Function df_line_height().
@@ -1026,7 +1028,7 @@ static void *df_font_space( void )
 
 static void *df_line_height( void )
 {
-    return( (void *)wgml_fonts[df_font].line_height );
+    return( (void *)(pointer_uint)wgml_fonts[df_font].line_height );
 }
 
 /* Function df_line_space().
@@ -1035,7 +1037,7 @@ static void *df_line_height( void )
 
 static void *df_line_space( void )
 {
-    return( (void *)wgml_fonts[df_font].line_space );
+    return( (void *)(pointer_uint)wgml_fonts[df_font].line_space );
 }
 
 /* Function df_page_depth().
@@ -1044,7 +1046,7 @@ static void *df_line_space( void )
 
 static void *df_page_depth( void )
 {
-    return( (void *)bin_device->page_depth );
+    return( (void *)(pointer_uint)bin_device->page_depth );
 }
 
 /* Function df_page_width().
@@ -1053,7 +1055,7 @@ static void *df_page_depth( void )
 
 static void *df_page_width( void )
 {
-    return( (void *)bin_device->page_width );
+    return( (void *)(pointer_uint)bin_device->page_width );
 }
 
 /* Function df_pages().
@@ -1062,7 +1064,7 @@ static void *df_page_width( void )
 
 static void *df_pages( void )
 {
-    return( (void *)apage );
+    return( (void *)(pointer_uint)apage );
 }
 
 /* Function df_tab_width().
@@ -1071,7 +1073,7 @@ static void *df_pages( void )
 
 static void *df_tab_width( void )
 {
-    return( (void *)tab_width );
+    return( (void *)(pointer_uint)tab_width );
 }
 
 /* Function df_thickness().
@@ -1080,7 +1082,7 @@ static void *df_tab_width( void )
 
 static void *df_thickness( void )
 {
-    return( (void *)thickness );
+    return( (void *)(pointer_uint)thickness );
 }
 
 /* Function df_time().
@@ -1107,7 +1109,7 @@ static void *df_wgml_header( void )
 
 static void *df_x_address( void )
 {
-    return( (void *)x_address );
+    return( (void *)(pointer_uint)x_address );
 }
 
 /* Function df_x_size().
@@ -1116,7 +1118,7 @@ static void *df_x_address( void )
 
 static void *df_x_size( void )
 {
-    return( (void *)x_size );
+    return( (void *)(pointer_uint)x_size );
 }
 
 /* Function df_y_address().
@@ -1125,7 +1127,7 @@ static void *df_x_size( void )
 
 static void *df_y_address( void )
 {
-    return( (void *)y_address );
+    return( (void *)(pointer_uint)y_address );
 }
 
 /* Function df_y_size().
@@ -1134,7 +1136,7 @@ static void *df_y_address( void )
 
 static void *df_y_size( void )
 {
-    return( (void *)y_size );
+    return( (void *)(pointer_uint)y_size );
 }
 
 /* Parameter block parsing functions. */
@@ -1200,10 +1202,11 @@ static void *get_parameters( parameters *in_parameters )
  *      the value returned by the device function invoked.
 */
 
-static void *process_parameter( void )
+static void *process_parameter( uint16_t offset )
 {
     /* Reset current_df_data for the parameter. */
 
+    current_df_data.current = current_df_data.base + offset;
     memcpy_s( &current_df_data.df_code, sizeof( current_df_data.df_code ), current_df_data.current, sizeof( current_df_data.df_code ) );
     current_df_data.current += sizeof( current_df_data.df_code );
 
@@ -1274,8 +1277,7 @@ static void *df_out_text_device( void )
 
         /* Now get and emit the parameter. */
 
-        current_df_data.current = current_df_data.base + my_parameters.first;
-        first = process_parameter();
+        first = process_parameter( my_parameters.first );
         out_msg( first );
 
         /* Free the memory allocated to the parameter. */
@@ -1323,8 +1325,7 @@ static void out_text_driver( bool out_trans, bool out_text )
 
         /* Now get and insert the parameter. */
 
-        current_df_data.current = current_df_data.base + my_parameters.first;
-        first = process_parameter();
+        first = process_parameter( my_parameters.first );
         count = strlen( first );
         ob_insert_block( first, count, out_trans, out_text, active_font );
 
@@ -1419,9 +1420,9 @@ static void *numeric_literal( void )
 
 static void *df_cancel( void )
 {
-            char        *first;
-    static  int         instance = 0;
-            parameters  my_parameters;
+    static int  instance = 0;
+    char        *first;
+    parameters  my_parameters;
 
     /* Recursion is an error. */
 
@@ -1445,8 +1446,7 @@ static void *df_cancel( void )
 
     /* Now invoke the parameter's handler. */
 
-    current_df_data.current = current_df_data.base + my_parameters.first;
-    first = process_parameter();
+    first = process_parameter( my_parameters.first );
 
     if( wgml_fonts[df_font].font_style != NULL ) {
         if( !stricmp( first, wgml_fonts[df_font].font_style->type ) ) {
@@ -1506,8 +1506,8 @@ static void *df_enterfont( void )
 
 static void *df_sleep( void )
 {
-    parameters  my_parameters;
-    uintptr_t   first;
+    parameters      my_parameters;
+    pointer_uint    first;
 
     /* Ensure that this is either a ShortHeader or a LongHeader. */
 
@@ -1531,8 +1531,7 @@ static void *df_sleep( void )
      * will be read as 0xFF, which exceeds the maximum value for the code.
      */
 
-    current_df_data.current = current_df_data.base + my_parameters.first;
-    first = (uintptr_t)process_parameter();
+    first = (pointer_uint)process_parameter( my_parameters.first );
 
     sleep( (unsigned)first );
 
@@ -1564,13 +1563,11 @@ static void *df_setsymbol( void )
 
     /* Now get the first parameter. */
 
-    current_df_data.current = current_df_data.base + my_parameters.first;
-    first = process_parameter();
+    first = process_parameter( my_parameters.first );
 
     /* Now get the second parameter. */
 
-    current_df_data.current = current_df_data.base + my_parameters.second;
-    second = process_parameter();
+    second = process_parameter( my_parameters.second );
 
     /* Insert the symbol into the global symbol table. */
 
@@ -1611,8 +1608,7 @@ static void *df_binary( void )
 
     /* Now invoke the parameter's handler. */
 
-    current_df_data.current = current_df_data.base + my_parameters.first;
-    ob_insert_byte( (uintptr_t)process_parameter() );
+    ob_insert_byte( (unsigned char)(pointer_uint)process_parameter( my_parameters.first ) );
 
     return( NULL );
 }
@@ -1714,9 +1710,9 @@ static void skip_functions( void )
 
 static void *df_ifeqn( void )
 {
-    parameters  my_parameters;
-    uintptr_t   first;
-    uintptr_t   second;
+    parameters      my_parameters;
+    pointer_uint    first;
+    pointer_uint    second;
 
     /* Ensure that this is either a ShortHeader or a LongHeader. */
 
@@ -1733,13 +1729,11 @@ static void *df_ifeqn( void )
 
     /* Now get the first parameter. */
 
-    current_df_data.current = current_df_data.base + my_parameters.first;
-    first = (uintptr_t)process_parameter();
+    first = (pointer_uint)process_parameter( my_parameters.first );
 
     /* Now get the second parameter. */
 
-    current_df_data.current = current_df_data.base + my_parameters.second;
-    second = (uintptr_t)process_parameter();
+    second = (pointer_uint)process_parameter( my_parameters.second );
 
     /* if_eqn: skip the controlled functions if the values are not equal. */
 
@@ -1755,9 +1749,9 @@ static void *df_ifeqn( void )
 
 static void *df_ifnen( void )
 {
-    parameters  my_parameters;
-    uintptr_t   first;
-    uintptr_t   second;
+    parameters      my_parameters;
+    pointer_uint    first;
+    pointer_uint    second;
 
     /* Ensure that this is either a ShortHeader or a LongHeader. */
 
@@ -1774,13 +1768,11 @@ static void *df_ifnen( void )
 
     /* Now get the first parameter. */
 
-    current_df_data.current = current_df_data.base + my_parameters.first;
-    first = (uintptr_t)process_parameter();
+    first = (pointer_uint)process_parameter( my_parameters.first );
 
     /* Now get the second parameter. */
 
-    current_df_data.current = current_df_data.base + my_parameters.second;
-    second = (uintptr_t)process_parameter();
+    second = (pointer_uint)process_parameter( my_parameters.second );
 
     /* if_nen: skip the controlled functions if the values are equal. */
 
@@ -1815,13 +1807,11 @@ static void *df_ifeqs( void )
 
     /* Now get the first parameter. */
 
-    current_df_data.current = current_df_data.base + my_parameters.first;
-    first = process_parameter();
+    first = process_parameter( my_parameters.first );
 
     /* Now get the second parameter. */
 
-    current_df_data.current = current_df_data.base + my_parameters.second;
-    second = process_parameter();
+    second = process_parameter( my_parameters.second );
 
     /* if_eqs: skip the controlled functions if the values are not equal. */
 
@@ -1861,13 +1851,11 @@ static void *df_ifnes( void )
 
     /* Now get the first parameter. */
 
-    current_df_data.current = current_df_data.base + my_parameters.first;
-    first = process_parameter();
+    first = process_parameter( my_parameters.first );
 
     /* Now get the second parameter. */
 
-    current_df_data.current = current_df_data.base + my_parameters.second;
-    second = process_parameter();
+    second = process_parameter( my_parameters.second );
 
     /* if_nes: skip the controlled functions if the values are equal. */
 
@@ -1891,9 +1879,9 @@ static void *df_ifnes( void )
 
 static void *df_add( void )
 {
-    parameters  my_parameters;
-    uintptr_t   first;
-    uintptr_t   second;
+    parameters      my_parameters;
+    pointer_uint    first;
+    pointer_uint    second;
 
     /* Extract parameter offsets. */
 
@@ -1901,13 +1889,11 @@ static void *df_add( void )
 
     /* Now get the first parameter. */
 
-    current_df_data.current = current_df_data.base + my_parameters.first;
-    first = (uintptr_t)process_parameter();
+    first = (pointer_uint)process_parameter( my_parameters.first );
 
     /* Now get the second parameter. */
 
-    current_df_data.current = current_df_data.base + my_parameters.second;
-    second = (uintptr_t)process_parameter();
+    second = (pointer_uint)process_parameter( my_parameters.second );
 
     return( (void *)(first + second) );
 }
@@ -1928,8 +1914,7 @@ static void *df_decimal( void )
 
     /* Now get the parameter. */
 
-    current_df_data.current = current_df_data.base + my_parameters.first;
-    first = (long)(intptr_t)process_parameter();
+    first = (long)(pointer_int)process_parameter( my_parameters.first );
 
     /* Convert and return the value. */
 
@@ -1944,9 +1929,9 @@ static void *df_decimal( void )
 
 static void *df_divide( void )
 {
-    parameters  my_parameters;
-    uintptr_t   first;
-    uintptr_t   second;
+    parameters      my_parameters;
+    pointer_uint    first;
+    pointer_uint    second;
 
     /* Extract parameter offsets. */
 
@@ -1954,13 +1939,11 @@ static void *df_divide( void )
 
     /* Now get the first parameter. */
 
-    current_df_data.current = current_df_data.base + my_parameters.first;
-    first = (uintptr_t)process_parameter();
+    first = (pointer_uint)process_parameter( my_parameters.first );
 
     /* Now get the second parameter. */
 
-    current_df_data.current = current_df_data.base + my_parameters.second;
-    second = (uintptr_t)process_parameter();
+    second = (pointer_uint)process_parameter( my_parameters.second );
 
     if( second == 0 ) {
         xx_simple_err_c( err_zero_divisor, "%divide()" );
@@ -1986,8 +1969,7 @@ static void *df_getnumsymbol( void )
 
     /* Now get the parameter. */
 
-    current_df_data.current = current_df_data.base + my_parameters.first;
-    name = process_parameter();
+    name = process_parameter( my_parameters.first );
 
     /* Now get the symbol's value. */
 
@@ -1999,7 +1981,7 @@ static void *df_getnumsymbol( void )
 
     mem_free( name );
 
-    return( (void *)ret_val );
+    return( (void *)(pointer_uint)ret_val );
 }
 
 /* Function df_getstrsymbol().
@@ -2019,8 +2001,7 @@ static void *df_getstrsymbol( void )
 
     /* Now get the parameter. */
 
-    current_df_data.current = current_df_data.base + my_parameters.first;
-    name = process_parameter();
+    name = process_parameter( my_parameters.first );
 
     /* Now get the symbol's value. */
 
@@ -2054,8 +2035,7 @@ static void *df_hex( void )
 
     /* Now get the parameter. */
 
-    current_df_data.current = current_df_data.base + my_parameters.first;
-    first = (unsigned long)(uintptr_t)process_parameter();
+    first = (unsigned long)(pointer_uint)process_parameter( my_parameters.first );
 
     /* Convert and return a pointer to the parameter */
 
@@ -2079,8 +2059,7 @@ static void *df_lower( void )
 
     /* Now get the parameter. */
 
-    current_df_data.current = current_df_data.base + my_parameters.first;
-    first = process_parameter();
+    first = process_parameter( my_parameters.first );
 
     /* Convert and return the parameter. */
 
@@ -2093,9 +2072,9 @@ static void *df_lower( void )
 
 static void *df_remainder( void )
 {
-    parameters  my_parameters;
-    uintptr_t   first;
-    uintptr_t   second;
+    parameters      my_parameters;
+    pointer_uint    first;
+    pointer_uint    second;
 
     /* Extract parameter offsets. */
 
@@ -2103,13 +2082,11 @@ static void *df_remainder( void )
 
     /* Now get the first parameter. */
 
-    current_df_data.current = current_df_data.base + my_parameters.first;
-    first = (uintptr_t)process_parameter();
+    first = (pointer_uint)process_parameter( my_parameters.first );
 
     /* Now get the second parameter. */
 
-    current_df_data.current = current_df_data.base + my_parameters.second;
-    second = (uintptr_t)process_parameter();
+    second = (pointer_uint)process_parameter( my_parameters.second );
 
     if( second == 0 ) {
         xx_simple_err_c( err_zero_divisor, "%remainder()" );
@@ -2124,9 +2101,9 @@ static void *df_remainder( void )
 
 static void *df_subtract( void )
 {
-    parameters  my_parameters;
-    uintptr_t   first;
-    uintptr_t   second;
+    parameters      my_parameters;
+    pointer_uint    first;
+    pointer_uint    second;
 
     /* Extract parameter offsets. */
 
@@ -2134,13 +2111,11 @@ static void *df_subtract( void )
 
     /* Now get the first parameter. */
 
-    current_df_data.current = current_df_data.base + my_parameters.first;
-    first = (uintptr_t)process_parameter();
+    first = (pointer_uint)process_parameter( my_parameters.first );
 
     /* Now get the second parameter. */
 
-    current_df_data.current = current_df_data.base + my_parameters.second;
-    second = (uintptr_t)process_parameter();
+    second = (pointer_uint)process_parameter( my_parameters.second );
 
     return( (void *)(first - second) );
 }
@@ -2444,8 +2419,8 @@ static void fb_font_switch( void )
     char                    *to_string;
     fontswitch_block        *font_switch;
     font_number             old_df_font;
-    uintptr_t               from_numeric;
-    uintptr_t               to_numeric;
+    pointer_uint            from_numeric;
+    pointer_uint            to_numeric;
     wgml_font               *from_font;
     wgml_font               *to_font;
 
@@ -2487,9 +2462,9 @@ static void fb_font_switch( void )
             /* The default width is a numeric. */
 
             df_font = current_state.font;
-            from_numeric = (uintptr_t)df_default_width();
+            from_numeric = (pointer_uint)df_default_width();
             df_font = desired_state.font;
-            to_numeric = (uintptr_t)df_default_width();
+            to_numeric = (pointer_uint)df_default_width();
             if( !do_now ) {
                 do_now = ( from_numeric != to_numeric );
             }
@@ -2500,9 +2475,9 @@ static void fb_font_switch( void )
             /* The font height is a numeric. */
 
             df_font = current_state.font;
-            from_numeric = (uintptr_t)df_font_height();
+            from_numeric = (pointer_uint)df_font_height();
             df_font = desired_state.font;
-            to_numeric = (uintptr_t)df_font_height();
+            to_numeric = (pointer_uint)df_font_height();
             if( !do_now ) {
                 do_now = ( from_numeric != to_numeric );
             }
@@ -2555,9 +2530,9 @@ static void fb_font_switch( void )
             /* The font space is a numeric. */
 
             df_font = current_state.font;
-            from_numeric = (uintptr_t)df_font_space();
+            from_numeric = (pointer_uint)df_font_space();
             df_font = desired_state.font;
-            to_numeric = (uintptr_t)df_font_space();
+            to_numeric = (pointer_uint)df_font_space();
             if( !do_now ) {
                 do_now = ( from_numeric != to_numeric );
             }
@@ -2568,9 +2543,9 @@ static void fb_font_switch( void )
             /* The line height is a numeric. */
 
             df_font = current_state.font;
-            from_numeric = (uintptr_t)df_line_height();
+            from_numeric = (pointer_uint)df_line_height();
             df_font = desired_state.font;
-            to_numeric = (uintptr_t)df_line_height();
+            to_numeric = (pointer_uint)df_line_height();
             if( !do_now ) {
                 do_now = ( from_numeric != to_numeric );
             }
@@ -2581,9 +2556,9 @@ static void fb_font_switch( void )
             /* The line space is a numeric. */
 
             df_font = current_state.font;
-            from_numeric = (uintptr_t)df_line_space();
+            from_numeric = (pointer_uint)df_line_space();
             df_font = desired_state.font;
-            to_numeric = (uintptr_t)df_line_space();
+            to_numeric = (pointer_uint)df_line_space();
             if( !do_now ) {
                 do_now = ( from_numeric != to_numeric );
             }
@@ -3577,8 +3552,8 @@ void df_populate_driver_table( void )
 
 void df_setup( void )
 {
-    int         i;
-    symsub  *   sym_val = NULL;
+    unsigned    i;
+    symsub      *sym_val = NULL;
 
     /* When called, each of symbols "date" and "time" contains either of
      * -- the value set from the system clock; or

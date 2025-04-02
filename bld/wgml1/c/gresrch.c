@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-*  Copyright (c) 2004-2007 The Open Watcom Contributors. All Rights Reserved.
+*  Copyright (c) 200-20257 The Open Watcom Contributors. All Rights Reserved.
 *
 *  ========================================================================
 *
@@ -58,7 +58,7 @@ void printf_research( char * msg, ... )
 
 static  void    print_total( int32_t cnt, int32_t tags )
 {
-    printf_research( "%6ld  --- Total calls for %ld items\n", cnt, tags );
+    printf_research( "%6ld  --- Total calls for %ld items\n", (long)cnt, (long)tags );
 }
 
 
