@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-*  Copyright (c) 2004-2008 The Open Watcom Contributors. All Rights Reserved.
+*  Copyright (c) 200-20258 The Open Watcom Contributors. All Rights Reserved.
 *
 *  ========================================================================
 *
@@ -29,9 +29,7 @@
 *                    to be completed                                TBD
 ****************************************************************************/
 
-#ifndef pick
-    #error macro pick not defined
-#endif
+
 //      attribute                 routinename           result type
 //      name               input            output
 
@@ -122,5 +120,3 @@
 //pick( xx_string,         i_xx_string,     o_xx_string,     xx_str          )
 
 //pick( dummy_max,         NULL,            NULL,            int )// dummy entry
-
-#undef  pick

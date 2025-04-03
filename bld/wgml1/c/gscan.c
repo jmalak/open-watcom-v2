@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-*  Copyright (c) 2004-2010 The Open Watcom Contributors. All Rights Reserved.
+*  Copyright (c) 200-20250 The Open Watcom Contributors. All Rights Reserved.
 *
 *  ========================================================================
 *
@@ -39,6 +39,7 @@
 static  const   gmltag  gml_tags[] = {
     #define pickg( name, length, routine, gmlflags, locflags, classflags ) { #name, length, routine, gmlflags, locflags, classflags },
     #include "gtags.h"
+    #undef pickg
     { "   ", 0, NULL, 0, 0 }            // end
 };
 
@@ -51,6 +52,7 @@ static  const   gmltag  gml_tags[] = {
 static  const   gmltag  lay_tags[] = {
     #define pick( name, length, routine, gmlflags, locflags ) { #name, length, routine, gmlflags, locflags },
     #include "gtagslay.h"
+    #undef pick
     { "   ", 0, NULL, 0, 0 }            // end
 
 };
@@ -66,6 +68,8 @@ static  const   scrtag  scr_kwds[] = {
     #define picks( name, routine, flags) { #name, routine, flags },
     #define picklab( name, routine, flags) { #name, routine, flags },
     #include "gscrcws.h"
+    #undef picklab
+    #undef picks
     { "  ", NULL, 0   }                 // end
 };
 
@@ -815,7 +819,7 @@ void set_if_then_do( ifcb * cb )
         if( (*pb == SCR_char)  || (*pb == '\'') ) {
             pb++;                       // over ".." or ".'"
         }
-        while( len < MAC_NAME_LENGTH ) { 
+        while( len < MAC_NAME_LENGTH ) {
             if( is_space_tab_char( *pb ) || (*pb == '\0') ) { // largest possible macro/cw
                 break;
             }

@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-*  Copyright (c) 2004-2009 The Open Watcom Contributors. All Rights Reserved.
+*  Copyright (c) 200-20259 The Open Watcom Contributors. All Rights Reserved.
 *
 *  ========================================================================
 *
@@ -42,6 +42,7 @@ const   char    att_names[e_dummy_max + 1][18] = {
     { "DUMMY" },                       // enum zero not used
     #define pick( name, funci, funco, result ) { #name },
     #include "glayutil.h"
+    #undef pick
 };
 
 
