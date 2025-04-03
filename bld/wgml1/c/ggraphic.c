@@ -22,7 +22,7 @@ void    gml_graphic( const gmltag * entry )
 {
     bool            depth_found             = false;
     bool            file_found              = false;
-    char            file[FILENAME_MAX];
+    char            file[_MAX_PATH];
     char            rt_buff[MAX_FILE_ATTR];
     char        *   p;
     char        *   pa;
@@ -66,11 +66,11 @@ void    gml_graphic( const gmltag * entry )
                     break;
                 }
                 file_found = true;
-                memcpy_s( file, FILENAME_MAX, val_start, val_len );
-                if( val_len < FILENAME_MAX ) {
+                memcpy_s( file, _MAX_PATH, val_start, val_len );
+                if( val_len < _MAX_PATH ) {
                     file[val_len] = '\0';
                 } else {
-                    file[FILENAME_MAX - 1] = '\0';
+                    file[_MAX_PATH - 1] = '\0';
                 }
                 split_attr_file( file, rt_buff, sizeof( rt_buff ) );
                 if( (rt_buff[0] != '\0') ) {
@@ -214,8 +214,8 @@ void    gml_graphic( const gmltag * entry )
         } else {
             cur_el->element.graph.next_font = g_prev_font;
         }
-        strncpy_s( cur_el->element.graph.short_name, FILENAME_MAX, file, FILENAME_MAX );
-        strncpy_s( cur_el->element.graph.file, FILENAME_MAX, try_file_name, FILENAME_MAX );
+        strncpy_s( cur_el->element.graph.short_name, _MAX_PATH, file, _MAX_PATH );
+        strncpy_s( cur_el->element.graph.file, _MAX_PATH, try_file_name, _MAX_PATH );
 
         if( WgmlFlags.inclist ) {
             g_info_lm( inf_curr_file, cur_el->element.graph.file );

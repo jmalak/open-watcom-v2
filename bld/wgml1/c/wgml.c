@@ -84,7 +84,7 @@ char *get_filename_full_path( char *buff, char const * name, size_t max )
 
 static  void    set_default_extension( const char * masterfname )
 {
-    char        buff[FILENAME_MAX];
+    char        buff[_MAX_PATH];
     char    *   ext;
 
     _splitpath2( masterfname, buff, NULL, NULL, NULL, &ext );

@@ -29,7 +29,7 @@
 
 /* Struct declaration. */
 
-/* FILENAME_MAX is used for the member_name because gendev will embed member
+/* _MAX_PATH is used for the member_name because gendev will embed member
  * names which exceed the space allowed by NAME_MAX or _MAX_FNAME in DOS if
  * such a member name is present in the source file.
  */
@@ -40,7 +40,7 @@
 
 typedef struct {
     char    defined_name[DEFINED_NAME_MAX];
-    char    member_name[FILENAME_MAX];
+    char    member_name[_MAX_PATH];
 } directory_entry;
 
 /* Enum declaration. */

@@ -1098,7 +1098,7 @@ typedef struct {
             bool            has_rec_type;
     struct  eol_ix      *   eol_index;
             FILE        *   fp;
-            char            file[FILENAME_MAX];
+            char            file[_MAX_PATH];
 } binclude_element;
 
 typedef struct {
@@ -1121,8 +1121,8 @@ typedef struct {
     struct  eol_ix      *   eol_index;
             FILE        *   fp;
             font_number     next_font;
-            char            short_name[FILENAME_MAX];
-            char            file[FILENAME_MAX];
+            char            short_name[_MAX_PATH];
+            char            file[_MAX_PATH];
 } graphic_element;
 
 typedef struct {

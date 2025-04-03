@@ -237,12 +237,12 @@ static void initialize_directory_list( char const * in_path_list,
     path_count = local_list.count;
 
     for( i = 0; i < local_list.count; i++ ){
-        if( strlen( local_list.directories[i] ) > FILENAME_MAX ) {
+        if( strlen( local_list.directories[i] ) > _MAX_PATH ) {
             path_count--;
             xx_simple_err_c( err_path_max, local_list.directories[i] );
             local_list.directories[i] = NULL;
         } else {
-            byte_count += strnlen_s( local_list.directories[i], FILENAME_MAX );
+            byte_count += strnlen_s( local_list.directories[i], _MAX_PATH );
         }
     }
 
@@ -327,23 +327,23 @@ static void clear_directory_list( directory_list * in_list )
 static int try_open( char * prefix, char * filename )
 {
     FILE    *   fp;
-    char        buff[FILENAME_MAX];
+    char        buff[_MAX_PATH];
     errno_t     erc;
     size_t      filename_length;
 
     /* Prevent buffer overflow. */
 
-    filename_length = strnlen_s( prefix, FILENAME_MAX ) +
-                      strnlen_s( filename, FILENAME_MAX ) + 1;
-    if( filename_length > FILENAME_MAX ) {
+    filename_length = strnlen_s( prefix, _MAX_PATH ) +
+                      strnlen_s( filename, _MAX_PATH ) + 1;
+    if( filename_length > _MAX_PATH ) {
         xx_simple_err_cc( err_file_max, prefix, filename );
         return(0);
     }
 
     /* Create the full file name to search for. */
 
-    strcpy_s( buff, FILENAME_MAX, prefix );
-    strcat_s( buff, FILENAME_MAX, filename );
+    strcpy_s( buff, _MAX_PATH, prefix );
+    strcat_s( buff, _MAX_PATH, filename );
 
     /* Clear the global variables used to contain the results. */
 
@@ -587,9 +587,9 @@ int search_file_in_dirs( const char *filename, const char *defext, const char *a
     bool                full_name_done;
     bool                short_name_done;
     char                buff[_MAX_PATH2];
-    char                alternate_file[FILENAME_MAX];
-    char                default_file[FILENAME_MAX];
-    char                primary_file[FILENAME_MAX];
+    char                alternate_file[_MAX_PATH];
+    char                default_file[_MAX_PATH];
+    char                primary_file[_MAX_PATH];
     char            *   dir_ptr;
     char            *   fn_dir;
     char            *   fn_drive;
@@ -606,7 +606,7 @@ int search_file_in_dirs( const char *filename, const char *defext, const char *a
 
     /* Ensure filename will fit into buff. */
 
-    if( strnlen_s( filename, FILENAME_MAX ) == FILENAME_MAX ) {
+    if( strnlen_s( filename, _MAX_PATH ) == _MAX_PATH ) {
         xx_simple_err_c( err_file_max, filename );
         return( 0 );
     }
@@ -635,7 +635,7 @@ int search_file_in_dirs( const char *filename, const char *defext, const char *a
          */
 
         if( *fn_ext == '\0' ) {
-            if( strnlen_s( filename, FILENAME_MAX ) + 4 == FILENAME_MAX ) {
+            if( strnlen_s( filename, _MAX_PATH ) + 4 == _MAX_PATH ) {
                 switch( sequence ) {
                 case ds_opt_file:
                     xx_simple_err_cc( err_file_max, filename, ".opt" );
@@ -658,16 +658,16 @@ int search_file_in_dirs( const char *filename, const char *defext, const char *a
 
         /* Capture the bare filename length and the longest extension's length */
 
-        fn_length = strnlen_s( fn_name, FILENAME_MAX );
+        fn_length = strnlen_s( fn_name, _MAX_PATH );
         max_ext_len = 3;    // for literal extensions used above
-        if( strnlen_s( defext, FILENAME_MAX ) > max_ext_len ) {
-            max_ext_len = strnlen_s( defext, FILENAME_MAX );
+        if( strnlen_s( defext, _MAX_PATH ) > max_ext_len ) {
+            max_ext_len = strnlen_s( defext, _MAX_PATH );
         }
-        if( strnlen_s( altext, FILENAME_MAX ) > max_ext_len ) {
-            max_ext_len = strnlen_s( altext, FILENAME_MAX );
+        if( strnlen_s( altext, _MAX_PATH ) > max_ext_len ) {
+            max_ext_len = strnlen_s( altext, _MAX_PATH );
         }
-        if( strnlen_s( fn_ext, FILENAME_MAX ) > max_ext_len ) {
-            max_ext_len = strnlen_s( fn_ext, FILENAME_MAX );
+        if( strnlen_s( fn_ext, _MAX_PATH ) > max_ext_len ) {
+            max_ext_len = strnlen_s( fn_ext, _MAX_PATH );
         }
 
     }
@@ -676,11 +676,11 @@ int search_file_in_dirs( const char *filename, const char *defext, const char *a
 
     switch( sequence ) {
     case ds_opt_file:
-        strcpy_s( primary_file, FILENAME_MAX, fn_name );
+        strcpy_s( primary_file, _MAX_PATH, fn_name );
         if( *fn_ext == '\0' ) {
-            strcat_s( primary_file, FILENAME_MAX, ".opt" );
+            strcat_s( primary_file, _MAX_PATH, ".opt" );
         } else {
-            strcat_s( primary_file, FILENAME_MAX, fn_ext );
+            strcat_s( primary_file, _MAX_PATH, fn_ext );
         }
         searchdirs[0] = &cur_dir_list;
         searchdirs[1] = &gml_lib_dirs;
@@ -688,19 +688,19 @@ int search_file_in_dirs( const char *filename, const char *defext, const char *a
         searchdirs[3] = &path_dirs;
         break;
     case ds_doc_spec:
-        strcpy_s( primary_file, FILENAME_MAX, fn_name );
+        strcpy_s( primary_file, _MAX_PATH, fn_name );
         if( *fn_ext == '\0' ) {
-            strcat_s( primary_file, FILENAME_MAX, ".gml" );
+            strcat_s( primary_file, _MAX_PATH, ".gml" );
         } else {
-            strcat_s( primary_file, FILENAME_MAX, fn_ext );
+            strcat_s( primary_file, _MAX_PATH, fn_ext );
         }
         if( *altext != '\0' && *fn_ext == '\0' ) {
-            strcpy_s( alternate_file, FILENAME_MAX, fn_name );
-            strcat_s( alternate_file, FILENAME_MAX, altext );
+            strcpy_s( alternate_file, _MAX_PATH, fn_name );
+            strcat_s( alternate_file, _MAX_PATH, altext );
         }
         if( *fn_ext == '\0' && strcmp( defext, ".gml" )) {
-            strcpy_s( default_file, FILENAME_MAX, fn_name );
-            strcat_s( default_file, FILENAME_MAX, ".gml" );
+            strcpy_s( default_file, _MAX_PATH, fn_name );
+            strcat_s( default_file, _MAX_PATH, ".gml" );
         }
         searchdirs[0] = &cur_dir_list;
         searchdirs[1] = &gml_inc_dirs;
@@ -714,17 +714,17 @@ int search_file_in_dirs( const char *filename, const char *defext, const char *a
         searchdirs[3] = NULL;
         break;
     case ds_lib_src:
-        strcpy_s( primary_file, FILENAME_MAX, fn_name );
+        strcpy_s( primary_file, _MAX_PATH, fn_name );
         if( *fn_ext == '\0' ) {
-            strcat_s( primary_file, FILENAME_MAX, ".pcd" );
+            strcat_s( primary_file, _MAX_PATH, ".pcd" );
         } else {
-            strcat_s( primary_file, FILENAME_MAX, fn_ext );
+            strcat_s( primary_file, _MAX_PATH, fn_ext );
         }
-        strcpy_s( alternate_file, FILENAME_MAX, fn_name );
+        strcpy_s( alternate_file, _MAX_PATH, fn_name );
         if( *altext == '\0' ) {
-            strcat_s( alternate_file, FILENAME_MAX, ".fon" );
+            strcat_s( alternate_file, _MAX_PATH, ".fon" );
         } else {
-            strcat_s( alternate_file, FILENAME_MAX, altext );
+            strcat_s( alternate_file, _MAX_PATH, altext );
         }
         searchdirs[0] = &cur_dir_list;
         searchdirs[1] = &gml_inc_dirs;
@@ -769,18 +769,18 @@ int search_file_in_dirs( const char *filename, const char *defext, const char *a
 
                     /* Construct primary_file and open it normally. */
 
-                    member_length = strnlen_s( member_name, FILENAME_MAX );
+                    member_length = strnlen_s( member_name, _MAX_PATH );
                     if( memchr( member_name, '.', member_length ) == NULL ) {
 
                         /* Avoid buffer overflow from member_name. */
 
-                        if( member_length < FILENAME_MAX ) {
-                            strcpy_s( primary_file, FILENAME_MAX, member_name );
+                        if( member_length < _MAX_PATH ) {
+                            strcpy_s( primary_file, _MAX_PATH, member_name );
 
                             /* Avoid buffer overflow from the extension. */
 
-                            if( member_length + 4 < FILENAME_MAX ) {
-                                strcat_s( primary_file, FILENAME_MAX, ".cop" );
+                            if( member_length + 4 < _MAX_PATH ) {
+                                strcat_s( primary_file, _MAX_PATH, ".cop" );
                                 mem_free( member_name );
                                 member_name = NULL;
                             } else {
@@ -828,15 +828,15 @@ int search_file_in_dirs( const char *filename, const char *defext, const char *a
             full_name_done = true;
             if( (sequence != ds_bin_lib) && ((fn_length > 8) || (max_ext_len > 3)) ) {    // try 8.3 version of filename, as wgml 4.0 does
                 if( *primary_file ) {
-                    memmove_s( &primary_file[8], FILENAME_MAX, &primary_file[fn_length], 4 );
+                    memmove_s( &primary_file[8], _MAX_PATH, &primary_file[fn_length], 4 );
                     primary_file[12] = '\0';
                 }
                 if( *alternate_file ) {
-                    memmove_s( &alternate_file[8], FILENAME_MAX, &alternate_file[fn_length], 4 );
+                    memmove_s( &alternate_file[8], _MAX_PATH, &alternate_file[fn_length], 4 );
                     alternate_file[12] = '\0';
                 }
                 if( *default_file ) {
-                    memmove_s( &default_file[8], FILENAME_MAX, &default_file[fn_length], 4 );
+                    memmove_s( &default_file[8], _MAX_PATH, &default_file[fn_length], 4 );
                     default_file[12] = '\0';
                 }
             } else {
