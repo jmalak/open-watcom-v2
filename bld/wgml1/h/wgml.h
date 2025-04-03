@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-*  Copyright (c) 2004-2010 The Open Watcom Contributors. All Rights Reserved.
+*  Copyright (c) 200-20250 The Open Watcom Contributors. All Rights Reserved.
 *
 *  ========================================================================
 *
@@ -541,6 +541,7 @@ extern  void    show_include_stack( void );
 
 #define pickg( name, length, routine, gmlflags, locflags, classflags )  extern void routine( const gmltag * entry );
 #include "gtags.h"
+#undef pickg
 
 /*
  * prototypes for the layout tag processing routines
@@ -548,6 +549,7 @@ extern  void    show_include_stack( void );
 
 #define pick( name, length, routine, gmlflags, locflags )  extern void routine( const gmltag * entry );
 #include "gtagslay.h"
+#undef pick
 
 /*
  * prototypes for the layout tag attribute processing routines
@@ -556,10 +558,12 @@ extern  void    show_include_stack( void );
 /*          for input scanning              */
 #define pick( name, funci, funco, restype )     extern  bool    funci( char * buf, lay_att attr, restype * result );
 #include "glayutil.h"
+#undef pick
 
 /*          for output via :convert tag     */
 #define pick( name, funci, funco, restype )     extern  void    funco( FILE * f, lay_att attr, const restype * in );
 #include "glayutil.h"
+#undef pick
 
 /*
  * prototypes for the script control word processing routines
@@ -568,6 +572,8 @@ extern  void    show_include_stack( void );
 #define picklab( name, routine, flags )  extern void routine( void );
 #define picks( name, routine, flags )  extern void routine( void );
 #include "gscrcws.h"
+#undef picks
+#undef picklab
 
 /*
  * prototypes for the script string function routines , ie. &'substr( ,..
@@ -576,7 +582,7 @@ extern  void    show_include_stack( void );
 #define pick( name, length, mand_parms, opt_parms, routine ) \
     extern condcode routine( parm parms[MAX_FUN_PARMS], size_t parm_count, char * * ppval, int32_t valsize );
 #include "gsfuncs.h"
-
+#undef pick
 
 #ifdef  __cplusplus
 }   /* End of "C" linkage for C++ */
