@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-*  Copyright (c) 2004-2009 The Open Watcom Contributors. All Rights Reserved.
+*  Copyright (c) 200-20259 The Open Watcom Contributors. All Rights Reserved.
 *
 *  ========================================================================
 *
@@ -48,6 +48,7 @@
 static  const   scrfunc scr_functions[] = {
     #define pick( name, length, parms, optparms, routine )  { #name, length, parms, optparms, routine },
     #include "gsfuncs.h"
+    #undef pick
     { " ", 0, 0, 0, NULL }              // end
 };
 

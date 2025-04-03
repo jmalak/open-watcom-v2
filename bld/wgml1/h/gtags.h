@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-*  Copyright (c) 2004-2010 The Open Watcom Contributors. All Rights Reserved.
+*  Copyright (c) 200-20250 The Open Watcom Contributors. All Rights Reserved.
 *
 *  ========================================================================
 *
@@ -37,9 +37,7 @@
 *
 ****************************************************************************/
 
-#ifndef pickg
-    #error macro pickg not defined
-#endif
+
 //       tagname  tagname  routinename     gmlflags locflags classflags
 // upper case     length
 
@@ -168,5 +166,3 @@
 
   pickg( XMP,      3,      gml_xmp,        tag_out_txt, 0,  0 )
   pickg( EXMP,     4,      gml_exmp,       tag_out_txt, 0,  0 )
-
-#undef  pickg
