@@ -1,3 +1,5 @@
+/* UTF-8 encoding, ¥ */
+
 /* messages for WGML
  *  id, english text, japanese??? text
  *  id  in uppercase please

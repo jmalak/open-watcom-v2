@@ -1,3 +1,16 @@
+/****************************************************************************
+*
+*                           Open Watcom Project
+*
+* Copyright (c) 2004-2025 The Open Watcom Contributors. All Rights Reserved.
+*
+*  ========================================================================
+*
+* Description:  Declares document sections data
+*
+****************************************************************************/
+
+
 /*    enu                text        ban           */
 pick( doc_sect_none,     "NONE",     no_ban        ) // nothing so far
 pick( doc_sect_gdoc,     "GDOC",     no_ban        ) // gdoc
