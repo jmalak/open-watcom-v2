@@ -291,7 +291,7 @@ static void remove_indentation( void )
         }
         SkipSpaces( p );                            // skip blanks
         if( *p == CW_sep_char ) {
-            if( ProcFlags.CW_force_sep && (CW_sep_char != NULL) ) { // only if valid
+            if( ProcFlags.CW_force_sep && (CW_sep_char != '\0') ) { // only if valid
                 p++;                                // skip CW_sep_char
             }
         } else if( (*p == SCR_char) && (*(p + 1) == GML_char) ) {
