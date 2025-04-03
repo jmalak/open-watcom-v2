@@ -69,11 +69,11 @@ extern  void    gml_include( const gmltag * entry )
                 p = get_tag_value( p );
             }
             if( val_start != NULL ) {
-                memcpy_s( token_buf, FILENAME_MAX, val_start, val_len );
-                if( val_len < FILENAME_MAX ) {
+                memcpy_s( token_buf, _MAX_PATH, val_start, val_len );
+                if( val_len < _MAX_PATH ) {
                     token_buf[val_len] = '\0';
                 } else {
-                    token_buf[FILENAME_MAX - 1] = '\0';
+                    token_buf[_MAX_PATH - 1] = '\0';
                 }
                 ProcFlags.newLevelFile = 1;     // start new include level
                 scan_start = scan_stop + 1;     // .. and ignore remaining line
