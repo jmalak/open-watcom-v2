@@ -56,9 +56,9 @@ typedef enum {
 extern "C" {    /* Use "C" linkage when in C++ mode. */
 #endif
 
-extern entry_found  get_compact_entry( FILE * in_file, directory_entry * entry );
-extern entry_found  get_extended_entry( FILE * in_file, directory_entry * entry );
-extern char *       get_member_name( char const * in_name );
+extern entry_found  get_compact_entry( FILE *fp, directory_entry * entry );
+extern entry_found  get_extended_entry( FILE *fp, directory_entry * entry );
+extern char         *get_member_name( FILE *fp, const char *in_name );
 
 #ifdef  __cplusplus
 }   /* End of "C" linkage for C++. */
