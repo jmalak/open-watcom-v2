@@ -1,26 +1,8 @@
 /****************************************************************************
 *
-*                            Open Watcom Project
+*                           Open Watcom Project
 *
-*  Copyright (c) 2004-2010 The Open Watcom Contributors. All Rights Reserved.
-*
-*  ========================================================================
-*
-*    This file contains Original Code and/or Modifications of Original
-*    Code as defined in and that are subject to the Sybase Open Watcom
-*    Public License version 1.0 (the 'License'). You may not use this file
-*    except in compliance with the License. BY USING THIS FILE YOU AGREE TO
-*    ALL TERMS AND CONDITIONS OF THE LICENSE. A copy of the License is
-*    provided with the Original Code and Modifications, and is also
-*    available at www.sybase.com/developer/opensource.
-*
-*    The Original Code and all software distributed under the License are
-*    distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
-*    EXPRESS OR IMPLIED, AND SYBASE AND ALL CONTRIBUTORS HEREBY DISCLAIM
-*    ALL SUCH WARRANTIES, INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF
-*    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR
-*    NON-INFRINGEMENT. Please see the License for the specific language
-*    governing rights and limitations under the License.
+* Copyright (c) 2004-2025 The Open Watcom Contributors. All Rights Reserved.
 *
 *  ========================================================================
 *
@@ -1201,7 +1183,7 @@ static void update_column( void )
 #if 0
             /* kept in case actual criteria ever discovered */
             if( (t_page.cur_depth != 0) &&
-                    ((t_page.cur_depth + cur_group->depth) > t_page.max_depth) && 
+                    ((t_page.cur_depth + cur_group->depth) > t_page.max_depth) &&
                     ((cur_group->depth <= t_page.max_depth)) ) {
                 /* Put block in new column */
                 break;
@@ -1290,7 +1272,7 @@ static void update_column( void )
             /* if it is empty, then discard it and update n_page.fk_queue             */
             /* if it is not empty, the n_page.fk_queue contains the rest of the group */
             /**************************************************************************/
-            
+
             if( cur_group->depth == 0 ) {       // this is n_page.fk_queue
                 n_page.fk_queue = n_page.fk_queue->next;
                 if( n_page.fk_queue == NULL ) {
@@ -1379,7 +1361,7 @@ static void update_column( void )
                     n_page.last_col_main = n_page.col_main;
                     while( n_page.last_col_main->next != NULL ) {
                         n_page.last_col_main = n_page.last_col_main->next;
-                    }                            
+                    }
                     cur_el->next = NULL;
                     if( t_page.cur_col->main == NULL ) {
                         t_page.cur_col->main = cur_el;
@@ -1587,7 +1569,7 @@ void do_page_out( void )
 
     if( (t_page.top_banner != NULL) && (t_page.top_banner->by_line != NULL) ) {
         save_prev = g_prev_font;
-        out_ban_top();                      // resets g_prev_font for top banner 
+        out_ban_top();                      // resets g_prev_font for top banner
 
         /********************************************************************/
         /* Record g_prev_font for a GRAPHIC element                         */
@@ -2112,7 +2094,7 @@ void insert_col_main( doc_element * a_element )
                     a_element = t_page.last_col_main;
                     t_page.last_col_main = t_page.last_col_main->element.text.prev;
                     t_page.last_col_main->next = NULL;
-                }                                
+                }
                 page_full = true;
             } else {        // the entire element fits on the current page
                 if( t_page.cur_col->main == NULL ) {
