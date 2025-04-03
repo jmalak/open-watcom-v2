@@ -27,7 +27,7 @@
  * Reads and returns the current (compact) entry.
  *
  * Parameters:
- *      in_file points to the length-byte of the defined name.
+ *      fp points to directory file.
  *      entry is intended to contain the current entry.
  *
  * Modified Parameter:
@@ -44,14 +44,17 @@
  *      A file error may have occurred if not_valid_entry is returned.
  */
 
-entry_found get_compact_entry( FILE * in_file, directory_entry * entry )
+entry_found get_compact_entry( FILE *fp, directory_entry *entry )
 {
-    uint8_t count;
+    int     count;
 
     /* Get the defined_name_length. */
 
-    count = fgetc( in_file );
-    if( ferror( in_file ) || feof( in_file ) ) return( not_valid_entry );
+    count = fgetc( fp );
+    if( ferror( fp )
+      || feof( fp ) ) {
+        return( not_valid_entry );
+    }
 
     /* Ensure the defined_name_length is not too long for the buffer. */
 
@@ -61,29 +64,37 @@ entry_found get_compact_entry( FILE * in_file, directory_entry * entry )
 
     /* Get the defined_name. An empty value is allowed; see the Wiki. */
 
-    if( count == 0 ) {
-        entry->defined_name[0] = '\0';
-    } else {
-        fread( entry->defined_name, count, 1, in_file );
-        if( ferror( in_file ) || feof( in_file ) ) return( not_valid_entry );
-        entry->defined_name[count] = '\0';
+    if( count > 0 ) {
+        fread( entry->defined_name, count, 1, fp );
+        if( ferror( fp )
+          || feof( fp ) ) {
+            return( not_valid_entry );
+        }
     }
+    entry->defined_name[count] = '\0';
 
     /* Get the member_name_length. */
 
-    count = fgetc( in_file );
-    if( ferror( in_file ) || feof( in_file ) ) return( not_valid_entry );
+    count = fgetc( fp );
+    if( ferror( fp )
+      || feof( fp ) ) {
+        return( not_valid_entry );
+    }
 
     /* Ensure the member_name_length is not zero or too long for the buffer. */
 
-    if( (count == 0) || ((uint16_t) count > _MAX_PATH) ) {
+    if( (count == 0)
+      || (count > _MAX_PATH) ) {
         return( not_valid_entry );
     }
 
     /* Get the member_name. */
 
-    fread( entry->member_name, count, 1, in_file );
-    if( ferror( in_file ) || feof( in_file ) ) return( not_valid_entry );
+    fread( entry->member_name, count, 1, fp );
+    if( ferror( fp )
+      || feof( fp ) ) {
+        return( not_valid_entry );
+    }
     entry->member_name[count] = '\0';
 
     return( valid_entry );
@@ -93,7 +104,7 @@ entry_found get_compact_entry( FILE * in_file, directory_entry * entry )
  * Reads and returns the current (extended) entry.
  *
  * Parameters:
- *      in_file points to the length-byte of the defined name.
+ *      fp points to the directory file.
  *      entry is intended to contain the current entry.
  *
  * Modified Parameter:
@@ -110,14 +121,17 @@ entry_found get_compact_entry( FILE * in_file, directory_entry * entry )
  *      A file error may have occurred even if valid_entry is returned.
  */
 
-entry_found get_extended_entry( FILE * in_file, directory_entry * entry )
+entry_found get_extended_entry( FILE *fp, directory_entry *entry )
 {
-    uint8_t count;
+    int     count;
 
     /* Get the defined_name_length. */
 
-    count = fgetc( in_file );
-    if( ferror( in_file ) || feof( in_file ) ) return( not_valid_entry );
+    count = fgetc( fp );
+    if( ferror( fp )
+      || feof( fp ) ) {
+        return( not_valid_entry );
+    }
 
     /* Ensure the defined_name_length is not too long for the buffer. */
 
@@ -127,41 +141,54 @@ entry_found get_extended_entry( FILE * in_file, directory_entry * entry )
 
     /* Get the defined_name. An empty value is allowed; see the Wiki. */
 
-    if( count == 0 ) {
-        entry->defined_name[0] = '\0';
-    } else {
-        fread( entry->defined_name, count, 1, in_file );
-        if( ferror( in_file ) || feof( in_file ) ) return( not_valid_entry );
-        entry->defined_name[count] = '\0';
+    if( count > 0 ) {
+        fread( entry->defined_name, count, 1, fp );
+        if( ferror( fp )
+          || feof( fp ) ) {
+            return( not_valid_entry );
+        }
     }
+    entry->defined_name[count] = '\0';
 
     /* Skip the marker. */
 
-    fseek( in_file, sizeof( uint16_t ), SEEK_CUR );
-    if( ferror( in_file ) || feof( in_file ) ) return( not_valid_entry );
+    fseek( fp, sizeof( uint16_t ), SEEK_CUR );
+    if( ferror( fp )
+      || feof( fp ) ) {
+        return( not_valid_entry );
+    }
 
     /* Get the the member_name_length. */
 
-    count = fgetc( in_file );
-    if( ferror( in_file ) || feof( in_file ) ) return( not_valid_entry );
+    count = fgetc( fp );
+    if( ferror( fp )
+      || feof( fp ) ) {
+        return( not_valid_entry );
+    }
 
     /* Ensure the member_name_length is not zero or too long for the buffer. */
 
-    if( (count == 0) || ((uint16_t) count > _MAX_PATH) ) {
+    if( (count == 0)
+      || (count > _MAX_PATH) ) {
         return( not_valid_entry );
     }
 
     /* Get the member_name. */
 
-    fread( entry->member_name, count, 1, in_file );
-    if( ferror( in_file ) || feof( in_file ) ) return( not_valid_entry );
+    fread( entry->member_name, count, 1, fp );
+    if( ferror( fp )
+      || feof( fp ) ) {
+        return( not_valid_entry );
+    }
     entry->member_name[count] = '\0';
 
     /* Skip the preview. */
 
-    fseek( in_file, sizeof( uint16_t ), SEEK_CUR );
-    if( ferror( in_file ) || feof( in_file ) ) return( valid_entry );
-
+    fseek( fp, sizeof( uint16_t ), SEEK_CUR );
+    if( ferror( fp )
+      || feof( fp ) ) {
+        return( valid_entry );
+    }
     return( valid_entry );
 }
 
@@ -170,11 +197,11 @@ entry_found get_extended_entry( FILE * in_file, directory_entry * entry )
  * is found, returns the corresponding member name.
  *
  * Parameter:
+ *      fp contains the FILE * for the directory file.
  *      in_name points to the defined name to match.
  *
  * Globals Used:
  *      try_file_name contains the name of the directory file.
- *      try_fp contains the FILE * for the directory file.
  *
  * Returns:
  *      on success, the corresponding member name.
@@ -184,9 +211,9 @@ entry_found get_extended_entry( FILE * in_file, directory_entry * entry )
  *      the comparison is not case-sensitive for compatability with wgml 4.0.
  */
 
-char * get_member_name( char const * in_name )
+char *get_member_name( FILE *fp, char const *in_name )
 {
-    char    *       member_name     = NULL;
+    char            *member_name = NULL;
     cop_file_type   file_type;
     directory_entry current_entry;
     entry_found     entry_status;
@@ -195,7 +222,7 @@ char * get_member_name( char const * in_name )
 
     /* See if in_name is found in try_file_name. */
 
-    file_type = parse_header( try_fp );
+    file_type = parse_header( fp );
     switch( file_type ) {
     case file_error:
 
@@ -221,12 +248,13 @@ char * get_member_name( char const * in_name )
 
     case dir_v4_1_se:
 
-        /* try_fp was a same-endian version 4.1 directory file. */
+        /* fp was a same-endian version 4.1 directory file. */
 
         /* Skip the number of entries. */
 
-        fseek( try_fp, sizeof( uint32_t ), SEEK_CUR );
-        if( ferror( try_fp ) || feof( try_fp ) ) {
+        fseek( fp, sizeof( uint32_t ), SEEK_CUR );
+        if( ferror( fp )
+          || feof( fp ) ) {
             break;
         }
 
@@ -237,11 +265,12 @@ char * get_member_name( char const * in_name )
              * ExtendedDirEntry.
              */
 
-            fread( &entry_type, sizeof( entry_type ), 1, try_fp );
+            fread( &entry_type, sizeof( entry_type ), 1, fp );
 
             /* Exit the loop when the final entry has been processed. */
 
-            if( feof( try_fp ) || ferror( try_fp ) ) {
+            if( feof( fp )
+              || ferror( fp ) ) {
                 break;
             }
 
@@ -264,11 +293,12 @@ char * get_member_name( char const * in_name )
                      * metatype has already been read.
                      */
 
-                    fread( &entry_type, sizeof( entry_type ), 1, try_fp );
+                    fread( &entry_type, sizeof( entry_type ), 1, fp );
 
                     /* Exit the loop when the final entry has been processed. */
 
-                    if( feof( try_fp ) || ferror( try_fp ) ) {
+                    if( feof( fp )
+                      || ferror( fp ) ) {
                         break;
                     }
 
@@ -295,16 +325,16 @@ char * get_member_name( char const * in_name )
 
                         /* For any type, check the defined name. */
 
-                        entry_status = get_extended_entry( try_fp, &current_entry );
+                        entry_status = get_extended_entry( fp, &current_entry );
                         switch( entry_status ) {
                         case valid_entry:
 
                             /* Return the member name, if found. */
 
-                            if( !stricmp( in_name, current_entry.defined_name ) ) {
-                                member_length = strnlen_s( current_entry.member_name, _MAX_PATH ) + 1;
+                            if( stricmp( in_name, current_entry.defined_name ) == 0 ) {
+                                member_length = strlen( current_entry.member_name ) + 1;
                                 member_name = mem_alloc( member_length );
-                                strcpy_s( member_name, member_length, current_entry.member_name );
+                                strcpy( member_name, current_entry.member_name );
                                 return( member_name );
                             }
 
@@ -340,26 +370,21 @@ char * get_member_name( char const * in_name )
 
                 /* For any type, check the defined name. */
 
-                entry_status = get_compact_entry( try_fp, &current_entry );
+                entry_status = get_compact_entry( fp, &current_entry );
                 switch( entry_status ) {
-
                 case valid_entry:
 
                     /* Return the member name, if found. */
 
-                    if( !stricmp( in_name, current_entry.defined_name) ) {
-                        member_length = strnlen_s( current_entry.member_name, _MAX_PATH ) + 1;
+                    if( stricmp( in_name, current_entry.defined_name ) == 0 ) {
+                        member_length = strlen( current_entry.member_name ) + 1;
                         member_name = mem_alloc( member_length );
-                        strcpy_s( member_name, member_length, current_entry.member_name );
+                        strcpy( member_name, current_entry.member_name );
                         return( member_name );
                     }
-
                     break;
-
                 case not_valid_entry:
-
                     break;
-
                 default:
 
                     /* The entry_status is an unknown value. */
@@ -390,5 +415,3 @@ char * get_member_name( char const * in_name )
 
     return( member_name );
 }
-
-
