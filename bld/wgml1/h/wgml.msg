@@ -1,3 +1,5 @@
+/* UTF-8 encoding, ¥ */
+
 pick( ERR_DUMMY,       "Dummy msg",    // do not delete
                        "Dummy msg" )
 

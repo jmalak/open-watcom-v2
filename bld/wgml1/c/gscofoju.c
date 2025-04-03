@@ -1,26 +1,8 @@
 /****************************************************************************
 *
-*                            Open Watcom Project
+*                           Open Watcom Project
 *
-*  Copyright (c) 2004-2009 The Open Watcom Contributors. All Rights Reserved.
-*
-*  ========================================================================
-*
-*    This file contains Original Code and/or Modifications of Original
-*    Code as defined in and that are subject to the Sybase Open Watcom
-*    Public License version 1.0 (the 'License'). You may not use this file
-*    except in compliance with the License. BY USING THIS FILE YOU AGREE TO
-*    ALL TERMS AND CONDITIONS OF THE LICENSE. A copy of the License is
-*    provided with the Original Code and Modifications, and is also
-*    available at www.sybase.com/developer/opensource.
-*
-*    The Original Code and all software distributed under the License are
-*    distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
-*    EXPRESS OR IMPLIED, AND SYBASE AND ALL CONTRIBUTORS HEREBY DISCLAIM
-*    ALL SUCH WARRANTIES, INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF
-*    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR
-*    NON-INFRINGEMENT. Please see the License for the specific language
-*    governing rights and limitations under the License.
+* Copyright (c) 2004-2025 The Open Watcom Contributors. All Rights Reserved.
 *
 *  ========================================================================
 *
@@ -48,7 +30,7 @@ static void do_co_off( void )
     t_doc_el_group = cur_doc_el_group;
     return;
 }
-    
+
 /***************************************************************************/
 /*  reinsert the doc_elements from the block                               */
 /*  identify sub-blocks created with SK -1 or SK n, n > 0                  */
@@ -72,13 +54,13 @@ static void do_co_on( void )
     uint32_t            interval    = 0;    // interval between break_point values and between max_lines values
     uint32_t            max_start   = 0;    // first possible maximum line number
     uint32_t            max_lines   = 0;    // maximum line number
-    uint32_t            min_lines   = 0;    // minimum line number  
+    uint32_t            min_lines   = 0;    // minimum line number
     uint32_t            offset      = 0;    // offset from non-full first page
     uint32_t            page_line   = 0;    // current line number on current page
     uint32_t            start_page  = 0;    // apage on which block starts
     uint32_t            t_cur_line  = 0;    // current text line number
     uint32_t            t_line_tot  = 0;    // total text lines in block
-    uint32_t            threshold   = 0;    // threshold line number  
+    uint32_t            threshold   = 0;    // threshold line number
 
     /* must have text and it must have been started by CO OFF */
 
@@ -141,7 +123,7 @@ static void do_co_on( void )
                         last_group->last = last_group->last->next;
                     }
                     cur_el = cur_el->next;                  // detach from list
-                    last_group->last->next = NULL;                                
+                    last_group->last->next = NULL;
                     last_group->depth += last_group->last->blank_lines +
                                          last_group->last->subs_skip + last_group->last->depth;
                 }
@@ -566,7 +548,7 @@ static void process_fo_ju( bool both , char *cwcurr )
 /*        differently                                                      */
 /*        each text line is assumed to be in its own doc_element           */
 /*        until the block is split, there is only one doc_el_group to be   */
-/*        processed                                                        */           
+/*        processed                                                        */
 /*        further work may be needed                                       */
 /***************************************************************************/
 

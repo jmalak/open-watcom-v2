@@ -1,26 +1,8 @@
 /****************************************************************************
 *
-*                            Open Watcom Project
+*                           Open Watcom Project
 *
-*  Copyright (c) 2004-2010 The Open Watcom Contributors. All Rights Reserved.
-*
-*  ========================================================================
-*
-*    This file contains Original Code and/or Modifications of Original
-*    Code as defined in and that are subject to the Sybase Open Watcom
-*    Public License version 1.0 (the 'License'). You may not use this file
-*    except in compliance with the License. BY USING THIS FILE YOU AGREE TO
-*    ALL TERMS AND CONDITIONS OF THE LICENSE. A copy of the License is
-*    provided with the Original Code and Modifications, and is also
-*    available at www.sybase.com/developer/opensource.
-*
-*    The Original Code and all software distributed under the License are
-*    distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
-*    EXPRESS OR IMPLIED, AND SYBASE AND ALL CONTRIBUTORS HEREBY DISCLAIM
-*    ALL SUCH WARRANTIES, INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF
-*    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR
-*    NON-INFRINGEMENT. Please see the License for the specific language
-*    governing rights and limitations under the License.
+* Copyright (c) 2004-2025 The Open Watcom Contributors. All Rights Reserved.
 *
 *  ========================================================================
 *
@@ -653,11 +635,11 @@ static text_chars * split_text_chars( text_chars * in_chars )
     text_chars  *   c_chars;
     text_chars  *   old_next;
     uint32_t        o_count;
-    
+
     old_next = in_chars->next;
     if( old_next != NULL ) {
         in_chars->next->prev = NULL;    // detach old_next
-        in_chars->next = NULL;      
+        in_chars->next = NULL;
     }
     while( in_chars != NULL ) {
         c_chars = in_chars;
@@ -691,7 +673,7 @@ static text_chars * split_text_chars( text_chars * in_chars )
                     o_count = c_chars->count;
                 } else {
                     c_chars->count -= 2;
-                    c_chars->width = cop_text_width( c_chars->text, c_chars->count, c_chars->font );                    
+                    c_chars->width = cop_text_width( c_chars->text, c_chars->count, c_chars->font );
                     p += 2;
                     /* Add marker for end of subscript/superscript */
                     c_chars->next = alloc_text_chars( NULL, 0, c_chars->font );
@@ -712,7 +694,7 @@ static text_chars * split_text_chars( text_chars * in_chars )
             old_next = in_chars->next;      // next original text_chars to be saved/restored
             if( old_next != NULL ) {
                 in_chars->next->prev = NULL;// detach old_next
-                in_chars->next = NULL;      
+                in_chars->next = NULL;
             }
         } else {
             in_chars = old_next;
