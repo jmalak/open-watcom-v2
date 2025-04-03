@@ -25,7 +25,7 @@ void    gml_binclude( const gmltag * entry )
     bool            has_rec_type            = false;
     bool            reposition;
     bool            reposition_found        = false;
-    char            file[FILENAME_MAX];
+    char            file[_MAX_PATH];
     char            rt_buff[MAX_FILE_ATTR];
     char        *   p;
     char        *   pa;
@@ -62,11 +62,11 @@ void    gml_binclude( const gmltag * entry )
                     break;
                 }
                 file_found = true;
-                memcpy_s( file, FILENAME_MAX, val_start, val_len );
-                if( val_len < FILENAME_MAX ) {
+                memcpy_s( file, _MAX_PATH, val_start, val_len );
+                if( val_len < _MAX_PATH ) {
                     file[val_len] = '\0';
                 } else {
-                    file[FILENAME_MAX - 1] = '\0';
+                    file[_MAX_PATH - 1] = '\0';
                 }
                 split_attr_file( file, rt_buff, MAX_FILE_ATTR );
                 if( (rt_buff[0] != '\0') ) {
@@ -143,7 +143,7 @@ void    gml_binclude( const gmltag * entry )
         cur_el->element.binc.has_rec_type = has_rec_type;
         cur_el->element.binc.fp = try_fp;
         try_fp = NULL;
-        strncpy_s( cur_el->element.binc.file, FILENAME_MAX, try_file_name, FILENAME_MAX );
+        strncpy_s( cur_el->element.binc.file, _MAX_PATH, try_file_name, _MAX_PATH );
 
         if( WgmlFlags.inclist ) {
             g_info_lm( inf_curr_file, cur_el->element.binc.file );
