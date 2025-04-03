@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-*  Copyright (c) 2004-2009 The Open Watcom Contributors. All Rights Reserved.
+*  Copyright (c) 200-20259 The Open Watcom Contributors. All Rights Reserved.
 *
 *  ========================================================================
 *
@@ -30,9 +30,7 @@
 *   as these are not used in the OW doc build system
 ****************************************************************************/
 
-#ifndef pick
-    #error macro pick not defined
-#endif
+
 //                                 additional
 //      function  name  mandatory  optional
 //      name     length   parmcount     routine name
@@ -75,6 +73,3 @@
   pick( word,        4,   2,      0,    scr_word       )
   pick( wordpos,     7,   2,      1,    scr_wordpos    )
   pick( words,       5,   1,      0,    scr_words      )
-
-#undef  pick
-

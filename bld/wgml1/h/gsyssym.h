@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-*  Copyright (c) 2004-2009 The Open Watcom Contributors. All Rights Reserved.
+*  Copyright (c) 200-20259 The Open Watcom Contributors. All Rights Reserved.
 *
 *  ========================================================================
 *
@@ -31,18 +31,6 @@
 
 /* Included exclusively from gsyssym.c. See gsyssym.c for the pick macros. */
 
-#ifndef picka
-    #error macro picka not defined
-#endif
-#ifndef pickc
-    #error macro pickc not defined
-#endif
-#ifndef pickk
-    #error macro pickk not defined
-#endif
-#ifndef pickl
-    #error macro pickl not defined
-#endif
 //      symbol   flags
 //      name
   pickl( ad,     no_free+ro+predefined+access_fun          )
@@ -185,8 +173,3 @@
   pickc( wd,     no_free+ro+predefined+access_fun          )
   pickk( xtext,  no_free+ro+predefined+access_fun          )
   picka( year,   no_free+ro+predefined                     )
-
-#undef picka
-#undef pickc
-#undef pickk
-#undef pickl
