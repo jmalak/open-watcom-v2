@@ -25,8 +25,8 @@ void    init_tag_att( void )
 {
     tag_entry = NULL;
     att_entry = NULL;
-    tagname[0] = '*';
-    attname[0] = '*';
+    g_tagname[0] = '*';
+    g_attname[0] = '*';
 }
 
 
@@ -246,7 +246,7 @@ static  condcode    scan_tag_options( gtflags * tag_flags )
         if( cc == omit ) {              // nothing more
             break;
         }
-        p = tok_start;
+        p = g_tok_start;
         switch( my_tolower( *p ) ) {
         case   'a' :
             if( (arg_flen > 2) && (arg_flen < 12)
@@ -351,7 +351,7 @@ void    scr_gt( void )
     /*  isolate tagname   or use previous if tagname *                     */
     /***********************************************************************/
 
-    tok_start = NULL;
+    g_tok_start = NULL;
     cc = getarg();                      // Tagname
 
     if( cc == omit ) {
@@ -359,7 +359,7 @@ void    scr_gt( void )
         xx_err_c( err_missing_name, "" );
     }
 
-    p = tok_start;
+    p = g_tok_start;
 
     if( *p == '*' ) {                   // single * as tagname
         if( arg_flen > 1 ) {
@@ -369,17 +369,17 @@ void    scr_gt( void )
         savetag = '*';         // remember for possible global delete / print
         if( WgmlFlags.firstpass && (input_cbs->fmflags & II_research) ) {
             if( tag_entry != NULL ) {
-                out_msg("  using tagname %s %s\n", tagname, tag_entry->name );
+                out_msg("  using tagname %s %s\n", g_tagname, tag_entry->name );
             }
         }
     } else {
         savetag = ' ';                      // no global function for delete / print
 
         init_tag_att();                     // forget previous values for quick access
-        attname[0] = '*';
+        g_attname[0] = '*';
 
         len = 0;
-        pn = tagname;
+        pn = g_tagname;
         while( is_macro_char( *p ) && len < TAG_NAME_LENGTH ) {
             *pn++ = my_tolower( *p++ ); // copy lowercase tagname
             len++;
@@ -404,7 +404,7 @@ void    scr_gt( void )
         return;
     }
 
-    p = tok_start;
+    p = g_tok_start;
     function = 0;
     switch( my_tolower( *p ) ) {
     case   'a':
@@ -465,7 +465,7 @@ void    scr_gt( void )
             xx_err( err_tag_mac_name );
             return;
         }
-        p = tok_start;
+        p = g_tok_start;
 
         len = 0;
         pn = macname;
@@ -482,14 +482,14 @@ void    scr_gt( void )
             if( cc != omit ) {          // not all processed error
                xx_err( err_tag_opt_inv );
             }
-            tag_entry = add_tag( &tag_dict, tagname, macname, tag_flags );  // add to dictionary
+            tag_entry = add_tag( &tag_dict, g_tagname, macname, tag_flags );  // add to dictionary
             // if tag_entry is now NULL, error (+ msg) was output in add_tag
 
             if( tag_entry != NULL ) {
                 set_overload( tag_entry );
             }
         } else {                        // is function change
-            tag_entry = change_tag( &tag_dict, tagname, macname );
+            tag_entry = change_tag( &tag_dict, g_tagname, macname );
         }
     } else {
 
@@ -506,21 +506,21 @@ void    scr_gt( void )
             if( savetag == '*' ) {
                 print_tag_dict( tag_dict );
             } else {
-                print_tag_entry( find_tag( &tag_dict, tagname ) );
+                print_tag_entry( find_tag( &tag_dict, g_tagname ) );
             }
             break;
         case f_delete :
             if( savetag == '*' ) {
                 free_tag_dict( &tag_dict );
             } else {
-                free_tag( &tag_dict, find_tag( &tag_dict, tagname ) );
+                free_tag( &tag_dict, find_tag( &tag_dict, g_tagname ) );
             }
             break;
         case f_off :
             if( savetag == '*' && tag_entry != NULL ) {// off for last defined
                 tag_entry->tagflags |= tag_off;
             } else {
-                wk = find_tag( &tag_dict, tagname );
+                wk = find_tag( &tag_dict, g_tagname );
                 if( wk != NULL ) {
                     wk->tagflags |= tag_off;
                 }
@@ -530,7 +530,7 @@ void    scr_gt( void )
             if( savetag == '*' && tag_entry != NULL ) {// on for last defined
                 tag_entry->tagflags |= tag_off;
             } else {
-                wk = find_tag( &tag_dict, tagname );
+                wk = find_tag( &tag_dict, g_tagname );
                 if( wk != NULL ) {
                     wk->tagflags &= ~tag_off;
                 }
