@@ -503,13 +503,12 @@ extern  bool    get_msg( msg_ids resourceid, char *buffer, size_t buflen );
 
 
 /* wgmlsupp.c                           */
-extern  bool    free_resources( errno_t in_errno );
 extern  void    free_some_mem( void );
 extern  void    g_banner( void );
 // extern  char  * get_filename_full_path( char * buff, char const * name, size_t max );
 extern  bool    get_line( bool researchoutput );
 extern  void    inc_inc_level( void );
-
+extern FILE     *fopen_rb( const char *fname );
 #if defined( __WATCOMC__ )
 #pragma aux     my_exit __aborts;
 #endif
