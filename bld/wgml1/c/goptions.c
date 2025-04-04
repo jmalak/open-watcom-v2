@@ -169,22 +169,25 @@ static char * bad_cmd_line( msg_ids msg, char *str, char n )
 /*  read an option file into memory                                        */
 /***************************************************************************/
 
-static char * read_indirect_file( const char * filename )
+static char * read_indirect_file( FILE *fp )
 {
-    char    *   buf;
+    char        *buf;
     char        ch;
-    char    *   str;
-    int         handle;
-    int         len;
+    char        *str;
+    int         fh;
+    size_t      len;
+    long		orig;
 
     buf = NULL;
-    handle = open( filename, O_RDONLY | O_BINARY );
-    if( handle != -1 ) {
-        len = filelength( handle );
+    if( fp != NULL ) {
+        fh = fileno( fp );
+        orig = lseek( fh, 0, SEEK_CUR );
+        len = lseek( fh, 0, SEEK_END );
+		lseek( fh, 0, SEEK_SET );
         buf = mem_alloc( len + 1 );
-        read( handle, buf, len );
-        buf[len] = '\0';
-        close( handle );
+        read( fh, buf, len );
+		lseek( fh, orig, SEEK_SET );
+		buf[len] = '\0';
         // zip through characters changing \r into ' '
         str = buf;
         while( *str ) {
@@ -1055,14 +1058,11 @@ static void set_OPTFile( option * opt )
         }
         if( level < MAX_NESTING ) {
             sav_tokens[level] = tokennext->nxt;
-
             buffers[level + 1] = NULL;
             file_names[level + 1] = NULL;
             if( search_file_in_dirs( token_buf, OPT_EXT, "", ds_opt_file ) ) {
                 bool  skip = false;
 
-                fclose( try_fp );
-                try_fp = NULL;
                 if( level > 0 ) {
                     int     k;
 
@@ -1074,13 +1074,17 @@ static void set_OPTFile( option * opt )
                     }
                 }
                 if( !skip ) {
-                    file_names[++level] = try_file_name;
-
-                    str = read_indirect_file( try_file_name );
+                    file_names[++level] = mem_alloc( strlen( try_file_name ) + 1 );
+                    strcpy( file_names[++level], try_file_name );
+                    str = read_indirect_file( try_fp );
                     split_tokens( str );
                     mem_free( str );
                     try_file_name[0] = '\0';
                     tokennext = cmd_tokens[level];
+                }
+                fclose( try_fp );
+                try_fp = NULL;
+                if( !skip ) {
                     return;
                 }
             } else {
