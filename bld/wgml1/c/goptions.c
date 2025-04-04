@@ -125,8 +125,8 @@ static int split_tokens( char *str )
         new->bol = linestart;
         linestart = false;
         new->toklen = tokl;
-        strncpy_s(new->token, new->toklen + 1, tokstart, tokl );
-
+        strncpy( new->token, tokstart, tokl );
+        new->token[tokl] = '\0';
         if( tok == NULL ) {
             cmd_tokens[level] = new;
         } else {
@@ -176,30 +176,27 @@ static char * read_indirect_file( FILE *fp )
     char        *str;
     int         fh;
     size_t      len;
-    long		orig;
+    long        orig;
 
-    buf = NULL;
-    if( fp != NULL ) {
-        fh = fileno( fp );
-        orig = lseek( fh, 0, SEEK_CUR );
-        len = lseek( fh, 0, SEEK_END );
-		lseek( fh, 0, SEEK_SET );
-        buf = mem_alloc( len + 1 );
-        read( fh, buf, len );
-		lseek( fh, orig, SEEK_SET );
-		buf[len] = '\0';
-        // zip through characters changing \r into ' '
-        str = buf;
-        while( *str ) {
-            ch = *str;
-            if( ch == '\r' ) {
-                *str = ' ';
-            } else if( ch == 0x1A ) {   // if end of file
-                *str = '\0';            // - mark end of str
-                break;
-            }
-            ++str;
+    fh = fileno( fp );
+    orig = lseek( fh, 0, SEEK_CUR );
+    len = lseek( fh, 0, SEEK_END );
+    lseek( fh, 0, SEEK_SET );
+    buf = mem_alloc( len + 1 );
+    read( fh, buf, len );
+    lseek( fh, orig, SEEK_SET );
+    buf[len] = '\0';
+    // zip through characters changing \r into ' '
+    str = buf;
+    while( *str ) {
+        ch = *str;
+        if( ch == '\r' ) {
+            *str = ' ';
+        } else if( ch == 0x1A ) {   // if end of file
+            *str = '\0';            // - mark end of str
+            break;
         }
+        ++str;
     }
     return( buf );
 }
@@ -836,9 +833,8 @@ static void set_layout( option * opt )
     } else {
         len = tokennext->toklen;
         laywk = mem_alloc( sizeof( laystack ) + len );
-
-        memcpy_s( laywk->layfn, len + 1, tokennext->token, len );
-        *(laywk->layfn + len) = '\0';
+        strncpy( laywk->layfn, tokennext->token, len );
+        laywk->layfn[len] = '\0';
         laywk->next = NULL;
 
         split_attr_file( laywk->layfn, attrwork, sizeof( attrwork ) );
@@ -869,15 +865,13 @@ static void set_outfile( option * opt )
     } else {
         len = tokennext->toklen;
         out_file = mem_alloc( len + 1 );
-
-        memcpy_s( out_file, len + 1, tokennext->token, len );
-        *(out_file + len) = '\0';
-
+        strncpy( out_file, tokennext->token, len );
+        out_file[len] = '\0';
         split_attr_file( out_file, attrwork, sizeof( attrwork ) );
-        if( attrwork[0] ) {
+        if( attrwork[0] != '\0' ) {
             len = 1 + strlen( attrwork );
             out_file_attr = mem_alloc( len );
-            strcpy_s( out_file_attr, len, attrwork );
+            strcpy( out_file_attr, attrwork );
         } else {
             out_file_attr = NULL;
         }
@@ -1046,14 +1040,12 @@ static void set_OPTFile( option * opt )
         xx_simple_err_c( err_missing_value, opt->option );
     } else {
         len = tokennext->toklen;
-
         str = tokennext->token;
-
         g_info_research( inf_recognized_xxx, "option file", str );
-        strcpy_s( token_buf, buf_size, str );
+        strcpy( token_buf, str );
         try_file_name[0] = '\0';
         split_attr_file( token_buf, attrwork, sizeof( attrwork ) );
-        if( attrwork[0]  ) {
+        if( attrwork[0] != '\0' ) {
             xx_warn_cc( wng_fileattr_ignored, attrwork, token_buf );
         }
         if( level < MAX_NESTING ) {
@@ -1061,32 +1053,28 @@ static void set_OPTFile( option * opt )
             buffers[level + 1] = NULL;
             file_names[level + 1] = NULL;
             if( search_file_in_dirs( token_buf, OPT_EXT, "", ds_opt_file ) ) {
-                bool  skip = false;
-
                 if( level > 0 ) {
                     int     k;
 
                     for( k = level; k > 0; k-- ) {
                         if( stricmp( try_file_name, file_names[k]) == 0 ) {
                             xx_simple_err_c( err_recursive_option, try_file_name );
-                            break;
+                            try_file_name[0] = '\0';
+                            fclose( try_fp );
+                            try_fp = NULL;
+                            return;
                         }
                     }
                 }
-                if( !skip ) {
-                    file_names[++level] = mem_alloc( strlen( try_file_name ) + 1 );
-                    strcpy( file_names[++level], try_file_name );
-                    str = read_indirect_file( try_fp );
-                    split_tokens( str );
-                    mem_free( str );
-                    try_file_name[0] = '\0';
-                    tokennext = cmd_tokens[level];
-                }
+                file_names[++level] = mem_alloc( strlen( try_file_name ) + 1 );
+                strcpy( file_names[level], try_file_name );
+                str = read_indirect_file( try_fp );
+                split_tokens( str );
+                mem_free( str );
+                try_file_name[0] = '\0';
                 fclose( try_fp );
                 try_fp = NULL;
-                if( !skip ) {
-                    return;
-                }
+                tokennext = cmd_tokens[level];
             } else {
                 xx_simple_err_c( err_file_not_found, token_buf );
             }
@@ -1658,12 +1646,10 @@ static cmd_tok * process_master_filename( cmd_tok * tok )
 {
     char        attrwork[MAX_FILE_ATTR];
     char    *   p;
-    int         len;
 
-    len = tok->toklen;
-    p = mem_alloc( len + 1 );
-    memcpy_s( p, len + 1, tok->token, len );
-    p[len] = '\0';
+    p = mem_alloc( tok->toklen + 1 );
+    strncpy( p, tok->token, tok->toklen );
+    p[tok->toklen] = '\0';
     g_info_research( inf_recognized_xxx, "document source file", p );
     strip_quotes( p );
     if( master_fname != NULL ) {         // more than one master file ?

@@ -65,7 +65,7 @@ extern  void        ff_teardown( void );
 extern  void        ff_set_incpath( const char * );
 extern  void        ff_set_libpath( const char * );
 extern  void        ff_setup( void );
-extern  int         search_file_in_dirs( const char *filename, const char *defext, const char *altext, dirseq seq );
+extern  FILE        *search_file_in_dirs( const char *filename, const char *defext, const char *altext, dirseq seq );
 
 #ifdef  __cplusplus
 }   /* End of "C" linkage for C++. */

@@ -15,14 +15,11 @@
 #ifndef GTYPE_H_INCLUDED
 #define GTYPE_H_INCLUDED
 
-#if defined(__QNX__) || defined(__LINUX__) // try to be nice to linux
-    #define PATH_SEP        '/'
-    #define INCLUDE_SEP     ':'
-#elif defined(__DOS__) || defined(__OS2__) || defined(__NT__) || defined(__OSI__)
-    #define PATH_SEP        '\\'
-    #define INCLUDE_SEP     ';'
+
+#if defined(__UNIX__)
+    #define FNAMECMPSTR      strcmp      /* for case sensitive file systems */
 #else
-    #error gtype.h not configured for system
+    #define FNAMECMPSTR      stricmp     /* for case insensitive file systems */
 #endif
 
 #define ulong           unsigned long
@@ -68,12 +65,15 @@
 
 #define PS_SHADE_FONT       13          // part of PS SHADE support
 
-/* default filename extensions */
-#define DEF_EXT             ".def"
-#define ERR_EXT             ".err"
-#define GML_EXT             ".gml"
-#define LAY_EXT             ".lay"
-#define OPT_EXT             ".opt"
+/* default filename extensions used by wgml tools */
+#define DEF_EXT             "def"
+#define ERR_EXT             "err"
+#define GML_EXT             "gml"
+#define LAY_EXT             "lay"
+#define OPT_EXT             "opt"
+#define COP_EXT             "cop"
+#define PCD_EXT             "pcd"
+#define FON_EXT             "fon"
 
 #define CONT_CHAR_DEFAULT   0x03        // cont character
 #define GML_CHAR_DEFAULT    ':'         // start of GML tag
