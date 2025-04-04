@@ -1430,10 +1430,10 @@ extern void gml_abstract( const gmltag * entry )
     (void)entry;
 
     if( ProcFlags.doc_sect_nxt == doc_sect_egdoc ) {
-        xx_line_err_c( err_eof_expected, tok_start );
+        xx_line_err_c( err_eof_expected, g_tok_start );
     }
     if( !ProcFlags.frontm_seen ) {
-        xx_line_err_c( err_doc_sec_expected_1, tok_start );
+        xx_line_err_c( err_doc_sec_expected_1, g_tok_start );
     }
     if( g_blank_text_lines > 0 ) {
         set_skip_vars( NULL, NULL, NULL, 1, 0 );    // set g_blank_units_lines
@@ -1551,7 +1551,7 @@ extern void gml_index( const gmltag * entry )
     (void)entry;
 
     if( ProcFlags.doc_sect_nxt == doc_sect_egdoc ) {
-        xx_line_err_c( err_eof_expected, tok_start );
+        xx_line_err_c( err_eof_expected, g_tok_start );
     }
 
     if( ProcFlags.doc_sect_nxt == doc_sect_index ) {// duplicate :INDEX tag
@@ -1561,7 +1561,7 @@ extern void gml_index( const gmltag * entry )
 
     if( !((ProcFlags.doc_sect == doc_sect_backm) ||
           (ProcFlags.doc_sect_nxt == doc_sect_backm)) ) {
-        xx_line_err_c( err_doc_sec_expected_1, tok_start );
+        xx_line_err_c( err_doc_sec_expected_1, g_tok_start );
     }
     if( !WgmlFlags.index ) {          // index option not active
         return;
@@ -1586,10 +1586,10 @@ extern void gml_preface( const gmltag * entry )
     (void)entry;
 
     if( ProcFlags.doc_sect_nxt == doc_sect_egdoc ) {
-        xx_line_err_c( err_eof_expected, tok_start );
+        xx_line_err_c( err_eof_expected, g_tok_start );
     }
     if( !ProcFlags.frontm_seen ) {
-        xx_line_err_c( err_doc_sec_expected_1, tok_start );
+        xx_line_err_c( err_doc_sec_expected_1, g_tok_start );
     }
     if( g_blank_text_lines > 0 ) {
         set_skip_vars( NULL, NULL, NULL, 1, 0 );    // set g_blank_units_lines
@@ -1609,10 +1609,10 @@ extern void gml_titlep( const gmltag * entry )
     (void)entry;
 
     if( ProcFlags.doc_sect_nxt == doc_sect_egdoc ) {
-        xx_line_err_c( err_eof_expected, tok_start );
+        xx_line_err_c( err_eof_expected, g_tok_start );
     }
     if( !ProcFlags.frontm_seen ) {
-        xx_line_err_c( err_doc_sec_expected_1, tok_start );
+        xx_line_err_c( err_doc_sec_expected_1, g_tok_start );
     }
     scr_process_break();
     gml_doc_xxx( doc_sect_titlep );

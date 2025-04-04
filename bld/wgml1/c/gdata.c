@@ -90,13 +90,13 @@ void init_global_vars( void )
 
     apage               = 0;            // absolute pageno 1 - n
     page                = 0;            // current pageno (in body 1 - n)
-    line                = 0;            // current output lineno on page
+    g_line              = 0;            // current output lineno on page
     g_curr_font         = FONT0;
     g_prev_font         = FONT0;
-    tm                  = 0;            // top margin              &$tm
-    bm                  = 0;            // bottom margin           &$bm
-    fm                  = 0;            // footing margin          &$fm
-    hm                  = 0;            // heading margin          &$hm
+    g_tm                = 0;            // top margin              &$tm
+    g_bm                = 0;            // bottom margin           &$bm
+    g_fm                = 0;            // footing margin          &$fm
+    g_hm                = 0;            // heading margin          &$hm
 
     in_esc              = ' ';
     tab_char            = 0x09;
@@ -105,7 +105,7 @@ void init_global_vars( void )
     box_col_set_pool    = NULL;
     box_col_stack_pool  = NULL;
     box_line            = NULL;
-    cur_line            = NULL;
+    g_cur_line          = NULL;
     prev_line           = NULL;
     max_depth           = 0;
 
@@ -219,9 +219,9 @@ void init_global_vars( void )
     pgnum_style[3]      = h_style;
     pgnum_style[4]      = h_style;
 
-    tagname[0]          = '*';          // last defined GML tag name none
+    g_tagname[0]        = '*';          // last defined GML tag name none
     tag_entry           = NULL;         // ... entry in tag_dict
-    attname[0]          = '*';          // last defined GML attribute none
+    g_attname[0]        = '*';          // last defined GML attribute none
     att_entry           = NULL;         // ... entry in tag_dict
 
     research_file_name[0] = '\0';
@@ -375,10 +375,10 @@ void init_pass_data( void )
         }
     }
 
-    tm = (bin_device->vertical_base_units * 6 ) / LPI;  // top margin &systm
-    bm = tm;                                            // bottom margin &sysbm
-    hm = bin_device->vertical_base_units / LPI;         // heading margin &syshm
-    fm = hm;                                            // footing margin &sysfm
+    g_tm = (bin_device->vertical_base_units * 6 ) / LPI;    // top margin &systm
+    g_bm = g_tm;                                            // bottom margin &sysbm
+    g_hm = bin_device->vertical_base_units / LPI;           // heading margin &syshm
+    g_fm = g_hm;                                            // footing margin &sysfm
 
     g_indent    = 0;
     g_indentr   = 0;
