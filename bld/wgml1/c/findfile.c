@@ -10,7 +10,6 @@
 *               open files:
 *                   ff_setup()
 *                   ff_teardown()
-*                   free_inc_fp()
 *                   search_file_in_dirs()
 *               plus these local items:
 *                   cur_dir
@@ -356,37 +355,29 @@ static int try_open( char * prefix, char * filename )
 
     /* Try to open the file. Return 0 on failure. */
 
-    for( ;; ) {
-        erc = fopen_s( &fp, buff, "rb" );
+    fp = fopen_rb( buff );
 #if defined( __UNIX__ )
-        if( erc == 0 ) {
-            break;
-        }
-        strlwr( buff );                 // for the sake of linux try again with lower case filename
-        erc = fopen_s( &fp, buff, "rb" );
-        if( erc == 0 ) {
-            break;
-        }
-#else       // DOS, OS/2, Windows
-        if( erc == 0 ) {
-            strlwr( buff );             // to match wgml 4.0
-            break;
-        }
-#endif
-        if( errno != ENOMEM && errno != ENFILE && errno != EMFILE ) {
-            break;
-        }
-        if( !free_resources( errno ) ) {
-            break;
-        }
-    }
     if( fp == NULL ) {
+        strlwr( buff );             // for the sake of linux try again with lower case filename
+        fp = fopen_rb( buff );
+    }
+#else
+    if( fp != NULL ) {
+        strlwr( buff );             // to match wgml 4.0
+    }
+#endif
+    if( fp == NULL ) {
+        if( errno == ENOMEM ) {
+            xx_simple_err( err_no_memory );
+        } else if( errno == ENFILE || errno == EMFILE ) {
+            xx_simple_err( err_no_handles );
+        }
         return( 0 );
     }
 
     /* Set the globals on success. */
 
-    strcpy_s( try_file_name, filename_length, buff );
+    strcpy( try_file_name, buff );
     try_fp = fp;
 
     return( 1 );
