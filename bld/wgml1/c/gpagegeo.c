@@ -51,30 +51,30 @@ void    init_page_geometry( void )
     }
     g_curr_font = layout_work.defaults.font;
 
-    lm = conv_hor_unit( &layout_work.page.left_margin, g_curr_font )
+    g_lm = conv_hor_unit( &layout_work.page.left_margin, g_curr_font )
          - bin_device->x_offset;        // left margin &syspagelm
-    if( lm < 0 ) {                      // wgml 4.0 limits value
-        lm = 0;
+    if( g_lm < 0 ) {                      // wgml 4.0 limits value
+        g_lm = 0;
     }
 
-    rm = conv_hor_unit( &layout_work.page.right_margin, g_curr_font )
+    g_rm = conv_hor_unit( &layout_work.page.right_margin, g_curr_font )
          - bin_device->x_offset;        // right margin &syspagerm
 
     rm_test = bin_device->horizontal_base_units / 4;
     if( (bin_device->horizontal_base_units % 4) > 0 ) {
         rm_test++;                          // round up if any remainder
     }
-    if( rm < rm_test ) {                    // wgml 4.0 limits value
+    if( g_rm < rm_test ) {                    // wgml 4.0 limits value
         xx_err( err_right_margin_2_small ); // candidate Severe Error
     }
 
-    g_page_left_org = lm + bin_device->x_start;
+    g_page_left_org = g_lm + bin_device->x_start;
     if( g_page_left_org < bin_device->x_start )
         g_page_left_org = bin_device->x_start;
     t_page.page_left = g_page_left_org;
     t_page.cur_left = t_page.page_left;     // set initial value
 
-    g_page_right_org = rm + bin_device->x_start;
+    g_page_right_org = g_rm + bin_device->x_start;
     if( g_page_right_org > bin_device->page_width ) {   // output must appear on page
         xx_err( err_margins_inverted );                 // candidate Severe Error
     }
@@ -83,7 +83,7 @@ void    init_page_geometry( void )
         xx_err( err_margins_inverted );             // candidate Severe Error
     }
 
-    g_net_page_width = rm - lm;
+    g_net_page_width = g_rm - g_lm;
     t_page.page_width = g_net_page_width;
 
     /****************************************************************/
@@ -153,8 +153,8 @@ void    init_page_geometry( void )
     t_page.page_top = t_page.panes_top;     // save top for possible bot banner calculation
 
     if( WgmlFlags.firstpass && WgmlFlags.research ) {  // show values TBD
-        out_msg( "\ntm:%d lm:%d rm:%d top margin:%d depth:%d\n\n", tm, lm, rm,
-                 top_margin, g_page_depth );
+        out_msg( "\ntm:%d lm:%d rm:%d top margin:%d depth:%d\n\n",
+                 g_tm, g_lm, g_rm, top_margin, g_page_depth );
 
         out_msg( "dev:%s page_w:%d page_d:%d hor_u:%d ver_u:%d x_s:%d y_s:%d"
                  " x_o:%d y_o:%d\n\n",
