@@ -347,10 +347,7 @@ static int try_open( char * prefix, char * filename )
 
     /* Clear the global variables used to contain the results. */
 
-    if( try_file_name != NULL ) {
-        mem_free( try_file_name );
-        try_file_name = NULL;
-    }
+    try_file_name[0] = '\0';
 
     if( try_fp != NULL ) {
         fclose( try_fp );
@@ -389,7 +386,6 @@ static int try_open( char * prefix, char * filename )
 
     /* Set the globals on success. */
 
-    try_file_name = mem_alloc( filename_length );
     strcpy_s( try_file_name, filename_length, buff );
     try_fp = fp;
 
@@ -412,7 +408,7 @@ void ff_setup( void )
 
     /* Initialize the globals. */
 
-    try_file_name = NULL;
+    try_file_name[0] = '\0';
     try_fp = NULL;
 
     /* This directory list encodes the current directory. */
@@ -526,10 +522,7 @@ void ff_set_libpath( const char *path )
 
 void ff_teardown( void )
 {
-    if( try_file_name != NULL ) {
-        mem_free( try_file_name );
-        try_file_name = NULL;
-    }
+    try_file_name[0] = '\0';
 
     if( try_fp != NULL) {
         fclose( try_fp );
