@@ -38,7 +38,7 @@ void init_global_vars( void )
 
     rs_loc              = 0;            // restricted location
 
-    try_file_name       = NULL;
+    try_file_name[0]    = '\0';
 
     master_fname        = NULL;         // Master input file name
     master_fname_attr   = NULL;         // Master input file name attributes
