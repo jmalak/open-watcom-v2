@@ -27,11 +27,7 @@
 #if defined( __WATCOMC__ ) || !defined( __UNIX__ )
 #include <process.h>
 #endif
-#if defined( __WATCOMC__ ) || defined( __UNIX__ )
-    #include <unistd.h>
-#else
-    #include <io.h>
-#endif
+#include "wio.h"
 
 #include "copfiles.h"       // mostly for access to bin_device & wgml_fonts
 #include "gvars.h"
