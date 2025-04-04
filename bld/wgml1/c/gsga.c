@@ -194,7 +194,7 @@ static  condcode    scan_att_optionsA( gaflags * att_flags )
         if( cc == omit ) {              // nothing more
             break;
         }
-        p = tok_start;
+        p = g_tok_start;
         switch( my_tolower( *p ) ) {
         case   'u' :
             if( (arg_flen > 1) && (arg_flen < 11)
@@ -259,15 +259,15 @@ static  condcode    scan_att_optionsB( gavalflags * val_flags, condcode cca,
     stringval[0] = '\0';
     cc = pos;
 
-    switch( my_tolower( *tok_start ) ) {
+    switch( my_tolower( *g_tok_start ) ) {
     case   'a' :
-        if( !strnicmp( "ANY", tok_start, arg_flen ) ) {
+        if( !strnicmp( "ANY", g_tok_start, arg_flen ) ) {
 
             *val_flags |= val_any;
             *att_flags |= att_any;
         } else {
             if( (arg_flen > 3) && (arg_flen < 10)
-                && !strnicmp( "AUTOmatic", tok_start, arg_flen ) ) {
+                && !strnicmp( "AUTOmatic", g_tok_start, arg_flen ) ) {
 
                 *val_flags |= val_auto;
                 *att_flags |= att_auto;
@@ -281,12 +281,12 @@ static  condcode    scan_att_optionsB( gavalflags * val_flags, condcode cca,
             cc = getarg();
             if( cc == quotes || cc == pos || cc == quotes0) {
                 if( arg_flen < sizeof( stringval ) ) {
-                    strncpy_s( stringval, sizeof( stringval), tok_start,
+                    strncpy_s( stringval, sizeof( stringval), g_tok_start,
                                arg_flen );
                     *val_flags |= val_value;
                 } else {
                     valptr = mem_alloc( arg_flen + 1 );
-                    strncpy_s( valptr, arg_flen + 1, tok_start, arg_flen );
+                    strncpy_s( valptr, arg_flen + 1, g_tok_start, arg_flen );
                     *val_flags |= val_valptr;
                 }
                 if( *att_flags & att_any ) { // default for any specified
@@ -298,7 +298,7 @@ static  condcode    scan_att_optionsB( gavalflags * val_flags, condcode cca,
         break;
     case   'r' :
         if( (arg_flen > 2) && (arg_flen < 6)
-            && !strnicmp( "RANge", tok_start, arg_flen ) ) {
+            && !strnicmp( "RANge", g_tok_start, arg_flen ) ) {
 
             *val_flags |= val_range;
             *att_flags |= att_range;
@@ -346,7 +346,7 @@ static  condcode    scan_att_optionsB( gavalflags * val_flags, condcode cca,
             }
         } else {
             if( (arg_flen == 5)
-                && !strnicmp( "RESET", tok_start, arg_flen ) ) {
+                && !strnicmp( "RESET", g_tok_start, arg_flen ) ) {
 
                 *val_flags |= val_reset;
                 /* no further processing */
@@ -357,7 +357,7 @@ static  condcode    scan_att_optionsB( gavalflags * val_flags, condcode cca,
         break;
     case   'l' :
         if( (arg_flen > 2) && (arg_flen < 7)
-            && !strnicmp( "LENgth", tok_start, arg_flen ) ) {
+            && !strnicmp( "LENgth", g_tok_start, arg_flen ) ) {
 
             *val_flags |= val_length;
             gn.argstart = scan_start;
@@ -378,13 +378,13 @@ static  condcode    scan_att_optionsB( gavalflags * val_flags, condcode cca,
         break;
     case   'v' :
         if( (arg_flen > 2) && (arg_flen < 6)
-            && !strnicmp( "VALue", tok_start, arg_flen ) ) {
+            && !strnicmp( "VALue", g_tok_start, arg_flen ) ) {
 
             cc = getarg();
             if( (cc == pos) || (cc == quotes) || (cc == quotes0) ) {
                  if( arg_flen <= VAL_LENGTH ) {
                     *val_flags |= val_value;
-                    strncpy_s( stringval, VAL_LENGTH + 1, tok_start,
+                    strncpy_s( stringval, VAL_LENGTH + 1, g_tok_start,
                                arg_flen );
                     if( *att_flags & att_upper ) {
                         strupr( stringval );
@@ -397,7 +397,7 @@ static  condcode    scan_att_optionsB( gavalflags * val_flags, condcode cca,
 #else
                     *val_flags |= val_valptr;
                     valptr = mem_alloc( arg_flen + 1 );
-                    strncpy_s( valptr, arg_flen + 1, tok_start, arg_flen );
+                    strncpy_s( valptr, arg_flen + 1, g_tok_start, arg_flen );
                     if( *att_flags & att_upper ) {
                         strupr( valptr );
                     }
@@ -413,7 +413,7 @@ static  condcode    scan_att_optionsB( gavalflags * val_flags, condcode cca,
                 break;
             }
             if( cc == pos && (arg_flen > 2) && (arg_flen < 8)
-                && !strnicmp( "DEFault", tok_start, arg_flen ) ) {
+                && !strnicmp( "DEFault", g_tok_start, arg_flen ) ) {
 
                 *val_flags |= val_def;
                 *att_flags |= att_def;
@@ -465,7 +465,7 @@ void    scr_ga( void )
 
     cc = getarg();                      // Tagname or *
 
-    if( cc == omit || (*tok_start == '*' && tag_entry == NULL) ) {
+    if( cc == omit || (*g_tok_start == '*' && tag_entry == NULL) ) {
         // no operands or tagname * and no previous definition
         xx_err_c( err_missing_name, "" );
     }
@@ -479,7 +479,7 @@ void    scr_ga( void )
     /*  isolate tagname  use previous if tagname *                         */
     /***********************************************************************/
 
-    p = tok_start;
+    p = g_tok_start;
 
     if( *p == '*' ) {                   // single * as tagname
         if( arg_flen > 1 ) {
@@ -488,7 +488,7 @@ void    scr_ga( void )
         }
         savetag = '*';                      // remember for possible quick access
         if( WgmlFlags.firstpass && (input_cbs->fmflags & II_research) ) {
-            out_msg("  using tagname %s\n", tagname );
+            out_msg("  using tagname %s\n", g_tagname );
         }
     } else {
         savetag = ' ';                      // no quick access
@@ -496,7 +496,7 @@ void    scr_ga( void )
         init_tag_att();                     // forget previous values for quick access
 
         len = 0;
-        pn = tagname;
+        pn = g_tagname;
         while( is_macro_char( *p ) && len < TAG_NAME_LENGTH ) {
             *pn++ = my_tolower( *p++ );     // copy lowercase tagname
             len++;
@@ -507,9 +507,9 @@ void    scr_ga( void )
             xx_err( err_tag_name_inv );     // name contains invalid or too many chars
             return;
         }
-        tag_entry = find_tag( &tag_dict, tagname );
+        tag_entry = find_tag( &tag_dict, g_tagname );
         if( tag_entry == NULL ) {
-            xx_err_c( err_user_tag, tagname );  // tagname not defined
+            xx_err_c( err_user_tag, g_tagname );  // tagname not defined
         }
     }
 
@@ -519,13 +519,13 @@ void    scr_ga( void )
 
     cc = getarg();                          // Attribute  name or *
 
-    if( cc == omit || (*tok_start == '*' && att_entry == NULL) ) {
+    if( cc == omit || (*g_tok_start == '*' && att_entry == NULL) ) {
         // no operands or attname * and no previous definition
         xx_err( err_att_name_inv );
         return;
     }
 
-    p = tok_start;
+    p = g_tok_start;
 
     if( *p == '*' ) {                   // single * as attname
         if( arg_flen > 1 ) {
@@ -534,7 +534,7 @@ void    scr_ga( void )
         }
         saveatt = '*';                      // remember for possible quick access
         if( WgmlFlags.firstpass && (input_cbs->fmflags & II_research) ) {
-            out_msg("  using attname %s\n", attname );
+            out_msg("  using attname %s\n", g_attname );
         }
         att_flags = att_entry->attflags;
     } else {
@@ -542,7 +542,7 @@ void    scr_ga( void )
         att_entry = NULL;
 
         len = 0;
-        pn = attname;
+        pn = g_attname;
         while( is_macro_char( *p ) && len < ATT_NAME_LENGTH ) {
             *pn++ = my_tolower( *p++ ); // copy lowercase tagname
             len++;
@@ -567,7 +567,7 @@ void    scr_ga( void )
             for( gawk = tag_entry->attribs; gawk != NULL;
                  gawk = gawk->next ) {
 
-                if( !stricmp( attname, gawk->name ) ) {
+                if( !stricmp( g_attname, gawk->name ) ) {
                     att_flags = gawk->attflags; // get possible uppercase option
                     break;
                 }
@@ -594,7 +594,7 @@ void    scr_ga( void )
         for( att_entry = tag_entry->attribs; att_entry != NULL;
              att_entry = att_entry->next ) {
 
-            if( !stricmp( attname, att_entry->name ) ) {
+            if( !stricmp( g_attname, att_entry->name ) ) {
                 break;
             }
         }
@@ -607,7 +607,7 @@ void    scr_ga( void )
 
         att_entry->vals = NULL;
         att_entry->attflags = att_flags;
-        strcpy( att_entry->name, attname );
+        strcpy( att_entry->name, g_attname );
     } else {
         att_entry->attflags = att_flags;// update flags
     }

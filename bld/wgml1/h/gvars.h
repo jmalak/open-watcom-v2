@@ -42,7 +42,7 @@ global  char        *   new_file_parms; // command tail for IM/AP
 global  char        *   scan_char_ptr;  // used by character scanning routines
 global  char        *   scan_restart;   // used by character scanning routines
 global  bool            scan_err;       // used by character scanning routines
-global  char        *   tok_start;      // start of scanned token
+global  char        *   g_tok_start;    // start of scanned token
 global  size_t          arg_flen;       // arg length
 global  tag_att_val     g_att_val;      // current attribute/value info
 global  char        *   att_start;      // (potential) attribute start
@@ -99,17 +99,17 @@ global  int             pass;           // current document pass no
 
 global  uint32_t        apage;          // current absolute pageno &$apage
 global  uint32_t        page;           // current document pageno &$page
-global  line_number     line;           // current output lineno   &$line
+global  line_number     g_line;         // current output lineno   &$line
 global  int32_t         lcmax;          // remaining lines on page initial
 
-global  int32_t         hm;             // heading margin          &$hm
-global  int32_t         tm;             // top margin              &$tm
+global  int32_t         g_hm;           // heading margin          &$hm
+global  int32_t         g_tm;           // top margin              &$tm
 
-global  int32_t         bm;             // bottom margin           &$bm
-global  int32_t         fm;             // footing margin          &$fm
+global  int32_t         g_bm;           // bottom margin           &$bm
+global  int32_t         g_fm;           // footing margin          &$fm
 
-global  int32_t         lm;             // left margin             &$pagelm
-global  int32_t         rm;             // right margin            &$pagerm
+global  int32_t         g_lm;           // left margin             &$pagelm
+global  int32_t         g_rm;           // right margin            &$pagerm
 
 global  symdict     *   global_dict;    // global symbol dictionary
 global  symdict     *   sys_dict;       // global system symbol dictionary
@@ -134,9 +134,9 @@ global char         *   buff2;          // input buffer
 global size_t           buff2_lg;       // input buffer used length
 
 // the following to manage .gt * and .ga * * syntax
-global char         tagname[TAG_NAME_LENGTH + 1];// last defined GML tag name
+global char         g_tagname[TAG_NAME_LENGTH + 1];// last defined GML tag name
 global gtentry  *   tag_entry;          // ... entry in tag_dict
-global char         attname[ATT_NAME_LENGTH + 1];// last defined GML attribute
+global char         g_attname[ATT_NAME_LENGTH + 1];// last defined GML attribute
 global gaentry  *   att_entry;          // ... entry in tag_dict
 
 global  long        li_cnt;             // remaining count for .li processing
@@ -150,7 +150,7 @@ global doc_el_group     *   block_queue_end;    // add point for new FB blocks
 
 // box support
 global  box_col_set     *   box_col_set_pool;   // pool of box_col_set instances
-global  box_col_set     *   cur_line;           // the line from the current BX line
+global  box_col_set     *   g_cur_line;         // the line from the current BX line
 global  box_col_set     *   prev_line;          // the previously drawn line
 global  box_col_stack   *   box_col_stack_pool; // pool of box_col_stack instances
 global  box_col_stack   *   box_line;           // the current line to be drawn
