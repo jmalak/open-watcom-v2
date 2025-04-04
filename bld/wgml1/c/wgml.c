@@ -165,8 +165,7 @@ static  void    add_file_cb_entry( void )
 
     new = mem_alloc( sizeof( filecb ) );
     new->filename = reuse_filename( try_file_name );
-    mem_free( try_file_name );
-    try_file_name = NULL;
+    try_file_name[0] = '\0';
 
     nip = mem_alloc( sizeof( inputcb ) );
     nip->hidden_head = NULL;

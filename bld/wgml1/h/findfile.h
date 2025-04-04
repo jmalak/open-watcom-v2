@@ -32,8 +32,8 @@
     #define global  extern
 #endif
 
-global  char    *   try_file_name;
-global  FILE    *   try_fp;
+global char    try_file_name[_MAX_PATH];
+global FILE    *try_fp;
 
 /* Reset so can be reused with other headers. */
 

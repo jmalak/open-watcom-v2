@@ -1048,10 +1048,7 @@ static void set_OPTFile( option * opt )
 
         g_info_research( inf_recognized_xxx, "option file", str );
         strcpy_s( token_buf, buf_size, str );
-        if( try_file_name != NULL ) {
-            mem_free( try_file_name );
-            try_file_name = NULL;
-        }
+        try_file_name[0] = '\0';
         split_attr_file( token_buf, attrwork, sizeof( attrwork ) );
         if( attrwork[0]  ) {
             xx_warn_cc( wng_fileattr_ignored, attrwork, token_buf );
@@ -1082,7 +1079,7 @@ static void set_OPTFile( option * opt )
                     str = read_indirect_file( try_file_name );
                     split_tokens( str );
                     mem_free( str );
-                    try_file_name = NULL;// free will be done via file_names[level]
+                    try_file_name[0] = '\0';
                     tokennext = cmd_tokens[level];
                     return;
                 }
@@ -1090,13 +1087,14 @@ static void set_OPTFile( option * opt )
                 xx_simple_err_c( err_file_not_found, token_buf );
             }
             if( str == NULL )  {
-                if( try_file_name != NULL ) mem_free( try_file_name );
-                if( file_names[level] != NULL ) mem_free( file_names[level] );
+                try_file_name[0] = '\0';
+                if( file_names[level] != NULL )
+                    mem_free( file_names[level] );
                 str = save[--level];
                 tokennext = sav_tokens[level];
             }
         } else {                        // max nesting level exceeded
-            if( try_file_name != NULL ) mem_free( try_file_name );
+            try_file_name[0] = '\0';
             xx_simple_err_c( err_max_nesting_opt, token_buf );
         }
         tokennext = tokennext->nxt;
