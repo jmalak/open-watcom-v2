@@ -31,30 +31,17 @@
 #include <errno.h>
 #include "wgml.h"
 #include "copdir.h"
+#include "iopath.h"
+#include "pathlist.h"
 
 #include "clibext.h"
 
-#if 0
-/* This macro is retained in case search_file_in_dirs() is ever extended to accept
- * filenames which include path information. The intended use of this macro is to
- * determine if fn_path begins with an OS-appropriate slash character.
- */
-
-#if defined( __UNIX__ )
-    #define IS_PATH_SEP( ch ) ((ch) == '/')
-#else
-    #define IS_PATH_SEP( ch ) ((ch) == '/' || (ch) == '\\')
-#endif
-#endif
 
 /* Local struct. */
 
 /* The count contains the number of entries in directories. */
 
-typedef struct {
-    char * * directories;
-    uint16_t count;
-} directory_list;
+typedef char    *directory_list;
 
 /* Local data. */
 
@@ -69,242 +56,36 @@ static  directory_list  path_dirs;
 /* Local function definitions. */
 
 /* Function initialize_directory_list().
- * Initializes in_directory_list from in_path_list.
+ * Allocates and initializes list from items_list.
  *
  * Parameters:
- *      in_path_list is a string containing the contents of a path list.
- *      in_directory_list is a pointer to the directory list to initialize.
+ *      items_list is a string containing the contents of a path list.
  *
  * Modified Parameter:
- *      *in_directory_list is modified as shown below.
+ *      none
  *
  * Notes:
- *      in_directory_list should be in its as-created state.
- *      If in_path_list is NULL, *in_directory_list will be cleared.
- *      If *in_directory_list->directories is not NULL on exit, it is a
- *          single block of memory and can be freed with one mem_free().
+ *      it alocates new list with paths and it contains reparsed items_list.
+ *      It is normalized that contains only host PATH_LIST_SEP.
  */
-
-static void initialize_directory_list( char const * in_path_list,
-                                        directory_list * in_list )
+static directory_list initialize_directory_list( const char *items_list )
 {
-    char *          current;
-    char * *        array_base;
-    directory_list  local_list;
-    int             i;
-    int             j;
-    int             k;
-    uint16_t        byte_count;
-    uint16_t        path_count;
+    directory_list  list;
+    char            *p;
 
-    /* If in_path_list is NULL, return at once. */
-
-    if( in_path_list == NULL ) {
-        in_list->count = 0;
-        mem_free( in_list->directories );
-        in_list->directories = NULL;
-        return;
-    }
-
-    /* Note: the two for loops which parse the path names were tested and
-     * tweaked. Please do not change them without thoroughly testing them.
-     * They are intended to correctly handle all directory lists, even if
-     * spaces and quotation marks are involved.
-     */
-
-    /* Determine the number of paths and the total length needed. */
-
-    byte_count = 0;
-    path_count = 0;
-    for( i = 0; i < strlen( in_path_list ); i++ ) {
-        if( in_path_list[i] == '"' ) {
-            for( j = i + 1; j < strlen( in_path_list ); j++ ) {
-                if( in_path_list[j] == '"' ) {
-                    break;
-                }
-                byte_count++;
-            }
-            i = j;
-            if( in_path_list[i] == '\0' ) {
-                if( in_path_list[i - 1] == INCLUDE_SEP ) {
-                    path_count++;
-                }
-                if( in_path_list[i - 1] != PATH_SEP ) {
-                    byte_count++;
-                }
-                break;
-            }
-            continue;
-        }
-        if( in_path_list[i] == INCLUDE_SEP ) {
-            if( in_path_list[i - 1] != INCLUDE_SEP ) {
-                path_count++;
-                if( in_path_list[i - 1] == '"' ) {
-                    if( in_path_list[i - 2] != PATH_SEP ) {
-                        byte_count++;
-                    }
-                }
-                if( in_path_list[i - 1] != PATH_SEP ) {
-                    byte_count++;
-                }
-                continue;
-            }
-        }
-        byte_count++;
-    }
-    if( in_path_list[i - 1] != INCLUDE_SEP ) {
-        path_count++;
-        if( in_path_list[i - 1] == '"' ) {
-            if( in_path_list[i - 2] != PATH_SEP ) {
-                byte_count++;
-            }
-        }
-        if( in_path_list[i - 1] != PATH_SEP ) {
-            byte_count++;
+    if( items_list == NULL )
+        items_list = "";
+    list = mem_alloc( strlen( items_list ) + 1 );
+    p = list;
+    if( items_list != NULL ) {
+        while( *items_list != '\0' ) {
+            if( p != list )
+                *p++ = PATH_LIST_SEP;
+            items_list = GetPathElement( items_list, NULL, &p );
         }
     }
-
-    /* Initialize local_list. */
-
-    local_list.count = path_count;
-    local_list.directories = (char **)mem_alloc(
-                    (path_count * sizeof( char * )) + byte_count + path_count );
-
-    array_base = local_list.directories;
-    current = (char *) array_base + (path_count * sizeof( char * ));
-
-    k = 0;
-    array_base[0] = current;
-    for( i = 0; i < strlen( in_path_list ); i++ ) {
-        if( in_path_list[i] == '"' ) {
-            for( j = i + 1; j < strlen( in_path_list ); j++ ) {
-                if( in_path_list[j] == '"' ) {
-                    break;
-                }
-                *current++ = in_path_list[j];
-            }
-            i = j;
-            if( in_path_list[i] == '\0' ) {
-                if( in_path_list[i - 1] == INCLUDE_SEP ) {
-                    if( ++k < path_count ) {
-                        array_base[k] = current;
-                    }
-                }
-                if( in_path_list[i - 1] != PATH_SEP ) {
-                    *current++ = PATH_SEP;
-                }
-                *current++ = '\0';
-                break;
-            }
-            continue;
-        }
-        if( in_path_list[i] == INCLUDE_SEP ) {
-            if( in_path_list[i - 1] != INCLUDE_SEP ) {
-                if( in_path_list[i - 1] != PATH_SEP ) {
-                    if( in_path_list[i - 1] == '"' ) {
-                        if( in_path_list[i - 2] != PATH_SEP ) {
-                            *current++ = PATH_SEP;
-                        }
-                    } else {
-                        *current++ = PATH_SEP;
-                    }
-                }
-                *current++ = '\0';
-                if( ++k < path_count ) {
-                    array_base[k] = current;
-                }
-            }
-            continue;
-        }
-        *current++ = in_path_list[i];
-    }
-    if( in_path_list[i - 1] != INCLUDE_SEP ) {
-        if( in_path_list[i - 1] == '"' ) {
-            if( in_path_list[i - 2] != PATH_SEP ) {
-                *current++ = PATH_SEP;
-            }
-        }
-        if( in_path_list[i - 1] != PATH_SEP ) {
-            *current++ = PATH_SEP;
-        }
-        *current++ = '\0';
-    }
-
-    /* Check for over-length directory names and remove any found. */
-
-    byte_count = 0;
-    path_count = local_list.count;
-
-    for( i = 0; i < local_list.count; i++ ){
-        if( strlen( local_list.directories[i] ) > _MAX_PATH ) {
-            path_count--;
-            xx_simple_err_c( err_path_max, local_list.directories[i] );
-            local_list.directories[i] = NULL;
-        } else {
-            byte_count += strnlen_s( local_list.directories[i], _MAX_PATH );
-        }
-    }
-
-    /* If local_list has no entries at all, free local_list.directories and
-     * clear in_list and return.
-     */
-
-    if( path_count == 0 ) {
-        mem_free( local_list.directories );
-        local_list.directories = NULL;
-        in_list->count = 0;
-        mem_free( in_list->directories );
-        in_list->directories = NULL;
-        return;
-    }
-
-    /* If some paths were eliminated for length, then initialize in_list with
-     * the remaining paths (only) and free local_list.directories. Otherwise,
-     * local_list.directories becomes in_list->directories.
-     */
-
-    if( path_count < local_list.count) {
-
-        in_list->count = path_count;
-        in_list->directories = (char **)mem_alloc(
-                    (path_count * sizeof( char * )) + byte_count + path_count );
-
-        array_base = in_list->directories;
-        current = (char *) (array_base + path_count * sizeof( char * ));
-
-        byte_count += path_count;
-        j = 0;
-        for( i = 0; i < local_list.count; i++ ) {
-            if( local_list.directories[i] != NULL ) {
-                array_base[j] = current;
-                strcpy_s( current, byte_count, local_list.directories[i] );
-                byte_count -= (strlen( local_list.directories[i] ) + 1);
-                current += (strlen( local_list.directories[i] ) + 1);
-                j++;
-            }
-        }
-        mem_free( local_list.directories );
-        local_list.directories = NULL;
-    } else {
-        in_list->count = local_list.count;
-        in_list->directories = local_list.directories;
-    }
-
-    return;
-}
-
-static void clear_directory_list( directory_list * in_list )
-{
-    /* Clear the existing list. */
-
-    if( in_list && in_list->count ) {
-        in_list->count = 0;
-        mem_free( in_list->directories );
-        in_list->directories = NULL;
-        return;
-    }
-
-    return;
+    *p = '\0';
+    return( list );
 }
 
 /* Function try_open().
@@ -323,11 +104,10 @@ static void clear_directory_list( directory_list * in_list )
  *      as found and FILE * of the file.
  */
 
-static int try_open( char * prefix, char * filename )
+static FILE *try_open( char * prefix, char * filename )
 {
     FILE    *   fp;
     char        buff[_MAX_PATH];
-    errno_t     erc;
     size_t      filename_length;
 
     /* Prevent buffer overflow. */
@@ -336,7 +116,7 @@ static int try_open( char * prefix, char * filename )
                       strnlen_s( filename, _MAX_PATH ) + 1;
     if( filename_length > _MAX_PATH ) {
         xx_simple_err_cc( err_file_max, prefix, filename );
-        return(0);
+        return( NULL );
     }
 
     /* Create the full file name to search for. */
@@ -353,7 +133,7 @@ static int try_open( char * prefix, char * filename )
         try_fp = NULL;
     }
 
-    /* Try to open the file. Return 0 on failure. */
+    /* Try to open the file. Return NULL on failure. */
 
     fp = fopen_rb( buff );
 #if defined( __UNIX__ )
@@ -372,7 +152,7 @@ static int try_open( char * prefix, char * filename )
         } else if( errno == ENFILE || errno == EMFILE ) {
             xx_simple_err( err_no_handles );
         }
-        return( 0 );
+        return( NULL );
     }
 
     /* Set the globals on success. */
@@ -380,7 +160,7 @@ static int try_open( char * prefix, char * filename )
     strcpy( try_file_name, buff );
     try_fp = fp;
 
-    return( 1 );
+    return( fp );
 }
 
 /* Extern function definitions. */
@@ -391,100 +171,21 @@ static int try_open( char * prefix, char * filename )
 
 void ff_setup( void )
 {
-    errno_t rc;
-    size_t  gmlinc_length;
-    size_t  gmllib_length;
-    size_t  max_length;
-    size_t  path_length;
+    /* Initialize the directory list for current directory. */
 
-    /* Initialize the globals. */
-
-    try_file_name[0] = '\0';
-    try_fp = NULL;
-
-    /* This directory list encodes the current directory. */
-
-    cur_dir_list.count = 1;
-    cur_dir_list.directories = &cur_dir;
-
-    /* Initialize the directory lists. */
-
-    gml_inc_dirs.count = 0;
-    gml_inc_dirs.directories = NULL;
-    gml_lib_dirs.count = 0;
-    gml_lib_dirs.directories = NULL;
-    path_dirs.count = 0;
-    path_dirs.directories = NULL;
-
-    /* Get the lengths of the environment variables. */
-
-    getenv_s( &gmlinc_length, NULL, 0, "GMLINC" );
-    getenv_s( &gmllib_length, NULL, 0, "GMLLIB" );
-    getenv_s( &path_length, NULL, 0, "PATH" );
-
-    /* Set max_length to the largest of the three. */
-
-    max_length = path_length;
-    if( gmlinc_length > max_length ) {
-        max_length = gmlinc_length;
-    }
-    if( gmllib_length > max_length ) {
-        max_length = gmllib_length;
-    }
-
-    /* Allocate the buffer, allowing for a terminating '\0'. */
-
-    max_length++;
-    env_var_buffer = mem_alloc( max_length );
+    cur_dir_list = initialize_directory_list( "." );
 
     /* Initialize the directory list for GMLINC. */
 
-    rc = getenv_s( &env_var_length, env_var_buffer, max_length, "GMLINC" );
-
-    if( rc == 0 ) {
-        env_var_buffer[env_var_length] = '\0';
-    } else {
-        env_var_length = 0;
-    }
-
-    if( env_var_length > 0 ) {
-        initialize_directory_list( env_var_buffer, &gml_inc_dirs );
-    }
+    gml_inc_dirs = initialize_directory_list( getenv( "GMLINC" ) );
 
     /* Initialize the directory list for GMLLIB. */
 
-    rc = getenv_s( &env_var_length, env_var_buffer, max_length, "GMLLIB" );
-
-    if( rc == 0 ) {
-        env_var_buffer[env_var_length] = '\0';
-    } else {
-        env_var_length = 0;
-    }
-
-    if( env_var_length > 0 ) {
-        initialize_directory_list( env_var_buffer, &gml_lib_dirs );
-    }
+    gml_lib_dirs = initialize_directory_list( getenv( "GMLLIB" ) );
 
     /* Initialize the directory list for PATH. */
 
-    rc = getenv_s( &env_var_length, env_var_buffer, max_length, "PATH" );
-
-    if( rc == 0 ) {
-        env_var_buffer[env_var_length] = '\0';
-    } else {
-        env_var_length = 0;
-    }
-
-    if( env_var_length > 0 ) {
-        initialize_directory_list( env_var_buffer, &path_dirs );
-    }
-
-    /* Free the environment variable buffer. */
-
-    mem_free( env_var_buffer );
-    env_var_buffer = NULL;
-
-    return;
+    path_dirs = initialize_directory_list( getenv( "PATH" ) );
 }
 
 /* Function ff_set_incpath().
@@ -493,8 +194,8 @@ void ff_setup( void )
 
 void ff_set_incpath( const char *path )
 {
-    clear_directory_list( &gml_inc_dirs );
-    initialize_directory_list( path, &gml_inc_dirs );
+    mem_free( gml_inc_dirs );
+    gml_inc_dirs = initialize_directory_list( path );
 }
 
 /* Function ff_set_libpath().
@@ -503,8 +204,8 @@ void ff_set_incpath( const char *path )
 
 void ff_set_libpath( const char *path )
 {
-    clear_directory_list( &gml_lib_dirs );
-    initialize_directory_list( path, &gml_lib_dirs );
+    mem_free( gml_lib_dirs );
+    gml_lib_dirs = initialize_directory_list( path );
 }
 
 /* Function ff_teardown().
@@ -522,22 +223,25 @@ void ff_teardown( void )
 
     /* directories points to a single block of allocated memory. */
 
-    if( gml_inc_dirs.directories != NULL ) {
-        mem_free( gml_inc_dirs.directories );
-        gml_inc_dirs.directories = NULL;
+    if( cur_dir_list != NULL ) {
+        mem_free( cur_dir_list );
+        cur_dir_list = NULL;
     }
 
-    if( gml_lib_dirs.directories != NULL) {
-        mem_free( gml_lib_dirs.directories );
-        gml_lib_dirs.directories = NULL;
+    if( gml_inc_dirs != NULL ) {
+        mem_free( gml_inc_dirs );
+        gml_inc_dirs = NULL;
     }
 
-    if( path_dirs.directories != NULL ) {
-        mem_free( path_dirs.directories );
-        path_dirs.directories = NULL;
+    if( gml_lib_dirs != NULL) {
+        mem_free( gml_lib_dirs );
+        gml_lib_dirs = NULL;
     }
 
-    return;
+    if( path_dirs != NULL ) {
+        mem_free( path_dirs );
+        path_dirs = NULL;
+    }
 }
 
 static char *search_member_name( const char *dir, const char *filename )
@@ -589,33 +293,27 @@ static char *search_member_name( const char *dir, const char *filename )
  *      and try_fp to the name as found and FILE * of the file.
  */
 
-int search_file_in_dirs( const char *filename, const char *defext, const char *altext, dirseq sequence )
+FILE *search_file_in_dirs( const char *filename, const char *defext, const char *altext, dirseq sequence )
 {
-    bool                full_name_done;
-    bool                short_name_done;
-    char                buff[_MAX_PATH2];
-    char                alternate_file[_MAX_PATH];
-    char                default_file[_MAX_PATH];
-    char                primary_file[_MAX_PATH];
-    char            *   dir_ptr;
-    char            *   fn_dir;
-    char            *   fn_drive;
-    char            *   fn_ext;
-    char            *   fn_name;
-    char            *   member_name = NULL;
-    directory_list  *   list_ptr;
-    directory_list  *   searchdirs[4];
-    int                 i;
-    int                 j;
-    size_t              fn_length;
-    size_t              max_ext_len;
-    size_t              member_length;
+    char            alternate_file[_MAX_PATH];
+    char            default_file[_MAX_PATH];
+    char            primary_file[_MAX_PATH];
+    char            *member_name = NULL;
+    directory_list  path_list;
+    directory_list  searchdirs[5];
+    size_t          member_length;
+    pgroup2         pg;
+    directory_list  *pd;
+    char            c;
+    char            *p;
+    char            dir_name[_MAX_PATH];
+    FILE            *fp;
 
     /* Ensure filename will fit into buff. */
 
-    if( strnlen_s( filename, _MAX_PATH ) == _MAX_PATH ) {
+    if( strlen( filename ) == _MAX_PATH ) {
         xx_simple_err_c( err_file_max, filename );
-        return( 0 );
+        return( NULL );
     }
 
     /* Initialize the filename buffers. */
@@ -624,229 +322,175 @@ int search_file_in_dirs( const char *filename, const char *defext, const char *a
     alternate_file[0] = '\0';
     default_file[0] = '\0';
 
+    _splitpath2( filename, pg.buffer, &pg.drive, &pg.dir, &pg.fname, &pg.ext );
+
     /* For ds_bin_lib, filename contains a defined name. */
 
     if( sequence != ds_bin_lib ) {
 
         /* Determine if filename contains path information. */
 
-        _splitpath2( filename, buff, &fn_drive, &fn_dir, &fn_name, &fn_ext );
-
-        if( fn_drive[0] != '\0' || fn_dir[0] != '\0' ) {
+        if( pg.drive[0] != '\0' || pg.dir[0] != '\0' ) {
             xx_simple_err_c( err_file_name, filename );
-            return( 0 );
+            return( NULL );
         }
 
         /* Ensure the file name will fit in the buffers if the literal extensions
          * are used. Note that all literal extensions contain 4 characters.
          */
 
-        if( *fn_ext == '\0' ) {
-            if( strnlen_s( filename, _MAX_PATH ) + 4 == _MAX_PATH ) {
+        if( pg.ext[0] == '\0' ) {
+            if( strlen( filename ) >= _MAX_PATH - 4 ) {
                 switch( sequence ) {
                 case ds_opt_file:
-                    xx_simple_err_cc( err_file_max, filename, ".opt" );
+                    xx_simple_err_cc( err_file_max, filename, "." OPT_EXT );
                     break;
                 case ds_doc_spec:
-                    xx_simple_err_cc( err_file_max, filename, ".gml" );
+                    xx_simple_err_cc( err_file_max, filename, "." GML_EXT );
                     break;
                 case ds_bin_lib:
-                    xx_simple_err_cc( err_file_max, filename, ".cop" );
+                    xx_simple_err_cc( err_file_max, filename, "." COP_EXT );
                     break;
                 case ds_lib_src:
-                    xx_simple_err_cc( err_file_max, filename, ".pcd" );
+                    xx_simple_err_cc( err_file_max, filename, "." PCD_EXT );
                     break;
                 default:
                     xx_simple_err_cc( err_file_max, filename, ".xxx" );
                 }
-                return( 0 );
+                return( NULL );
             }
         }
-
-        /* Capture the bare filename length and the longest extension's length */
-
-        fn_length = strnlen_s( fn_name, _MAX_PATH );
-        max_ext_len = 3;    // for literal extensions used above
-        if( strnlen_s( defext, _MAX_PATH ) > max_ext_len ) {
-            max_ext_len = strnlen_s( defext, _MAX_PATH );
-        }
-        if( strnlen_s( altext, _MAX_PATH ) > max_ext_len ) {
-            max_ext_len = strnlen_s( altext, _MAX_PATH );
-        }
-        if( strnlen_s( fn_ext, _MAX_PATH ) > max_ext_len ) {
-            max_ext_len = strnlen_s( fn_ext, _MAX_PATH );
-        }
-
     }
 
     /* Set up the file names and the dirs for the specified sequence. */
 
+    pd = searchdirs;
     switch( sequence ) {
     case ds_opt_file:
-        strcpy_s( primary_file, _MAX_PATH, fn_name );
-        if( *fn_ext == '\0' ) {
-            strcat_s( primary_file, _MAX_PATH, ".opt" );
-        } else {
-            strcat_s( primary_file, _MAX_PATH, fn_ext );
-        }
-        searchdirs[0] = &cur_dir_list;
-        searchdirs[1] = &gml_lib_dirs;
-        searchdirs[2] = &gml_inc_dirs;
-        searchdirs[3] = &path_dirs;
+        if( pg.ext[0] == '\0' )
+            pg.ext = OPT_EXT;
+        _makepath( primary_file, NULL, NULL, pg.fname, pg.ext );
+        *pd++ = cur_dir_list;
+        *pd++ = gml_lib_dirs;
+        *pd++ = gml_inc_dirs;
+        *pd++ = path_dirs;
         break;
     case ds_doc_spec:
-        strcpy_s( primary_file, _MAX_PATH, fn_name );
-        if( *fn_ext == '\0' ) {
-            strcat_s( primary_file, _MAX_PATH, ".gml" );
-        } else {
-            strcat_s( primary_file, _MAX_PATH, fn_ext );
+        if( pg.ext[0] == '\0' ) {
+            if( altext != NULL && altext[0] != '\0' ) {
+                _makepath( alternate_file, NULL, NULL, pg.fname, altext );
+            }
+            if( defext == NULL || FNAMECMPSTR( defext, GML_EXT )) {
+                _makepath( default_file, NULL, NULL, pg.fname, GML_EXT );
+            }
+            pg.ext = GML_EXT;
         }
-        if( *altext != '\0' && *fn_ext == '\0' ) {
-            strcpy_s( alternate_file, _MAX_PATH, fn_name );
-            strcat_s( alternate_file, _MAX_PATH, altext );
-        }
-        if( *fn_ext == '\0' && strcmp( defext, ".gml" )) {
-            strcpy_s( default_file, _MAX_PATH, fn_name );
-            strcat_s( default_file, _MAX_PATH, ".gml" );
-        }
-        searchdirs[0] = &cur_dir_list;
-        searchdirs[1] = &gml_inc_dirs;
-        searchdirs[2] = &gml_lib_dirs;
-        searchdirs[3] = &path_dirs;
+        _makepath( primary_file, NULL, NULL, pg.fname, pg.ext );
+        *pd++ = cur_dir_list;
+        *pd++ = gml_inc_dirs;
+        *pd++ = gml_lib_dirs;
+        *pd++ = path_dirs;
         break;
     case ds_bin_lib:
-        searchdirs[0] = &gml_lib_dirs;
-        searchdirs[1] = &gml_inc_dirs;
-        searchdirs[2] = &path_dirs;
-        searchdirs[3] = NULL;
+        *pd++ = gml_lib_dirs;
+        *pd++ = gml_inc_dirs;
+        *pd++ = path_dirs;
         break;
     case ds_lib_src:
-        strcpy_s( primary_file, _MAX_PATH, fn_name );
-        if( *fn_ext == '\0' ) {
-            strcat_s( primary_file, _MAX_PATH, ".pcd" );
-        } else {
-            strcat_s( primary_file, _MAX_PATH, fn_ext );
-        }
-        strcpy_s( alternate_file, _MAX_PATH, fn_name );
-        if( *altext == '\0' ) {
-            strcat_s( alternate_file, _MAX_PATH, ".fon" );
-        } else {
-            strcat_s( alternate_file, _MAX_PATH, altext );
-        }
-        searchdirs[0] = &cur_dir_list;
-        searchdirs[1] = &gml_inc_dirs;
-        searchdirs[2] = NULL;
-        searchdirs[3] = NULL;
+        if( altext == NULL || altext[0] == '\0' )
+            altext = FON_EXT;
+        _makepath( alternate_file, NULL, NULL, pg.fname, altext );
+        if( pg.ext[0] == '\0' )
+            pg.ext = PCD_EXT;
+        _makepath( primary_file, NULL, NULL, pg.fname, pg.ext );
+        *pd++ = cur_dir_list;
+        *pd++ = gml_inc_dirs;
         break;
     default:
         internal_err( __FILE__, __LINE__ );
+        return( NULL );
     }
+    /*
+     * add terminate NULL pointer as last search directory to the array
+     */
+    *pd = NULL;
 
     /* Search each directory for each filename. */
 
-    full_name_done = false;
-    short_name_done = false;
-    while( !short_name_done ) {
-        for( i = 0; i < 4; i++ ) {
-            list_ptr = searchdirs[i];
-            if( list_ptr == NULL ) {
-                break;
+    for( pd = searchdirs; (path_list = *pd) != NULL; pd++ ) {
+        while( (c = *path_list) != '\0' ) {
+            p = dir_name;
+            do {
+                ++path_list;
+                if( IS_PATH_LIST_SEP( c ) )
+                    break;
+                *p++ = c;
+            } while( (c = *path_list) != '\0' );
+            c = p[-1];
+            if( !IS_PATH_SEP( c ) ) {
+                *p++ = DIR_SEP;
+            }
+            *p = '\0';
+
+            /* For ds_bin_lib, set primary file from the defined name. */
+
+            if( sequence == ds_bin_lib ) {
+
+                /* See if dir_ptr contains a wgmlst.cop file. */
+
+                member_name = search_member_name( dir_name, filename );
+                if( member_name == NULL ) {
+                    continue;
+                }
+
+                /* Construct primary_file and open it normally. */
+
+                member_length = strlen( member_name );
+                pg.ext = NULL;
+                if( memchr( member_name, '.', member_length ) == NULL ) {
+                    /* Avoid buffer overflow from member_name. */
+
+                    if( member_length >= _MAX_PATH - 4 ) {
+                        xx_simple_err_cc( err_file_max, member_name, "." COP_EXT );
+                        mem_free( member_name );
+                        return( NULL );
+                    }
+                    pg.ext = COP_EXT;
+                }
+#ifdef __UNIX__
+                strlwr( member_name );
+#endif
+                _makepath( primary_file, NULL, NULL, member_name, pg.ext );
+                mem_free( member_name );
             }
 
-            for( j = 0; j < list_ptr->count; j++ ) {
+            fp = try_open( dir_name, primary_file );
+            if( fp != NULL ) {
+                return( fp );
+            }
 
-                dir_ptr = list_ptr->directories[j];
+            /* Not finding the file is only a problem for ds_bin_lib. */
 
-                /* For ds_bin_lib, set primary file from the defined name. */
+            if( sequence == ds_bin_lib ) {
+                xx_simple_err_cc( err_mem_dir, dir_name, primary_file );
+                return( NULL );
+            }
 
-                if( sequence == ds_bin_lib ) {
-
-                    /* See if dir_ptr contains a wgmlst.cop file. */
-
-                    member_name = search_member_name( dir_ptr, filename );
-                    if( member_name == NULL ) {
-                        continue;
-                    }
-
-                    /* Construct primary_file and open it normally. */
-
-                    member_length = strnlen_s( member_name, _MAX_PATH );
-                    if( memchr( member_name, '.', member_length ) == NULL ) {
-
-                        /* Avoid buffer overflow from member_name. */
-
-                        if( member_length < _MAX_PATH ) {
-                            strcpy_s( primary_file, _MAX_PATH, member_name );
-
-                            /* Avoid buffer overflow from the extension. */
-
-                            if( member_length + 4 < _MAX_PATH ) {
-                                strcat_s( primary_file, _MAX_PATH, ".cop" );
-                                mem_free( member_name );
-                                member_name = NULL;
-                            } else {
-                                xx_simple_err_cc( err_file_max, member_name, ".cop" );
-                                mem_free( member_name );
-                                member_name = NULL;
-                                return( 0 );
-                            }
-                        } else {
-                            xx_simple_err_cc( err_file_max, member_name, "" );
-                            mem_free( member_name );
-                            member_name = NULL;
-                            return( 0 );
-                        }
-                    }
+            if( alternate_file != NULL ) {
+                fp = try_open( dir_name, alternate_file );
+                if( fp != NULL ) {
+                    return( fp );
                 }
+            }
 
-                if( try_open( dir_ptr, primary_file ) != 0 ) {
-                    return( 1 );
-                }
-
-                /* Not finding the file is only a problem for ds_bin_lib. */
-
-                if( sequence == ds_bin_lib ) {
-                    xx_simple_err_cc( err_mem_dir, dir_ptr, primary_file );
-                    return( 0 );
-                }
-
-                if( alternate_file && *alternate_file ) {
-                    if( try_open( dir_ptr, alternate_file ) != 0 ) {
-                        return( 1 );
-                    }
-                }
-
-                if( default_file && *default_file ) {
-                    if( try_open( dir_ptr, default_file ) != 0 ) {
-                        return( 1 );
-                    }
+            if( default_file != NULL ) {
+                fp = try_open( dir_name, default_file );
+                if( fp != NULL ) {
+                    return( fp );
                 }
             }
         }
-        if( full_name_done ) {
-            short_name_done = true;
-        } else {                            // first pass done
-            full_name_done = true;
-            if( (sequence != ds_bin_lib) && ((fn_length > 8) || (max_ext_len > 3)) ) {    // try 8.3 version of filename, as wgml 4.0 does
-                if( *primary_file ) {
-                    memmove_s( &primary_file[8], _MAX_PATH, &primary_file[fn_length], 4 );
-                    primary_file[12] = '\0';
-                }
-                if( *alternate_file ) {
-                    memmove_s( &alternate_file[8], _MAX_PATH, &alternate_file[fn_length], 4 );
-                    alternate_file[12] = '\0';
-                }
-                if( *default_file ) {
-                    memmove_s( &default_file[8], _MAX_PATH, &default_file[fn_length], 4 );
-                    default_file[12] = '\0';
-                }
-            } else {
-                short_name_done = true;     // no second pass if filename short enough
-            }
-        }
-
     }
 
-    return( 0 );
+    return( NULL );
 }
-
