@@ -1358,8 +1358,7 @@ void ob_setup( void )
 
     /* Create (truncate) the output file. */
 
-    fopen_s( &out_file_fp, out_file, "uwb" );
-
+    out_file_fp = fopen( out_file, "wb" );
     if( out_file_fp == NULL ) {
         xx_simple_err_c( err_open_out_file, out_file );
     }
