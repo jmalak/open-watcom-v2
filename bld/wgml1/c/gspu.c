@@ -53,15 +53,18 @@ void    close_all_pu_files( void )
 /*  open  workfile n if not yet done                                       */
 /***************************************************************************/
 
-static  errno_t open_pu_file( int n )
+static int open_pu_file( int n )
 {
-    errno_t         erc = 0;
-    static  char    filename[20] = "sysusr0x.gml";
+    int             erc = 0;
+    static char     filename[20] = "sysusr0x.gml";
 
     if( n > 0 && n < 10 ) {
         if( workfile[n - 1] == NULL ) {   // not yet open
             filename[7] = '0' + n;
-            erc = fopen_s( &workfile[n - 1], filename, "uwt" );
+            workfile[n - 1] = fopen( filename, "wt" );
+            if( workfile[n - 1] == NULL ) {
+                erc = errno;
+            }
         }
     }
     return( erc );

@@ -1990,7 +1990,7 @@ static  void    put_layout( char * name, layout_data * lay )
     static  FILE    *   layfile;
     symsub          *   sversion;
 
-    fopen_s( &layfile, name, "uwt" );
+    layfile = fopen( name, "wt" );
     if( layfile == NULL ) {
         out_msg( "open error %s\n", name );
         return;
