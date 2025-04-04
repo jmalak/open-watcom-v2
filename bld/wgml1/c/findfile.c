@@ -549,6 +549,29 @@ void ff_teardown( void )
     return;
 }
 
+static char *search_member_name( const char *dir, const char *filename )
+{
+#define DIRECTORY_FILE  "wgmlst.cop"
+
+    FILE    *fp;
+    char    *member_name;
+    char    buff[_MAX_PATH + sizeof( DIRECTORY_FILE )];
+
+    strcpy( buff, dir );
+    strcat( buff, DIRECTORY_FILE );
+    if( strlen( buff ) >= _MAX_PATH )
+        return( NULL );
+    fp = fopen( buff, "rb" );
+    if( fp == NULL ) {
+        return( NULL );
+    }
+    member_name = get_member_name( fp, filename );
+    fclose( fp );
+    return( member_name );
+
+#undef DIRECTORY_FILE
+}
+
 /* Function search_file_in_dirs().
  * Searches for filename in curdir and the directories given in the
  * environment variables, as appropriate to the value of sequence.
@@ -747,15 +770,9 @@ int search_file_in_dirs( const char *filename, const char *defext, const char *a
 
                 if( sequence == ds_bin_lib ) {
 
-                /* See if dir_ptr contains a wgmlst.cop file. */
+                    /* See if dir_ptr contains a wgmlst.cop file. */
 
-                    if( try_open( dir_ptr, "wgmlst.cop" ) == 0 ) {
-                        continue;
-                    }
-
-                    /* try_fp now contains a FILE * to the directory file. */
-
-                    member_name = get_member_name( filename );
+                    member_name = search_member_name( dir_ptr, filename );
                     if( member_name == NULL ) {
                         continue;
                     }
