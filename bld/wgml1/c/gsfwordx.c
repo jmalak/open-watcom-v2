@@ -127,7 +127,7 @@ static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], size_t parmcount,
         return( pos );
     }
 
-    pval = tok_start;                   // start word
+    pval = g_tok_start;                 // start word
 
     if( len == 0 ) {                    // default word count = to end of string
         ptok = pend;
@@ -142,7 +142,7 @@ static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], size_t parmcount,
     } else {
         k = 0;
         for( k = 0; k < len; k++ ) {
-            ptok = tok_start;
+            ptok = g_tok_start;
             cc = getarg();
             if( cc == omit ) {
                 ptok = pend;
@@ -157,8 +157,8 @@ static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], size_t parmcount,
             *result += 1;
             ressize--;
         }
-        if( pval < tok_start && ( *pval != ' ' ) ) {    // copy last word
-            for( ; pval < tok_start; pval++ ) {
+        if( pval < g_tok_start && ( *pval != ' ' ) ) {    // copy last word
+            for( ; pval < g_tok_start; pval++ ) {
                 if( ( *pval == ' ' ) || ( ressize <= 0 ) ) {
                     break;
                 }
@@ -340,7 +340,7 @@ condcode    scr_wordpos( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * r
     scan_stop  = pstrend;
     k = 0;
     cc = pos;
-    tok_start = pstr;
+    g_tok_start = pstr;
     while( ( k <= n ) && ( cc != omit ) ) { // find start word
         cc = getarg();
         k++;
@@ -352,7 +352,7 @@ condcode    scr_wordpos( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * r
         return( pos );
     }
 
-    pstr = tok_start;                   // start word in string
+    pstr = g_tok_start;                   // start word in string
     index = 0;
     pp = phrase;
     inword = true;

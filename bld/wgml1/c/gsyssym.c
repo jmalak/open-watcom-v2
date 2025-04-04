@@ -199,7 +199,7 @@ static void sysbmfun( symvar * e )
 {
     (void)e;
 
-    ulongtodec( bm, sysbmstr );
+    ulongtodec( g_bm, sysbmstr );
     return;
 }
 
@@ -395,7 +395,7 @@ static void sysfmfun( symvar * e )
 {
     (void)e;
 
-    ulongtodec( fm, sysfmstr );
+    ulongtodec( g_fm, sysfmstr );
     return;
 }
 
@@ -481,7 +481,7 @@ static void syshmfun( symvar * e )
 {
     (void)e;
 
-    ulongtodec( hm, syshmstr );
+    ulongtodec( g_hm, syshmstr );
     return;
 }
 
@@ -629,7 +629,7 @@ static void syslinefun( symvar * e )    // current lineno on page
 {
     (void)e;
 
-    ulongtodec( line, syslinestr );
+    ulongtodec( g_line, syslinestr );
     return;
 }
 
@@ -738,7 +738,7 @@ static void syspagelmfun( symvar * e )  // page left margin
 {
     (void)e;
 
-    ulongtodec( lm, syspagelmstr );
+    ulongtodec( g_lm, syspagelmstr );
     return;
 }
 
@@ -746,7 +746,7 @@ static void syspagermfun( symvar * e )  // page right margin
 {
     (void)e;
 
-    ulongtodec( rm, syspagermstr );
+    ulongtodec( g_rm, syspagermstr );
     return;
 }
 
@@ -1003,7 +1003,7 @@ static void systmfun( symvar * e )
 {
     (void)e;
 
-    ulongtodec( tm, systmstr );
+    ulongtodec( g_tm, systmstr );
     return;
 }
 
