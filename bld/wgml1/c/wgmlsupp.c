@@ -253,8 +253,8 @@ void free_some_mem( void )
     if( box_line != NULL ) {
         add_box_col_stack_to_pool( box_line );
     }
-    if( cur_line != NULL ) {
-        add_box_col_set_to_pool( cur_line );
+    if( g_cur_line != NULL ) {
+        add_box_col_set_to_pool( g_cur_line );
     }
     if( prev_line != NULL ) {
         add_box_col_set_to_pool( prev_line );
