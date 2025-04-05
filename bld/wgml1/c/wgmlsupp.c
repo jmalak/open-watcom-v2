@@ -42,7 +42,7 @@ void g_banner( void )
     if( !(WgmlFlags.bannerprinted | WgmlFlags.quiet) ) {
         out_msg( "WATCOM Script/GML V4.0 Copyright by WATCOM International Corp. 1985, 1993." CRLF );
         out_msg( banner1( "Special Edition for Open Watcom", _WGML_VERSION_ ) CRLF );
-        out_msg( banner2a() CRLF );
+        out_msg( banner2 CRLF );
         out_msg( banner3 CRLF );
         out_msg( banner3a CRLF );
         out_msg( "Compiled with WATCOMC "xmystr(__WATCOMC__)
@@ -390,6 +390,29 @@ static bool check_if( void )
     return( retval );
 }
 
+
+bool check_realloc_line_buff( size_t len )
+{
+    char    *p;
+    size_t  size;
+
+    if( len > line_buff.length ) {
+        do {
+            size = line_buff.length * 2;
+        } while( len > size );
+        /*
+         * add space for null terminator, but don't count it in length
+         */
+        p = mem_realloc( line_buff.text, size + 1 );
+        if( p == NULL ) {
+            return( false );
+        }
+        line_buff.text = p;
+        line_buff.length = size;
+    }
+    line_buff.current = len;
+    return( true );
+}
 
 /***************************************************************************/
 /*  get line from current input ( file )                                   */

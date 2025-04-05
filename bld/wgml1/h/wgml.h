@@ -502,6 +502,7 @@ extern  bool    get_msg( msg_ids resourceid, char *buffer, size_t buflen );
 extern  void    free_some_mem( void );
 extern  void    g_banner( void );
 // extern  char  * get_filename_full_path( char * buff, char const * name, size_t max );
+extern  bool    check_realloc_line_buff( size_t len );
 extern  bool    get_line( bool researchoutput );
 extern  void    inc_inc_level( void );
 extern FILE     *fopen_rb( const char *fname );
