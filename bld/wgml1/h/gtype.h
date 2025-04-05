@@ -113,10 +113,6 @@ typedef uint32_t    line_number;
 typedef uint8_t     text_space;
 typedef uint32_t    units_space;
 
-#if defined( __WATCOMC__ )
-#pragma enable_message( 128 ); // reenable: Warning! W128: 3 padding byte(s) added
-#endif
-
 /***************************************************************************/
 /*  Space units Horiz + Vert              to be redesigned      TBD        */
 /***************************************************************************/
