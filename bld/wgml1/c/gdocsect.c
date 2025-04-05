@@ -280,15 +280,13 @@ static void gen_rule_head( char * letter )
             cur_limit = full_line / str_width;
             cur_count = 0;
             cur_width = 0;
-            line_buff.current = cur_limit;
-            line_buff.current *= str_count;                 // length in characters
-            while( line_buff.current > line_buff.length ) {
-                line_buff.length *= 2;
-                line_buff.text = mem_realloc( line_buff.text, line_buff.length + 1 );
+            if( check_realloc_line_buff( cur_limit * str_count ) ) {
+            } else {
+                /* no memory */
             }
             line_buff.text[0] = '\0';
             for( i = 0; i < cur_limit; i++ ) {              // fill text with copies of full string
-                strcat_s( line_buff.text, line_buff.current + 1, layout_work.ixhead.frame.string );
+                strcat( line_buff.text, layout_work.ixhead.frame.string );
                 cur_width += str_width;
                 cur_count += str_count;
             }
