@@ -209,42 +209,70 @@ void set_pgnum_style( void )
 /*  initialize final_content from the content of the region                */
 /***************************************************************************/
 
+static bool check_realloc_final_content( final_reg_content *final_content, size_t len )
+{
+    size_t  size;
+    char    *p;
+
+    if( final_content->len < len ) {
+        size = ( ( len + str_size - 1 ) / str_size ) * str_size;
+        /*
+         * add space for null terminator, but don't count it in len
+         */
+        if( final_content->string == NULL ) {
+            p = mem_alloc( size + 1 );
+        } else {
+            p = mem_realloc( final_content->string, size + 1 );
+        }
+        if( p == NULL ) {
+            return( false );
+        }
+        final_content->string = p;
+        final_content->len = size;
+    }
+    return( true );
+}
+
+static void free_final_content( final_reg_content *final_content )
+{
+    if( final_content->string != NULL ) {
+        mem_free( final_content->string );
+        final_content->string = NULL;
+    }
+    final_content->len = 0;
+}
+
 static void content_reg( region_lay_tag * region )
 {
     char            buf[BUF_SIZE];
     symsub      *   symsubval;
     int             k;
     int             rc;
+    size_t          len;
 
     buf[0] = '\0';
     if( region->script_format ) {
-        for( k = 0; k < 3; ++k ) {
-            if( region->script_region[k].string != NULL ) {
-                strcpy_s( buf, strlen(region->script_region[k].string) + 1,
-                          region->script_region[k].string );
+        for( k = 0; k < 3; ++k ) {  // for all region parts
+            if( region->script_region[k].string == NULL
+              || region->script_region[k].string[0] == '\0' )
+                continue;           // skip empty part
+            strncpy( buf, region->script_region[k].string, sizeof( buf ) - 1 );
+            buf[sizeof( buf ) - 1] = '\0';
+            process_late_subst( buf );
+            while( resolve_symvar_functions( buf, false ) ) {   // until all resolutions done
                 process_late_subst( buf );
-                while( resolve_symvar_functions( buf, false ) ) {   // until all resolutions done
-                    process_late_subst( buf );
-                }
-                while( region->final_content[k].len < strlen( buf ) ) {
-                    if( region->final_content[k].string == NULL ) {
-                        region->final_content[k].len = str_size;
-                        region->final_content[k].string = mem_alloc( str_size );
-                    } else {
-                        region->final_content[k].len += str_size;
-                        mem_realloc( region->final_content[k].string,
-                                                                region->final_content[k].len );
-                    }
-                }
-                if( region->final_content[k].len >  0 ) {   // buf actually has a string
-                    strcpy_s( region->final_content[k].string, strlen( buf ) + 1, buf );
-                    intrans( region->final_content[k].string, strlen( buf ) + 1, region->font );
-                }
+            }
+            len = strlen( buf );
+            if( check_realloc_final_content( &region->final_content[k], len ) ) {
+                strcpy( region->final_content[k].string, buf );
+                intrans( region->final_content[k].string, len + 1, region->font );
+            } else {
+                /* no memory */
             }
         }
     } else {    // not script format only normal string or keyword
         switch( region->contents.content_type ) {
-        case   string_content:
+        case string_content:
             strcpy_s( buf, strlen(region->contents.string) + 1, region->contents.string );
             process_late_subst( buf );
             while( resolve_symvar_functions( buf, false ) ) {   // until all resolutions done
@@ -553,64 +581,23 @@ static void content_reg( region_lay_tag * region )
 
         /* still not script format only normal string or keyword */
 
-        if( buf[0] != '\0' ) {       // assign to final_content depending on region_position
-            if( region->region_position == pos_center ) {
-                while( region->final_content[1].len < strlen( buf ) ) {
-                    if( region->final_content[1].string == NULL ) {
-                        region->final_content[1].len = str_size;
-                        region->final_content[1].string = mem_alloc( str_size );
-                    } else {
-                        region->final_content[1].len += str_size;
-                        mem_realloc( region->final_content[1].string, region->final_content[1].len );
-                    }
-                }
-                strcpy_s( region->final_content[1].string, strlen( buf ) + 1, buf );
-                intrans( region->final_content[1].string, strlen( buf ) + 1, region->font );
-            } else if( region->region_position == pos_right ) {
-                while( region->final_content[2].len < strlen( buf ) ) {
-                    if( region->final_content[2].string == NULL ) {
-                        region->final_content[2].len = str_size;
-                        region->final_content[2].string = mem_alloc( str_size );
-                    } else {
-                        region->final_content[2].len += str_size;
-                        mem_realloc( region->final_content[2].string, region->final_content[2].len );
-                    }
-                }
-                strcpy_s( region->final_content[2].string, strlen( buf ) + 1, buf );
-                intrans( region->final_content[2].string, strlen( buf ) + 1, region->font );
-            } else {                                // position left by default
-                while( region->final_content[0].len < strlen( buf ) ) {
-                    if( region->final_content[0].string == NULL ) {
-                        region->final_content[0].len = str_size;
-                        region->final_content[0].string = mem_alloc( str_size );
-                    } else {
-                        region->final_content[0].len += str_size;
-                        mem_realloc( region->final_content[0].string, region->final_content[0].len );
-                    }
-                }
-                strcpy_s( region->final_content[0].string, strlen( buf ) + 1, buf );
-                intrans( region->final_content[0].string, strlen( buf ) + 1, region->font );
+        if( region->region_position == pos_center ) {
+            k = 1;
+        } else if( region->region_position == pos_right ) {
+            k = 2;
+        } else { /* pos_left */
+            k = 0;
+        }
+        if( buf[0] != '\0' ) {
+            len = strlen( buf );
+            if( check_realloc_final_content( &region->final_content[k], len ) ) {
+                strcpy( region->final_content[k].string, buf );
+                intrans( region->final_content[k].string, len + 1, region->font );
+            } else {
+                /* no memory */
             }
-        } else {                // clear appropriate region (no content)
-            if( region->region_position == pos_center ) {
-                if( region->final_content[1].string != NULL ) {
-                    mem_free( region->final_content[1].string );
-                }
-                region->final_content[1].len = 0;
-                region->final_content[1].string = NULL;
-            } else if( region->region_position == pos_right ) {
-                if( region->final_content[2].string != NULL ) {
-                    mem_free( region->final_content[2].string );
-                }
-                region->final_content[2].len = 0;
-                region->final_content[2].string = NULL;
-            } else {                                // position left by default
-                if( region->final_content[0].string != NULL ) {
-                    mem_free( region->final_content[0].string );
-                }
-                region->final_content[0].len = 0;
-                region->final_content[0].string = NULL;
-            }
+        } else {
+            free_final_content( &region->final_content[k] );
         }
     }
     return;
@@ -730,6 +717,7 @@ static void out_ban_common( banner_lay_tag * ban, bool top )
     uint32_t            cur_width;
     uint32_t            cur_v_pos;
     uint32_t            text_width;
+    size_t              len;
 
     ban_line.first = NULL;
 
@@ -745,35 +733,30 @@ static void out_ban_common( banner_lay_tag * ban, bool top )
     /* NOTE: regions with content "rule" will not be processed here            */
     /***************************************************************************/
 
-    cur_grp = ban->by_line;
-    while( cur_grp != NULL ) {
-        cur_region = cur_grp ->first;
-        while( cur_region != NULL ) {
-            if( cur_region->contents.content_type != rule_content ) {
-                content_reg( cur_region );      // load final_content array
-
-                for( k = 0; k < 3; ++k ) {          // for all region parts
-                    if( cur_region->final_content[k].string == NULL ) {
-                        continue;                   // skip empty part
-                    }
-                    cur_width = 0;
-                    for( cur_p = cur_region->final_content[k].string; *cur_p != '\0'; cur_p++ ) {
-                        if( (cur_width + wgml_fonts[cur_region->font].width_table[(unsigned char) *cur_p]) <
-                                cur_region->reg_width ) {
-                            cur_width += wgml_fonts[cur_region->font].width_table[(unsigned char) *cur_p];
-                        } else {
-                            while( *cur_p != ' ' ) {
-                                cur_p--;
-                            }
-                            *cur_p = '\0';     // This is where multiline support goes!!!
-                            break;
+    for( cur_grp = ban->by_line; cur_grp != NULL; cur_grp = cur_grp->next ) {
+        for( cur_region = cur_grp->first; cur_region != NULL; cur_region = cur_region->next ) {
+            if( cur_region->contents.content_type == rule_content )
+                continue;                   // skip this region
+            content_reg( cur_region );      // load final_content array
+            for( k = 0; k < 3; ++k ) {      // for all region parts
+                if( cur_region->final_content[k].string == NULL
+                  || cur_region->final_content[k].string[0] == '\0' )
+                    continue;               // skip empty part
+                cur_width = 0;
+                for( cur_p = cur_region->final_content[k].string; *cur_p != '\0'; cur_p++ ) {
+                    if( (cur_width + wgml_fonts[cur_region->font].width_table[(unsigned char) *cur_p]) <
+                            cur_region->reg_width ) {
+                        cur_width += wgml_fonts[cur_region->font].width_table[(unsigned char) *cur_p];
+                    } else {
+                        while( *cur_p != ' ' ) {
+                            cur_p--;
                         }
+                        *cur_p = '\0';     // This is where multiline support goes!!!
+                        break;
                     }
                 }
             }
-            cur_region = cur_region->next;
         }
-        cur_grp = cur_grp->next;
     }
 
     /***************************************************************************/
@@ -789,12 +772,10 @@ static void out_ban_common( banner_lay_tag * ban, bool top )
 
     ban_doc_el = NULL;
     old_doc_el = NULL;
-    cur_grp = ban->by_line;
-    while( cur_grp != NULL ) {
-        cur_region = cur_grp->first;
-        while( cur_region != NULL ) {
-            if( (cur_region->contents.content_type == rule_content) &&
-                    (bin_driver->hline.text != NULL) ) {        // page-oriented device: HLINE
+    for( cur_grp = ban->by_line; cur_grp != NULL; cur_grp = cur_grp->next ) {
+        for( cur_region = cur_grp->first; cur_region != NULL; cur_region = cur_region->next ) {
+            if( (cur_region->contents.content_type == rule_content)
+              && (bin_driver->hline.text != NULL) ) {   // page-oriented device: HLINE
 
                 /*******************************************************************/
                 /* This uses code written originally for use with control word BX  */
@@ -825,29 +806,20 @@ static void out_ban_common( banner_lay_tag * ban, bool top )
                                                         wgml_fonts[cur_region->font].line_height);
                 }
             } else {                    // all other regions
-                if( (cur_region->contents.content_type == rule_content) &&
-                        (bin_driver->hline.text == NULL) ) {    // character device: initialize text
-                    line_buff.current = cur_region->reg_width;
-                    while( line_buff.current > line_buff.length ) {
-                        line_buff.length *= 2;
-                        line_buff.text = mem_realloc( line_buff.text, line_buff.length + 1 );
+                if( (cur_region->contents.content_type == rule_content)
+                  && (bin_driver->hline.text == NULL) ) {    // character device: initialize text
+                    if( check_realloc_line_buff( cur_region->reg_width ) ) {
+                        memset( line_buff.text, bin_device->box.horizontal_line, line_buff.current );
+                        line_buff.text[line_buff.current] = '\0';
+                    } else {
+                        /* no memory */
                     }
-                    memset( line_buff.text, bin_device->box.horizontal_line, line_buff.current );
-                    line_buff.text[line_buff.current] = '\0';
-
-                    while( cur_region->final_content[0].len < strlen( line_buff.text ) ) {
-                        if( cur_region->final_content[0].string == NULL ) {
-                            cur_region->final_content[0].string = mem_alloc( str_size );
-                            cur_region->final_content[0].len = str_size;
-                        } else {
-                            mem_realloc( cur_region->final_content[0].string,
-                                                    cur_region->final_content[0].len + str_size );
-                            cur_region->final_content[0].len += str_size;
-                        }
+                    len = strlen( line_buff.text );
+                    if( check_realloc_final_content( &cur_region->final_content[0], len ) ) {
+                        strcpy( cur_region->final_content[0].string, line_buff.text );
+                    } else {
+                        /* no memory */
                     }
-
-                    strcpy_s( cur_region->final_content[0].string, strlen( line_buff.text ) + 1,
-                                                                            line_buff.text );
                 }
 
                 /* Initialize new doc_element, if appropriate */
@@ -866,7 +838,7 @@ static void out_ban_common( banner_lay_tag * ban, bool top )
 
                 cur_line_height = wgml_fonts[cur_region->font].line_height;
                 cur_v_pos = ban_top_pos;
-                if( bin_driver->y_positive == 0x00 ) {
+                if( bin_driver->y_positive == 0 ) {
                     cur_v_pos -= (cur_region->reg_voffset + cur_line_height);
                 } else {
                     cur_v_pos += (cur_region->reg_voffset + cur_line_height);
@@ -905,8 +877,7 @@ static void out_ban_common( banner_lay_tag * ban, bool top )
                             cur_region->final_content[1].string[0] = '\0';
                         } else {
                             cur_width = 0;
-                            for( cur_p = cur_region->final_content[1].string; *cur_p != '\0';
-                                    cur_p++ ) {
+                            for( cur_p = cur_region->final_content[1].string; *cur_p != '\0'; cur_p++ ) {
                                 if( (cur_width +
                                         wgml_fonts[cur_region->font].width_table[(unsigned char) *cur_p]) <
                                         cur_region->final_content[2].hoffset - cur_region->final_content[1].hoffset ) {
@@ -937,7 +908,7 @@ static void out_ban_common( banner_lay_tag * ban, bool top )
                         }
                     }
                     cur_p = cur_region->final_content[0].string;
-                    if( (cur_p != NULL) && *cur_p ) {
+                    if( (cur_p != NULL) && *cur_p != '\0' ) {
                         if( cur_line->first == NULL ) {
                             cur_line->first = alloc_text_chars( cur_p, strlen( cur_p ),
                                                                                 cur_region->font );
@@ -952,7 +923,7 @@ static void out_ban_common( banner_lay_tag * ban, bool top )
                         cur_line->last->width = cur_width;
                     }
                     cur_p = cur_region->final_content[1].string;
-                    if( (cur_p != NULL) && *cur_p ) {
+                    if( (cur_p != NULL) && *cur_p != '\0' ) {
                         if( cur_line->first == NULL ) {
                             cur_line->first = alloc_text_chars( cur_p, strlen( cur_p ),
                                                                                 cur_region->font );
@@ -967,7 +938,7 @@ static void out_ban_common( banner_lay_tag * ban, bool top )
                         cur_line->last->width = cur_width;
                     }
                     cur_p = cur_region->final_content[2].string;
-                    if( (cur_p != NULL) && *cur_p ) {
+                    if( (cur_p != NULL) && *cur_p != '\0' ) {
                         if( cur_line->first == NULL ) {
                             cur_line->first = alloc_text_chars( cur_p, strlen( cur_p ),
                                                                                 cur_region->font );
@@ -982,14 +953,16 @@ static void out_ban_common( banner_lay_tag * ban, bool top )
                         cur_line->last->width = cur_width;
                     }
                 } else {
-                    for( k = 0; k < 3; ++k ) {          // for all region parts
-                        if( cur_region->final_content[k].string == NULL ) {
-                            continue;                   // skip empty part
-                        }
+                    for( k = 0; k < 3; ++k ) {      // for all region parts
+                        if( cur_region->final_content[k].string == NULL
+                          || cur_region->final_content[k].string[0] == '\0' )
+                            continue;               // skip empty part
                         text_width = cop_text_width( cur_region->final_content[k].string,
                                         strlen( cur_region->final_content[k].string ),
                                         cur_region->font);
-                        /* if k == 0, left-justify: already done */
+                        /*
+                         * if k == 0, left-justify: already done
+                         */
                         if( k == 1 ) {  // center-justify
                             cur_region->final_content[1].hoffset += (cur_region->reg_width / 2) -
                                                                                 text_width / 2;
@@ -1041,12 +1014,10 @@ static void out_ban_common( banner_lay_tag * ban, bool top )
                     g_prev_font = cur_region->font;
                 }
             }
-            cur_region = cur_region->next;
         }
         if( cur_line->first != NULL ) {
             cur_line->last = split_text_chars( cur_line->first );
         }
-        cur_grp = cur_grp->next;
     }
 
     /****************************************************************/
