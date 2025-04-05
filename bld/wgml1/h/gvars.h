@@ -19,10 +19,6 @@
 #include "gtype.h"
 #include "gtypelay.h"
 
-#if defined( __WATCOMC__ )
-#pragma enable_message( 128 ); // reenable: Warning! W128: 3 padding byte(s) added
-#endif
-
 #endif  /* GVARS_H_INCLUDED */
 
 #if !defined( GVARS_H_INCLUDED ) || defined( global )
