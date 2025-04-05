@@ -38,9 +38,9 @@ void printf_research( char * msg, ... )
 }
 
 
-static  void    print_total( int32_t cnt, int32_t tags )
+static  void    print_total( int32_t cnt, int32_t ptags )
 {
-    printf_research( "%6ld  --- Total calls for %ld items\n", (long)cnt, (long)tags );
+    printf_research( "%6ld  --- Total calls for %ld items\n", (long)cnt, (long)ptags );
 }
 
 

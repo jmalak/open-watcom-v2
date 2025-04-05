@@ -112,12 +112,11 @@ static void draw_box( doc_el_group * in_group )
     text_line   *   sav_line;
 
     if( bin_driver->dbox.text == NULL ) {           // DBOX not available
-        line_buff.current = width;
-        while( line_buff.current > line_buff.length ) {
-            line_buff.length *= 2;
-            line_buff.text = mem_realloc( line_buff.text, line_buff.length + 1 );
+        if( check_realloc_line_buff( width ) ) {
+        } else {
+            /* no memory */
         }
-        memset( line_buff.text, bin_device->box.horizontal_line, line_buff.current );
+        strncpy( line_buff.text, bin_device->box.horizontal_line, line_buff.current );
         line_buff.text[line_buff.current] = '\0';
 
         /* Finalize and insert the top box line */
@@ -266,13 +265,12 @@ static void insert_frame_line( void )
     uint32_t        str_width;
 
     if( bin_driver->hline.text == NULL ) {              // character device
-        line_buff.current = width;
-        while( line_buff.current > line_buff.length ) {
-            line_buff.length *= 2;
-            line_buff.text = mem_realloc( line_buff.text, line_buff.length + 1 );
+        if( check_realloc_line_buff( width ) ) {
+        } else {
+            /* no memory */
         }
         if( frame.type == rule_frame ) {
-            memset( line_buff.text, bin_device->box.horizontal_line, line_buff.current );
+            strncpy( line_buff.text, bin_device->box.horizontal_line, line_buff.current );
             line_buff.text[line_buff.current] = '\0';
         } else {                    // char_frame Note: wgml 4.0 uses font 0 regardless of the default font for the section
             line_buff.text[0] = '\0';
@@ -323,13 +321,13 @@ static void insert_frame_line( void )
                 line_buff.current++;
             }
             line_buff.current *= str_count;                 // length in characters
-            while( line_buff.current > line_buff.length ) {
-                line_buff.length *= 2;
-                line_buff.text = mem_realloc( line_buff.text, line_buff.length + 1 );
+            if( check_realloc_line_buff( line_buff.current ) ) {
+            } else {
+                /* no memory */
             }
             line_buff.text[0] = '\0';
             for( i = 0; i < cur_limit; i++ ) {              // fill text with copies of full string
-                strcat_s( line_buff.text, line_buff.current + 1, frame.string );
+                strcat( line_buff.text, frame.string );
                 cur_width += str_width;
                 cur_count += str_count;
             }
@@ -408,7 +406,7 @@ void gml_fig( const gmltag * entry )
     depth = 0;                          // default value; depth is space reserved for some other item
     frame.type = layout_work.fig.default_frame.type;
     if( frame.type == char_frame ) {
-        strcpy_s( frame.string, str_size, layout_work.fig.default_frame.string );
+        strcpy( frame.string, layout_work.fig.default_frame.string );
     }
     place = layout_work.fig.default_place;
     max_width = t_page.last_pane->col_width;// default value regardless of number of columns
