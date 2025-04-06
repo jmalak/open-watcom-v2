@@ -38,7 +38,7 @@ extern  void    gml_set( const gmltag * entry )
     int             rc;
     symvar          sym;
     sub_index       subscript;
-    symdict     *   working_dict;
+    dict_hdl        working_dict;
 
     (void)entry;
 
