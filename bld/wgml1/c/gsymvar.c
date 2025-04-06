@@ -149,7 +149,9 @@ void    free_dict( dict_hdl dict )
     int         i;
 
 #if 0
-    if( dict->compares > 1000 || dict->symbols > 25 || dict->lookups > 200 ) {
+    if( dict->compares > 1000
+      || dict->symbols > 25
+      || dict->lookups > 200 ) {
         printf( "dict %p, symbols:%6ld, lookups:%8ld, compares: %12ld\n",
                 dict, dict->symbols, dict->lookups, dict->compares );
     }
@@ -221,10 +223,9 @@ static void print_sym_entry( symvar * wk, int * symcnt, int * symsubcnt )
         (*symcnt)++;
     }
     if( wk->flags & subscripted ) {
-        while( ws != NULL ) {
+        for( ; ws != NULL; ws = ws->next ) {
             out_msg( "   subscript= %8ld value='%s'\n",
                     ws->subscript, ws->value );
-            ws = ws->next;
         }
     }
     ProcFlags.no_var_impl_err = saveflag;
@@ -243,7 +244,7 @@ int find_symvar( dict_hdl dict, char * name, sub_index sub, symsub * * symsubval
     symsub  *   ws;
     int         rc = 0;
 
-    if( (*name == '$')
+    if( (name[0] == '$')
       && (dict != sys_dict) ) {// for sysxxx try system dict first
         rc = find_symvar( sys_dict, name, sub, symsubval );// recursion
         if( rc ) {
@@ -335,7 +336,7 @@ int find_symvar_l( dict_hdl dict, char * name, sub_index sub, symsub * * symsubv
         /* search upwards thru all local dicts through first file local dict encountered */
 
         for( incbs = input_cbs->prev; incbs != NULL; incbs = incbs->prev ) {
-            if( incbs->local_ě != NULL ) {
+            if( incbs->local_dict != NULL ) {
                 wk = incbs->local_dict;
                 rc = find_symvar( wk, name, sub, symsubval );
                 if( rc ) {
@@ -684,13 +685,10 @@ static void reset_auto_inc_chain( symvar * wk )
 {
     symsub  *   ws;
 
-    while( wk != NULL ) {
-
+    for( ; wk != NULL; wk = wk->next ) {
         if( wk->flags & auto_inc ) {
-
             wk->sub_0->value[0] = '0';
             wk->sub_0->value[1] = '\0';
-
             wk->flags |= deleted;
             wk->subscript_used = 0;
             while( (ws = wk->subscripts) != NULL ) {
@@ -700,7 +698,6 @@ static void reset_auto_inc_chain( symvar * wk )
             }
         }
         wk->last_auto_inc = 0;
-        wk = wk->next;
     }
     return;
 }
@@ -736,7 +733,6 @@ void    print_sym_dict( dict_hdl dict )
     int             symcnt;
     int             symsubcnt;
 
-    wk          = dict->first;
     symcnt      = 0;
     symsubcnt   = 0;
 
@@ -748,9 +744,8 @@ void    print_sym_dict( dict_hdl dict )
         lgs = "Local";
     }
     out_msg( "\n%s list of symbolic variables:\n", lgs );
-    while( wk != NULL ) {
+    for( wk = dict->first; wk != NULL; wk = wk->next ) {
         print_sym_entry( wk, &symcnt, &symsubcnt );
-        wk = wk->next;
     }
     out_msg( "\nUnsubscripted symbols defined: %d\n", symcnt );
     out_msg( "Subscripted   symbols defined: %d\n", symsubcnt );
