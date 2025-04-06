@@ -191,9 +191,10 @@ void init_global_vars( void )
     eol_ix_pool         = NULL;
     index_dict          = NULL;
 
-    init_dict( &global_dict );
+    global_dict         = init_dict( true );
+    sys_dict            = init_sys_dict();
+
     init_macro_dict( &macro_dict );
-    init_sys_dict( &sys_dict );
     init_tag_dict( &tag_dict );
 
     init_ref_dict( &fig_ref_dict );

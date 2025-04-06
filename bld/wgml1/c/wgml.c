@@ -179,7 +179,7 @@ static  void    add_file_cb_entry( void )
     nip->fm_symbol   = false;
     nip->hh_tag      = false;
     nip->sym_space   = false;
-    init_dict( &nip->local_dict );
+    nip->local_dict  = init_dict( false );
 
     new->lineno   = 0;
     new->linemin  = line_from;
@@ -215,8 +215,9 @@ static  void    del_input_cb_entry( void )
         return;
     }
     free_lines( wk->hidden_head );
+    free_dict( wk->local_dict );
+    wk->local_dict = NULL;
 
-    free_dict( &wk->local_dict );
     if( wk->if_cb != NULL ) {
 //      if( wk->if_cb->if_level > 0 ) {
 //          char    linestr[MAX_L_AS_STR];
@@ -706,7 +707,8 @@ static  void    init_pass( void )
 
         reset_auto_inc_dict( global_dict );// let auto inc start with 1 again
 
-//      free_dict( &global_dict );      // free dictionaries
+//      free_dict( global_dict );      // free dictionaries
+//      global_dict = NULL;
 //      free_macro_dict( &macro_dict );
         free_tag_dict( &tag_dict );
         init_nest_cb();

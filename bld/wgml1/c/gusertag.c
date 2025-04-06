@@ -165,7 +165,7 @@ bool process_tag( gtentry * ge, mac_entry * me )
     dict_hdl        loc_dict;   // for preparing local vars
 
     processed = true;           // return value, always true
-    init_dict( &loc_dict );
+    loc_dict = init_dict( false );
 
     add_defaults_to_dict( ge, loc_dict );
 
@@ -425,7 +425,8 @@ bool process_tag( gtentry * ge, mac_entry * me )
     rc = add_symvar( loc_dict, "_n", longwork, no_subscript, local_var );
 
     add_macro_cb_entry( me, ge );   // prepare GML macro as input
-    free_dict( &input_cbs->local_dict );    // not super efficient
+    free_dict( input_cbs->local_dict );    // not super efficient
+//    input_cbs->local_dict = NULL;
     input_cbs->local_dict = loc_dict;
     input_cbs->fm_hh = input_cbs->prev->fm_hh;
     input_cbs->hh_tag = input_cbs->prev->hh_tag;

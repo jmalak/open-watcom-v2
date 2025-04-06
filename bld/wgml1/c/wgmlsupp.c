@@ -197,10 +197,12 @@ void free_some_mem( void )
         mem_free( out_file_attr );
     }
     if( global_dict != NULL ) {
-        free_dict( &global_dict );
+        free_dict( global_dict );
+        global_dict = NULL;
     }
     if( sys_dict != NULL ) {
-        free_dict( &sys_dict );
+        free_dict( sys_dict );
+        sys_dict = NULL;
     }
     if( macro_dict != NULL ) {
         free_macro_dict( &macro_dict );
