@@ -94,7 +94,7 @@ static int sym_hash( const char *name )
 /*  init_dict      initialize symbol dictionary                            */
 /***************************************************************************/
 
-void    init_dict( dict_hdl *dict_parm )
+dict_hdl    init_dict( bool global )
 {
     dict_hdl    dict;
 
@@ -105,15 +105,13 @@ void    init_dict( dict_hdl *dict_parm )
     dict->symbols  = 0;
     dict->compares = 0;
     dict->local    = true;
-    *dict_parm = dict;
-
-    if( dict == global_dict || dict == sys_dict ) {
+    if( global ) {
         dict->htbl = mem_alloc( sizeof( void * ) * SYM_HASH_SIZE );
         memset( dict->htbl, 0, sizeof( void * ) * SYM_HASH_SIZE );
         dict->local = false;
     }
 
-    return;
+    return( dict );
 }
 
 
@@ -148,12 +146,9 @@ static void free_sym_chain( symvar * wk )
 /*  free_dict   free all symbol dictionary entries                         */
 /***************************************************************************/
 
-void    free_dict( dict_hdl *dict_parm )
+void    free_dict( dict_hdl dict )
 {
-    dict_hdl    dict;
     int         i;
-
-    dict = *dict_parm;
 
 #if 0
     if( dict->compares > 1000 || dict->symbols > 25 || dict->lookups > 200 ) {
@@ -171,8 +166,6 @@ void    free_dict( dict_hdl *dict_parm )
         mem_free( dict->htbl );
     }
     mem_free( dict );
-    *dict_parm = NULL;
-    return;
 }
 
 
