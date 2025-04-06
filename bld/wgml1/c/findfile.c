@@ -12,7 +12,6 @@
 *                   ff_teardown()
 *                   search_file_in_dirs()
 *               plus these local items:
-*                   cur_dir
 *                   cur_dir_list
 *                   directory_list
 *                   gml_lib_dirs
@@ -33,6 +32,7 @@
 #include "copdir.h"
 #include "iopath.h"
 #include "pathlist.h"
+#include "pathgrp2.h"
 
 #include "clibext.h"
 
@@ -45,9 +45,6 @@ typedef char    *directory_list;
 
 /* Local data. */
 
-static  size_t          env_var_length  = 0;
-static  char    *       env_var_buffer  = NULL;
-static  char    *       cur_dir = "";
 static  directory_list  cur_dir_list;
 static  directory_list  gml_lib_dirs;
 static  directory_list  gml_inc_dirs;

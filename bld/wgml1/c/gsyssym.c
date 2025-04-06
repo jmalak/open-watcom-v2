@@ -1198,7 +1198,7 @@ void    init_sysparm( char * cmdline, char * banner )
 /*                 change very often                                       */
 /***************************************************************************/
 
-void    init_sys_dict( symdict * * dict )
+void    init_sys_dict( dict_hdl *dict )
 {
     init_dict( dict );
     #define picka( var, flag )    pickl( var, flag )
