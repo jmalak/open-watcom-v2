@@ -116,7 +116,7 @@ static void draw_box( doc_el_group * in_group )
         } else {
             /* no memory */
         }
-        strncpy( line_buff.text, bin_device->box.horizontal_line, line_buff.current );
+        memset( line_buff.text, bin_device->box.horizontal_line, line_buff.current );
         line_buff.text[line_buff.current] = '\0';
 
         /* Finalize and insert the top box line */
@@ -270,7 +270,7 @@ static void insert_frame_line( void )
             /* no memory */
         }
         if( frame.type == rule_frame ) {
-            strncpy( line_buff.text, bin_device->box.horizontal_line, line_buff.current );
+            memset( line_buff.text, bin_device->box.horizontal_line, line_buff.current );
             line_buff.text[line_buff.current] = '\0';
         } else {                    // char_frame Note: wgml 4.0 uses font 0 regardless of the default font for the section
             line_buff.text[0] = '\0';

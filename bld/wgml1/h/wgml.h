@@ -344,21 +344,21 @@ extern  void    close_all_pu_files( void );
 
 
 /* gsymvar.c                            */
-extern void     init_dict( symdict * * dict );
-extern void     free_dict( symdict * * dict );
-extern int      find_symvar( symdict * dict, char * name, sub_index subscript, symsub * * symsubval );
-extern int      find_symvar_l( symdict * dict, char * name, sub_index subscript, symsub * * symsubval );
-extern int      add_symvar( symdict * dict, char * name, char * val, sub_index subscript, symbol_flags f );
-extern int      add_symvar_addr( symdict * dict, char * name, char * val, sub_index subscript, symbol_flags f, symsub * * sub );
-extern void     print_sym_dict( symdict * dict );
-extern void     reset_auto_inc_dict( symdict * dict );
+extern void     init_dict( dict_hdl *dict );
+extern void     free_dict( dict_hdl *dict );
+extern int      find_symvar( dict_hdl dict, char * name, sub_index subscript, symsub * * symsubval );
+extern int      find_symvar_l( dict_hdl dict, char * name, sub_index subscript, symsub * * symsubval );
+extern int      add_symvar( dict_hdl dict, char * name, char * val, sub_index subscript, symbol_flags f );
+extern int      add_symvar_addr( dict_hdl dict, char * name, char * val, sub_index subscript, symbol_flags f, symsub * * sub );
+extern void     print_sym_dict( dict_hdl dict );
+extern void     reset_auto_inc_dict( dict_hdl dict );
 
 
 /* gsyssym.c                            */
 extern  void    add_to_sysdir( char * var_name, char char_val );
-extern  void    init_sys_dict( symdict * * dict );
+extern  void    init_sys_dict( dict_hdl *dict );
 extern  void    init_sysparm( char * cmdline, char * banner );
-extern  void    link_sym( symdict * dict, symvar * sym );
+extern  void    link_sym( dict_hdl dict, symvar * sym );
 
 
 /* gtagdict.c                           */

@@ -206,20 +206,9 @@ typedef struct symvar {
 
 /***************************************************************************/
 /*  Symbolic variable dictionary                                           */
-/*                                                                         */
-/*  Note: fields are those of struct sym_dcp                               */
-/*        this is a debugging aid: it allows the debugger to show the      */
-/*        local symbol dictionary entries wherever input_cbs is in use     */
 /***************************************************************************/
 
-typedef struct symdict {
-    symvar          *   first;          // first symbol in chain
-    symvar      *   *   htbl;           // hash table
-    long                lookups;        // lookup counter
-    long                symbols;        // symbol counter
-    long                compares;       // strcmp counter
-    bool                local;          // local/global flag
-} symdict;
+typedef struct symdict *dict_hdl;
 
 
 /***************************************************************************/
@@ -409,7 +398,7 @@ typedef struct  inputcb {
     struct inputcb  *   prev;
     inp_line        *   hidden_head;    // manage lines split at ; or :
     inp_line        *   hidden_tail;    // manage lines split at ; or :
-    symdict         *   local_dict;     // local symbol dictionary
+    dict_hdl            local_dict;     // local symbol dictionary
     ifcb            *   if_cb;          // for controlling .if .th .el
     pecb                pe_cb;          // for controlling .pe perform
     union  {
