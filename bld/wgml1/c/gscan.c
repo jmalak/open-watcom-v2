@@ -132,7 +132,7 @@ void set_overload( gtentry * in_gt )
     len = strlen( in_gt->name );
     for( k = 0; k < GML_TAGMAX; ++k ) {
         if( len == gml_tags[k].taglen ) {
-            if( !strcmpi( gml_tags[k].tagname, in_gt->name ) ) {
+            if( !stricmp( gml_tags[k].tagname, in_gt->name ) ) {
                 in_gt->overload = true;
                 break;
             }
