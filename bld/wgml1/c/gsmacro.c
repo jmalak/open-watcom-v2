@@ -89,7 +89,7 @@ void    add_macro_cb_entry( mac_entry * me, gtentry * ge )
     nip->pe_cb.count = -1;
     nip->pe_cb.line  = NULL;
 
-    init_dict( &nip->local_dict );
+    nip->local_dict = init_dict( false );
 
     nip->s.m        = new;
     nip->fm_hh      = input_cbs->fm_hh;
