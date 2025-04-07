@@ -174,17 +174,18 @@ static char * read_indirect_file( FILE *fp )
     char        *buf;
     char        ch;
     char        *str;
-    int         fh;
     size_t      len;
-    long        orig;
+    size_t      blk_len;
 
-    fh = fileno( fp );
-    orig = lseek( fh, 0, SEEK_CUR );
-    len = lseek( fh, 0, SEEK_END );
-    lseek( fh, 0, SEEK_SET );
-    buf = mem_alloc( len + 1 );
-    read( fh, buf, len );
-    lseek( fh, orig, SEEK_SET );
+    buf = mem_alloc( 1024 );
+    len = 0;
+    while( (blk_len = fread( buf, 1, 1024, fp )) == 1024 ) {
+        len += blk_len;
+    }
+    len += blk_len;
+    mem_realloc( buf, len + 1 );
+    rewind( fp );
+    fread( buf, 1, len, fp );
     buf[len] = '\0';
     // zip through characters changing \r into ' '
     str = buf;
