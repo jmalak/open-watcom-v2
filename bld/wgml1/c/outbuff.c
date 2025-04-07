@@ -892,9 +892,8 @@ static void set_out_file_attr( void )
 
                 /* Use default if rec_spec is badly-formed. */
 
-                len = 1 + strlen( "t:132" );
-                out_file_attr = mem_alloc( len );
-                strcpy_s( out_file_attr, len, "t:132" );
+                out_file_attr = mem_alloc( sizeof( "t:132" ) );
+                strcpy( out_file_attr, "t:132" );
 
             } else {
 
@@ -911,9 +910,8 @@ static void set_out_file_attr( void )
 
             /* Use default if bin_driver->rec_spec is missing. */
 
-            len = 1 + strlen( "t:132" );
-            out_file_attr = mem_alloc( len );
-            strcpy_s( out_file_attr, len, "t:132" );
+            out_file_attr = mem_alloc( sizeof( "t:132" ) );
+            strcpy( out_file_attr, "t:132" );
         }
     }
 
