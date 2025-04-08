@@ -44,10 +44,11 @@
 /*                                                                         */
 /***************************************************************************/
 
-extern  void    gml_include( const gmltag * entry )
+void    gml_include( const gmltag *entry )
 {
-    char    *   p;
-    char    *   pa;
+    char        *p;
+    char        *pa;
+    size_t      len;
 
     (void)entry;
 
@@ -69,12 +70,11 @@ extern  void    gml_include( const gmltag * entry )
                 p = get_tag_value( p );
             }
             if( val_start != NULL ) {
-                memcpy_s( token_buf, _MAX_PATH, val_start, val_len );
-                if( val_len < _MAX_PATH ) {
-                    token_buf[val_len] = '\0';
-                } else {
-                    token_buf[_MAX_PATH - 1] = '\0';
-                }
+                len = val_len;
+                if( len > _MAX_PATH - 1 )
+                    len = _MAX_PATH - 1;
+                strncpy( token_buf, val_start, len );
+                token_buf[len] = '\0';
                 ProcFlags.newLevelFile = 1;     // start new include level
                 scan_start = scan_stop + 1;     // .. and ignore remaining line
             }

@@ -138,7 +138,7 @@ static void reopen_inc_fp( filecb *cb )
 {
     int         rc;
 
-    if( ! cb->flags & FF_open ) {
+    if( !(cb->flags & FF_open) ) {
         cb->fp = fopen_rb( cb->filename );
         if( cb->fp != NULL ) {
             rc = fsetpos( cb->fp, &cb->pos );
@@ -335,16 +335,19 @@ static void get_macro_line( void )
     cb = input_cbs->s.m;
 
     if( cb->macline == NULL ) {         // no more macrolines
-        if( !ProcFlags.concat && !ProcFlags.cont_char && (input_cbs->hidden_head == NULL) &&
-                ((input_cbs->prev->fmflags & II_file) ||
-                 (input_cbs->prev->fmflags & II_macro)) ) {
+        if( !ProcFlags.concat
+          && !ProcFlags.cont_char
+          && (input_cbs->hidden_head == NULL)
+          && ((input_cbs->prev->fmflags & II_file)
+          || (input_cbs->prev->fmflags & II_macro)) ) {
             scr_process_break();
         }
         input_cbs->fmflags |= II_eof;
         cb->flags          |= FF_eof;
         *buff2              = '\0';
         if( (input_cbs->prev->fmflags & II_macro) ) {
-            if( cb->ix_seen && !ProcFlags.ix_seen) {
+            if( cb->ix_seen
+              && !ProcFlags.ix_seen ) {
                 ProcFlags.ix_seen = true;
             }
         }
@@ -379,10 +382,12 @@ static bool check_if( void )
         /* This is very specific and may need to be expanded */
         if( input_cbs->if_cb->if_level == 1 ) { // topmost .if active
             if( flagset.ifdo ) {                // in do begin/do end block
-                if( flagset.iftrue && flagset.ifelse ) {
+                if( flagset.iftrue
+                  && flagset.ifelse ) {
                     retval = false;             // do not process line
                 }
-                if( flagset.iffalse && !flagset.ifelse ) {
+                if( flagset.iffalse
+                  && !flagset.ifelse ) {
                     retval = false;             // do not process line
                 }
             }
@@ -489,10 +494,12 @@ bool get_line( bool display_line )
                                 *p-- = '\0';
                             }
                         }
-                        if( ProcFlags.start_section && !ProcFlags.concat &&
-                            (*buff2 == '\0') ) {
-                            if( !ProcFlags.concat && !ProcFlags.skip_blank_line
-                                && check_if() ) {
+                        if( ProcFlags.start_section
+                          && !ProcFlags.concat
+                          && (*buff2 == '\0') ) {
+                            if( !ProcFlags.concat
+                              && !ProcFlags.skip_blank_line
+                              && check_if() ) {
                                 /* ensure an empty output line */
                                 g_blank_text_lines++;
                                 set_skip_vars( NULL, NULL, NULL, 1, g_curr_font );
@@ -531,9 +538,8 @@ bool get_line( bool display_line )
                     }
                 } else {                // not (yet) active
                     if( research_from == input_cbs->s.f->lineno ) {
-                        if( NULL != strstr( input_cbs->s.f->filename,
-                                            research_file_name) ) {
-                        input_cbs->fmflags |= II_research;// start of research range
+                        if( NULL != strstr( input_cbs->s.f->filename, research_file_name ) ) {
+                            input_cbs->fmflags |= II_research;// start of research range
                         }
                     }
                 }
@@ -544,8 +550,9 @@ bool get_line( bool display_line )
     }
 
     if( !(input_cbs->fmflags & II_eof) ) {
-        if( display_line && WgmlFlags.firstpass
-            && (input_cbs->fmflags & II_research) ) {
+        if( display_line
+          && WgmlFlags.firstpass
+          && (input_cbs->fmflags & II_research) ) {
             printf( "%s\n", buff2 );
         }
     }
