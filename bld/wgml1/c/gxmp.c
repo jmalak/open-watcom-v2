@@ -138,7 +138,7 @@ void gml_xmp( const gmltag * entry )
     if( !ProcFlags.reprocess_line && *p != '\0' ) { // text after tag
         SkipDot( p );                               // possible tag end
         if( *p != '\0' ) {
-            if( (*(p + 1) == '\0') && (*p == CONT_char) ) { // text is continuation character only
+            if( IS_CONT_CHAR( p ) ) { // text is continuation character only
                 /* placeholder */
             } else {
                 process_text( p, g_curr_font);          // if text follows
@@ -247,7 +247,7 @@ void gml_exmp( const gmltag * entry )
     SkipDot( p );                       // over '.'
     if( *p != '\0' ) {
         if( (input_cbs->hidden_head != NULL) && !input_cbs->hidden_head->ip_start
-                && (*(p + 1) == '\0') && (*p == CONT_char) ) { // text is continuation character only
+                && IS_CONT_CHAR( p ) ) { // text is continuation character only
             if( input_cbs->fmflags & II_macro ) {
                 /* placeholder */
             } else {

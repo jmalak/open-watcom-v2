@@ -189,7 +189,7 @@ bool process_tag( gtentry * ge, mac_entry * me )
             while( *p != '\0' ) {
                 p++;
             }
-            if( *(p - 1) == CONT_char ) {    // remove continue character if present
+            if( IS_CONT_CHAR( p - 1 ) ) {    // remove continue character if present
                 p--;
                 *p = '\0';
             }
@@ -400,7 +400,7 @@ bool process_tag( gtentry * ge, mac_entry * me )
         // remove trailing continue character if tag has NOCONTinue option
         if( (ge->tagflags & tag_nocont) ) {
             len = strlen( p );
-            if( *(p + len - 1) == CONT_char ) {
+            if( IS_CONT_CHAR( p + len - 1 ) ) {
                 len--;
             }
             *(p + len) = '\0';

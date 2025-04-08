@@ -687,7 +687,7 @@ static void     gml_exl_common( const gmltag * entry )
     SkipDot( p );                       // over '.'
     SkipSpaces( p );                    // over WS to <text line>
     if( *p != '\0' ) {
-        if( !input_cbs->hidden_head->ip_start && (*(p + 1) == '\0') && (*p == CONT_char) ) { // text is continuation character only
+        if( !input_cbs->hidden_head->ip_start && IS_CONT_CHAR( p ) ) { // text is continuation character only
             if( &l_post_skip != NULL ) {
                 g_post_skip = conv_vert_unit( &l_post_skip , g_text_spacing, l_font );
             } else {
@@ -900,14 +900,12 @@ static  void    gml_li_ol( const gmltag * entry )
                      nest_cb->u.ol_layout->number_style );
     if( pn != NULL ) {
         num_len = strlen( pn );
-        *(pn + num_len) = CONT_char;
-        *(pn + num_len + 1) = '\0';
-        num_len += 2;
+        ADD_CONT_CHAR( pn + num_len );
+        num_len += 1;
     } else {
         pn = charnumber;
         *pn = '?';
-        *(pn + 1) = CONT_char;
-        *(pn + 2) = '\0';
+        ADD_CONT_CHAR( pn + 1 );
         num_len = 2;
     }
 
@@ -1016,8 +1014,7 @@ static  void    gml_li_ul( const gmltag * entry )
     } else {
         bullet[0] = nest_cb->u.ul_layout->bullet;
     }
-    bullet[1] = CONT_char;
-    bullet[2] = '\0';
+    ADD_CONT_CHAR( bullet + 1 );
 
     if( ProcFlags.need_li_lp ) {        // first :li for this list
         set_skip_vars( &nest_cb->u.ul_layout->pre_skip, NULL, NULL, g_text_spacing, g_curr_font );
@@ -1225,9 +1222,8 @@ void gml_dthd( const gmltag * entry )
 
     p = get_text_line( p );
     pa = p + strlen(p);
-    if( (pa > p) && (*(pa - 1) != CONT_char) ) { // text exists and does not end with a continue character
-        *pa = CONT_char;                        // add continue character to GT text
-        *(pa + 1) = '\0';
+    if( (pa > p) && !IS_CONT_CHAR( pa - 1 ) ) { // text exists and does not end with a continue character
+        ADD_CONT_CHAR( pa );
     }
 
     if( !ProcFlags.reprocess_line ) {
@@ -1364,9 +1360,8 @@ void gml_dt( const gmltag * entry )
 
     p = get_text_line( p );
     pa = p + strlen(p);
-    if( (pa > p) && (*(pa - 1) != CONT_char) ) { // text exists and does not end with a continue character
-        *pa = CONT_char;                        // add continue character to GT text
-        *(pa + 1) = '\0';
+    if( (pa > p) && !IS_CONT_CHAR( pa - 1 ) ) { // text exists and does not end with a continue character
+        ADD_CONT_CHAR( pa );
     }
 
     if( !ProcFlags.reprocess_line ) {
@@ -1509,9 +1504,8 @@ void gml_gt( const gmltag * entry )
 
     p = get_text_line( p );
     pa = p + strlen(p);
-    if( (pa > p) && (*(pa - 1) != CONT_char) ) { // text exists and does not end with a continue character
-        *pa = CONT_char;                        // add continue character to GT text
-        *(pa + 1) = '\0';
+    if( (pa > p) && !IS_CONT_CHAR( pa - 1 ) ) { // text exists and does not end with a continue character
+        ADD_CONT_CHAR( pa );
     }
 
     if( !ProcFlags.reprocess_line ) {
@@ -1568,8 +1562,7 @@ void gml_gd( const gmltag * entry )
     ProcFlags.ct = true;
     post_space = 0;
     delim[0] = nest_cb->u.gl_layout->delim;
-    delim[1] = CONT_char;
-    delim[2] = '\0';
+    ADD_CONT_CHAR( delim + 1 );
     process_text( delim, g_curr_font );
 
     g_curr_font = layout_work.gd.font;

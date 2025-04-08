@@ -22,6 +22,9 @@
     #define FNAMECMPSTR      stricmp     /* for case insensitive file systems */
 #endif
 
+#define IS_CONT_CHAR(p)     ((p)[0] == CONT_char && (p)[1] == '\0')
+#define ADD_CONT_CHAR(p)    (p)[0] = CONT_char; (p)[1] = '\0'
+
 #define ulong           unsigned long
 
 //================= Some global defines ========================
