@@ -113,11 +113,11 @@ void    lay_backbod( const gmltag * entry )
         eat_lay_sub_tag();
         return;                         // process during first pass only
     }
-    if( !strcmp( "BACKM", entry->tagname ) ) {
+    if( strcmp( "BACKM", entry->tagname ) == 0 ) {
         x_tag = el_backm;
         bb  = &layout_work.backm;
         bbsect = &layout_work.hx.hx_sect[hds_backm];
-    } else if( !strcmp( "BODY", entry->tagname ) ) {
+    } else if( strcmp( "BODY", entry->tagname ) == 0 ) {
         x_tag = el_body;
         bb  = &layout_work.body;
         bbsect = &layout_work.hx.hx_sect[hds_body];
@@ -133,7 +133,7 @@ void    lay_backbod( const gmltag * entry )
         cvterr = -1;
         for( k = 0, curr = backbod_att[k]; curr > 0; k++, curr = backbod_att[k] ) {
 
-            if( !strnicmp( att_names[curr], g_att_val.att_name, g_att_val.att_len ) ) {
+            if( strnicmp( att_names[curr], g_att_val.att_name, g_att_val.att_len ) == 0 ) {
                 p = g_att_val.val_name;
 
                 switch( curr ) {

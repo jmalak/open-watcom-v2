@@ -172,8 +172,9 @@ static void split_at_GML_tag( void )
     size_t      toklen;
 
     if( *buff2 == GML_char ) {
-        if( !strnicmp( (buff2 + 1), "CMT", 3 ) &&
-            ((*(buff2 + 4) == '.') || (*(buff2 + 4) == ' ')) ) {
+        if( strnicmp( (buff2 + 1), "CMT", 3 ) == 0
+          && ((*(buff2 + 4) == '.')
+          || (*(buff2 + 4) == ' ')) ) {
             return;                     // no split for :cmt. line
         }
     }
@@ -284,7 +285,8 @@ static bool split_input_buffer( void )
         /* for :cmt. minimal processing                                    */
         /*******************************************************************/
 
-        if( (*buff2 == GML_char) && !strnicmp( buff2 + 1, "cmt.", 4 ) ) {
+        if( (*buff2 == GML_char)
+          && strnicmp( buff2 + 1, "cmt.", 4 ) == 0 ) {
             return( false );
         }
 
@@ -310,7 +312,7 @@ static bool split_input_buffer( void )
             } else {
                 k = 1;
             }
-            if( !strnicmp( buff2 + k, "dm ", 3 ) ) {
+            if( strnicmp( buff2 + k, "dm ", 3 ) == 0 ) {
                 return( false );
             }
 

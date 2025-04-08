@@ -132,7 +132,7 @@ void set_overload( gtentry * in_gt )
     len = strlen( in_gt->name );
     for( k = 0; k < GML_TAGMAX; ++k ) {
         if( len == gml_tags[k].taglen ) {
-            if( !stricmp( gml_tags[k].tagname, in_gt->name ) ) {
+            if( stricmp( gml_tags[k].tagname, in_gt->name ) == 0 ) {
                 in_gt->overload = true;
                 break;
             }
@@ -245,7 +245,7 @@ static void scan_gml( void )
         if( ProcFlags.layout ) {        // different tags within :LAYOUT
             for( k = 0; k < LAY_TAGMAX; ++k ) {
                 if( toklen == lay_tags[k].taglen ) {
-                    if( !strcmp( lay_tags[k].tagname, tok_upper ) ) {
+                    if( strcmp( lay_tags[k].tagname, tok_upper ) == 0 ) {
                         *p = csave;
                         lay_ind = -1;   // process tag not attribute
 
@@ -273,7 +273,7 @@ static void scan_gml( void )
             if( !processed ) {          // check for gml only tag in :LAYOUT
                 for( k = 0; k < GML_TAGMAX; ++k ) {
                     if( toklen == gml_tags[k].taglen ) {
-                        if( !strcmp( gml_tags[k].tagname, tok_upper ) ) {
+                        if( strcmp( gml_tags[k].tagname, tok_upper ) == 0 ) {
                             xx_err_c( err_gml_in_lay, gml_tags[k].tagname );
                         }
                     }
@@ -282,10 +282,10 @@ static void scan_gml( void )
         } else {                        // not within :LAYOUT
             for( k = 0; k < GML_TAGMAX; ++k ) {
                 if( toklen == gml_tags[k].taglen ) {
-                    if( !strcmp( gml_tags[k].tagname, tok_upper ) ) {
-                        if( WgmlFlags.firstpass &&
-                            !strcmp(tok_upper, "LAYOUT" ) &&
-                            ProcFlags.fb_document_done  ) {
+                    if( strcmp( gml_tags[k].tagname, tok_upper ) == 0 ) {
+                        if( WgmlFlags.firstpass
+                          && strcmp(tok_upper, "LAYOUT" ) == 0
+                          && ProcFlags.fb_document_done  ) {
 
                             xx_err( err_lay_too_late );
                         }
@@ -390,7 +390,7 @@ static void scan_gml( void )
             if( !processed ) {         // check for layout tag in normal text
                 for( k = 0; k < LAY_TAGMAX; ++k ) {
                     if( toklen == lay_tags[k].taglen ) {
-                        if( !strcmp( lay_tags[k].tagname, tok_upper ) ) {
+                        if( strcmp( lay_tags[k].tagname, tok_upper ) == 0 ) {
                             xx_err_c( err_lay_in_gml, lay_tags[k].tagname );
                        }
                     }
@@ -612,7 +612,7 @@ static void     scan_script( void )
             }
             ProcFlags.CW_noblank = false;           // blank after CW is default
             if( ProcFlags.literal  ) {              // .li active
-                if( !strcmp( token_buf, "li" ) ) {  // .li
+                if( strcmp( token_buf, "li" ) == 0 ) {  // .li
                     ProcFlags.CW_noblank = (*p != ' ');
                     scan_start = p; // found, process
                     scr_kwds[k].tagproc();
@@ -809,19 +809,20 @@ void set_if_then_do( ifcb * cb )
            len++;
         }
         *p = '\0';
-        if( !strncmp( cw, "if", SCR_KW_LENGTH ) ) {
+        if( strncmp( cw, "if", SCR_KW_LENGTH ) == 0 ) {
             if( len > SCR_KW_LENGTH ) {
                 cb->if_flags[cb->if_level].ifcwif = (find_macro( macro_dict, cw ) == NULL);
             } else {
                 cb->if_flags[cb->if_level].ifcwif = true;
             }
-        } else if( !strncmp( cw, "do", SCR_KW_LENGTH ) ) {
+        } else if( strncmp( cw, "do", SCR_KW_LENGTH ) == 0 ) {
             if( len > SCR_KW_LENGTH ) {
                 cb->if_flags[cb->if_level].ifcwdo = (find_macro( macro_dict, cw ) == NULL);
             } else {
                 cb->if_flags[cb->if_level].ifcwdo = true;
             }
-        } else if( !strncmp( cw, "th", SCR_KW_LENGTH ) || !strncmp( cw, "el", SCR_KW_LENGTH ) ) {
+        } else if( strncmp( cw, "th", SCR_KW_LENGTH ) == 0
+          || strncmp( cw, "el", SCR_KW_LENGTH ) == 0 ) {
             if( len > SCR_KW_LENGTH ) {
                 cb->if_flags[cb->if_level].ifcwte = (find_macro( macro_dict, cw ) == NULL);
             } else {
@@ -953,7 +954,7 @@ const gmltag * find_sys_tag( char * token, size_t toklen )
 
     for( k = 0; k < GML_TAGMAX; ++k ) {
         if( toklen == gml_tags[k].taglen ) {
-            if( !stricmp( gml_tags[k].tagname, token ) ) {
+            if( stricmp( gml_tags[k].tagname, token ) == 0 ) {
                 return( &gml_tags[k] );
             }
         }
@@ -974,7 +975,7 @@ const gmltag * find_lay_tag( char * token, size_t toklen )
 
     for( k = 0; k < LAY_TAGMAX; ++k ) {
         if( toklen == lay_tags[k].taglen ) {
-            if( !stricmp( lay_tags[k].tagname, token ) ) {
+            if( stricmp( lay_tags[k].tagname, token ) == 0 ) {
                 return( &lay_tags[k] );
             }
         }
@@ -1072,7 +1073,7 @@ char * get_text_line( char * p )
                         strupr( tok_txt );
                         for( k = 0; k < LAY_TAGMAX; ++k ) {
                             if( toklen == lay_tags[k].taglen ) {
-                                if( !strcmp( lay_tags[k].tagname, tok_txt ) ) {
+                                if( strcmp( lay_tags[k].tagname, tok_txt ) == 0 ) {
                                     tl_found = false;   // layout tag found
                                 }
                             }
@@ -1080,7 +1081,7 @@ char * get_text_line( char * p )
                         if( tl_found ) {
                             for( k = 0; k < GML_TAGMAX; ++k ) {
                                 if( toklen == gml_tags[k].taglen ) {
-                                    if( !strcmp( gml_tags[k].tagname, tok_txt ) ) {
+                                    if( strcmp( gml_tags[k].tagname, tok_txt ) == 0 ) {
                                         tl_found = false;   // normal tag found
                                     }
                                 }

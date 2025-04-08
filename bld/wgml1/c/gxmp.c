@@ -75,7 +75,7 @@ void gml_xmp( const gmltag * entry )
                 break;
             }
 
-            if( !strnicmp( "depth", p, 5 ) ) {
+            if( strnicmp( "depth", p, 5 ) == 0 ) {
                 p += 5;
                 p = get_att_value( p );
                 if( val_start == NULL ) {

@@ -638,7 +638,7 @@ static void gml_hx_common( const gmltag * entry, hdsrc hn_lvl )
             if( ProcFlags.reprocess_line ) {
                 break;
             }
-            if( !strnicmp( "id", p, 2 ) ) {
+            if( strnicmp( "id", p, 2 ) == 0 ) {
                 p += 2;
                 p = get_refid_value( p, id );
                 if( val_start == NULL ) {
@@ -648,7 +648,7 @@ static void gml_hx_common( const gmltag * entry, hdsrc hn_lvl )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( !strnicmp( "stitle", p, 6 ) ) {
+            } else if( strnicmp( "stitle", p, 6 ) == 0 ) {
                 p += 6;
                 p = get_att_value( p );
                 if( val_start == NULL ) {

@@ -59,7 +59,7 @@ void    gml_graphic( const gmltag * entry )
             if( ProcFlags.reprocess_line ) {
                 break;
             }
-            if( !strnicmp( "file", p, 4 ) ) {
+            if( strnicmp( "file", p, 4 ) == 0 ) {
                 p += 4;
                 p = get_att_value( p );
                 if( val_start == NULL ) {
@@ -79,7 +79,7 @@ void    gml_graphic( const gmltag * entry )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( !strnicmp( "depth", p, 5 ) ) {
+            } else if( strnicmp( "depth", p, 5 ) == 0 ) {
                 p += 5;
                 p = get_att_value( p );
                 if( val_start == NULL ) {
@@ -99,7 +99,7 @@ void    gml_graphic( const gmltag * entry )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( !strnicmp( "width", p, 5 ) ) {
+            } else if( strnicmp( "width", p, 5 ) == 0 ) {
                 p += 5;
                 p = get_att_value( p );
                 if( val_start == NULL ) {
@@ -108,9 +108,9 @@ void    gml_graphic( const gmltag * entry )
 
                 /* GRAPHIC uses the current column width even if "page" is specified */
 
-                if( !strnicmp( "page", val_start, 4 ) ) {
+                if( strnicmp( "page", val_start, 4 ) == 0 ) {
                     // default value is the correct value to use
-                } else if( !strnicmp( "column", val_start, 6 ) ) {
+                } else if( strnicmp( "column", val_start, 6 ) == 0 ) {
                     // default value is the correct value to use
                 } else {    // value actually specifies the width
                     if( att_val_to_su( &cur_su, true ) ) {
@@ -127,7 +127,7 @@ void    gml_graphic( const gmltag * entry )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( !strnicmp( "scale", p, 5 ) ) {
+            } else if( strnicmp( "scale", p, 5 ) == 0 ) {
                 p += 5;
                 p = get_att_value( p );
                 if( val_start == NULL ) {
@@ -154,7 +154,7 @@ void    gml_graphic( const gmltag * entry )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( !strnicmp( "xoff", p, 4 ) ) {
+            } else if( strnicmp( "xoff", p, 4 ) == 0 ) {
                 p += 4;
                 p = get_att_value( p );
                 if( val_start == NULL ) {
@@ -167,7 +167,7 @@ void    gml_graphic( const gmltag * entry )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( !strnicmp( "yoff", p, 4 ) ) {
+            } else if( strnicmp( "yoff", p, 4 ) == 0 ) {
                 p += 4;
                 p = get_att_value( p );
                 if( val_start == NULL ) {

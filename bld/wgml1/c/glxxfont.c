@@ -43,28 +43,28 @@ void    lay_xx( const gmltag * entry )
         eat_lay_sub_tag();
         return;                         // process during first pass only
     }
-    if( !strcmp( "CIT", entry->tagname ) ) {
+    if( strcmp( "CIT", entry->tagname ) == 0 ) {
         x_tag = el_cit;
         fontptr = &layout_work.cit.font;
-    } else if( !strcmp( "DTHD", entry->tagname ) ) {
+    } else if( strcmp( "DTHD", entry->tagname ) == 0 ) {
         x_tag = el_dthd;
         fontptr = &layout_work.dthd.font;
-    } else if( !strcmp( "DT", entry->tagname ) ) {
+    } else if( strcmp( "DT", entry->tagname ) == 0 ) {
         x_tag = el_dt;
         fontptr = &layout_work.dt.font;
-    } else if( !strcmp( "GT", entry->tagname ) ) {
+    } else if( strcmp( "GT", entry->tagname ) == 0 ) {
         x_tag = el_gt;
         fontptr = &layout_work.gt.font;
-    } else if( !strcmp( "GD", entry->tagname ) ) {
+    } else if( strcmp( "GD", entry->tagname ) == 0 ) {
         x_tag = el_gd;
         fontptr = &layout_work.gd.font;
-    } else if( !strcmp( "DDHD", entry->tagname ) ) {
+    } else if( strcmp( "DDHD", entry->tagname ) == 0 ) {
         x_tag = el_ddhd;
         fontptr = &layout_work.ddhd.font;
-    } else if( !strcmp( "IXPGNUM", entry->tagname ) ) {
+    } else if( strcmp( "IXPGNUM", entry->tagname ) == 0 ) {
         x_tag = el_ixpgnum;
         fontptr = &layout_work.ixpgnum.font;
-    } else if( !strcmp( "IXMAJOR", entry->tagname ) ) {
+    } else if( strcmp( "IXMAJOR", entry->tagname ) == 0 ) {
         x_tag = el_ixmajor;
         fontptr = &layout_work.ixmajor.font;
     } else {
@@ -79,7 +79,7 @@ void    lay_xx( const gmltag * entry )
         cvterr = -1;
         for( k = 0, curr = xx_att[k]; curr > 0; k++, curr = xx_att[k] ) {
 
-            if( !strnicmp( att_names[curr], g_att_val.att_name, g_att_val.att_len ) ) {
+            if( strnicmp( att_names[curr], g_att_val.att_name, g_att_val.att_len ) == 0 ) {
                 p = g_att_val.val_name;
 
                 switch( curr ) {

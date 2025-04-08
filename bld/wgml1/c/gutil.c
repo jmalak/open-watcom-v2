@@ -466,19 +466,19 @@ static bool su_layout_special( su * in_su )
     if( (val_start != NULL) && ((*(val_start - 1) == '\'') || (*(val_start - 1) == '"' ) ||
         (*ps == '+') || (*ps == '-' )) ) {   // values must not be quoted or signed
         retval = false;
-    } else if( !strnicmp( "left", ps, 4 ) ) {
+    } else if( strnicmp( "left", ps, 4 ) == 0 ) {
         s->su_u = SU_lay_left;
         strcpy( ps, "left" );
-    } else if( !strnicmp( "right", ps, 5 ) ) {
+    } else if( strnicmp( "right", ps, 5 ) == 0 ) {
         s->su_u = SU_lay_right;
         strcpy( ps, "right" );
-    } else if( !strnicmp( "center", ps, 6 ) ) {
+    } else if( strnicmp( "center", ps, 6 ) == 0 ) {
         s->su_u = SU_lay_centre;
         strcpy( ps, "center" );
-    } else if( !strnicmp( "centre", ps, 6 ) ) {
+    } else if( strnicmp( "centre", ps, 6 ) == 0 ) {
         s->su_u = SU_lay_centre;
         strcpy( ps, "centre" );
-    } else if( !strnicmp( "extend", ps, 6 ) ) {
+    } else if( strnicmp( "extend", ps, 6 ) == 0 ) {
         s->su_u = SU_lay_extend;
         strcpy( ps, "extend" );
     } else {

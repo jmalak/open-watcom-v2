@@ -423,7 +423,7 @@ void gml_fig( const gmltag * entry )
             if( ProcFlags.reprocess_line ) {
                 break;
             }
-            if( !strnicmp( "depth", p, 5 ) ) {
+            if( strnicmp( "depth", p, 5 ) == 0 ) {
                 p += 5;
                 p = get_att_value( p );
                 if( val_start == NULL ) {
@@ -436,17 +436,17 @@ void gml_fig( const gmltag * entry )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( !strnicmp( "frame", p, 5 ) ) {
+            } else if( strnicmp( "frame", p, 5 ) == 0 ) {
                 p += 5;
                 p = get_att_value( p );
                 if( val_start == NULL ) {
                     break;
                 }
-                if( !strnicmp( "none", val_start, 4 ) ) {
+                if( strnicmp( "none", val_start, 4 ) == 0 ) {
                     frame.type = none;
-                } else if( !strnicmp( "box", val_start, 3 ) ) {
+                } else if( strnicmp( "box", val_start, 3 ) == 0 ) {
                     frame.type = box_frame;
-                } else if( !strnicmp( "rule", val_start, 4 ) ) {
+                } else if( strnicmp( "rule", val_start, 4 ) == 0 ) {
                     frame.type = rule_frame;
                 } else {
                     frame.type = char_frame;
@@ -467,7 +467,7 @@ void gml_fig( const gmltag * entry )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( !strnicmp( "id", p, 2 ) ) {
+            } else if( strnicmp( "id", p, 2 ) == 0 ) {
                 p += 2;
                 p = get_refid_value( p, id );
                 if( val_start == NULL ) {
@@ -477,17 +477,17 @@ void gml_fig( const gmltag * entry )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( !strnicmp( "place", p, 5 ) ) {
+            } else if( strnicmp( "place", p, 5 ) == 0 ) {
                 p += 5;
                 p = get_att_value( p );
                 if( val_start == NULL ) {
                     break;
                 }
-                if( !strnicmp( "bottom", val_start, 5 ) ) {
+                if( strnicmp( "bottom", val_start, 5 ) == 0 ) {
                     place = bottom_place;
-                } else if( !strnicmp( "inline", val_start, 6 ) ) {
+                } else if( strnicmp( "inline", val_start, 6 ) == 0 ) {
                     place = inline_place;
-                } else if( !strnicmp( "top", val_start, 3 ) ) {
+                } else if( strnicmp( "top", val_start, 3 ) == 0 ) {
                     place = top_place;
                 } else {
                     xx_line_err_c( err_inv_att_val, val_start );
@@ -495,16 +495,16 @@ void gml_fig( const gmltag * entry )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( !strnicmp( "width", p, 5 ) ) {
+            } else if( strnicmp( "width", p, 5 ) == 0 ) {
                 p += 5;
                 p = get_att_value( p );
                 if( val_start == NULL ) {
                     break;
                 }
-                if( !strnicmp( "page", val_start, 4 ) ) {
+                if( strnicmp( "page", val_start, 4 ) == 0 ) {
                     // this will be used to set t_page_width and width below
                     page_width = true;
-                } else if( !strnicmp( "column", val_start, 6 ) ) {
+                } else if( strnicmp( "column", val_start, 6 ) == 0 ) {
                     // default value is the correct value to use
                 } else {    // value actually specifies the width
                     pa = val_start;

@@ -248,7 +248,7 @@ mac_entry   * find_macro( mac_dict * dict_parm, const char * name )
     dict->lookups++;
     while( curr ) {
         dict->compares++;
-        if( !strncmp( curr->name, name, MAC_NAME_LENGTH ) ) {
+        if( strncmp( curr->name, name, MAC_NAME_LENGTH ) == 0 ) {
             wk = curr;
             break;
         }

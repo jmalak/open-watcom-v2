@@ -61,7 +61,7 @@ extern  void    gml_include( const gmltag * entry )
         pa = get_att_start( p );
         p = att_start;
         if( !ProcFlags.reprocess_line ) {
-            if( !strnicmp( "file", p, 4 ) ) {
+            if( strnicmp( "file", p, 4 ) == 0 ) {
                 p += 4;
                 p = get_att_value( p );
             } else {
