@@ -48,6 +48,12 @@
 #include "clibext.h"
 
 
+#ifdef __UNIX__
+#define TEXT_NL     "\n"
+#else
+#define TEXT_NL     "\r\n"
+#endif
+
 /* Local variable declaration. */
 
 static record_buffer    binc_buff   = { 0, 0, NULL };
@@ -296,7 +302,8 @@ static void ob_insert_ps_cmd( const char *in_block, size_t count )
 
     /* If the buffer is full, flush it. */
 
-    if( buffout.current == buffout.length ) ob_flush();
+    if( buffout.current == buffout.length )
+        ob_flush();
 
     return;
 }
@@ -820,7 +827,8 @@ static void set_out_file( void )
             }
         }
     } else {
-        if( (*cmd_drive != '\0') || (*cmd_dir != '\0') ) {
+        if( (*cmd_drive != '\0')
+          || (*cmd_dir != '\0') ) {
 
             /* Command line OPTION was used with something like "c:" or "..\" but
              * with no filename or extension.
@@ -836,7 +844,8 @@ static void set_out_file( void )
              * at all.
              */
 
-            if( (*dev_fname != '*') && (*dev_fname != '\0') ) {
+            if( (*dev_fname != '*')
+              && (*dev_fname != '\0') ) {
 
                 /* If the :DEVICE block specified a file name then use the file
                  * name and any extension provided.
@@ -887,8 +896,8 @@ static void set_out_file_attr( void )
     if( out_file_attr == NULL ) {
         if( bin_driver->rec_spec != NULL ) {
             len = strlen( bin_driver->rec_spec );
-            if( (bin_driver->rec_spec[0] != '(') ||
-                (bin_driver->rec_spec[len - 1] != ')')) {
+            if( (bin_driver->rec_spec[0] != '(')
+              || (bin_driver->rec_spec[len - 1] != ')')) {
 
                 /* Use default if rec_spec is badly-formed. */
 
@@ -1079,8 +1088,8 @@ void ob_oc( const char *text )
  * Notes:
  *      The output file is, and must be, opened in binary mode. This requires
  *          the explicit emission of "\r\n" for non-Linux versions. For Linux,
- *          "\n" is emitted, but, since I am not able to test the Linux version,
- *          it is not possible to tell is this is correct.
+ *          "\n" is emitted. The end-of-line bytes are not counted in record
+ *          length.
  */
 
 void ob_flush( void )
@@ -1094,17 +1103,10 @@ void ob_flush( void )
         return;
     }
     buffout.current = 0;
-#ifdef __UNIX__
-    if( fprintf_s( out_file_fp, "\n" ) < strlen( "\n" ) ) {
+    if( fputs( TEXT_NL, out_file_fp ) == EOF ) {
         xx_simple_err_c( err_write_out_file, out_file );
         return;
     }
-#else
-    if( fprintf_s( out_file_fp, "\r\n" ) < strlen( "\r\n" ) ) {
-        xx_simple_err_c( err_write_out_file, out_file );
-        return;
-    }
-#endif
     return;
 }
 
@@ -1322,7 +1324,8 @@ void ob_setup( void )
     /* The record type must be "t"; it must have only one character and be */
     /* followed by ":".                                                    */
 
-    if( ( my_tolower( out_file_attr[0] ) != 't' ) || ( out_file_attr[1] != ':' ) ) {
+    if( ( my_tolower( out_file_attr[0] ) != 't' )
+      || ( out_file_attr[1] != ':' ) ) {
         xx_simple_err_c( err_rec_att_not_sup, out_file_attr );
     }
 
