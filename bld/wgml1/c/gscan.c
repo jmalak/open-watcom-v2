@@ -180,7 +180,7 @@ static void scan_gml( void )
 
     if( WgmlFlags.firstpass && (cb->fmflags & II_research) ) {
 
-        if(  stricmp( g_tok_start + 1, "cmt" ) ) {   // quiet for :cmt.
+        if( IS_CMT_TAG( g_tok_start ) ) {   // quiet for :cmt.
 
             if( cb->fmflags & II_tag_mac ) {
                 printf_research( "L%d    %c%s tag found in macro %s(%d)\n\n",

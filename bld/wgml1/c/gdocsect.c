@@ -90,7 +90,7 @@ void set_section_banners( doc_section ds )
     sect_ban_top[0] = sect_ban_top[1] = NULL;
     sect_ban_bot[0] = sect_ban_bot[1] = NULL;
 
-    if( no_ban != sect_2_bansect[ds]  ) {
+    if( no_ban != sect_2_bansect[ds] ) {
 
         for( ban = layout_work.banner; ban != NULL; ban = ban->next ) {
             if( ban->docsect == sect_2_bansect[ds] ) {  // if our doc section
@@ -381,8 +381,8 @@ static void gen_ref_list( ix_e_blk * refs, font_number font )
             if( cur_ref->next != NULL ) {                   // done if last page number
                 predict = cur_ref->u.pagenum.page_no;
                 predict++;
-                if( (cur_ref->entry_typ != pgmajor ) &&
-                        (cur_ref->next->u.pagenum.page_no == predict) ) {   // sequence detected
+                if( (cur_ref->entry_typ != pgmajor )
+                  && (cur_ref->next->u.pagenum.page_no == predict) ) {   // sequence detected
                     ProcFlags.ct = true;
                     post_space = 0;
                     process_text( ixjval->value, font );
@@ -431,7 +431,8 @@ static void gen_see_list( ix_e_blk * refs, font_number font, uint32_t level,
         t_page.cur_width += wrap[level];
         ProcFlags.ct = true;
         post_space = 0;
-        if( ref_done || has_sub ) {
+        if( ref_done
+          || has_sub ) {
             process_text( layout_work.index.see_also_string, font );
         } else {
             process_text( layout_work.index.see_string, font );
@@ -532,7 +533,8 @@ static void gen_figlist( void )
     ffh_entry   *   curr;
     uint32_t        size;
 
-    if( fig_list == NULL ) return;  // no fig_list, no FIGLIST
+    if( fig_list == NULL )
+        return;  // no fig_list, no FIGLIST
 
     /* Insert FIGLIST into current section */
 
@@ -649,7 +651,9 @@ static void gen_index( void )
 
     /* No index is output without an index_dict or before the last pass */
 
-    if( !WgmlFlags.lastpass || (index_dict == NULL) ) return;
+    if( !WgmlFlags.lastpass
+      || (index_dict == NULL) )
+        return;
 
     in_trans_sav = ProcFlags.in_trans;
 
@@ -718,7 +722,6 @@ static void gen_index( void )
     }
 
     ixh_indent = indent[0] + conv_hor_unit( &layout_work.ixhead.indent, layout_work.ixhead.font );
-    ixh1 = index_dict;
     find_symvar( sys_dict, "$ixj", no_subscript, &ixjval );
     find_symvar( sys_dict, "$ixref", no_subscript, &ixrefval );
 
@@ -743,7 +746,7 @@ static void gen_index( void )
     /* Output the index */
 
     first[0] = true;
-    while( ixh1 != NULL ) {             // level 1
+    for( ixh1 = index_dict; ixh1 != NULL; ixh1 = ixh1->next ) { // level 1
 
         if( letter[0] != my_toupper( *(ixh1->ix_term) ) ) {
 
@@ -833,10 +836,10 @@ static void gen_index( void )
 
         if( ixh1->entry != NULL ) {
             post_space = 0;
-            if( (ixh1->entry->major_pgnum != NULL) ||
-                    (ixh1->entry->major_string != NULL) ||
-                    (ixh1->entry->normal_pgnum != NULL) ||
-                    (ixh1->entry->normal_string != NULL) ) {    // see_string alone doesn't need the index_delim
+            if( (ixh1->entry->major_pgnum != NULL)
+              || (ixh1->entry->major_string != NULL)
+              || (ixh1->entry->normal_pgnum != NULL)
+              || (ixh1->entry->normal_string != NULL) ) {    // see_string alone doesn't need the index_delim
                 ProcFlags.in_trans = false;         // turn off input translation
                 process_text( layout_work.ix[0].index_delim, layout_work.ix[0].font );
             }
@@ -845,9 +848,8 @@ static void gen_index( void )
         post_space = 0;
         scr_process_break();
 
-        ixh2 = ixh1->lower;
         first[1] = true;
-        while( ixh2 != NULL ) {     // level 2
+        for( ixh2 = ixh1->lower; ixh2 != NULL; ixh2 = ixh2->next ) {    // level 2
             if( first[1] ) {                    // first entry in group
                 g_text_spacing = layout_work.hx.hx_sect[hds_index].spacing;
                 set_skip_vars( &layout_work.ix[1].skip, NULL, NULL,
@@ -874,10 +876,10 @@ static void gen_index( void )
 
             if( ixh2->entry != NULL ) {
                 post_space = 0;
-                if( (ixh2->entry->major_pgnum != NULL) ||
-                        (ixh2->entry->major_string != NULL) ||
-                        (ixh2->entry->normal_pgnum != NULL) ||
-                        (ixh2->entry->normal_string != NULL) ) {    // see_string alone doesn't need the index_delim
+                if( (ixh2->entry->major_pgnum != NULL)
+                  || (ixh2->entry->major_string != NULL)
+                  || (ixh2->entry->normal_pgnum != NULL)
+                  || (ixh2->entry->normal_string != NULL) ) {    // see_string alone doesn't need the index_delim
                     ProcFlags.in_trans = false;         // turn off input translation
                     process_text( layout_work.ix[1].index_delim, layout_work.ix[1].font );
                 }
@@ -886,9 +888,8 @@ static void gen_index( void )
             post_space = 0;
             scr_process_break();
 
-            ixh3 = ixh2->lower;
             first[2] = true;
-            while( ixh3 != NULL ) {     // level 3
+            for( ixh3 = ixh2->lower; ixh3 != NULL; ixh3 = ixh3->next ) {     // level 3
                 if( first[2] ) {                    // first entry in group
                     g_text_spacing = layout_work.hx.hx_sect[hds_index].spacing;
                     set_skip_vars( &layout_work.ix[2].skip, NULL, NULL,
@@ -915,10 +916,10 @@ static void gen_index( void )
 
                 if( ixh3->entry != NULL ) {
                     post_space = 0;
-                    if( (ixh3->entry->major_pgnum != NULL) ||
-                            (ixh3->entry->major_string != NULL) ||
-                            (ixh3->entry->normal_pgnum != NULL) ||
-                            (ixh3->entry->normal_string != NULL) ) {    // see_string alone doesn't need the index_delim
+                    if( (ixh3->entry->major_pgnum != NULL)
+                      || (ixh3->entry->major_string != NULL)
+                      || (ixh3->entry->normal_pgnum != NULL)
+                      || (ixh3->entry->normal_string != NULL) ) {    // see_string alone doesn't need the index_delim
                         ProcFlags.in_trans = false;         // turn off input translation
                         process_text( layout_work.ix[2].index_delim, layout_work.ix[2].font );
                     }
@@ -926,17 +927,13 @@ static void gen_index( void )
                 }
                 post_space = 0;
                 scr_process_break();
-
-                ixh3 = ixh3->next;
             }
-            ixh2 = ixh2->next;
             if( !first[2] ) {   // at least one I3 entry existed
                 first[1] = true;
             }
         }
-        ixh1 = ixh1->next;
         if( !first[1] ) {   // at least one I2 entry existed
-        first[0] = true;
+            first[0] = true;
         }
     }
     ProcFlags.concat = concat_save;
@@ -965,7 +962,8 @@ static void gen_toc( void )
     uint32_t        indent[7];
     uint32_t        size;
 
-    if( hd_list == NULL ) return;       // no hd_list, no TOC
+    if( hd_list == NULL )
+        return;       // no hd_list, no TOC
 
     /* Insert TOC into current section */
 
@@ -1020,7 +1018,8 @@ static void gen_toc( void )
         }
         if( cur_level < layout_work.toc.toc_levels ) {
             g_curr_font = layout_work.tochx[cur_level].font;
-            if( levels[cur_level] && !curr->abs_pre ) {
+            if( levels[cur_level]
+              && !curr->abs_pre ) {
                 g_text_spacing = layout_work.toc.spacing;
                 set_skip_vars( &layout_work.tochx[cur_level].skip, NULL, NULL,
                                g_text_spacing, g_curr_font );
@@ -1107,7 +1106,7 @@ static void document_new_position( void )
 
     if( sect_ban_top[page & 1] != NULL ) {
         top_reg = sect_ban_top[page & 1]->by_line->first;
-        if( bin_driver->y_positive == 0x00 ) {
+        if( bin_driver->y_positive == 0 ) {
             top_pos = t_page.page_top - top_reg->reg_depth;
         } else {
             top_pos = t_page.page_top + top_reg->reg_depth;
@@ -1115,7 +1114,7 @@ static void document_new_position( void )
         g_cur_v_start = top_pos;
     } else {
         top_pos = t_page.panes_top;
-        if( bin_driver->y_positive == 0x00 ) {
+        if( bin_driver->y_positive == 0 ) {
             g_cur_v_start = t_page.panes_top - wgml_fonts[FONT0].line_height;
         } else {
             g_cur_v_start = t_page.panes_top + wgml_fonts[FONT0].line_height;
@@ -1157,9 +1156,9 @@ void start_doc_sect( void )
     text_space          page_s;         // page spacing
 
 
-    if( ProcFlags.start_section ) {
+    if( ProcFlags.start_section )
         return;                         // once is enough
-    }
+
     if( !ProcFlags.fb_document_done ) { // the very first section/page
         do_layout_end_processing();
     }
@@ -1383,7 +1382,8 @@ void start_doc_sect( void )
     t_page.cur_width = g_indent;
     ProcFlags.doc_sect = ds;
 
-    if( (block_queue != NULL) && (ds == doc_sect_egdoc) ) {
+    if( (block_queue != NULL)
+      && (ds == doc_sect_egdoc) ) {
         fb_blocks_out();
     }
 }
@@ -1423,7 +1423,7 @@ static void gml_doc_xxx( doc_section ds )
 /*  :EGDOC     optional                                                    */
 /***************************************************************************/
 
-extern void gml_abstract( const gmltag * entry )
+void gml_abstract( const gmltag * entry )
 {
     (void)entry;
 
@@ -1449,7 +1449,7 @@ extern void gml_abstract( const gmltag * entry )
     set_h_start();
 }
 
-extern void gml_appendix( const gmltag * entry )
+void gml_appendix( const gmltag * entry )
 {
     (void)entry;
 
@@ -1467,7 +1467,7 @@ extern void gml_appendix( const gmltag * entry )
     set_h_start();
 }
 
-extern void gml_backm( const gmltag * entry )
+void gml_backm( const gmltag * entry )
 {
     (void)entry;
 
@@ -1491,7 +1491,7 @@ extern void gml_backm( const gmltag * entry )
     g_indentr = 0;
 }
 
-extern void gml_body( const gmltag * entry )
+void gml_body( const gmltag * entry )
 {
     (void)entry;
 
@@ -1517,7 +1517,7 @@ extern void gml_body( const gmltag * entry )
     set_h_start();
 }
 
-extern void gml_figlist( const gmltag * entry )
+void gml_figlist( const gmltag * entry )
 {
     (void)entry;
 
@@ -1528,7 +1528,7 @@ extern void gml_figlist( const gmltag * entry )
     }
 }
 
-extern void gml_frontm( const gmltag * entry )
+void gml_frontm( const gmltag * entry )
 {
     (void)entry;
 
@@ -1544,7 +1544,7 @@ extern void gml_frontm( const gmltag * entry )
 /*  :INDEX tag is special, not really a section                            */
 /***************************************************************************/
 
-extern void gml_index( const gmltag * entry )
+void gml_index( const gmltag * entry )
 {
     (void)entry;
 
@@ -1557,8 +1557,8 @@ extern void gml_index( const gmltag * entry )
         return;                         // wgml4 OS/2 crashes with page fault
     }
 
-    if( !((ProcFlags.doc_sect == doc_sect_backm) ||
-          (ProcFlags.doc_sect_nxt == doc_sect_backm)) ) {
+    if( !((ProcFlags.doc_sect == doc_sect_backm)
+      || (ProcFlags.doc_sect_nxt == doc_sect_backm)) ) {
         xx_line_err_c( err_doc_sec_expected_1, g_tok_start );
     }
     if( !WgmlFlags.index ) {          // index option not active
@@ -1579,7 +1579,7 @@ extern void gml_index( const gmltag * entry )
     gen_index();                        // output the formatted index
 }
 
-extern void gml_preface( const gmltag * entry )
+void gml_preface( const gmltag * entry )
 {
     (void)entry;
 
@@ -1602,7 +1602,7 @@ extern void gml_preface( const gmltag * entry )
     set_h_start();
 }
 
-extern void gml_titlep( const gmltag * entry )
+void gml_titlep( const gmltag * entry )
 {
     (void)entry;
 
@@ -1633,7 +1633,7 @@ extern void gml_titlep( const gmltag * entry )
     set_h_start();
 }
 
-extern void gml_etitlep( const gmltag * entry )
+void gml_etitlep( const gmltag * entry )
 {
     tag_cb  *   wk;
 
@@ -1654,7 +1654,7 @@ extern void gml_etitlep( const gmltag * entry )
     }
 }
 
-extern void gml_toc( const gmltag * entry )
+void gml_toc( const gmltag * entry )
 {
     (void)entry;
 
@@ -1665,7 +1665,7 @@ extern void gml_toc( const gmltag * entry )
     }
 }
 
-extern void gml_egdoc( const gmltag * entry )
+void gml_egdoc( const gmltag * entry )
 {
     fwd_ref *   curr;
 
@@ -1724,8 +1724,9 @@ extern void gml_egdoc( const gmltag * entry )
                 xx_simple_warn( wng_pass_many );    // at least one more pass needed
             }
         }
-        if( !WgmlFlags.index && ProcFlags.index_tag_cw_seen ) {   // index option needed
-            xx_simple_warn( wng_index_opt );                        // give hint to activate index
+        if( !WgmlFlags.index
+          && ProcFlags.index_tag_cw_seen ) {        // index option needed
+            xx_simple_warn( wng_index_opt );        // give hint to activate index
         }
     }
 
@@ -1739,7 +1740,7 @@ extern void gml_egdoc( const gmltag * entry )
 /*  :gdoc sec='TOP secret, destroy before reading'                         */
 /***************************************************************************/
 
-extern void gml_gdoc( const gmltag * entry )
+void gml_gdoc( const gmltag * entry )
 {
     char        *   p;
 
@@ -1751,9 +1752,10 @@ extern void gml_gdoc( const gmltag * entry )
         p++;
 
     SkipSpaces( p );                    // over WS to attribute
-    if( *p != '\0' &&
-        ! (strnicmp( "sec ", p, 4 ) &&  // look for "sec " or "sec="
-           strnicmp( "sec=", p, 4 )) ) {
+    // look for "sec " or "sec="
+    if( *p != '\0'
+      && (strnicmp( "sec ", p, 4 ) == 0
+      || strnicmp( "sec=", p, 4 ) == 0) ) {
         char        quote;
         char    *   valstart;
 

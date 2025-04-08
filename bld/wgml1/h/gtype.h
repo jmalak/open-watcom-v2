@@ -25,6 +25,10 @@
 #define IS_CONT_CHAR(p)     ((p)[0] == CONT_char && (p)[1] == '\0')
 #define ADD_CONT_CHAR(p)    (p)[0] = CONT_char; (p)[1] = '\0'
 
+#define IS_TAG_END(p)       (*(p) == '.' || *(p) == ' ')
+#define IS_TAG_END2(p)      (*(p) == '.' || *(p) == ' ' || *(p) == '\t' || *(p) == '\0')
+#define IS_CMT_TAG(p)       ((p)[0] == GML_char && strnicmp( p + 1, "CMT", sizeof( "CMT" ) - 1 ) == 0)
+
 #define ulong           unsigned long
 
 //================= Some global defines ========================

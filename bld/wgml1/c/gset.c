@@ -39,6 +39,7 @@ extern  void    gml_set( const gmltag * entry )
     symvar          sym;
     sub_index       subscript;
     dict_hdl        working_dict;
+    size_t          len;
 
     (void)entry;
 
@@ -76,12 +77,11 @@ extern  void    gml_set( const gmltag * entry )
                     break;
                 }
                 value_found = true;
-                memcpy_s( token_buf, buf_size, val_start, val_len );
-                if( val_len < buf_size ) {
-                    token_buf[val_len] = '\0';
-                } else {
-                    token_buf[buf_size - 1] = '\0';
-                }
+                len = val_len;
+                if( len > buf_size - 1 )
+                    len = buf_size - 1;
+                strncpy( token_buf, val_start, len );
+                token_buf[len] = '\0';
             } else if( strnicmp( token_buf, "delete", 6 ) == 0 ) {
                 p += 6;
                 sym.flags |= deleted;

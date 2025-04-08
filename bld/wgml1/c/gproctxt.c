@@ -98,7 +98,10 @@ static void puncadj( text_line * line, int32_t * delta0, int32_t rem,
             ch = tw->text[tw->count - 1];
             switch( loop_cnt ) {
             case   3:                   // test full stop
-                if( ch == '.' || ch == '!' || ch == '?' || ch == ':' ) {
+                if( ch == '.'
+                  || ch == '!'
+                  || ch == '?'
+                  || ch == ':' ) {
                     spacew = space;
                     if( remw > 0 ) {
                         spacew++;
@@ -113,7 +116,8 @@ static void puncadj( text_line * line, int32_t * delta0, int32_t rem,
                 }
                 break;
             case   2:                   // test half stop
-                if( ch == ':' || ch == ';' ) {
+                if( ch == ':'
+                  || ch == ';' ) {
 #if 0
                     delta -= space;
                     while( tn != NULL ) {
@@ -136,7 +140,8 @@ static void puncadj( text_line * line, int32_t * delta0, int32_t rem,
                 }
                 break;
             case   1:
-                if( ch == ',' || ch == ')' ) {
+                if( ch == ','
+                  || ch == ')' ) {
 #if 0
                     delta -= space;
                     while( tn != NULL ) {
@@ -180,7 +185,8 @@ static uint32_t text_chars_width( const char *text, size_t count, font_number fo
     uint32_t    retval      = 0;
 
     for( i = 0; i < count; i++ ) {
-        if( (text[i] == '\t') || (text[i] == tab_char) ) {
+        if( (text[i] == '\t')
+          || (text[i] == tab_char) ) {
             break;
         }
         cur_count++;
@@ -225,7 +231,7 @@ static void next_tab( void )
             }
             last_i = i;
         }
-        for( i; i < user_tabs.current; i++ ) {
+        for( ; i < user_tabs.current; i++ ) {
             if( cur_h < ((int32_t) user_tabs.tabs[i].column) ) {
                 c_tab = &user_tabs.tabs[i];
                 break;
@@ -261,7 +267,7 @@ static void next_tab( void )
 
         // get the tab stop to use
         for( i = 0; i < def_tabs.current; i++ ) {
-            if( cur_h < ((int32_t) def_tabs.tabs[i].column) ) {
+            if( cur_h < ((int32_t)def_tabs.tabs[i].column) ) {
                 c_tab = &def_tabs.tabs[i];
                 break;
             }
@@ -332,13 +338,15 @@ static void do_fc_comp( void )
     fill_count -= fill_start;
     fill_start *= fill_width;
 
-    if( (fill_count == 0) && (t_page.cur_width < fill_start) ) {
+    if( (fill_count == 0)
+      && (t_page.cur_width < fill_start) ) {
         t_page.cur_width = fill_start;
     }
 
     /* This may seem unduly complicated, but it does match wgml 4.0 */
 
-     if( figlist_toc && (c_stop->alignment == al_right) ) {
+     if( figlist_toc
+       && (c_stop->alignment == al_right) ) {
         end_point = fill_start + (fill_width * fill_count);
         if( end_point != c_stop->column ) {
             if( figlist_toc & gs_figlist ) {    // this depends on TOC preceding FIGLIST
@@ -405,21 +413,21 @@ static void wgml_tabs( void )
 
     /* Set t_align to closest enclosing nonzero value */
 
-    t_cb = nest_cb;
-    while( t_cb != NULL ) {
+    for( t_cb = nest_cb; t_cb != NULL; t_cb = t_cb->prev ) {
         if( t_cb->align != 0 ) {
             t_align = t_cb->align;
             break;
         }
-        t_cb = t_cb->prev;
     }
     for( i = 0; i < in_count; i++) {    // locate the first wgml tab, if any
-        if( (in_text[i] == '\t') || (in_text[i] == tab_char) ) {
+        if( (in_text[i] == '\t')
+          || (in_text[i] == tab_char) ) {
             break;
         }
         t_count++;
     }
-    if( !tabbing && (t_count == in_count) ) {
+    if( !tabbing
+      && (t_count == in_count) ) {
         t_page.cur_width = t_line->last->x_address + t_line->last->width;
         phrase_start = false;
         post_space = 0;
@@ -432,7 +440,8 @@ static void wgml_tabs( void )
         t_line->last = t_line->last->prev;  // unhook in_chars
         t_line->last->next = NULL;
     }
-    if( !tabbing && (t_count > 0) ) {   // no current tab stop: reset state
+    if( !tabbing
+      && (t_count > 0) ) {   // no current tab stop: reset state
         c_font = 0;
         c_stop = NULL;
         c_type = tx_norm;
@@ -479,7 +488,7 @@ static void wgml_tabs( void )
                     pre_tab_gap = true;
                     if( c_stop != NULL ) {
                         if( (c_stop->alignment == al_center)
-                                || (c_stop->alignment == al_right) ) {
+                          || (c_stop->alignment == al_right) ) {
                             scope_end = true;
                         }
                         c_chars = do_c_chars( c_chars, in_chars, in_text,
@@ -503,8 +512,9 @@ static void wgml_tabs( void )
         }
     } else if( tabbing ) {          // text belongs to current tab stop
         if( tab_chars.last != NULL ) {
-            if( (tab_chars.first != NULL) && ((c_stop->alignment != al_left) ||
-                !(input_cbs->fmflags & II_tag_mac)) ) {
+            if( (tab_chars.first != NULL)
+              && ((c_stop->alignment != al_left)
+              || !(input_cbs->fmflags & II_tag_mac)) ) {
                 // remove all markers/fill chars
                 if( tab_chars.first->prev !=NULL) {
                     tab_chars.first->prev->next = tab_chars.last->next;
@@ -605,7 +615,8 @@ static void wgml_tabs( void )
     for( i; i < in_count; i++ ) {
         t_start = i;
         for( i; i < in_count; i++ ) {   // get the text up to the next tab
-            if( (in_text[i] == '\t') || (in_text[i] == tab_char) ) {
+            if( (in_text[i] == '\t')
+              || (in_text[i] == tab_char) ) {
                 break;
             }
         }
@@ -628,14 +639,14 @@ static void wgml_tabs( void )
 
         switch( c_stop->alignment ) {
         case al_left:
-            if( !tabbing || (s_multi == NULL) ) {
+            if( !tabbing
+              || (s_multi == NULL) ) {
                 t_page.cur_width = c_stop->column;
 
                 /* II_macro immediately after a tab character */
 
                 if( (input_cbs->fmflags & II_macro)
-                        && (c_font != in_chars->phrase_font)
-                        ) {
+                  && (c_font != in_chars->phrase_font) ) {
                     t_page.cur_width += post_space;
                 }
                 tabbing = false;
@@ -728,11 +739,13 @@ static void wgml_tabs( void )
             do_fc_comp();
 
             if( s_chars->prev != NULL ) {
-                if( ((s_chars->prev->type == tx_norm) && (c_type != tx_norm)) ||
-                     (s_chars->prev->type != tx_norm) && (c_type == tx_norm)) {
+                if( ((s_chars->prev->type == tx_norm)
+                  && (c_type != tx_norm))
+                  || (s_chars->prev->type != tx_norm)
+                  && (c_type == tx_norm) ) {
                     c_chars = do_c_chars( c_chars, in_chars, NULL, 0, gap_start,
                                                         0, c_font, c_type );
-                    if( tab_chars.first == NULL) {
+                    if( tab_chars.first == NULL ) {
                         tab_chars.first = c_chars;
                     }
                     tab_chars.last = c_chars;
@@ -741,7 +754,7 @@ static void wgml_tabs( void )
                 if( c_type != tx_norm ) {
                     c_chars = do_c_chars( c_chars, in_chars, NULL, 0,
                                           t_page.cur_width, 0, c_font, c_type );
-                    if( tab_chars.first == NULL) {
+                    if( tab_chars.first == NULL ) {
                         tab_chars.first = c_chars;
                     }
                     tab_chars.last = c_chars;
@@ -754,7 +767,7 @@ static void wgml_tabs( void )
                                         c_font, c_type );
                 c_chars->count = fill_count;
                 memset( c_chars->text, c_stop->fill_char, fill_count );
-                if( tab_chars.first == NULL) {
+                if( tab_chars.first == NULL ) {
                     tab_chars.first = c_chars;
                 }
                 tab_chars.last = c_chars;
@@ -765,14 +778,15 @@ static void wgml_tabs( void )
             if( (c_font != s_chars->font) && !(input_cbs->fmflags & II_macro) ) {
                 c_chars = do_c_chars( c_chars, in_chars, NULL, 0,
                                 t_page.cur_width, 0, c_font, c_type );
-                if( tab_chars.first == NULL) {
+                if( tab_chars.first == NULL ) {
                     tab_chars.first = c_chars;
                 }
                 tab_chars.last = c_chars;
             }
 
             if( s_chars->prev != NULL ) {
-                if( (s_chars->type == tx_norm) && (c_type != tx_norm) ) {
+                if( (s_chars->type == tx_norm)
+                  && (c_type != tx_norm) ) {
                     c_chars = do_c_chars( c_chars, in_chars, NULL, 0,
                                         t_page.cur_width, 0, c_font, c_type );
                     if( tab_chars.first == NULL) {
@@ -800,18 +814,19 @@ static void wgml_tabs( void )
                     s_multi->tab_pos = tt_user;
                 }
                 t_page.cur_width = s_multi->x_address + s_multi->width;
-                c_multi = s_multi->next;
-                while( c_multi != NULL ) {  // adjust starting positions
+                // adjust starting positions
+                for( c_multi = s_multi->next; c_multi != NULL; c_multi = c_multi->next ) {
                     c_multi->x_address += offset;
                     t_page.cur_width = c_multi->x_address + c_multi->width;
-                    c_multi = c_multi->next;
                 }
                 t_page.cur_width += pre_space;
             }
 
             // the text positioned by the tab stop, if any
 
-            if( (t_width > 0) || (c_stop->alignment != al_center) || !pre_tab_gap ) {
+            if( (t_width > 0)
+              || (c_stop->alignment != al_center)
+              || !pre_tab_gap ) {
                 c_chars = do_c_chars( c_chars, in_chars, in_text + t_start,
                                         t_count, t_page.cur_width, t_width,
                                         in_chars->font, in_chars->type );
@@ -831,7 +846,8 @@ static void wgml_tabs( void )
                     tab_chars.first = c_chars;
                 }
                 tab_chars.last = c_chars;
-                if( (s_chars->type == tx_norm) && (c_type != tx_norm) ) {
+                if( (s_chars->type == tx_norm)
+                  && (c_type != tx_norm) ) {
                     c_chars = do_c_chars( c_chars, in_chars, NULL, 0, gap_start,
                                                         0, c_font, c_type );
                     if( tab_chars.first == NULL) {
@@ -846,7 +862,8 @@ static void wgml_tabs( void )
                 }
             }
 
-            if( (in_text[i] == '\t') || (in_text[i] == tab_char) ) {
+            if( (in_text[i] == '\t')
+              || (in_text[i] == tab_char) ) {
                 // set up for new tab character
                 tab_chars.first = NULL;
                 tab_chars.last = NULL;
@@ -864,7 +881,8 @@ static void wgml_tabs( void )
     }
 
     i = in_count - 1;                       // reset to check last character
-    if( (in_text[i] == '\t') || (in_text[i] == tab_char) ) {
+    if( (in_text[i] == '\t')
+      || (in_text[i] == tab_char) ) {
         gap_start = t_page.cur_width;
         t_page.cur_width = c_stop->column;   // works with $ISO$ in macro noansi
         if( c_stop->alignment == al_right ) {
@@ -885,9 +903,12 @@ static void wgml_tabs( void )
             s_chars = s_multi;
         }
 
-        if( !ProcFlags.in_figlist_toc && (s_chars->prev != NULL) ) {    // Skip for TOC output
-            if( ((s_chars->prev->type == tx_norm) && (c_type != tx_norm)) ||
-                 (s_chars->prev->type != tx_norm) && (c_type == tx_norm)) {
+        if( !ProcFlags.in_figlist_toc
+          && (s_chars->prev != NULL) ) {    // Skip for TOC output
+            if( ((s_chars->prev->type == tx_norm)
+              && (c_type != tx_norm))
+              || (s_chars->prev->type != tx_norm)
+              && (c_type == tx_norm) ) {
                 c_chars = do_c_chars( c_chars, in_chars, NULL, 0, gap_start,
                                         0, c_font, c_type );
                 if( tab_chars.first == NULL) {
@@ -904,7 +925,7 @@ static void wgml_tabs( void )
                                         c_font, c_type );
             c_chars->count = fill_count;
             memset( c_chars->text, c_stop->fill_char, fill_count );
-            if( tab_chars.first == NULL) {
+            if( tab_chars.first == NULL ) {
                 tab_chars.first = c_chars;
             }
             tab_chars.last = c_chars;
@@ -915,10 +936,11 @@ static void wgml_tabs( void )
         /* provided it is not in an XMP/eXMP block with no text after   */
         /* the tab character                                            */
         /****************************************************************/
-        if( (cur_group_type != gt_xmp) || (in_chars->count > 1) ) {
+        if( (cur_group_type != gt_xmp)
+          || (in_chars->count > 1) ) {
             c_chars = do_c_chars( c_chars, in_chars, NULL, 0, t_page.cur_width, 0,
                                         in_chars->font, in_chars->type );
-            if( tab_chars.first == NULL) {
+            if( tab_chars.first == NULL ) {
                 tab_chars.first = c_chars;
             }
         }
@@ -955,12 +977,12 @@ static void redo_tabs( text_line * a_line )
         return;
     }
 
-    cur_chars = a_line->first;
-
     /* First skip the part of the line which has been shifted to the left margin */
 
-    while( (cur_chars != NULL) && (cur_chars->tab_pos == tt_none) ) {
-        cur_chars = cur_chars->next;
+    for( cur_chars = a_line->first; cur_chars != NULL; cur_chars = cur_chars->next ) {
+        if( cur_chars->tab_pos != tt_none ) {
+            break;
+        }
     }
 
     if( cur_chars == NULL ) {   // why are we here?
@@ -978,12 +1000,12 @@ static void redo_tabs( text_line * a_line )
             cur_left = cur_chars->prev->x_address + cur_chars->prev->width;
         }
         t_page.cur_width = cur_left;
-        cur_chars = cur_chars->next;
-        while( (cur_chars != NULL) && (cur_chars->tab_pos == tt_none) ) {
+        for( cur_chars = cur_chars->next; cur_chars != NULL; cur_chars = cur_chars->next ) {
+            if( cur_chars->tab_pos != tt_none )
+                break;
             scope_width += cur_chars->x_address - cur_left;
             scope_width += cur_chars->width;
             cur_left = cur_chars->x_address + cur_chars->width;
-            cur_chars = cur_chars->next;
         }
         if( cur_chars == NULL ) {
             tab_chars.last = a_line->last;
@@ -996,14 +1018,14 @@ static void redo_tabs( text_line * a_line )
 
         switch( c_stop->alignment ) {
         case al_left:
-            if( !tabbing || (tab_chars.first == NULL) ) {
+            if( !tabbing
+              || (tab_chars.first == NULL) ) {
                 t_page.cur_width = c_stop->column;
 
                 /* II_macro immediately after a tab character */
 
                 if( (tab_chars.first->fmflags & II_macro)
-                        && (tab_chars.first->font != cur_chars->phrase_font)
-                        ) {
+                  && (tab_chars.first->font != cur_chars->phrase_font) ) {
                     t_page.cur_width += post_space;
                 }
                 tabbing = false;
@@ -1060,15 +1082,13 @@ static void redo_tabs( text_line * a_line )
             } else {
                 tab_chars.first->tab_pos = tt_user;
             }
-            cur_chars = tab_chars.first->next;        // position remaining text_chars in tab scope
-            while( (cur_chars != NULL) && (cur_chars->tab_pos == tt_none) ) {
-                cur_chars->x_address -= offset;
-                cur_chars = cur_chars->next;
-            }
-            if( cur_chars != NULL ) {
+            // position remaining text_chars in tab scope
+            for( cur_chars = tab_chars.first->next; cur_chars != NULL; cur_chars = cur_chars->next ) {
                 if( cur_chars->tab_pos != tt_none ) {
                     scope_width = 0;
+                    break;
                 }
+                cur_chars->x_address -= offset;
             }
         }
     }
@@ -1157,8 +1177,10 @@ void do_justify( uint32_t lm, uint32_t rm, text_line * line )
     ju_enum         just;
     symsub  *       symjusub;         // for debug output string value of .ju
 
-    if( ProcFlags.justify == ju_off || ProcFlags.literal || line == NULL
-        || line->first == NULL) {
+    if( ProcFlags.justify == ju_off
+      || ProcFlags.literal
+      || line == NULL
+      || line->first == NULL ) {
         return;
     }
     if( lm >= rm ) { // with tabbing, ju_x_start can be past the right margin
@@ -1223,7 +1245,8 @@ void do_justify( uint32_t lm, uint32_t rm, text_line * line )
         rem   = delta0 % (cnt - 1);
     }
 
-    if( (input_cbs->fmflags & II_research) && WgmlFlags.lastpass ) {
+    if( (input_cbs->fmflags & II_research)
+      && WgmlFlags.lastpass ) {
         find_symvar( sys_dict, "$ju", no_subscript, &symjusub);// .ju as string
 #if 0
         out_msg( "\n ju_%s lm:%d %d rm:%d sum_w:%d hor_end:%d"
@@ -1234,7 +1257,8 @@ void do_justify( uint32_t lm, uint32_t rm, text_line * line )
                  " delta:%d rem:%d delta0:%d cnt:%d\n", symjusub->value,
                  lm, line_width, rm, hor_end, delta, rem, delta0, cnt );
     }
-    if( delta < 1 && rem < 1 ) {        // nothing to distribute
+    if( delta < 1
+      && rem < 1 ) {        // nothing to distribute
         return;
     }
     switch( ProcFlags.justify ) { // convert inside / outside to left / right
@@ -1261,7 +1285,8 @@ void do_justify( uint32_t lm, uint32_t rm, text_line * line )
 /*************************************
     case  ju_half :                   Treated as left ??? TBD
         delta /= 2;
-        if( delta < 1 && rem < 1 ) {
+        if( delta < 1
+          && rem < 1 ) {
             break;
         }
         // falltrough
@@ -1291,7 +1316,8 @@ void do_justify( uint32_t lm, uint32_t rm, text_line * line )
             rem   = delta0 % (cnt - 1);
         }
 
-        if( (input_cbs->fmflags & II_research) && WgmlFlags.lastpass ) {
+        if( (input_cbs->fmflags & II_research)
+          && WgmlFlags.lastpass ) {
             test_out_t_line( line );
 #if 0
             out_msg( "\n ju_%s lm:%d %d rm:%d sum_w:%d hor_end:%d"
@@ -1304,14 +1330,13 @@ void do_justify( uint32_t lm, uint32_t rm, text_line * line )
                      lm, line_width, rm, hor_end, delta, rem, delta0,
                      cnt );
         }
-        if( delta < 1 && rem < 1 ) {    // nothing to distribute
+        if( delta < 1
+          && rem < 1 ) {    // nothing to distribute
             return;
         }
 
-
         delta1 = delta;
-        tw = tc->next;
-        while( tw != NULL ) {
+        for( tw = tc->next; tw != NULL; tw = tw->next ) {
             if( rem > 0 ) {             // distribute remainder, too
                 tw->x_address += delta + deltarem;
                 delta += delta1 + deltarem;
@@ -1322,7 +1347,6 @@ void do_justify( uint32_t lm, uint32_t rm, text_line * line )
                 tw->x_address += delta;
                 delta += delta1;
             }
-            tw = tw->next;
         }
         break;
     case  ju_left :
@@ -1417,7 +1441,8 @@ size_t intrans( char *data, size_t len, font_number font )
         ps = data;
         pt = data;
         for( k = 0; k <= len; k++ ) {
-            if( (*ps == in_esc) && (k < (len - 1)) ) {  // translate needed
+            if( (*ps == in_esc)
+              && (k < (len - 1)) ) {                    // translate needed
                 ps++;                                   // skip escape char
                 k++;                                    // and count
                 *pt = cop_in_trans( *ps, font );        // translate
@@ -1465,7 +1490,8 @@ void process_line_full( text_line * a_line, bool justify )
     text_line   *   b_line  = NULL; // for second line, if any
     uint32_t        offset;         // to adjust second line x_address fields, if any
 
-    if( (a_line == NULL) || (a_line->first == NULL) ) { // why are we called?
+    if( (a_line == NULL)
+      || (a_line->first == NULL) ) { // why are we called?
         return;
     }
 
@@ -1480,11 +1506,10 @@ void process_line_full( text_line * a_line, bool justify )
 
     /* Adjust starting position of first line after CC/CP if it started with a tab stop */
 
-    if( ProcFlags.cc_cp_done && (a_line->first->tab_pos != tt_none) ) {
-        test_chars = a_line->first;
-        while( test_chars != NULL ) {
+    if( ProcFlags.cc_cp_done
+      && (a_line->first->tab_pos != tt_none) ) {
+        for( test_chars = a_line->first; test_chars != NULL; test_chars = test_chars->next ) {
             test_chars->x_address += g_indent;
-            test_chars = test_chars->next;
         }
         ProcFlags.cc_cp_done = false;
     }
@@ -1515,20 +1540,22 @@ void process_line_full( text_line * a_line, bool justify )
     /*   to avoid such situations.                                          */
     /************************************************************************/
 
-    if( user_tab_skip && (def_tab_count > 0) && (user_tabs.current > 0)
-                && (ProcFlags.concat || (cur_group_type == gt_xmp)) && (a_line->first->next != NULL) ) {
+    if( user_tab_skip
+      && (def_tab_count > 0)
+      && (user_tabs.current > 0)
+      && (ProcFlags.concat
+      || (cur_group_type == gt_xmp))
+      && (a_line->first->next != NULL) ) {
 
         no_shift = (def_tab_count > 1);     // usually true if more than one default tab used
 
         /* Find the point of splitting */
 
         if( a_line->last->count == 0 ) {
-            test_chars = a_line->last->prev;
-            while( test_chars != NULL ) {
+            for( test_chars = a_line->last->prev; test_chars != NULL; test_chars = test_chars->prev ) {
                 if( test_chars->tab_pos != tt_none ) {
                     break;
                 }
-                test_chars = test_chars->prev;
             }
             if( test_chars != NULL ) {
                 if( test_chars->tab_align == al_right ) {
@@ -1543,7 +1570,7 @@ void process_line_full( text_line * a_line, bool justify )
                     while( split_chars->prev->count == 0 ) {    // additional markers
                         split_chars = split_chars->prev;
                     }
-                no_shift = false;                       // final marker(s) must be shifted
+                    no_shift = false;                   // final marker(s) must be shifted
                 }
             }
 
@@ -1551,26 +1578,21 @@ void process_line_full( text_line * a_line, bool justify )
 
             /* Move forward to find the first default tab */
 
-            split_chars = a_line->first;
-            while( (split_chars != NULL) ) {
+            for( split_chars = a_line->first; split_chars != NULL; split_chars = split_chars->next ) {
                 if( split_chars->tab_pos == tt_def ) {
                     break;
                 }
-                split_chars = split_chars->next;
             }
 
             /* Move backwards to find the first space/qualifying marker */
 
-            while( (split_chars != NULL) ) {
+            for( ; split_chars != NULL; split_chars = split_chars->prev ) {
                 if( ((split_chars->count == 0)
-                        && (split_chars->next->tab_pos == tt_def))
-                         ) {              // marker before default tab
-                    test_chars = split_chars->prev;
-                    while( test_chars != NULL ) {
+                  && (split_chars->next->tab_pos == tt_def)) ) {    // marker before default tab
+                    for( test_chars = split_chars->prev; test_chars != NULL; test_chars = test_chars->prev ) {
                         if( test_chars->tab_pos != tt_none ) {
                             break;
                         }
-                        test_chars = test_chars->prev;
                     }
                     if( test_chars != NULL ) {
                         if( test_chars->tab_align != al_right ) {   // split_chars found (rejects when prior tab had right alignment)
@@ -1579,12 +1601,10 @@ void process_line_full( text_line * a_line, bool justify )
                     }
                 }
                 if( split_chars->pre_gap ) {        // original text had space before tab
-                    test_chars = split_chars->prev;
-                    while( test_chars != NULL ) {
+                    for( test_chars = split_chars->prev; test_chars != NULL; test_chars = test_chars->prev ) {
                         if( test_chars->tab_pos != tt_none ) {
                             break;
                         }
-                        test_chars = test_chars->prev;
                     }
                     if( test_chars != NULL ) {
                         if( test_chars->tab_align == al_right ) {
@@ -1598,7 +1618,6 @@ void process_line_full( text_line * a_line, bool justify )
                 if( split_chars->tab_pos == tt_none ) { // ordinary token found
                     break;
                 }
-                split_chars = split_chars->prev;
             }
         }
 
@@ -1610,9 +1629,13 @@ void process_line_full( text_line * a_line, bool justify )
         /************************************************************************/
 
         if( cur_group_type == gt_xmp ) {
-            p = split_chars->text;
-            while(*p && (*p == ' ' ) ) p++; // first non-space char
-            if( !*p ) {                     // all spaces
+            // find first non-space char
+            for( p = split_chars->text; *p != '\0'; p++ ) {
+                if( *p != ' ' ) {
+                    break;
+                }
+            }
+            if( *p == '\0' ) {                     // all spaces
                 split_chars->count = 0;
                 split_chars->width = 0;
             }
@@ -1620,7 +1643,8 @@ void process_line_full( text_line * a_line, bool justify )
 
         /* Now split the line, if appropriate */
 
-        if( (split_chars != NULL) && (split_chars->prev != NULL) ) {    // don't split if a_line would be left empty
+        if( (split_chars != NULL)
+          && (split_chars->prev != NULL) ) {    // don't split if a_line would be left empty
             b_line = alloc_text_line();
             b_line->line_height = 0;            // will be set below
             a_line->next = b_line;
@@ -1629,14 +1653,14 @@ void process_line_full( text_line * a_line, bool justify )
             a_line->last = split_chars->prev;
             b_line->first->prev = NULL;
             a_line->last->next = NULL;
-            split_chars = b_line->first;
-            while( split_chars != NULL ) {      // set b_line height
+            // set b_line height
+            for( split_chars = b_line->first; split_chars != NULL; split_chars = split_chars->next ) {
                 if( b_line->line_height < wgml_fonts[split_chars->font].line_height ) {
                     b_line->line_height = wgml_fonts[split_chars->font].line_height;
                 }
-                split_chars = split_chars->next;
             }
-            if( (b_line->first->count > 0) || (b_line->first->next != NULL) ) {
+            if( (b_line->first->count > 0)
+              || (b_line->first->next != NULL) ) {
                 split_chars = b_line->first;
                 offset = split_chars->x_address - t_page.cur_left;
                 split_chars->x_address = t_page.cur_left;    // shift x_address to margin
@@ -1645,13 +1669,12 @@ void process_line_full( text_line * a_line, bool justify )
                 }
                 c_stop = NULL;                          // reset tabbing state
                 if( !no_shift ) {
-                    split_chars = split_chars->next;        // shift text_chars to first default tab
-                    while( split_chars != NULL ) {
+                    // shift text_chars to first default tab
+                    for( split_chars = split_chars->next; split_chars != NULL; split_chars = split_chars->next ) {
                         split_chars->x_address -= offset;
                         if( split_chars->tab_pos == tt_user ) {
                             split_chars->tab_pos = tt_none;     // not tabbed any longer
                         }
-                        split_chars = split_chars->next;
                     }
                 }
             } else {
@@ -1666,24 +1689,22 @@ void process_line_full( text_line * a_line, bool justify )
     user_tab_skip = false;
 
     while( a_line != NULL ) {
-        if( justify && WgmlFlags.lastpass && !ProcFlags.literal
-                                         && ProcFlags.justify > ju_off ) {
+        if( justify
+          && WgmlFlags.lastpass
+          && !ProcFlags.literal
+          && ProcFlags.justify > ju_off ) {
             do_justify( ju_x_start, t_page.max_width, a_line );
         } else if( line_position == pos_center ) {          // center text on line
             if( t_page.max_width > (a_line->last->x_address + a_line->last->width) ) {
                 offset = (t_page.max_width - (a_line->last->x_address + a_line->last->width))/2;
-                split_chars = a_line->first;
-                while( split_chars != NULL ) {
+                for( split_chars = a_line->first; split_chars != NULL; split_chars = split_chars->next ) {
                     split_chars->x_address += offset;
-                    split_chars = split_chars->next;
                 }
             }
         } else if( line_position == pos_right ) {           // move text to end at right margin
             offset = t_page.max_width - (a_line->last->x_address + a_line->last->width);
-            split_chars = a_line->first;
-            while( split_chars != NULL ) {
+            for( split_chars = a_line->first; split_chars != NULL; split_chars = split_chars->next ) {
                 split_chars->x_address += offset;
-                split_chars = split_chars->next;
             }
         } // pos_left is done automatically when the line is created
 
@@ -1770,11 +1791,14 @@ text_chars * process_word( const char *pword, size_t count, font_number font, bo
     /***************************************************************************/
 
     p = n_chars->text + n_chars->count;
-    if( !hard_spaces && !ProcFlags.concat && !ProcFlags.cont_char
-            && ((input_cbs->hidden_head == NULL)
-            || (*input_cbs->hidden_head->value != GML_char))
-            && (input_cbs->hidden_head == NULL) ) {
-        if( (*(p - 1) == ' ') || (*(p - 1) == '\t') ) {
+    if( !hard_spaces
+      && !ProcFlags.concat
+      && !ProcFlags.cont_char
+      && ((input_cbs->hidden_head == NULL)
+      || (*input_cbs->hidden_head->value != GML_char))
+      && (input_cbs->hidden_head == NULL) ) {
+        if( (*(p - 1) == ' ')
+          || (*(p - 1) == '\t') ) {
             while( (*(p - 1) == ' ') || (*(p - 1) == '\t') ) {
                 n_chars->count--;
                 p--;
@@ -1849,8 +1873,9 @@ void process_text( char * text, font_number font )
     /********************************************************************/
 
     if( ProcFlags.doc_sect < doc_sect_abstract ) {
-        if( (ProcFlags.doc_sect != doc_sect_titlep) && (ProcFlags.doc_sect != doc_sect_etitlep) &&
-                (ProcFlags.doc_sect != doc_sect_frontm) ) {
+        if( (ProcFlags.doc_sect != doc_sect_titlep)
+          && (ProcFlags.doc_sect != doc_sect_etitlep)
+          && (ProcFlags.doc_sect != doc_sect_frontm) ) {
             xx_line_err_c( err_doc_sec_expected_2, text );
             return;
         }
@@ -1864,18 +1889,21 @@ void process_text( char * text, font_number font )
     /*  Note: this only works if the tab is in the first logical record */
     /********************************************************************/
 
-    count = 0;
-    p = text;
     if( tab_char == '\t' ) {                        // ignore keyboard tabs
-        count = strlen( p );
+        count = strlen( text );
     } else {
-        while( (*p != '\0') && (*p != tab_char) ) { // locate the first wgml tab, if any
+        count = 0;
+        for( p = text; *p != '\0'; p++ ) {
+            if( *p == tab_char )    // locate the first wgml tab, if any
+                break;
             count++;
             p++;
         }
         p = text;                                   // restore p to start of text
 
-        if( (tt_stack != NULL) && (!input_cbs->fm_hh) && (*p == tab_char) ) {   // adjust parent font, see Wiki
+        if( (tt_stack != NULL)
+          && (!input_cbs->fm_hh)
+          && (*p == tab_char) ) {   // adjust parent font, see Wiki
             tt_stack->font = FONT0;                 // hard-wired: LAYOUT DEFAULT FONT does not affect this
             font = FONT0;
             g_curr_font = FONT0;
@@ -1888,12 +1916,14 @@ void process_text( char * text, font_number font )
         font = scr_style_font( font );
     }
 
-    if( ProcFlags.einl_in_inlp && ProcFlags.br_done ) {
+    if( ProcFlags.einl_in_inlp
+      && ProcFlags.br_done ) {
         font = FONT0;                   // matches wgml 4.0
     }
 
     phrase_start = true;
-    if( !ProcFlags.ct && !ProcFlags.in_figlist_toc ) {  // not if text follows CT or in TOC/FIGLIST
+    if( !ProcFlags.ct
+      && !ProcFlags.in_figlist_toc ) {  // not if text follows CT or in TOC/FIGLIST
         if( count != strlen( p ) ) {                // tab character found in input text
             if( !input_cbs->fm_hh ) {     // at start of input line
 
@@ -1904,9 +1934,9 @@ void process_text( char * text, font_number font )
                 /* tab character also produces a break              */
                 /****************************************************/
 
-                if( ((c_stop != NULL) && (c_stop->column >=
-                    user_tabs.tabs[user_tabs.current - 1].column)) ||
-                    (*p == tab_char) ) {    // the final test
+                if( ((c_stop != NULL)
+                  && (c_stop->column >= user_tabs.tabs[user_tabs.current - 1].column))
+                  || (*p == tab_char) ) {    // the final test
 
                     /********************************************************/
                     /* scr_process_break() can produce a doc_element with a */
@@ -1948,26 +1978,29 @@ void process_text( char * text, font_number font )
                 if( input_cbs->hidden_head != NULL ) {              // something follows (not EOL)
                     spaces_at_start = true;                         // catch text next time
                 }
-            } else if( (tab_space > 0) && IS_CONT_CHAR( p ) ) {  // continue char at entd
+            } else if( (tab_space > 0)
+              && IS_CONT_CHAR( p ) ) {  // continue char at entd
                 if( input_cbs->hidden_head != NULL ) {              // something follows (not EOL)
                     spaces_at_start = true;                         // catch text next time
                 }
             } else {
-               if( (ProcFlags.co_on_indent || spaces_at_start) ) {
-                   if( stop_fnd ) {
+                if( (ProcFlags.co_on_indent
+                  || spaces_at_start) ) {
+                    if( stop_fnd ) {
                         post_space = 2 * wgml_fonts[font].spc_width;
                     } else if( comma_fnd ) {
                         post_space = wgml_fonts[font].spc_width;
                     }
                     spaces_at_start = false;                        // flag used
-               }
+                }
             }
         } else {    // co off
             // compute initial spacing from initial spaces
             tab_space = 0;
             while( (*p == '\t') || (*p == ' ') || (*p == '\0') ) {
-                if( *p == '\0' ) break;     // done at end of input text fragment
-                if( *p == ' ') {
+                if( *p == '\0' )
+                    break;     // done at end of input text fragment
+                if( *p == ' ' ) {
                     p++;                    // count one space and loop
                     tab_space++;
                     continue;
@@ -1980,8 +2013,10 @@ void process_text( char * text, font_number font )
             kbtab_count += tab_space;          // increment kbtab_count for any inital spaces/keyboard tabs
             post_space = tab_space * wgml_fonts[font].spc_width;
             ProcFlags.zsp = false;              // keep tab_space value
-            if( (*p == '\0') || IS_CONT_CHAR( p ) ) {
-                if( (*p == '\0') && input_cbs->hidden_head == NULL ) {  // no text follows
+            if( (*p == '\0')
+              || IS_CONT_CHAR( p ) ) {
+                if( (*p == '\0')
+                  && input_cbs->hidden_head == NULL ) {  // no text follows
                     g_blank_text_lines++;
                 } else {                                // text follows
                     if( IS_CONT_CHAR( p ) ) {
@@ -2013,15 +2048,19 @@ void process_text( char * text, font_number font )
                     // compute initial spacing if needed; .ct and some user tags affect this
                     if( *p == ' ' ) {
                         post_space = wgml_fonts[font].spc_width;
-                    } else if( !ProcFlags.ct && !ProcFlags.cont_char && !input_cbs->hh_tag ) {
+                    } else if( !ProcFlags.ct
+                      && !ProcFlags.cont_char
+                      && !input_cbs->hh_tag ) {
                         post_space = wgml_fonts[font].spc_width;
                     }
                     if( post_space > 0 ) {  // if post_space was changed from 0 above
-                        if( !ProcFlags.dd_space && !ProcFlags.as_text_line &&
-                                is_stop_char( t_line->last->text[t_line->last->count - 1] ) ) {
+                        if( !ProcFlags.dd_space
+                          && !ProcFlags.as_text_line
+                          && is_stop_char( t_line->last->text[t_line->last->count - 1] ) ) {
                             post_space *= 2;
                         }
-                        if( (c_stop != NULL) && (t_line->last->width == 0) ) {
+                        if( (c_stop != NULL)
+                          && (t_line->last->width == 0) ) {
                             pa = text;
                             SkipSpaces( pa );     // locate the first non-space character, if any
                             tab_space = pa - text;
@@ -2043,7 +2082,8 @@ void process_text( char * text, font_number font )
                         }
                     }
                 } else {                    // post_space is greater than 0
-                    if( ProcFlags.wrap_indent && (font != g_prev_font) ) { // font changed (INDEX see output)
+                    if( ProcFlags.wrap_indent
+                      && (font != g_prev_font) ) { // font changed (INDEX see output)
                         n_chars = process_word( NULL, 0, g_prev_font, false );
                         n_chars->type = tx_norm;
                         t_page.cur_width += post_space;
@@ -2060,7 +2100,8 @@ void process_text( char * text, font_number font )
                     SkipSpacesTabs( p );    // skip initial spaces
                 }
             } else {                    // co off: increment initial spacing
-                if( (post_space > 0) && (font != g_prev_font) ) { // font changed
+                if( (post_space > 0)
+                  && (font != g_prev_font) ) { // font changed
                     if( ProcFlags.dd_space ) {
                         n_chars = process_word( NULL, 0, font, false );
                     } else {
@@ -2114,8 +2155,10 @@ void process_text( char * text, font_number font )
     pword = p;                          // remember word start
     while( *p != '\0' ) {
         typn = tx_norm;
-        if( (*p == function_escape) && (p == pword)  && (*(p + 1) >= function_end) &&
-                (*(p + 1) <= function_sup_end) ) {// set text_chars type if not tx_norm
+        if( (*p == function_escape)
+          && (p == pword)
+          && (*(p + 1) >= function_end)
+          && (*(p + 1) <= function_sup_end) ) {// set text_chars type if not tx_norm
             if( *(p + 1) == function_subscript ) {
                 typn |= tx_sub;
             } else if( *(p + 1) == function_superscript ) {
@@ -2134,22 +2177,26 @@ void process_text( char * text, font_number font )
             }
         }
         if( *p != '\0' ) {          // process last word inside loop
-            if( ProcFlags.concat && (*p == '\t') ) {    // concat on & keyboard tab
+            if( ProcFlags.concat
+              && (*p == '\t') ) {   // concat on & keyboard tab
                 *p = ' ';           // replace with space
             }
             if( *p != function_escape ) {   // function_escape ends word, even with CO OFF
                 if( *p != ' ' ) {       // no space no word end
                     continue;
                 }
-                if( ProcFlags.in_trans && (*(p - 1) == in_esc) ) {
-                    if( ((p - 2) >= pword) && (*(p - 2) == in_esc) ) {
+                if( ProcFlags.in_trans
+                  && (*(p - 1) == in_esc) ) {
+                    if( ((p - 2) >= pword)
+                      && (*(p - 2) == in_esc) ) {
                         // two in_esc in a row do not guard a space
                     } else {
                         continue;           // guarded space no word end
                     }
                 }
 
-                if( !ProcFlags.concat && (cur_group_type != gt_xmp) ) { // .co off but not XMP: include internal spaces
+                if( !ProcFlags.concat
+                  && (cur_group_type != gt_xmp) ) { // .co off but not XMP: include internal spaces
                     continue;
                 }
 
@@ -2160,7 +2207,9 @@ void process_text( char * text, font_number font )
                 /*  all spaces after the text must be included                      */
                 /********************************************************************/
 
-                if( ProcFlags.dt_space || (ProcFlags.null_value && (cur_group_type == gt_xmp)) ) {
+                if( ProcFlags.dt_space
+                  || (ProcFlags.null_value
+                  && (cur_group_type == gt_xmp)) ) {
                     continue;
                 }
             }
@@ -2194,14 +2243,17 @@ void process_text( char * text, font_number font )
         /* prelevant at this time                                   */
         /************************************************************/
 
-        if( (t_line != NULL) && (t_line->last != NULL) ) {
-            if( (t_line->last->font == n_chars->font) || !ProcFlags.post_ix ) {
+        if( (t_line != NULL)
+          && (t_line->last != NULL) ) {
+            if( (t_line->last->font == n_chars->font)
+              || !ProcFlags.post_ix ) {
                 keep_together = true;
             }
         }
 
         line_split = false;
-        if( ProcFlags.concat || (cur_group_type == gt_xmp) ) { // .co on or XMP
+        if( ProcFlags.concat
+          || (cur_group_type == gt_xmp) ) { // .co on or XMP
 
             /***********************************************************/
             /* test if n_char exceeds right margin                     */
@@ -2228,9 +2280,10 @@ void process_text( char * text, font_number font )
 
                 s_chars = NULL;
                 if( (t_line->last != NULL)
-                        && (((t_line->last->x_address + t_line->last->width == n_chars->x_address)
-                        && keep_together) || (t_line->last->type & tx_sub)
-                        || (t_line->last->type & tx_sup)) ) {
+                  && (((t_line->last->x_address + t_line->last->width == n_chars->x_address)
+                  && keep_together)
+                  || (t_line->last->type & tx_sub)
+                  || (t_line->last->type & tx_sup)) ) {
 
                     /* Initialize s_chars */
 
@@ -2241,7 +2294,9 @@ void process_text( char * text, font_number font )
                         input_cbs->fm_symbol = false;
                         t_page.cur_width = s_chars->x_address;
                         s_chars = s_chars->prev;
-                        if( s_chars == NULL ) break;
+                        if( s_chars == NULL ) {
+                            break;
+                        }
                     }
 
                     /* Identify when s_chars must be moved to a new line. */
@@ -2257,9 +2312,9 @@ void process_text( char * text, font_number font )
                     /* moved to the next output line (eventually)               */
                     /************************************************************/
 
-                    if( ((s_chars != t_line->last) &&
-                            ((t_page.cur_left + n_chars->width) <= t_page.max_width))
-                            || (s_chars->count == 0) ) {
+                    if( ((s_chars != t_line->last)
+                      && ((t_page.cur_left + n_chars->width) <= t_page.max_width))
+                      || (s_chars->count == 0) ) {
                         t_line->last = s_chars;
                         s_chars = s_chars->next;
                         if( s_chars != NULL ) {
@@ -2267,13 +2322,12 @@ void process_text( char * text, font_number font )
                         }
                         t_line->last->next = NULL;
                         line_split = true;
-                        h_chars = t_line->first;    // reset line height
-                        t_line->line_height = wgml_fonts[h_chars->font].line_height;
-                        while( h_chars != NULL ){
+                        // reset line height
+                        t_line->line_height = 0;
+                        for( h_chars = t_line->first; h_chars != NULL; h_chars = h_chars->next ){
                             if( t_line->line_height < wgml_fonts[h_chars->font].line_height ) {
                                 t_line->line_height = wgml_fonts[h_chars->font].line_height;
                             }
-                            h_chars = h_chars->next;
                         }
                     }
                 }
@@ -2296,10 +2350,9 @@ void process_text( char * text, font_number font )
                 if( s_chars == NULL ) {
                     if( keep_together ) {
                         // these conditions determine if n_chars is to be split
-                        if( (t_line->first == NULL) ||
-                                ((t_line->last->x_address + t_line->last->width)
-                                                        == n_chars->x_address) ||
-                                ((t_page.cur_left + n_chars->width) > t_page.max_width) ) {
+                        if( (t_line->first == NULL)
+                          || ((t_line->last->x_address + t_line->last->width) == n_chars->x_address)
+                          || ((t_page.cur_left + n_chars->width) > t_page.max_width) ) {
                             // find the split position with a hyphen's width
                             count = split_text( n_chars, t_page.max_width - hy_width );
                             if( count == 0 ) { // n_chars fits entirely
@@ -2356,11 +2409,8 @@ void process_text( char * text, font_number font )
 
                                 /* Now set fmflags inside the text_chars */
 
-                                fm_chars->fmflags = input_cbs->fmflags;
-                                fm_chars = fm_chars->next;
-                                while( fm_chars != NULL ) {
+                                for( ; fm_chars != NULL; fm_chars = fm_chars->next ) {
                                     fm_chars->fmflags = input_cbs->fmflags;
-                                    fm_chars = fm_chars->next;
                                 }
                             }
                         }
@@ -2372,7 +2422,8 @@ void process_text( char * text, font_number font )
                     t_line = NULL;
                 }
                 // s_chars processing
-                if( ProcFlags.wrap_indent && !wrap_done ) {       // INDEX item
+                if( ProcFlags.wrap_indent
+                  && !wrap_done ) {       // INDEX item
                     t_page.cur_left += wrap_indent;
                     wrap_done = true;
                 }
@@ -2391,15 +2442,13 @@ void process_text( char * text, font_number font )
                         t_line->line_height = wgml_fonts[s_chars->font].line_height;
                     }
                     // now reposition the remainder of the list
-                    s_chars = s_chars->next;
-                    while( s_chars != NULL ) {
+                    for( s_chars = s_chars->next; s_chars != NULL; s_chars = s_chars->next ) {
                         t_line->last = s_chars;
                         s_chars->x_address -= offset;
                         t_page.cur_width = s_chars->x_address;
                         if( t_line->line_height < wgml_fonts[font].line_height ) {
                             t_line->line_height = wgml_fonts[font].line_height;
                         }
-                        s_chars = s_chars->next;
                     }
                     // n_chars must also be repositioned
                     n_chars->x_address -= offset;
@@ -2466,11 +2515,8 @@ void process_text( char * text, font_number font )
 
                 /* Now set fmflags inside the text_chars */
 
-                fm_chars->fmflags = input_cbs->fmflags;
-                fm_chars = fm_chars->next;
-                while( fm_chars != NULL ) {
+                for( ; fm_chars != NULL; fm_chars = fm_chars->next ) {
                     fm_chars->fmflags = input_cbs->fmflags;
-                    fm_chars = fm_chars->next;
                 }
 
                 // process the full text_line
@@ -2478,7 +2524,8 @@ void process_text( char * text, font_number font )
                 t_line = NULL;
 
                 // reset n_chars and count
-                if( ProcFlags.wrap_indent && !wrap_done ) {       // INDEX item
+                if( ProcFlags.wrap_indent
+                  && !wrap_done ) {       // INDEX item
                     t_page.cur_left += wrap_indent;
                     wrap_done = true;
                 }
@@ -2500,8 +2547,9 @@ void process_text( char * text, font_number font )
         } else {
             t_line->last->next = n_chars;
             n_chars->prev = t_line->last;
-            if( !line_split || ((n_chars->prev != NULL) &&
-                    (n_chars->x_address != (n_chars->prev->x_address + n_chars->prev->width))) ) {   // TBD -- other conditions may apply
+            if( !line_split
+              || ((n_chars->prev != NULL)
+              && (n_chars->x_address != (n_chars->prev->x_address + n_chars->prev->width))) ) {   // TBD -- other conditions may apply
                 if( t_line->line_height < wgml_fonts[font].line_height ) {
                     t_line->line_height = wgml_fonts[font].line_height;
                 }
@@ -2526,15 +2574,8 @@ void process_text( char * text, font_number font )
 
         /* Now set fmflags inside the text_chars */
 
-        if( fm_chars->next == NULL ) {
+        for( ; fm_chars != NULL; fm_chars = fm_chars->next ) {
             fm_chars->fmflags = input_cbs->fmflags;
-        } else {
-            fm_chars->fmflags = input_cbs->fmflags;
-            fm_chars = fm_chars->next;
-            while( fm_chars != NULL ) {
-                fm_chars->fmflags = input_cbs->fmflags;
-                fm_chars = fm_chars->next;
-            }
         }
 
         comma_fnd = (t_line->last->text[t_line->last->count - 1] == ',');
@@ -2544,13 +2585,16 @@ void process_text( char * text, font_number font )
             if( *p == ' ' ) {           // spaces to process
                 pword = p;
                 SkipSpaces( p );        // set up for xmp block/following tab char test
-                if( (cur_group_type == gt_xmp) && ((*p == '\t') || (*p == tab_char)) ) {
+                if( (cur_group_type == gt_xmp)
+                  && ((*p == '\t')
+                  || (*p == tab_char)) ) {
                     /* XMP block and next non-space character is a tab character */
                     insert_hard_spaces( pword, p - pword, font );
                     p--;                    // back off tab character
                     tab_space = 0;
                     pword--;                // char before pword -- that is, before the first space character
-                    if( (*pword == '\t') || (*pword == tab_char) ) {    // no text after tab char
+                    if( (*pword == '\t')
+                      || (*pword == tab_char) ) {    // no text after tab char
                         t_line->last->count = 0;    // convert to marker at end of spaces
                         t_line->last->x_address += t_line->last->width;
                         t_line->last->width = 0;
@@ -2559,19 +2603,23 @@ void process_text( char * text, font_number font )
                     /* normal processing */
                     p = pword;          // restore value for normal processing
                     post_space = wgml_fonts[font].spc_width;
-                    if( !ProcFlags.as_text_line && stop_fnd && (cur_group_type != gt_xmp) ) {   // exclude XMP
+                    if( !ProcFlags.as_text_line
+                      && stop_fnd
+                      && (cur_group_type != gt_xmp) ) {   // exclude XMP
                         post_space *= 2;
                     }
                     p++;
                     pa = p;
                     SkipSpaces( p );
-                    if( (cur_group_type == gt_xmp) || ProcFlags.as_text_line ||
-                            ProcFlags.in_figlist_toc ) {  // multiple blanks
+                    if( (cur_group_type == gt_xmp)
+                      || ProcFlags.as_text_line
+                      || ProcFlags.in_figlist_toc ) {  // multiple blanks
                         post_space += ( p - pa ) * wgml_fonts[font].spc_width;
                     }
                     p--;                    // back off non-space character, whatever it was
                     tab_space = p - pword + 1;
-                    if( (input_cbs->hidden_head == NULL) && (tab_space == 0) ) {
+                    if( (input_cbs->hidden_head == NULL)
+                      && (tab_space == 0) ) {
                         tab_space = 1;
                     }
                 }
@@ -2586,7 +2634,8 @@ void process_text( char * text, font_number font )
     }
 
     if( t_line->first != NULL ) {           // something in the line
-        if( ProcFlags.need_li_lp || ProcFlags.need_tag) {   // no text allowed!
+        if( ProcFlags.need_li_lp
+          || ProcFlags.need_tag ) {   // no text allowed!
             xx_err( err_tag_not_text );
         }
     }
@@ -2603,7 +2652,9 @@ void process_text( char * text, font_number font )
                 } else if( ProcFlags.space_fnd ) {
                     post_space = wgml_fonts[font].spc_width;
                 }
-                if( !ProcFlags.as_text_line && stop_fnd && (cur_group_type != gt_xmp) ) {   // exclude XMP
+                if( !ProcFlags.as_text_line
+                  && stop_fnd
+                  && (cur_group_type != gt_xmp) ) {   // exclude XMP
                     post_space *= 2;
                 }
             } else {                    // post_space is greater than 0
@@ -2627,9 +2678,10 @@ void process_text( char * text, font_number font )
             /* Other similar cases may exist and so this may not be final       */
             /********************************************************************/
 
-            if( (input_cbs->fmflags && II_macro) && (input_cbs->prev != NULL)
-                    && (input_cbs->prev->hidden_head != NULL)
-                    && IS_CONT_CHAR( input_cbs->prev->hidden_head->value )  ) {
+            if( (input_cbs->fmflags & II_macro)
+              && (input_cbs->prev != NULL)
+              && (input_cbs->prev->hidden_head != NULL)
+              && IS_CONT_CHAR( input_cbs->prev->hidden_head->value )  ) {
                 inp_line            *   pline;
 
                 ProcFlags.cont_char = true;
@@ -2669,7 +2721,8 @@ void process_text( char * text, font_number font )
 
     /* Set/clear keep_together for next text to be processed */
 
-    if( ProcFlags.substituted && (input_cbs->fmflags & II_macro) ) {
+    if( ProcFlags.substituted
+      && (input_cbs->fmflags & II_macro) ) {
         keep_together = false;
     } else {
         keep_together = true;
@@ -2677,8 +2730,10 @@ void process_text( char * text, font_number font )
 
     /* Clear ProcFlags.cc_cp_done if set but line does not start with a tab */
 
-    if( ProcFlags.cc_cp_done && (t_line != NULL) && (t_line->first != NULL)
-            && (t_line->first->tab_pos == tt_none) ) {
+    if( ProcFlags.cc_cp_done
+      && (t_line != NULL)
+      && (t_line->first != NULL)
+      && (t_line->first->tab_pos == tt_none) ) {
         ProcFlags.cc_cp_done = false;
     }
 
