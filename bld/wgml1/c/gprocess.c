@@ -242,8 +242,7 @@ static void split_at_GML_tag( void )
                 *p2 = '\0';
                 /* inserting CONT_chars for layout tags causes errors */
                 if( (gse != NULL) || ((gue != NULL) && (gue->tagflags & tag_cont)) ) {
-                    *pchar = CONT_char;
-                    *(pchar + 1) = '\0';
+                    ADD_CONT_CHAR( pchar );
                 }
                 if( ((gse != NULL) && (gse->tagclass & ip_start_tag)) ) {
                     input_cbs->hidden_head->ip_start = true;
