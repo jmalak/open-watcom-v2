@@ -240,9 +240,9 @@ void scr_ix( void )
 
                 if( cc == omit || cc == quotes0 ) { // no operands
                     xx_line_err_cc( err_parm_missing, cwcurr, g_tok_start );
-                } else if( (arg_flen == 4) && !stricmp( g_tok_start, "DUMP") ) {
+                } else if( (arg_flen == 4) && stricmp( g_tok_start, "DUMP" ) == 0 ) {
                     xx_warn_c( wng_unsupp_cw_opt, "DUMP" );
-                } else if( (arg_flen == 5) && !stricmp( g_tok_start, "PURGE") ) {
+                } else if( (arg_flen == 5) && stricmp( g_tok_start, "PURGE" ) == 0 ) {
                     xx_warn_c( wng_unsupp_cw_opt, "PURGE" );
                 } else {
                     xx_line_err_c( err_bad_dp_value, g_tok_start );

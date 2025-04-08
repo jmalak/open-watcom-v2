@@ -341,7 +341,7 @@ void    scr_se( void )
                 }
                 scan_err = true;
             }
-        } else if( !strncmp( p, "off", 3 ) ) {       // OFF
+        } else if( strncmp( p, "off", 3 ) == 0 ) {       // OFF
             p += 3;
             rc = find_symvar( working_dict, sym.name, subscript, &symsubval );
             if( rc == 2 ) {

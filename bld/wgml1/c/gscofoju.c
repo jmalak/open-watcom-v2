@@ -350,7 +350,7 @@ static void process_fo_ju( bool both , char *cwcurr )
         scan_restart = p;
         break;
     case 2 :                            // only ON valid
-        if( !strnicmp( "ON", pa, 2 ) ) {
+        if( strnicmp( "ON", pa, 2 ) == 0 ) {
             if( both ) {
                 do_co_on();
             }
@@ -361,7 +361,7 @@ static void process_fo_ju( bool both , char *cwcurr )
         }
         break;
     case 3 :                            // only OFF valid
-        if( !strnicmp( "OFF", pa, 3 ) ) {
+        if( strnicmp( "OFF", pa, 3 ) == 0 ) {
             if( both ) {
                 do_co_off();
             }
@@ -372,7 +372,7 @@ static void process_fo_ju( bool both , char *cwcurr )
         }
         break;
     case 4 :                            // Left or half valid
-        if( !strnicmp( "LEFT", pa, 4 ) ) {
+        if( strnicmp( "LEFT", pa, 4 ) == 0 ) {
             if( both ) {
                 ProcFlags.concat = true;
             }
@@ -384,7 +384,7 @@ static void process_fo_ju( bool both , char *cwcurr )
             ProcFlags.justify = ju_off; // left is like off for wgml 4.0
             scan_restart = pa + len;
         } else {
-            if( !strnicmp( "HALF", pa, 4 ) ) {
+            if( strnicmp( "HALF", pa, 4 ) == 0 ) {
                 if( both ) {
                     ProcFlags.concat = true;
                 }
@@ -396,7 +396,7 @@ static void process_fo_ju( bool both , char *cwcurr )
         }
         break;
     case 5 :                            // only Right valid
-        if( !strnicmp( "RIGHT", pa, 5 ) ) {
+        if( strnicmp( "RIGHT", pa, 5 ) == 0 ) {
             if( both ) {
                 ProcFlags.concat = true;
             }
@@ -407,14 +407,15 @@ static void process_fo_ju( bool both , char *cwcurr )
         }
         break;
     case 6 :                            // center or inside valid
-        if( !strnicmp( "CENTER", pa, 6 ) || !strnicmp( "CENTRE", pa, 6 ) ) {
+        if( strnicmp( "CENTER", pa, 6 ) == 0
+          || strnicmp( "CENTRE", pa, 6 ) == 0 ) {
             if( both ) {
                 ProcFlags.concat = true;
             }
             ProcFlags.justify = ju_centre;
             scan_restart = pa + len;
         } else {
-            if( !strnicmp( "INSIDE", pa, 6 ) ) {
+            if( strnicmp( "INSIDE", pa, 6 ) == 0 ) {
                 if( both ) {
                     ProcFlags.concat = true;
                 }
@@ -426,7 +427,7 @@ static void process_fo_ju( bool both , char *cwcurr )
         }
         break;
     case 7 :                            // only outside valid
-        if( !strnicmp( "OUTSIDE", pa, 7 ) ) {
+        if( strnicmp( "OUTSIDE", pa, 7 ) == 0 ) {
             if( both ) {
                 ProcFlags.concat = true;
             }
@@ -575,7 +576,7 @@ void    scr_co( void )
         scan_restart = pa;
         break;
     case 2 :                            // only ON valid
-        if( !strnicmp( "ON", pa, 2 ) ) {
+        if( strnicmp( "ON", pa, 2 ) == 0 ) {
             do_co_on();
             scan_restart = pa + len;
         } else {
@@ -583,7 +584,7 @@ void    scr_co( void )
         }
         break;
     case 3 :                            // only OFF valid
-        if( !strnicmp( "OFF", pa, 3 ) ) {
+        if( strnicmp( "OFF", pa, 3 ) == 0 ) {
             do_co_off();
             scan_restart = pa + len;
         } else {

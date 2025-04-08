@@ -654,7 +654,7 @@ static void set_font( option * opt )
         pts[4] = '\0';
         len = opts[0]->toklen;
         p = opts[0]->token;
-        if( !strcmp( p, "''" ) ) {
+        if( strcmp( p, "''" ) == 0 ) {
             for( i = 0; i < 4; i++ ) pts[i] = '0';
             pts[4] = '\0';
             len = opts[1]->toklen;
@@ -734,7 +734,7 @@ static void set_font( option * opt )
         }
         *pw = '\0';
 
-        if( !strcmp( opts[1]->token, "''" ) ) {
+        if( strcmp( opts[1]->token, "''" ) == 0 ) {
             for( i = 0; i < 4; i++ ) pts[i] = '0';
             pts[4] = '\0';
             len = opts[2]->toklen;

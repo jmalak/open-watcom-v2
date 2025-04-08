@@ -214,7 +214,7 @@ void    lay_banner( const gmltag * entry )
         for( k = 0; k < att_count; k++ ) {
             curr = banner_att[k];
 
-            if( !strnicmp( att_names[curr], g_att_val.att_name, g_att_val.att_len ) ) {
+            if( strnicmp( att_names[curr], g_att_val.att_name, g_att_val.att_len ) == 0 ) {
                 p = g_att_val.val_name;
 
                 if( count[k] ) {

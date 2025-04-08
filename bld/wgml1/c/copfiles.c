@@ -478,7 +478,7 @@ static cop_font * find_cop_font( char const * in_name )
     cop_font    *   retval  = NULL;
 
     for( current = bin_fonts; current != NULL; current = current->next_font ) {
-        if( !stricmp( in_name, current->defined_name ) ) {
+        if( stricmp( in_name, current->defined_name ) == 0 ) {
             retval = current;
             break;
         }
@@ -519,7 +519,7 @@ static device_font * find_dev_font( char const * in_name )
 
     current = &bin_device->devicefonts;
     for( i = 0; i < current->font_count; i++ ) {
-        if( !stricmp( in_name, current->fonts[i].font_name ) ) {
+        if( stricmp( in_name, current->fonts[i].font_name ) == 0 ) {
             retval = &current->fonts[i];
             break;
         }
@@ -554,7 +554,7 @@ static fontstyle_block * find_style( char const * in_name )
 
     current = &bin_driver->fontstyles;
     for( i = 0; i < current->count; i++ ) {
-        if( !stricmp( in_name, current->fontstyleblocks[i].type ) ) {
+        if( stricmp( in_name, current->fontstyleblocks[i].type ) == 0 ) {
             retval = &current->fontstyleblocks[i];
             break;
         }
@@ -589,7 +589,7 @@ static fontswitch_block * find_switch( char const * in_name )
 
     current = &bin_driver->fontswitches;
     for( i = 0; i < current->count; i++ ) {
-        if( !stricmp( in_name, current->fontswitchblocks[i].type ) ) {
+        if( stricmp( in_name, current->fontswitchblocks[i].type ) == 0 ) {
             retval = &current->fontswitchblocks[i];
             break;
         }
@@ -1310,7 +1310,7 @@ void cop_ti_table( const char *p )
     if( len > 0 ) {
         if( len > 2 ) { // check for ".ti set"
             if( len == 3 ) {
-                if( !strnicmp( pa, "SET", len ) ) {
+                if( strnicmp( pa, "SET", len ) == 0 ) {
                     SkipSpaces( p );        // set char start
                     pa = p;
                     SkipNonSpaces( p );     // set char start

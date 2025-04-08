@@ -337,11 +337,11 @@ bool    i_case( char * p, lay_att curr, case_t * tm )
     (void)curr;
 
     cvterr = false;
-    if( !strnicmp( "mixed", p, 5 ) ) {
+    if( strnicmp( "mixed", p, 5 ) == 0 ) {
         *tm = case_mixed;
-    } else if( !strnicmp( "lower", p, 5 ) ) {
+    } else if( strnicmp( "lower", p, 5 ) == 0 ) {
         *tm = case_lower;
-    } else if( !strnicmp( "upper", p, 5 ) ) {
+    } else if( strnicmp( "upper", p, 5 ) == 0 ) {
         *tm = case_upper;
     } else {
         xx_line_err_c( err_inv_att_val, p );
@@ -407,7 +407,7 @@ bool    i_content( char * p, lay_att curr, content * tm )
     cvterr = false;
     tm->content_type = no_content;
     for( k = no_content; k < max_content; ++k ) {
-        if( !strnicmp( content_text[k].name, p, content_text[k].len ) ) {
+        if( strnicmp( content_text[k].name, p, content_text[k].len ) == 0 ) {
             tm->content_type = content_text[k].type;
             strcpy( tm->string, content_text[k].name );
             break;
@@ -461,11 +461,11 @@ bool    i_default_frame( char * p, lay_att curr, def_frame * tm )
     bool        cvterr;
 
     cvterr = false;
-    if( !strnicmp( "none", p, 4 ) ) {
+    if( strnicmp( "none", p, 4 ) == 0 ) {
         tm->type = none;
-    } else if( !strnicmp( "rule", p, 4 ) ) {
+    } else if( strnicmp( "rule", p, 4 ) == 0 ) {
         tm->type = rule_frame;
-    } else if( !strnicmp( "box", p, 3 ) ) {
+    } else if( strnicmp( "box", p, 3 ) == 0 ) {
         tm->type = box_frame;
     } else if( !is_quote_char( *p ) ) {
         cvterr = true;
@@ -521,7 +521,7 @@ bool    i_docsect( char * p, lay_att curr, ban_docsect * tm )
     cvterr = false;
     *tm = no_ban;
     for( k = no_ban; k < max_ban; ++k ) {
-        if( !strnicmp( doc_sections[k].name, p, doc_sections[k].len ) ) {
+        if( strnicmp( doc_sections[k].name, p, doc_sections[k].len ) == 0 ) {
             *tm = doc_sections[k].type;
             break;
         }
@@ -556,9 +556,9 @@ bool    i_frame( char * p, lay_att curr, bool * tm )
     (void)curr;
 
     cvterr = false;
-    if( !strnicmp( "none", p, 4 ) ) {
+    if( strnicmp( "none", p, 4 ) == 0 ) {
         *tm = false;
-    } else if( !strnicmp( "rule", p, 4 ) ) {
+    } else if( strnicmp( "rule", p, 4 ) == 0 ) {
         *tm = true;
     } else {
         xx_line_err_c( err_inv_att_val, p );
@@ -657,11 +657,11 @@ bool    i_number_form( char * p, lay_att curr, num_form * tm )
     (void)curr;
 
     cvterr = false;
-    if( !strnicmp( "none", p, 4 ) ) {
+    if( strnicmp( "none", p, 4 ) == 0 ) {
         *tm = num_none;
-    } else if( !strnicmp( "prop", p, 4 ) ) {
+    } else if( strnicmp( "prop", p, 4 ) == 0 ) {
         *tm = num_prop;
-    } else if( !strnicmp( "new", p, 3 ) ) {
+    } else if( strnicmp( "new", p, 3 ) == 0 ) {
         *tm = num_new;
     } else {
         xx_line_err_c( err_inv_att_val, p );
@@ -817,13 +817,13 @@ bool    i_page_eject( char * p, lay_att curr, page_ej * tm )
     (void)curr;
 
     cvterr = false;
-    if( !strnicmp( strno, p, 2 ) ) {
+    if( strnicmp( strno, p, 2 ) == 0 ) {
         *tm = ej_no;
-    } else if( !strnicmp( stryes, p, 3 ) ) {
+    } else if( strnicmp( stryes, p, 3 ) == 0 ) {
         *tm = ej_yes;
-    } else if( !strnicmp( "odd", p, 3 ) ) {
+    } else if( strnicmp( "odd", p, 3 ) == 0 ) {
         *tm = ej_odd;
-    } else if( !strnicmp( "even", p, 4 ) ) {
+    } else if( strnicmp( "even", p, 4 ) == 0 ) {
         *tm = ej_even;
     } else {
         xx_line_err_c( err_inv_att_val, p );
@@ -861,11 +861,11 @@ bool    i_page_position( char * p, lay_att curr, page_pos * tm )
     (void)curr;
 
     cvterr = false;
-    if( !strnicmp( "left", p, 4 ) ) {
+    if( strnicmp( "left", p, 4 ) == 0 ) {
         *tm = pos_left;
-    } else if( !strnicmp( "right", p, 5 ) ) {
+    } else if( strnicmp( "right", p, 5 ) == 0 ) {
         *tm = pos_right;
-    } else if( !(strnicmp( "centre", p, 6 ) && strnicmp( "center", p, 6 )) ) {
+    } else if( strnicmp( "centre", p, 6 ) == 0 || strnicmp( "center", p, 6 ) == 0 ) {
         *tm = pos_center;
     } else {
         xx_line_err_c( err_inv_att_val, p );
@@ -904,7 +904,7 @@ bool    i_place( char * p, lay_att curr, bf_place * tm )
     cvterr = false;
     *tm = no_place;
     for( k = no_place; k < max_place; ++k ) {
-        if( !strnicmp( bf_places[k].name, p, bf_places[k].len ) ) {
+        if( strnicmp( bf_places[k].name, p, bf_places[k].len ) == 0 ) {
             *tm = bf_places[k].type;
             break;
         }
@@ -941,23 +941,23 @@ bool    i_pouring( char * p, lay_att curr, reg_pour * tm )
     (void)curr;
 
     cvterr = false;
-    if( !strnicmp( "none", p, 4 ) ) {
+    if( strnicmp( "none", p, 4 ) == 0 ) {
         *tm = no_pour;
-    } else if( !strnicmp( "last", p, 4 ) ) {
+    } else if( strnicmp( "last", p, 4 ) == 0 ) {
         *tm = last_pour;
-    } else if( !strnicmp( "head0", p, 5 ) ) {
+    } else if( strnicmp( "head0", p, 5 ) == 0 ) {
         *tm = head0_pour;
-    } else if( !strnicmp( "head1", p, 5 ) ) {
+    } else if( strnicmp( "head1", p, 5 ) == 0 ) {
         *tm = head1_pour;
-    } else if( !strnicmp( "head2", p, 5 ) ) {
+    } else if( strnicmp( "head2", p, 5 ) == 0 ) {
         *tm = head2_pour;
-    } else if( !strnicmp( "head3", p, 5 ) ) {
+    } else if( strnicmp( "head3", p, 5 ) == 0 ) {
         *tm = head3_pour;
-    } else if( !strnicmp( "head4", p, 5 ) ) {
+    } else if( strnicmp( "head4", p, 5 ) == 0 ) {
         *tm = head4_pour;
-    } else if( !strnicmp( "head5", p, 5 ) ) {
+    } else if( strnicmp( "head5", p, 5 ) == 0 ) {
         *tm = head5_pour;
-    } else if( !strnicmp( "head6", p, 5 ) ) {
+    } else if( strnicmp( "head6", p, 5 ) == 0 ) {
         *tm = head6_pour;
     } else {
         xx_line_err_c( err_inv_att_val, p );
@@ -1129,9 +1129,9 @@ bool    i_yes_no( char * p, lay_att curr, bool * tm )
     (void)curr;
 
     cvterr = false;
-    if( !strnicmp( strno, p, 2 ) ) {
+    if( strnicmp( strno, p, 2 ) == 0 ) {
         *tm = false;
-    } else if( !strnicmp( stryes, p, 3 ) ) {
+    } else if( strnicmp( stryes, p, 3 ) == 0 ) {
         *tm = true;
     } else {
         xx_line_err_c( err_inv_att_val, p );

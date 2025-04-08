@@ -106,7 +106,7 @@ static bool check_att_value( gaentry * ga, gtentry * ge, dict_hdl loc_dict )
             }
         }
         if( valp != NULL ) {
-            if( !strcmp( token_buf, valp ) ) {
+            if( strcmp( token_buf, valp ) == 0 ) {
                 scan_err = false;       // value is allowed
                 break;
             }
@@ -218,7 +218,7 @@ bool process_tag( gtentry * ge, mac_entry * me )
             *p2 = '\0';
             if( p2 != token_buf ) {     // ignore nullstring
                 for( ga = ge->attribs; ga != NULL; ga = ga->next ) {// all attrs
-                    if( !stricmp( ga->name, token_buf ) ) {
+                    if( stricmp( ga->name, token_buf ) == 0 ) {
                         ga->attflags |= att_proc_seen; // attribute specified
                         if( ga->attflags & att_auto ) {
                             xx_line_err_cc( err_auto_att, token_buf, pa );

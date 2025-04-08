@@ -135,21 +135,21 @@ void    scr_pe( void )
         if( cc == notnum ) {
             switch( len ) {
             case 2 :
-                if( !strnicmp( "ON", pa, 2 ) ) {
+                if( strnicmp( "ON", pa, 2 ) == 0 ) {
                     init_pe_line( INT_MAX );    // partial implementation (no nesting)
                 } else {
                     xx_line_err_cc( err_xx_opt, cwcurr, pa );
                 }
                 break;
             case 3 :
-                if( !strnicmp( "OFF", pa, 3 ) ) {
+                if( strnicmp( "OFF", pa, 3 ) == 0 ) {
                     reset_pe_cb();              // partial implementation (no nesting)
                 } else {
                     xx_line_err_cc( err_xx_opt, cwcurr, pa );
                 }
                 break;
             case 6 :
-                if( !strnicmp( "DELETE", pa, 6 ) ) {
+                if( strnicmp( "DELETE", pa, 6 ) == 0 ) {
                     reset_pe_cb();              // partial implementation (no nesting)
                 } else {
                     xx_line_err_cc( err_xx_opt, cwcurr, pa );

@@ -40,16 +40,16 @@ static char * get_ref_attributes( void )
             if( ProcFlags.reprocess_line ) {
                 break;
             }
-            if( !strnicmp( "page", p, 4 ) ) {
+            if( strnicmp( "page", p, 4 ) == 0 ) {
                 page_found = true;
                 p += 4;
                 p = get_att_value( p );
                 if( val_start == NULL ) {
                     break;
                 }
-                if( !strnicmp( "yes", val_start, 3 ) ) {
+                if( strnicmp( "yes", val_start, 3 ) == 0 ) {
                     ref_page = true;
-                } else if( !strnicmp( "no", val_start, 2 ) ) {
+                } else if( strnicmp( "no", val_start, 2 ) == 0 ) {
                     ref_page = false;
                 } else {
                     xx_line_err_c( err_inv_att_val, val_start );
@@ -57,7 +57,7 @@ static char * get_ref_attributes( void )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( !strnicmp( "refid", p, 5 ) ) {
+            } else if( strnicmp( "refid", p, 5 ) == 0 ) {
                 p += 5;
                 p = get_refid_value( p, refid );
                 if( val_start == NULL ) {

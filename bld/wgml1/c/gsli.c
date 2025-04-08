@@ -85,7 +85,7 @@ void    scr_li( void )
         if( cc == notnum ) {
             switch( len ) {
             case 2 :
-                if( !strnicmp( "ON", pa, 2 ) ) {
+                if( strnicmp( "ON", pa, 2 ) == 0 ) {
                     if( !ProcFlags.literal ) {
                         li_cnt = LONG_MAX;
                         ProcFlags.literal = true;
@@ -101,7 +101,7 @@ void    scr_li( void )
                 }
                 break;
             case 3 :
-                if( !strnicmp( "OFF", pa, 3 ) ) {
+                if( strnicmp( "OFF", pa, 3 ) == 0 ) {
                     ProcFlags.literal = false;
                     scan_restart = pa + 3;
                 } else {

@@ -43,7 +43,7 @@ void    gml_title( const gmltag * entry )
             if( ProcFlags.reprocess_line ) {
                 break;
             }
-            if( !strnicmp( "stitle", p, 6 ) ) {
+            if( strnicmp( "stitle", p, 6 ) == 0 ) {
                 p += 6;
                 p = get_att_value( p );
                 if( val_start == NULL ) {

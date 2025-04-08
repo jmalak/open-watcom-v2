@@ -126,11 +126,11 @@ void    lay_abspref( const gmltag * entry )
         eat_lay_sub_tag();
         return;                         // process during first pass only
     }
-    if( !strcmp( "ABSTRACT", entry->tagname ) ) {
+    if( strcmp( "ABSTRACT", entry->tagname ) == 0 ) {
         x_tag = el_abstract;
         ap  = &layout_work.abstract;
         apsect = &layout_work.hx.hx_sect[hds_abstract];
-    } else if( !strcmp( "PREFACE", entry->tagname ) ) {
+    } else if( strcmp( "PREFACE", entry->tagname ) == 0 ) {
         x_tag = el_preface;
         ap  = &layout_work.preface;
         apsect = &layout_work.hx.hx_sect[hds_preface];
@@ -147,7 +147,7 @@ void    lay_abspref( const gmltag * entry )
         cvterr = -1;
         for( k = 0, curr = abspref_att[k]; curr > 0; k++, curr = abspref_att[k] ) {
 
-            if( !strnicmp( att_names[curr], g_att_val.att_name, g_att_val.att_len ) ) {
+            if( strnicmp( att_names[curr], g_att_val.att_name, g_att_val.att_len ) == 0 ) {
                 p = g_att_val.val_name;
 
                 switch( curr ) {

@@ -191,19 +191,19 @@ void gml_dl( const gmltag * entry )
                 break;
             }
 
-            if( !strnicmp( "compact", p, 7 ) ) {
+            if( strnicmp( "compact", p, 7 ) == 0 ) {
                 compact = true;
                 p += 7;
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( !strnicmp( "break", p, 5 ) ) {
+            } else if( strnicmp( "break", p, 5 ) == 0 ) {
                 p += 5;
                 dl_break = true;
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( !strnicmp( "headhi", p, 6 ) ) {
+            } else if( strnicmp( "headhi", p, 6 ) == 0 ) {
                 p += 6;
                 p = get_att_value( p );
                 if( val_start == NULL ) {
@@ -213,7 +213,7 @@ void gml_dl( const gmltag * entry )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( !strnicmp( "termhi", p, 6 ) ) {
+            } else if( strnicmp( "termhi", p, 6 ) == 0 ) {
                 p += 6;
                 p = get_att_value( p );
                 if( val_start == NULL ) {
@@ -223,7 +223,7 @@ void gml_dl( const gmltag * entry )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( !strnicmp( "tsize", p, 5 ) ) {
+            } else if( strnicmp( "tsize", p, 5 ) == 0 ) {
                 p += 5;
                 p = get_att_value( p );
                 if( val_start == NULL ) {
@@ -315,10 +315,10 @@ void gml_gl( const gmltag * entry )
                 break;
             }
 
-            if( !strnicmp( "compact", p, 7 ) ) {
+            if( strnicmp( "compact", p, 7 ) == 0 ) {
                 p += 7;
                 compact = true;
-            } else if( !strnicmp( "termhi", p, 6 ) ) {
+            } else if( strnicmp( "termhi", p, 6 ) == 0 ) {
                 p += 6;
                 p = get_att_value( p );
                 if( val_start == NULL ) {
@@ -411,7 +411,7 @@ void gml_ol( const gmltag * entry )
                 break;
             }
 
-            if( !strnicmp( "compact", p, 7 ) ) {
+            if( strnicmp( "compact", p, 7 ) == 0 ) {
                 p += 7;
                 compact = true;
             } else {
@@ -499,7 +499,7 @@ void gml_sl( const gmltag * entry )
                 break;
             }
 
-            if( !strnicmp( "compact", p, 7 ) ) {
+            if( strnicmp( "compact", p, 7 ) == 0 ) {
                 p += 7;
                 compact = true;
             } else {
@@ -586,7 +586,7 @@ void gml_ul( const gmltag * entry )
                 break;
             }
 
-            if( !strnicmp( "compact", p, 7 ) ) {
+            if( strnicmp( "compact", p, 7 ) == 0 ) {
                 p += 7;
                 compact = true;
             } else {

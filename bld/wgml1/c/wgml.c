@@ -140,7 +140,7 @@ static  char    * reuse_filename( const char * fn )
     fnstack * fnwk;
 
     for( fnwk = fn_stack; fnwk != NULL; fnwk = fnwk->prev ) {
-        if( !strcmp( fnwk->fn, fn ) ) {
+        if( strcmp( fnwk->fn, fn ) == 0 ) {
             return( fnwk->fn );         // filename is known
         }
     }
@@ -348,7 +348,7 @@ static bool test_macro_xxxx( char const * beginend )
 
         cw[2] = '\0';
         if( c == '\0' || c == ' ' ) {
-            if( !strcmp( cw, "dm" ) ) {
+            if( strcmp( cw, "dm" ) == 0 ) {
                 SkipSpaces( p );            // find macroname
                 SkipNonSpaces( p );
                 SkipSpaces( p );            // find begin end

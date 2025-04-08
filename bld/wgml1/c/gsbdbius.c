@@ -144,7 +144,8 @@ static void scr_style_common( style_cw_type type, style_cw_info * cw_info )
         len = p - pa;
         SkipSpaces( p );                // second token?
         if( *p == '\0' ) {              // no second token
-            if( (len == 3) && (!strnicmp( pa, "OFF", len )) ) { // OFF
+            if( (len == 3)
+              && (strnicmp( pa, "OFF", len ) == 0) ) { // OFF
                 if( type == SCT_bi ) {
                     script_style.style &= ~SCT_bd;
                     script_style.cw_bd.count = 0;
@@ -158,7 +159,8 @@ static void scr_style_common( style_cw_type type, style_cw_info * cw_info )
                     cw_info->scope = SCS_none;
                 }
                 pa = p;                         // no following text
-            } else if( (len == 2) && (!strnicmp( pa, "ON", len )) ) {  // ON
+            } else if( (len == 2)
+              && (strnicmp( pa, "ON", len ) == 0) ) {  // ON
                 if( type == SCT_bi ) {
                     script_style.style |= SCT_bd;
                     script_style.cw_bd.count = 0;

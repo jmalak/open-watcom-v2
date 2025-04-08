@@ -60,7 +60,7 @@ void add_GML_tag_research( char * tag )
     }
 
     while( wk ) {
-        if( !stricmp( tag, wk->tagname ) ) {
+        if( stricmp( tag, wk->tagname ) == 0 ) {
             wk->count++;
             return;
         }
@@ -154,7 +154,7 @@ void    add_SCR_tag_research( char * tag )
     taglist *   new;
 
     while( wk ) {
-        if( !stricmp( tag, wk->tagname ) ) {
+        if( stricmp( tag, wk->tagname ) == 0 ) {
             wk->count++;
             return;
         }
@@ -223,7 +223,7 @@ void    add_multi_func_research( char * fun )
     taglist *   new;
 
     while( wk ) {
-        if( !stricmp( fun, wk->tagname ) ) {
+        if( stricmp( fun, wk->tagname ) == 0 ) {
             wk->count++;
             return;
         }

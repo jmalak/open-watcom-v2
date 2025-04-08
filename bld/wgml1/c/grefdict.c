@@ -152,7 +152,7 @@ ref_entry   * find_refid( ref_entry * dict, const char * name )
     wk = NULL;
     if( strlen( name ) > 0 ) {          // don't match case with no id
         for( curr = dict; curr != NULL; curr = curr->next ) {
-            if( !strcmp( curr->id, name ) ) {
+            if( strcmp( curr->id, name ) == 0 ) {
                 wk = curr;
                 break;
             }

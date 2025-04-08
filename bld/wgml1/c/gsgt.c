@@ -250,8 +250,7 @@ static  condcode    scan_tag_options( gtflags * tag_flags )
         switch( my_tolower( *p ) ) {
         case   'a' :
             if( (arg_flen > 2) && (arg_flen < 12)
-                && !strnicmp( "ATTributes", p, arg_flen ) ) {
-
+              && strnicmp( "ATTributes", p, arg_flen ) == 0 ) {
                 *tag_flags |= tag_attr;
             } else {
                 cc = neg;               // invalid option
@@ -259,15 +258,12 @@ static  condcode    scan_tag_options( gtflags * tag_flags )
             break;
         case   'c' :
             if( (arg_flen == 5)
-                && !strnicmp( "CSOFF", p, 5 ) ) {
-
+              && strnicmp( "CSOFF", p, 5 ) == 0 ) {
                 *tag_flags |= tag_csoff;
             } else {
                 if( (arg_flen > 3) && (arg_flen < 9)
-                    && !strnicmp( "CONTinue", p, arg_flen ) ) {
-
+                  && strnicmp( "CONTinue", p, arg_flen ) == 0 ) {
                     *tag_flags |= tag_cont;
-
                 } else {
                     cc = neg;           // invalid option
                 }
@@ -275,8 +271,7 @@ static  condcode    scan_tag_options( gtflags * tag_flags )
             break;
         case   'n' :
             if( (arg_flen > 5) && (arg_flen < 11)
-                && !strnicmp( "NOCONTinue", p, arg_flen ) ) {
-
+              && strnicmp( "NOCONTinue", p, arg_flen ) == 0 ) {
                 *tag_flags |= tag_nocont;
             } else {
                 cc = neg;               // invalid option
@@ -284,31 +279,20 @@ static  condcode    scan_tag_options( gtflags * tag_flags )
             break;
         case   't' :
             if( (arg_flen > 3) && (arg_flen < 8)
-                && !strnicmp( "TAGNext", p, arg_flen ) ) {
-
+              && strnicmp( "TAGNext", p, arg_flen ) == 0 ) {
                 *tag_flags |= tag_next;
             } else {
                 if( (arg_flen > 4 && (arg_flen < 10) ) ) {
-                    if( !strnicmp( "TEXTError", p, arg_flen ) ) {
-
+                    if( strnicmp( "TEXTError", p, arg_flen ) == 0 ) {
                         *tag_flags |= tag_texterr;
+                    } else if( strnicmp( "TEXTReqd", p, arg_flen ) == 0 ) {
+                        *tag_flags |= tag_textreq;
+                    } else  if( strnicmp( "TEXTLine", p, arg_flen ) == 0 ) {
+                        *tag_flags |= tag_textline;
+                    } else if( strnicmp( "TEXTDef", p, arg_flen ) == 0 ) {
+                        *tag_flags |= tag_textdef;
                     } else {
-                        if( !strnicmp( "TEXTReqd", p, arg_flen ) ) {
-
-                            *tag_flags |= tag_textreq;
-                        } else {
-                            if( !strnicmp( "TEXTLine", p, arg_flen ) ) {
-
-                                *tag_flags |= tag_textline;
-                            } else {
-                                if( !strnicmp( "TEXTDef", p, arg_flen ) ) {
-
-                                    *tag_flags |= tag_textdef;
-                                } else {
-                                    cc = neg;   // invalid option
-                                }
-                            }
-                        }
+                        cc = neg;   // invalid option
                     }
                 } else {
                     cc = neg;           // invalid option
@@ -408,40 +392,32 @@ void    scr_gt( void )
     function = 0;
     switch( my_tolower( *p ) ) {
     case   'a':
-        if( !strnicmp( "ADD ", p, 4 ) ) {
-
+        if( strnicmp( "ADD ", p, 4 ) == 0 ) {
             function = f_add;
         }
         break;
     case 'c' :
         if( (arg_flen > 2) && (arg_flen < 7)
-            && !strnicmp( "CHANGE", p, arg_flen ) ) {
-
+          && strnicmp( "CHANGE", p, arg_flen ) == 0 ) {
             function = f_change;
         }
         break;
     case 'o' :
-        if( !strnicmp( "OFF", p, 3 ) ) {
-
+        if( strnicmp( "OFF", p, 3 ) == 0 ) {
             function = f_off;
-        } else {
-            if( !strnicmp( "ON", p, 2 ) ) {
-
-                function = f_on;
-            }
+        } else if( strnicmp( "ON", p, 2 ) == 0 ) {
+            function = f_on;
         }
         break;
     case 'd' :
         if( (arg_flen > 2) && (arg_flen < 7)
-            && !strnicmp( "DELETE", p, arg_flen ) ) {
-
+          && strnicmp( "DELETE", p, arg_flen ) == 0 ) {
             function = f_delete;
         }
         break;
     case 'p' :
         if( (arg_flen > 1) && (arg_flen < 6)
-            && !strnicmp( "PRINT", p, arg_flen ) ) {
-
+          && strnicmp( "PRINT", p, arg_flen ) == 0 ) {
             function = f_print;
         }
         break;
