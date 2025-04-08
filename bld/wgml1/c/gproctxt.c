@@ -1948,7 +1948,7 @@ void process_text( char * text, font_number font )
                 if( input_cbs->hidden_head != NULL ) {              // something follows (not EOL)
                     spaces_at_start = true;                         // catch text next time
                 }
-            } else if( (tab_space > 0) && (*p == CONT_char) && (*(p+1) == '\0') ) {  // continue char at entd
+            } else if( (tab_space > 0) && IS_CONT_CHAR( p ) ) {  // continue char at entd
                 if( input_cbs->hidden_head != NULL ) {              // something follows (not EOL)
                     spaces_at_start = true;                         // catch text next time
                 }
@@ -1980,11 +1980,11 @@ void process_text( char * text, font_number font )
             kbtab_count += tab_space;          // increment kbtab_count for any inital spaces/keyboard tabs
             post_space = tab_space * wgml_fonts[font].spc_width;
             ProcFlags.zsp = false;              // keep tab_space value
-            if( (*p == '\0') || (*p == CONT_char) && (*(p + 1) == '\0')) {
+            if( (*p == '\0') || IS_CONT_CHAR( p ) ) {
                 if( (*p == '\0') && input_cbs->hidden_head == NULL ) {  // no text follows
                     g_blank_text_lines++;
                 } else {                                // text follows
-                    if( *p == CONT_char ) {
+                    if( IS_CONT_CHAR( p ) ) {
                         *p = '\0';
                         ProcFlags.cont_char = true;
                     } else {
@@ -2126,7 +2126,7 @@ void process_text( char * text, font_number font )
             pword = p;
         } else {
             /* Set flag for continue character at end of line */
-            if( (*p == CONT_char) && (*(p + 1) == '\0') ) {
+            if( IS_CONT_CHAR( p ) ) {
                 ProcFlags.cont_char = true;
                 *p = '\0';
             } else {
@@ -2629,8 +2629,7 @@ void process_text( char * text, font_number font )
 
             if( (input_cbs->fmflags && II_macro) && (input_cbs->prev != NULL)
                     && (input_cbs->prev->hidden_head != NULL)
-                    && (*input_cbs->prev->hidden_head->value == CONT_char)
-                    && (*(input_cbs->prev->hidden_head->value + 1) == '\0')  ) {
+                    && IS_CONT_CHAR( input_cbs->prev->hidden_head->value )  ) {
                 inp_line            *   pline;
 
                 ProcFlags.cont_char = true;

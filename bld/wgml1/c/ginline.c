@@ -120,8 +120,7 @@ static void gml_inline_common( const gmltag * entry, font_number font, e_tags t 
             token_buf[0] = d_q;
         }
         if( !ProcFlags.concat && ((input_cbs->hidden_head != NULL) || (*p != '\0')) ) {
-            token_buf[1] = CONT_char;
-            token_buf[2] = '\0';
+            ADD_CONT_CHAR( token_buf + 1 );
         } else {
             token_buf[1] = '\0';
         }
@@ -134,7 +133,7 @@ static void gml_inline_common( const gmltag * entry, font_number font, e_tags t 
     }
 
     if( *p != '\0' ) {
-        if( (*(p + 1) == '\0') && (*p == CONT_char) ) { // text is continuation character only
+        if( IS_CONT_CHAR( p ) ) { // text is continuation character only
             /* tbd */
         } else {
             process_text( p, g_curr_font);          // if text follows
@@ -290,8 +289,7 @@ static void gml_e_inlne_common( const gmltag * entry, e_tags t )
             } else {
                 token_buf[0] = d_q;
             }
-            token_buf[1] = CONT_char;
-            token_buf[2] = '\0';
+            ADD_CONT_CHAR( token_buf + 1 );
             process_text( token_buf, g_curr_font );
         }
 
@@ -299,7 +297,7 @@ static void gml_e_inlne_common( const gmltag * entry, e_tags t )
         p = scan_start;
         SkipDot( p );                           // over '.'
         if( *p != '\0' ) {
-            if( (*(p + 1) == '\0') && (*p == CONT_char) ) { // text is continuation character only
+            if( IS_CONT_CHAR( p ) ) { // text is continuation character only
                 /* tbd */
             } else {
                 process_text( p, g_curr_font);          // if text follows
