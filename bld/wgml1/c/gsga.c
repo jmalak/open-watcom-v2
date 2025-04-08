@@ -198,8 +198,7 @@ static  condcode    scan_att_optionsA( gaflags * att_flags )
         switch( my_tolower( *p ) ) {
         case   'u' :
             if( (arg_flen > 1) && (arg_flen < 11)
-                && !strnicmp( "UPpercase", p, arg_flen ) ) {
-
+              && strnicmp( "UPpercase", p, arg_flen ) == 0 ) {
                 *att_flags |= att_upper;
             } else {
                 cc = neg;               // perhaps option B
@@ -207,20 +206,17 @@ static  condcode    scan_att_optionsA( gaflags * att_flags )
             break;
         case   'r' :
             if( (arg_flen > 2) && (arg_flen < 9)
-                && !strnicmp( "REQuired", p, arg_flen ) ) {
-
+              && strnicmp( "REQuired", p, arg_flen ) == 0 ) {
                 *att_flags |= att_req;
             } else {
                 cc = neg;               // perhaps option B
             }
             break;
         case   'o' :
-            if( !strnicmp( "OFF", p, arg_flen ) ) {
-
+            if( strnicmp( "OFF", p, arg_flen ) == 0 ) {
                 *att_flags |= att_off;
             } else {
-                if( !strnicmp( "ON", p, arg_flen ) ) {
-
+                if( strnicmp( "ON", p, arg_flen ) == 0 ) {
                     *att_flags &= ~att_off;
                 } else {
                     cc = neg;           // perhaps option B
@@ -261,14 +257,12 @@ static  condcode    scan_att_optionsB( gavalflags * val_flags, condcode cca,
 
     switch( my_tolower( *g_tok_start ) ) {
     case   'a' :
-        if( !strnicmp( "ANY", g_tok_start, arg_flen ) ) {
-
+        if( strnicmp( "ANY", g_tok_start, arg_flen ) == 0 ) {
             *val_flags |= val_any;
             *att_flags |= att_any;
         } else {
             if( (arg_flen > 3) && (arg_flen < 10)
-                && !strnicmp( "AUTOmatic", g_tok_start, arg_flen ) ) {
-
+              && strnicmp( "AUTOmatic", g_tok_start, arg_flen ) == 0 ) {
                 *val_flags |= val_auto;
                 *att_flags |= att_auto;
             } else {
@@ -298,8 +292,7 @@ static  condcode    scan_att_optionsB( gavalflags * val_flags, condcode cca,
         break;
     case   'r' :
         if( (arg_flen > 2) && (arg_flen < 6)
-            && !strnicmp( "RANge", g_tok_start, arg_flen ) ) {
-
+          && strnicmp( "RANge", g_tok_start, arg_flen ) == 0 ) {
             *val_flags |= val_range;
             *att_flags |= att_range;
 
@@ -346,8 +339,7 @@ static  condcode    scan_att_optionsB( gavalflags * val_flags, condcode cca,
             }
         } else {
             if( (arg_flen == 5)
-                && !strnicmp( "RESET", g_tok_start, arg_flen ) ) {
-
+              && strnicmp( "RESET", g_tok_start, arg_flen ) == 0 ) {
                 *val_flags |= val_reset;
                 /* no further processing */
             } else {
@@ -357,8 +349,7 @@ static  condcode    scan_att_optionsB( gavalflags * val_flags, condcode cca,
         break;
     case   'l' :
         if( (arg_flen > 2) && (arg_flen < 7)
-            && !strnicmp( "LENgth", g_tok_start, arg_flen ) ) {
-
+          && strnicmp( "LENgth", g_tok_start, arg_flen ) == 0 ) {
             *val_flags |= val_length;
             gn.argstart = scan_start;
             gn.argstop  = scan_stop;
@@ -378,8 +369,7 @@ static  condcode    scan_att_optionsB( gavalflags * val_flags, condcode cca,
         break;
     case   'v' :
         if( (arg_flen > 2) && (arg_flen < 6)
-            && !strnicmp( "VALue", g_tok_start, arg_flen ) ) {
-
+          && strnicmp( "VALue", g_tok_start, arg_flen ) == 0 ) {
             cc = getarg();
             if( (cc == pos) || (cc == quotes) || (cc == quotes0) ) {
                  if( arg_flen <= VAL_LENGTH ) {
@@ -413,7 +403,7 @@ static  condcode    scan_att_optionsB( gavalflags * val_flags, condcode cca,
                 break;
             }
             if( cc == pos && (arg_flen > 2) && (arg_flen < 8)
-                && !strnicmp( "DEFault", g_tok_start, arg_flen ) ) {
+              && strnicmp( "DEFault", g_tok_start, arg_flen ) == 0 ) {
 
                 *val_flags |= val_def;
                 *att_flags |= att_def;
@@ -564,10 +554,8 @@ void    scr_ga( void )
     if( cc != omit ) {
         if( saveatt != '*' ) {          // no quickaccess for attribute
             gawk = NULL;
-            for( gawk = tag_entry->attribs; gawk != NULL;
-                 gawk = gawk->next ) {
-
-                if( !stricmp( g_attname, gawk->name ) ) {
+            for( gawk = tag_entry->attribs; gawk != NULL; gawk = gawk->next ) {
+                if( stricmp( g_attname, gawk->name ) == 0 ) {
                     att_flags = gawk->attflags; // get possible uppercase option
                     break;
                 }
@@ -591,10 +579,8 @@ void    scr_ga( void )
     /*  scanning complete     add/modify attribute in dictionary           */
     /***********************************************************************/
     if( saveatt != '*' ) {              // no quickaccess for attribute
-        for( att_entry = tag_entry->attribs; att_entry != NULL;
-             att_entry = att_entry->next ) {
-
-            if( !stricmp( g_attname, att_entry->name ) ) {
+        for( att_entry = tag_entry->attribs; att_entry != NULL; att_entry = att_entry->next ) {
+            if( stricmp( g_attname, att_entry->name ) == 0 ) {
                 break;
             }
         }

@@ -451,8 +451,8 @@ void    scr_dm( void )
     *p   = '\0';
     macro_line_count = 0;
 
-    compend   = !stricmp( g_tok_start, "end" );
-    compbegin = !stricmp( g_tok_start, "begin" );
+    compend   = ( stricmp( g_tok_start, "end" ) == 0 );
+    compbegin = ( stricmp( g_tok_start, "begin" ) == 0 );
     if( !(compbegin | compend) ) { // only .dm macname /line1/line2/ possible
         char    sepchar;
 
@@ -536,7 +536,7 @@ void    scr_dm( void )
                    len++;
                 }
                 *pa = '\0';
-                if( !strncmp( cw, "dm", SCR_KW_LENGTH ) ) {
+                if( strncmp( cw, "dm", SCR_KW_LENGTH ) == 0 ) {
                     if( (len == SCR_KW_LENGTH) || ((len > SCR_KW_LENGTH) &&
                                 (find_macro( macro_dict, cw ) == NULL)) ) { // .dm control word
                         cc = getarg();

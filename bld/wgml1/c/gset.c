@@ -55,7 +55,7 @@ extern  void    gml_set( const gmltag * entry )
             if( ProcFlags.reprocess_line ) {
                 break;
             }
-            if( !strnicmp( "symbol", p, 6 ) ) {
+            if( strnicmp( "symbol", p, 6 ) == 0 ) {
                 p += 6;
 
                 /* both get_att_value() and scan_sym() must be used */
@@ -69,7 +69,7 @@ extern  void    gml_set( const gmltag * entry )
                     break;
                 }
                 symbol_found = true;
-            } else if( !strnicmp( "value", p, 5 ) ) {
+            } else if( strnicmp( "value", p, 5 ) == 0 ) {
                 p += 5;
                 p = get_att_value( p );
                 if( val_start == NULL ) {
@@ -82,7 +82,7 @@ extern  void    gml_set( const gmltag * entry )
                 } else {
                     token_buf[buf_size - 1] = '\0';
                 }
-            } else if( !strnicmp( token_buf, "delete", 6 ) ) {
+            } else if( strnicmp( token_buf, "delete", 6 ) == 0 ) {
                 p += 6;
                 sym.flags |= deleted;
             } else {    // no match = end-of-tag in wgml 4.0
