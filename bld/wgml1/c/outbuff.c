@@ -987,6 +987,43 @@ void cop_tr_table( const char *p )
     return;
 }
 
+
+static int copy_file_out( record_buffer *x, FILE *fpi, bool inp_has_rec_type )
+{
+    size_t  count;
+    int         rc;
+
+    count = fread( x->text, 1, x->length, fpi );
+    if( ferror( fpi ) ) {
+        return( 1 );
+    }
+    rc = 0;
+    while( count == x->length ) {
+        x->current = count;
+        if( fwrite( x->text, 1, x->current, out_file_fp ) < x->current ) {
+            rc = 2;
+            break;
+        }
+        if( !inp_has_rec_type )
+            ob_flush();
+        count = fread( x->text, 1, x->length, fpi );
+        if( ferror( fpi ) ) {
+                rc = 1;
+            break;
+        }
+    }
+    if( rc == 0 ) {
+        x->current = count;
+        if( fwrite( x->text, 1, x->current, out_file_fp ) < x->current ) {
+            rc = 2;
+        }
+    }
+    if( inp_has_rec_type || rc == 2 )
+        x->current = 0;
+    return( rc );
+}
+
+
 /* Function ob_binclude().
  * This function implements the action of BINCLUDE.
  * NOTE: BINCLUDE produces a doc_element only if the file has been found.
@@ -994,69 +1031,38 @@ void cop_tr_table( const char *p )
 
 void ob_binclude( binclude_element * in_el )
 {
-    char        fontstr[] = "@fs0 ";
-    size_t      ps_size;
-    uint32_t    count;
+    int     rc;
 
     fb_binclude_support( in_el );
-    if( fwrite( buffout.text, sizeof( uint8_t ), buffout.current, out_file_fp )
+    /*
+     * flush all data from output buffer
+     */
+    if( fwrite( buffout.text, 1, buffout.current, out_file_fp )
             < buffout.current ) {
         xx_simple_err_c( err_write_out_file, out_file );
     }
     buffout.current = 0;
 
     if( in_el->has_rec_type ) {
-        count = fread( buffout.text, sizeof( uint8_t ), buffout.length, in_el->fp );
-        while( count == buffout.length ) {
-            buffout.current = count;
-            if( fwrite( buffout.text, sizeof( uint8_t ), buffout.current, out_file_fp )
-                    < buffout.current ) {
-                xx_simple_err_c( err_write_out_file, out_file );
-                count = 0;
-                break;
-            }
-            count = fread( buffout.text, sizeof( uint8_t ), buffout.length, in_el->fp );
-        }
-        buffout.current = count;
-        if( fwrite( buffout.text, sizeof( uint8_t ), buffout.current, out_file_fp )
-                < buffout.current ) {
-            xx_simple_err_c( err_write_out_file, out_file );
-        }
-        if( ferror( in_el->fp ) ) {
-            xx_simple_err_cc( err_in_file, "BINCLUDE", in_el->file );
-        }
-        buffout.current = 0;
+        rc = copy_file_out( &buffout, in_el->fp, true );
     } else {
-        count = fread( binc_buff.text, sizeof( uint8_t ), binc_buff.length, in_el->fp );
-        while( count == binc_buff.length ) {
-            binc_buff.current = count;
-            if( fwrite( binc_buff.text, sizeof( uint8_t ), binc_buff.current, out_file_fp )
-                    < binc_buff.current ) {
-                xx_simple_err_c( err_write_out_file, out_file );
-                count = 0;
-                break;
-            }
+        rc = copy_file_out( &binc_buff, in_el->fp, false );
+    }
+    if( rc == 0 ) {
+        /*
+         * force fs0 under some conditions; not PS? tbd
+         */
+        if( in_el->force_FONT0 ) {
             ob_flush();
-            count = fread( binc_buff.text, sizeof( uint8_t ), binc_buff.length, in_el->fp );
-        }
-        binc_buff.current = count;
-        if( fwrite( binc_buff.text, sizeof( uint8_t ), binc_buff.current, out_file_fp )
-                < binc_buff.current ) {
-            xx_simple_err_c( err_write_out_file, out_file );
-        }
-        if( ferror( in_el->fp ) ) {
-            xx_simple_err_cc( err_in_file, "BINCLUDE", in_el->file );
+            strcpy( buffout.text, "@fs0 " );
+            buffout.current = sizeof( "@fs0 " ) - 1;
         }
     }
-
-    if( in_el->force_FONT0 ) {          // force fs0 under some conditions; not PS? tbd
-        ob_flush();
-        ps_size = strlen( fontstr );
-        strcpy_s( buffout.text, buffout.length, fontstr );
-        buffout.current = ps_size;
+    if( rc == 1 ) {
+        xx_simple_err_cc( err_in_file, "BINCLUDE", in_el->file );
+    } else if( rc == 2 ) {
+        xx_simple_err_c( err_write_out_file, out_file );
     }
-
-    return;
 }
 
 
@@ -1094,20 +1100,14 @@ void ob_oc( const char *text )
 
 void ob_flush( void )
 {
-    if( !out_file_fp )
-        return;     /* Bail in case of fatal errors further up. */
-
-    if( fwrite( buffout.text, sizeof( uint8_t ), buffout.current, out_file_fp )
-            < buffout.current ) {
+    if( fwrite( buffout.text, 1, buffout.current, out_file_fp ) < buffout.current ) {
         xx_simple_err_c( err_write_out_file, out_file );
         return;
     }
     buffout.current = 0;
     if( fputs( TEXT_NL, out_file_fp ) == EOF ) {
         xx_simple_err_c( err_write_out_file, out_file );
-        return;
     }
-    return;
 }
 
 /* Function ob_graphic().
@@ -1119,11 +1119,10 @@ void ob_graphic( graphic_element * in_el )
 {
     char        begindoc[] = "%%BeginDocument: ";
     char        enddoc[] = "%%EndDocument";
-    char        fontstr[] = "@fs0 ";
     char        graphobj[] = "/graphobj save def /showpage { } def";
     char        restore[] = "graphobj restore";
     size_t      ps_size;
-    uint32_t    count;
+    int         rc;
 
     fb_graphic_support( in_el );
     ob_flush();
@@ -1133,7 +1132,7 @@ void ob_graphic( graphic_element * in_el )
     buffout.current = ps_size;
     ob_flush();
 
-    memset( buffout.text, buffout.length, '\0' );
+    memset( buffout.text, '\0', buffout.length );
     ps_size = sprintf_s( buffout.text, buffout.length, "%d %d %d %d %d %d %d graphhead",
                          in_el->cur_left, in_el->y_address, in_el->width, in_el->depth,
                          in_el->xoff, -1 * (in_el->depth + in_el->yoff), in_el->scale );
@@ -1147,47 +1146,31 @@ void ob_graphic( graphic_element * in_el )
     buffout.current = strlen( buffout.text );
     ob_flush();
 
-    count = fread( buffout.text, sizeof( uint8_t ), buffout.length, in_el->fp );
-    while( count == buffout.length ) {
-        buffout.current = count;
-        if( fwrite( buffout.text, sizeof( uint8_t ), buffout.current, out_file_fp )
-                < buffout.current ) {
-            xx_simple_err_c( err_write_out_file, out_file );
-            return;
-        }
-        count = fread( buffout.text, sizeof( uint8_t ), buffout.length, in_el->fp );
-    }
-    buffout.current = count;
-    if( fwrite( buffout.text, sizeof( uint8_t ), buffout.current, out_file_fp )
-            < buffout.current ) {
-        xx_simple_err_c( err_write_out_file, out_file );
-        return;
-    }
-    buffout.current = 0;
-
-    ps_size = strlen( enddoc );
-    strcpy_s( buffout.text, buffout.length, enddoc );
-    buffout.current = ps_size;
-    ob_flush();
-
-    ps_size = strlen( restore );
-    strcpy_s( buffout.text, buffout.length, restore );
-    buffout.current = ps_size;
-    ob_flush();
-
-    /* Only if font in use after the GRAPHIC was not font 0 */
-
-    if( in_el->next_font > FONT0 ) {
-        ob_flush();
-        ps_size = strlen( fontstr );
-        strcpy_s( buffout.text, buffout.length, fontstr );
+    rc = copy_file_out( &buffout, in_el->fp, true );
+    if( rc == 0 ) {
+        ps_size = strlen( enddoc );
+        strcpy_s( buffout.text, buffout.length, enddoc );
         buffout.current = ps_size;
-        if( ferror( in_el->fp ) ) {
-            xx_simple_err_cc( err_in_file, "GRAPHIC", in_el->file );
+        ob_flush();
+
+        ps_size = strlen( restore );
+        strcpy_s( buffout.text, buffout.length, restore );
+        buffout.current = ps_size;
+        ob_flush();
+
+        /* Only if font in use after the GRAPHIC was not font 0 */
+
+        if( in_el->next_font > FONT0 ) {
+            ob_flush();
+            strcpy( buffout.text, "@fs0 " );
+            buffout.current = sizeof( "@fs0 " ) - 1;
         }
     }
-
-    return;
+    if( rc == 1 ) {
+        xx_simple_err_cc( err_in_file, "GRAPHIC", in_el->file );
+    } else if( rc == 2 ) {
+        xx_simple_err_c( err_write_out_file, out_file );
+    }
 }
 
 /* Function ob_insert_block().
@@ -1313,8 +1296,9 @@ void ob_insert_ps_text_start( void )
 
 void ob_setup( void )
 {
-    int     i;
-    size_t  count;
+    int         i;
+    size_t      j;
+    size_t      count;
 
     /* Finalize out_file and out_file_attr. */
 
@@ -1333,8 +1317,8 @@ void ob_setup( void )
 
     count = 0;
 
-    for( i = 2; i < strlen( out_file_attr ); i++ ) {
-        if( !my_isdigit( out_file_attr[i] ) ) {
+    for( j = 2; j < strlen( out_file_attr ); j++ ) {
+        if( !my_isdigit( out_file_attr[j] ) ) {
             xx_simple_err_c( err_rec_att_bad_fmt, out_file_attr );
         }
         count++;
