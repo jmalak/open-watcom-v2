@@ -368,29 +368,21 @@ static bool test_macro_xxxx( char const * beginend )
 
 static  bool    test_comment( void )
 {
-    if( buff2[0] == SCR_char ) {        // test for .*
+    if( buff2[0] == SCR_char ) {            // test for .*
         // todo: This logic is imperfect, does not detect ..* .'* and similar
         if( buff2[1] == '*' ) {
            return( true );
         }
-    } else {                            // test for :cmt
-        if( (*buff2 == GML_char) &&
-            (my_tolower( *(buff2 + 1) ) == 'c') &&
-            (my_tolower( *(buff2 + 2) ) == 'm') &&
-            (my_tolower( *(buff2 + 3) ) == 't')
-        ) {
-            if( (*(buff2 + 4) == ' ') ||
-                (*(buff2 + 4) == '.')  ) {
-
-                if( ProcFlags.literal ) {   // special
-                    if( li_cnt < LONG_MAX ) {// we decrement, do not wait for .li OFF
-                        if( li_cnt-- <= 0 ) {
-                            ProcFlags.literal = false;
-                        }
+    } else {                                // test for :cmt[ .]
+        if( IS_CMT_TAG( buff2 ) && IS_TAG_END( buff2 + 4 ) ) {
+            if( ProcFlags.literal ) {       // special
+                if( li_cnt < LONG_MAX ) {   // we decrement, do not wait for .li OFF
+                    if( li_cnt-- <= 0 ) {
+                        ProcFlags.literal = false;
                     }
                 }
-                return( true );
             }
+            return( true );
         }
     }
     return( false );
