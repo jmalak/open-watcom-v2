@@ -27,11 +27,12 @@
     /*  Memory tracker output function                                     */
     /***********************************************************************/
 
-    static void prt( int * fhandle, const char * buff, size_t len )
+    static void prt( void *fhandle, const char * buff, size_t len )
     {
         size_t i;
 
-        fhandle = fhandle;
+        /* unused parameters */ (void)fhandle;
+
         for( i = 0; i < len; ++i ) {
     //      fputc( *buff++, stderr );
             fputc( *buff++, stdout );   // use stdout for now (easier redirection)
