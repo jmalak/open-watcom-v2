@@ -285,7 +285,7 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
 
     txt = p;
     txtlen = strlen( txt );
-    if( txt[txtlen - 1] == CONT_char ) {
+    if( IS_CONT_CHAR( txt + txtlen - 1 ) ) {
         txtlen--;
     }
     intrans( txt, strlen( txt ) + 1, g_curr_font );

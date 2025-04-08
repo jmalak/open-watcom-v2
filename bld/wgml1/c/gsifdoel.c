@@ -399,7 +399,7 @@ void    scr_if( void )
 
     process_late_subst(scan_start);
 
-    if( *(p + strlen(p) - 1) == CONT_char ) {  // remove trailing continue character
+    if( IS_CONT_CHAR( p + strlen(p) - 1 ) ) {  // remove trailing continue character
         *(p + strlen(p) - 1) = '\0';
     }
 
