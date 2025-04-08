@@ -244,8 +244,7 @@ char * scr_multi_funcs( char * in, char * pstart, char ** result, int32_t valsiz
     found = false;
     for( k = 0; k < SCR_FUNC_MAX; k++ ) {
         if( fnlen == scr_functions[k].length
-            && !stricmp( fn, scr_functions[k].fname ) ) {
-
+          && stricmp( fn, scr_functions[k].fname ) == 0 ) {
             found = true;
             if( (input_cbs->fmflags & II_research) && WgmlFlags.firstpass ) {
                 out_msg( " Function %s found\n", scr_functions[k].fname );

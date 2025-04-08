@@ -142,7 +142,7 @@ static  condcode    scr_veclp( parm parms[MAX_FUN_PARMS], size_t parmcount,
                          symsubval != NULL;
                          symsubval = symsubval->next ) {
 
-                        if( !strcmp( symsubval->value, pneedle ) ) {
+                        if( strcmp( symsubval->value, pneedle ) == 0 ) {
                            index = symsubval->subscript;
                            if( vec_pos ) {
                                break;// finished for vec_pos, go for veclastpos

@@ -1430,7 +1430,7 @@ static void *df_cancel( void )
     first = process_parameter( my_parameters.first );
 
     if( wgml_fonts[df_font].font_style != NULL ) {
-        if( !stricmp( first, wgml_fonts[df_font].font_style->type ) ) {
+        if( stricmp( first, wgml_fonts[df_font].font_style->type ) == 0 ) {
             if( wgml_fonts[df_font].font_style->startvalue != NULL ) {
                 df_interpret_driver_functions( wgml_fonts[df_font].font_style->startvalue->text );
             }
@@ -1438,7 +1438,7 @@ static void *df_cancel( void )
     }
 
     if( wgml_fonts[df_font].font_switch != NULL ) {
-        if( !stricmp( first, wgml_fonts[df_font].font_switch->type ) ) {
+        if( stricmp( first, wgml_fonts[df_font].font_switch->type ) == 0 ) {
             if( wgml_fonts[df_font].font_switch->startvalue != NULL ) {
                 df_interpret_driver_functions( wgml_fonts[df_font].font_switch->startvalue->text );
             }
@@ -1840,7 +1840,8 @@ static void *df_ifnes( void )
 
     /* if_nes: skip the controlled functions if the values are equal. */
 
-    if( !strcmp( first, second ) ) skip_functions();
+    if( strcmp( first, second ) == 0 )
+        skip_functions();
 
     /* Free the memory allocated to produce the parameters */
 

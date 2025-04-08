@@ -128,7 +128,7 @@ void scr_pa( void )
         do_output( true );
         break;
     case 3 :
-        if( !strnicmp( "ODD", pa, 3 ) ) {
+        if( strnicmp( "ODD", pa, 3 ) == 0 ) {
             last_page_out();
             reset_t_page();
             if( (page & 1) ) {          // next page would be even
@@ -140,7 +140,7 @@ void scr_pa( void )
         }
         break;
     case 4 :
-        if( !strnicmp( "EVEN", pa, 4 ) ) {
+        if( strnicmp( "EVEN", pa, 4 ) == 0 ) {
             last_page_out();
             reset_t_page();
             if( !(page & 1) ) {         // next page would be odd

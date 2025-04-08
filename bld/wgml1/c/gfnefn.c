@@ -60,7 +60,7 @@ void gml_fn( const gmltag * entry )
             if( ProcFlags.reprocess_line ) {
                 break;
             }
-            if( !strnicmp( "id", p, 2 ) ) {
+            if( strnicmp( "id", p, 2 ) == 0 ) {
                 p += 2;
                 p = get_refid_value( p, id );
                 if( val_start == NULL ) {

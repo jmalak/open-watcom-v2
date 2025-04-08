@@ -2082,7 +2082,7 @@ void    lay_convert( const gmltag * entry )
     }
     SkipSpaces( p );
     *token_buf = '\0';
-    if( !strnicmp( "file=", p, 5 ) ) {  // file attribute?
+    if( strnicmp( "file=", p, 5 ) == 0 ) {  // file attribute?
         char    quote;
         char    *fnstart;
 
