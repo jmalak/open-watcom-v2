@@ -34,28 +34,37 @@ static void gml_inline_common( const gmltag * entry, font_number font, e_tags t 
 
     // update block_font, if appropriate
 
-    if( (t_doc_el_group != NULL) && (t_doc_el_group->owner == gt_co) &&
-            (t_doc_el_group->first == NULL) ) {
+    if( (t_doc_el_group != NULL)
+      && (t_doc_el_group->owner == gt_co)
+      && (t_doc_el_group->first == NULL) ) {
         t_doc_el_group->block_font = font;
     }
 
     // keep the preceding space, even if followed by CT
 
-    if( ProcFlags.concat && !ProcFlags.cont_char ) {
-        if( !input_cbs->fm_hh && !ProcFlags.ct ) {
+    if( ProcFlags.concat
+      && !ProcFlags.cont_char ) {
+        if( !input_cbs->fm_hh
+          && !ProcFlags.ct ) {
             if( post_space == 0 ) {
                 post_space = wgml_fonts[g_curr_font].spc_width;
-                if( (t_line != NULL) && (t_line->last != NULL) ) {                                  // add second space after stop
+                if( (t_line != NULL)
+                  && (t_line->last != NULL) ) {                                  // add second space after stop
                     if( is_stop_char( t_line->last->text[t_line->last->count - 1] ) ) {
                         post_space *= 2;
                     }
                 }
             }
-        } else if( (t == t_SF) && (input_cbs->fmflags & II_macro) ) {   // may apply more generally
+        } else if( (t == t_SF)
+          && (input_cbs->fmflags & II_macro) ) {   // may apply more generally
             ProcFlags.utc = true;
-            if( (post_space == 0) && (input_cbs->sym_space || (input_cbs->fm_symbol && !ProcFlags.ct)) ) {
+            if( (post_space == 0)
+              && (input_cbs->sym_space
+              || (input_cbs->fm_symbol
+              && !ProcFlags.ct)) ) {
                 post_space = wgml_fonts[g_curr_font].spc_width;
-                if( (t_line != NULL) && (t_line->last != NULL) ) {                                  // add second space after stop
+                if( (t_line != NULL)
+                  && (t_line->last != NULL) ) {                                  // add second space after stop
                     if( is_stop_char( t_line->last->text[t_line->last->count - 1] ) ) {
                         post_space *= 2;
                     }
@@ -66,7 +75,9 @@ static void gml_inline_common( const gmltag * entry, font_number font, e_tags t 
 
     /* Implements wgml 4.0 behavior */
 
-    if( (t == t_SF) && (input_cbs->fmflags & II_tag) && (cur_group_type == gt_xmp) ) {
+    if( (t == t_SF)
+      && (input_cbs->fmflags & II_tag)
+      && (cur_group_type == gt_xmp) ) {
         if( ProcFlags.xmp_ut_sf ) {     // matches wgml 4.0
             scr_process_break();
         } else {
@@ -119,13 +130,17 @@ static void gml_inline_common( const gmltag * entry, font_number font, e_tags t 
         } else {
             token_buf[0] = d_q;
         }
-        if( !ProcFlags.concat && ((input_cbs->hidden_head != NULL) || (*p != '\0')) ) {
+        if( !ProcFlags.concat
+          && ((input_cbs->hidden_head != NULL)
+          || (*p != '\0')) ) {
             ADD_CONT_CHAR( token_buf + 1 );
         } else {
             token_buf[1] = '\0';
         }
         process_text( token_buf, g_curr_font );
-        if( ProcFlags.concat && ((input_cbs->hidden_head != NULL) || (*p != '\0')) ) {
+        if( ProcFlags.concat
+          && ((input_cbs->hidden_head != NULL)
+          || (*p != '\0')) ) {
             post_space = 0;                 // no space after quote
             ProcFlags.cont_char = true;
         }
@@ -139,19 +154,24 @@ static void gml_inline_common( const gmltag * entry, font_number font, e_tags t 
             process_text( p, g_curr_font);          // if text follows
         }
     } else if( t != t_Q ) {
-        if( ProcFlags.concat && !ProcFlags.cont_char && (t == t_SF) ) {
+        if( ProcFlags.concat
+          && !ProcFlags.cont_char
+          && (t == t_SF) ) {
             post_space = wgml_fonts[o_c_font].spc_width;
         } else{
             post_space = wgml_fonts[g_curr_font].spc_width;
         }
     }
 
-    if( (t == t_SF) && sav_sbl ) {      // reset flag, but only if was set on entry, and only for SF
+    if( (t == t_SF)
+      && sav_sbl ) {      // reset flag, but only if was set on entry, and only for SF
         ProcFlags.skip_blank_line = sav_sbl;
     }
 
-    if( !ProcFlags.concat && !ProcFlags.cont_char
-            && ((input_cbs->fmflags & II_file) || (input_cbs->fmflags & II_macro)) ) {
+    if( !ProcFlags.concat
+      && !ProcFlags.cont_char
+      && ((input_cbs->fmflags & II_file)
+      || (input_cbs->fmflags & II_macro)) ) {
         scr_process_break();            // ensure line is output
     }
     scan_start = scan_stop + 1;
@@ -216,7 +236,8 @@ static void gml_e_inlne_common( const gmltag * entry, e_tags t )
     } else {
 
         /* Mark end of highlighted phrase embedded in a highlighted phrase */
-        if( cur_group_type != gt_xmp && ProcFlags.concat ) {
+        if( cur_group_type != gt_xmp
+          && ProcFlags.concat ) {
             switch( nest_cb->prev->c_tag ) {    // testing showed they all do this, in either phrase
             case t_CIT:
             case t_HP0:
@@ -268,7 +289,8 @@ static void gml_e_inlne_common( const gmltag * entry, e_tags t )
                 ProcFlags.cont_char = true;
                 if( ProcFlags.space_fnd ) {
                     if( input_cbs->hh_tag ) {
-                        if( (t != t_CIT) && (t != t_Q) ) {
+                        if( (t != t_CIT)
+                          && (t != t_Q) ) {
                             post_space = 0;
                         }
                     } else {
@@ -307,8 +329,10 @@ static void gml_e_inlne_common( const gmltag * entry, e_tags t )
                 ProcFlags.cont_char = false;
             }
         }
-        if( !ProcFlags.concat && !ProcFlags.cont_char
-                && ((input_cbs->fmflags & II_file) || (input_cbs->fmflags & II_macro)) ) {
+        if( !ProcFlags.concat
+          && !ProcFlags.cont_char
+          && ((input_cbs->fmflags & II_file)
+          || (input_cbs->fmflags & II_macro)) ) {
             scr_process_break();        // ensure line is output
         }
     }
