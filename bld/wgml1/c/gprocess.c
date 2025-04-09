@@ -40,9 +40,10 @@ void process_late_subst( char * buf )
           && p[2] == '\''
           && p[3] > ' ' ) {   // attribute
             tokenend = p + 3;
-        } else if( *(p + 1) == '\'' ) {          // function or text
+        } else if( *(p + 1) == '\'' ) {         // function or text
             p += 2;
-            while( is_function_char(*p) ) p++;  // find end of function name
+            while( is_function_char(*p) )       // find end of function name
+                p++;
             tokenend = p;
         } else {                                // symbol
             tokenstart = p;
@@ -529,8 +530,7 @@ static void expand_subscripts( char *buf, size_t sz, const symvar *var, sub_inde
 
     *buf = '\0';                                // clear output buffer
 
-    ws = var->subscripts;                       // lowest subscript
-    while( ws ) {
+    for( ws = var->subscripts; ws != NULL; ws = ws->next ) {    // lowest subscript
         if( ws->subscript > hi_bound )          // past the upper range?
             break;
         if( (ws->subscript >= lo_bound)
@@ -540,7 +540,6 @@ static void expand_subscripts( char *buf, size_t sz, const symvar *var, sub_inde
             strcat_s( buf, sz, ws->value );
             put_comma = true;
         }
-        ws = ws->next;
     }
 }
 
@@ -556,8 +555,7 @@ static char * scan_sym_or_sep( char *buf, bool splittable )
     char        *   pa;
 
     p = NULL;
-    pa = buf;
-    while( *pa ) {
+    for( pa = buf; *pa != '\0'; pa++ ) {
         if( *pa == ampchar ) {
             p = pa;
             break;
@@ -573,7 +571,6 @@ static char * scan_sym_or_sep( char *buf, bool splittable )
                 break;
             }
         }
-        pa++;
     }
     return( p );
 }
