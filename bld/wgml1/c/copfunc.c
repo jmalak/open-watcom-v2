@@ -189,7 +189,7 @@ p_buffer * get_p_buffer( FILE * in_file )
             return( out_buffer );
         }
 
-        fread( current, 80, 1, in_file );
+        fread( current, 1, 80, in_file );
         if( ferror( in_file ) || feof( in_file ) ) {
             mem_free( out_buffer );
             out_buffer = NULL;
