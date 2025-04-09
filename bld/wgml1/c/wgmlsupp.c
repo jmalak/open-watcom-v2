@@ -340,7 +340,7 @@ static void get_macro_line( void )
           && (input_cbs->hidden_head == NULL)
           && ((input_cbs->prev->fmflags & II_file)
           || (input_cbs->prev->fmflags & II_macro)) ) {
-            scr_process_break();
+            script_process_break();
         }
         input_cbs->fmflags |= II_eof;
         cb->flags          |= FF_eof;

@@ -72,7 +72,7 @@ void    gml_title( const gmltag * entry )
         ProcFlags.title_text_seen = true;
     }
 
-    scr_process_break();
+    script_process_break();
     start_doc_sect();                       // if not already done
 
     font_save = g_curr_font;
@@ -105,7 +105,7 @@ void    gml_title( const gmltag * entry )
     } else {
         ProcFlags.titlep_starting = true;
     }
-    scr_process_break();                // commit title line (or blank line)
+    script_process_break();             // commit title line (or blank line)
 
     g_curr_font = font_save;
     line_position = old_line_pos;

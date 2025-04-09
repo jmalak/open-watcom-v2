@@ -182,14 +182,14 @@ static void gen_box_head( char * letter )
 
     if( bin_driver->hline.text == NULL ) {                      // character device
         process_text( frame_line_1, layout_work.ixhead.font );  // top line
-        scr_process_break();
+        script_process_break();
         t_page.cur_width += ixh_indent;
         frame_line_2[2] = letter[0];
         process_text( frame_line_2, layout_work.ixhead.font );  // middle line
-        scr_process_break();
+        script_process_break();
         t_page.cur_width += ixh_indent;
         process_text( frame_line_3, layout_work.ixhead.font );  // bottom line
-        scr_process_break();
+        script_process_break();
     } else {                                            // page-oriented device
 
         /*******************************************************************/
@@ -208,7 +208,7 @@ static void gen_box_head( char * letter )
             wgml_fonts[layout_work.ixhead.font].width_table[(unsigned char) letter[0]];
         t_page.cur_width += frame_line_len / 2;
         process_text( letter, layout_work.ixhead.font );    // middle line
-        scr_process_break();
+        script_process_break();
         t_page.cur_width += ixh_indent;
         g_subs_skip += wgml_fonts[layout_work.ixhead.font].line_height;
         h_box_el = init_doc_el( el_dbox, 0 );               // DBOX
@@ -236,14 +236,14 @@ static void gen_rule_head( char * letter )
     half_line = frame_line_len / 2;
     if( bin_driver->hline.text == NULL ) {                      // character device
         process_text( frame_line_1, layout_work.ixhead.font );  // top line
-        scr_process_break();
+        script_process_break();
         t_page.cur_width += ixh_indent;
         t_page.cur_width += half_line;
         process_text( letter, layout_work.ixhead.font );        // middle line
-        scr_process_break();
+        script_process_break();
         t_page.cur_width += ixh_indent;
         process_text( frame_line_1, layout_work.ixhead.font );  // bottom line
-        scr_process_break();
+        script_process_break();
     } else {                                            // page-oriented device
         full_line = frame_line_len;
         full_line +=
@@ -268,7 +268,7 @@ static void gen_rule_head( char * letter )
             insert_col_main( h_line_el );
             t_page.cur_width += half_line;
             process_text( letter, layout_work.ixhead.font );    // middle line
-            scr_process_break();
+            script_process_break();
             t_page.cur_width += ixh_indent;
             g_subs_skip += wgml_fonts[layout_work.ixhead.font].line_height;
             h_line_el = init_doc_el( el_hline, 0 );             // bottom line
@@ -303,14 +303,14 @@ static void gen_rule_head( char * letter )
             line_buff.current = cur_count;
             line_buff.text[line_buff.current] = '\0';
             process_text( line_buff.text, layout_work.ixhead.font );    // top line
-            scr_process_break();
+            script_process_break();
             t_page.cur_width += ixh_indent;
             t_page.cur_width += half_line;
             process_text( letter, layout_work.ixhead.font );            // middle line
-            scr_process_break();
+            script_process_break();
             t_page.cur_width += ixh_indent;
             process_text( line_buff.text, layout_work.ixhead.font );    // bottom line
-            scr_process_break();
+            script_process_break();
             line_buff.current = cur_count;
             line_buff.text[line_buff.current] = '\0';
         }
@@ -427,7 +427,7 @@ static void gen_see_list( ix_e_blk * refs, font_number font, uint32_t level,
     ix_e_blk    *   cur_ref;
 
     for( cur_ref = refs; cur_ref != NULL; cur_ref = cur_ref->next ) {
-        scr_process_break();
+        script_process_break();
         t_page.cur_width += wrap[level];
         ProcFlags.ct = true;
         post_space = 0;
@@ -613,7 +613,7 @@ static void gen_figlist( void )
             process_text( postfix, g_curr_font );
             figlist_toc_tabs( layout_work.figlist.fill_string, size, false );
         }
-        scr_process_break();                // ensure line break
+        script_process_break();                // ensure line break
     }
 
     ProcFlags.concat = concat_save;
@@ -646,7 +646,7 @@ static void gen_index( void )
     uint32_t        indent[3];          // I1/I2/I3 cumulative indents
     uint32_t        spc_count;
 
-    scr_process_break();                // flush any pending text
+    script_process_break();                // flush any pending text
     start_doc_sect();                   // emit heading regardless of pass
 
     /* No index is output without an index_dict or before the last pass */
@@ -799,7 +799,7 @@ static void gen_index( void )
                     internal_err( __FILE__, __LINE__ );
                     break;
                 }
-                scr_process_break();        // flush letter heading
+                script_process_break();        // flush letter heading
             }
 
             /* Set g_post_skip for IXHEAD */
@@ -846,7 +846,7 @@ static void gen_index( void )
             gen_all_refs( ixh1->entry, 0, ixh1->lower != NULL );
         }
         post_space = 0;
-        scr_process_break();
+        script_process_break();
 
         first[1] = true;
         for( ixh2 = ixh1->lower; ixh2 != NULL; ixh2 = ixh2->next ) {    // level 2
@@ -886,7 +886,7 @@ static void gen_index( void )
                 gen_all_refs( ixh2->entry, 1, ixh2->lower != NULL );
             }
             post_space = 0;
-            scr_process_break();
+            script_process_break();
 
             first[2] = true;
             for( ixh3 = ixh2->lower; ixh3 != NULL; ixh3 = ixh3->next ) {     // level 3
@@ -926,7 +926,7 @@ static void gen_index( void )
                     gen_all_refs( ixh3->entry, 2, ixh3->lower != NULL  );
                 }
                 post_space = 0;
-                scr_process_break();
+                script_process_break();
             }
             if( !first[2] ) {   // at least one I3 entry existed
                 first[1] = true;
@@ -1073,7 +1073,7 @@ static void gen_toc( void )
             process_text( postfix, g_curr_font );
             figlist_toc_tabs( layout_work.toc.fill_string, size, false );
         }
-        scr_process_break();                        // ensure line break
+        script_process_break();                        // ensure line break
         levels[cur_level] = true;                   // first entry of level done
     }
 
@@ -1163,7 +1163,7 @@ void start_doc_sect( void )
         do_layout_end_processing();
     }
 
-    scr_process_break();                // commit any prior text
+    script_process_break();                // commit any prior text
 
     first_section = (ProcFlags.doc_sect == doc_sect_none);
 
@@ -1436,7 +1436,7 @@ void gml_abstract( const gmltag * entry )
     if( g_blank_text_lines > 0 ) {
         set_skip_vars( NULL, NULL, NULL, 1, 0 );    // set g_blank_units_lines
     }
-    scr_process_break();
+    script_process_break();
     gml_doc_xxx( doc_sect_abstract );
     t_page.cur_left = 0;
     t_page.cur_width = 0;
@@ -1456,7 +1456,7 @@ void gml_appendix( const gmltag * entry )
     if( g_blank_text_lines > 0 ) {
         set_skip_vars( NULL, NULL, NULL, 1, 0 );    // set g_blank_units_lines
     }
-    scr_process_break();
+    script_process_break();
     gml_doc_xxx( doc_sect_appendix );
     ProcFlags.frontm_seen = false;  // no longer in FRONTM section
     if( !ProcFlags.fb_document_done ) { // the very first section/page
@@ -1478,7 +1478,7 @@ void gml_backm( const gmltag * entry )
     if( g_blank_text_lines > 0 ) {
         set_skip_vars( NULL, NULL, NULL, 1, 0 );    // set g_blank_units_lines
     }
-    scr_process_break();
+    script_process_break();
     gml_doc_xxx( doc_sect_backm );
     ProcFlags.frontm_seen = false;  // no longer in FRONTM section
     t_page.cur_left = 0;
@@ -1498,7 +1498,7 @@ void gml_body( const gmltag * entry )
     if( g_blank_text_lines > 0 ) {
         set_skip_vars( NULL, NULL, NULL, 1, 0 );    // set g_blank_units_lines
     }
-    scr_process_break();
+    script_process_break();
     gml_doc_xxx( doc_sect_body );
 
     ProcFlags.just_override = true;     // justify for first line ?? TBD
@@ -1521,7 +1521,7 @@ void gml_figlist( const gmltag * entry )
 {
     (void)entry;
 
-    scr_process_break();
+    script_process_break();
     figlist_toc |= gs_figlist;
     if( pass > 1 ) {
         gen_figlist();
@@ -1532,7 +1532,7 @@ void gml_frontm( const gmltag * entry )
 {
     (void)entry;
 
-    scr_process_break();
+    script_process_break();
     gml_doc_xxx( doc_sect_frontm );
     if( !ProcFlags.fb_document_done ) { // the very first section/page
         do_layout_end_processing();
@@ -1565,7 +1565,7 @@ void gml_index( const gmltag * entry )
         return;
     }
 
-    scr_process_break();
+    script_process_break();
     gml_doc_xxx( doc_sect_index );
 
     /* When gen_index() is finalized, the resets may need to be moved */
@@ -1592,7 +1592,7 @@ void gml_preface( const gmltag * entry )
     if( g_blank_text_lines > 0 ) {
         set_skip_vars( NULL, NULL, NULL, 1, 0 );    // set g_blank_units_lines
     }
-    scr_process_break();
+    script_process_break();
     gml_doc_xxx( doc_sect_preface );
     if( layout_work.hx.hx_sect[hds_preface].header ) {
         start_doc_sect();                           // a header is enough
@@ -1612,7 +1612,7 @@ void gml_titlep( const gmltag * entry )
     if( !ProcFlags.frontm_seen ) {
         xx_line_err_c( err_doc_sec_expected_1, g_tok_start );
     }
-    scr_process_break();
+    script_process_break();
     gml_doc_xxx( doc_sect_titlep );
 
     add_symvar( global_dict, "$stitle", "", no_subscript, 0 );  // set null string
@@ -1639,7 +1639,7 @@ void gml_etitlep( const gmltag * entry )
 
     (void)entry;
 
-    scr_process_break();
+    script_process_break();
     gml_doc_xxx( doc_sect_etitlep );
     rs_loc = 0;
     titlep_lineno = 0;
@@ -1658,7 +1658,7 @@ void gml_toc( const gmltag * entry )
 {
     (void)entry;
 
-    scr_process_break();
+    script_process_break();
     figlist_toc |= gs_toc;
     if( pass > 1 ) {
         gen_toc();
@@ -1674,7 +1674,7 @@ void gml_egdoc( const gmltag * entry )
     if( g_blank_text_lines > 0 ) {
         set_skip_vars( NULL, NULL, NULL, 1, 0 );    // set g_blank_units_lines
     }
-    scr_process_break();                        // outputs last element in file
+    script_process_break();                        // outputs last element in file
 
     if( WgmlFlags.lastpass ) {                // output on last pass only
         if( passes == 1 ) {                     // first and only pass

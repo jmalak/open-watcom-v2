@@ -327,7 +327,7 @@ void gen_heading( char * h_text, char * id, hdsrc hn_lvl, hdsrc hds_lvl )
     old_line_pos = line_position;
     hx_header( prefix, h_text, hn_lvl, hds_lvl );
 
-    scr_process_break();                    // commit the header
+    script_process_break();                    // commit the header
     line_position = old_line_pos;
     t_page.cur_left = old_cur_left;
     if( (prefix != NULL)
@@ -553,7 +553,7 @@ static void gml_hx_common( const gmltag * entry, hdsrc hn_lvl )
 
     hxstr[2] = '0' + hn_lvl;
 
-    scr_process_break();                    // commit any prior text
+    script_process_break();                    // commit any prior text
     start_doc_sect();                       // in case not already done
 
     if( ProcFlags.dd_starting ) {

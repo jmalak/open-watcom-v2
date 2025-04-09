@@ -52,7 +52,7 @@ void gml_xmp( const gmltag * entry )
     (void)entry;
 
     start_doc_sect();
-    scr_process_break();
+    script_process_break();
     scan_err = false;
 
     g_keep_nest( "Example" );           // catch nesting errors
@@ -132,7 +132,7 @@ void gml_xmp( const gmltag * entry )
 
     if( depth > 0 ) {
         g_blank_units_lines = depth;
-        scr_process_break();
+        script_process_break();
     }
 
     if( !ProcFlags.reprocess_line
@@ -187,7 +187,7 @@ void gml_exmp( const gmltag * entry )
     }
     g_blank_text_lines = 0;
 
-    scr_process_break();
+    script_process_break();
     if( cur_group_type != gt_xmp ) {        // no preceding :XMP tag
         g_err_tag_prec( "XMP" );
     }
