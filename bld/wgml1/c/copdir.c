@@ -84,7 +84,7 @@ entry_found get_compact_entry( FILE *fp, directory_entry *entry )
     /* Ensure the member_name_length is not zero or too long for the buffer. */
 
     if( (count == 0)
-      || (count > _MAX_PATH) ) {
+      || (count >= _MAX_PATH) ) {
         return( not_valid_entry );
     }
 
@@ -332,10 +332,7 @@ char *get_member_name( FILE *fp, char const *in_name )
                             /* Return the member name, if found. */
 
                             if( stricmp( in_name, current_entry.defined_name ) == 0 ) {
-                                member_length = strlen( current_entry.member_name ) + 1;
-                                member_name = mem_alloc( member_length );
-                                strcpy( member_name, current_entry.member_name );
-                                return( member_name );
+                                return( mem_strdup( current_entry.member_name ) );
                             }
 
                             break;
@@ -377,10 +374,7 @@ char *get_member_name( FILE *fp, char const *in_name )
                     /* Return the member name, if found. */
 
                     if( stricmp( in_name, current_entry.defined_name ) == 0 ) {
-                        member_length = strlen( current_entry.member_name ) + 1;
-                        member_name = mem_alloc( member_length );
-                        strcpy( member_name, current_entry.member_name );
-                        return( member_name );
+                        return( mem_strdup( current_entry.member_name ) );
                     }
                     break;
                 case not_valid_entry:
