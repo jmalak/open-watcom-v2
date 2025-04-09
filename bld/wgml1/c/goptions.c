@@ -15,9 +15,9 @@
 #include "wgml.h"
 
 typedef struct option {
-    char        *   option;             // the option
-    short           optionLen;          // length of option
-    short           minLength;          // minimum abbreviation
+    char            *option;            // the option
+    unsigned short  optionLen;          // length of option
+    unsigned short  minLength;          // minimum abbreviation
     long            value;              // sometimes value to set option to
     void            (*function)( struct option *optentry );
     int             parmcount;          // expected number of parms
@@ -286,9 +286,9 @@ static void wng_option( option * opt )
 
 static void set_altext( option * opt )
 {
-    char    *   pw;
-    char    *   p;
-    int         len;
+    char        *pw;
+    char        *p;
+    size_t      len;
 
     if( tokennext == NULL
       || tokennext->bol
@@ -382,8 +382,7 @@ static void set_cpinch( option * opt )
       || is_option() ) {
         xx_simple_err_c( err_missing_opt_value, opt->option );
     } else {
-        p = tokennext->token;
-        opt_value = get_num_value( p );
+        opt_value = get_num_value( tokennext->token );
         if( opt_value < 1
           || opt_value > MAX_CPI ) {
             xx_simple_err_c( err_out_range, "cpinch" );
@@ -476,8 +475,8 @@ static bool font_points( cmd_tok * in_tok, char buff[5] )
     bool        good;
     bool        has_pt;
     char    *   p;
-    int         i;
-    int         len;
+    size_t      i;
+    size_t      len;
     int         post_pt;
     int         pre_pt;
 
@@ -546,11 +545,10 @@ static void set_font( option * opt )
     bool            good;
     char        *   p;
     char            pts[5];
-    char        *   pw;
     cmd_tok     *   opts[3];
     int             fn;
-    int             i;
-    int             len;
+    size_t          i;
+    size_t          len;
     int             old_errs;
     int             opts_cnt;
     opt_font    *   new_font;
@@ -822,10 +820,9 @@ static void set_font( option * opt )
 
 static void set_layout( option * opt )
 {
-    char    attrwork[MAX_FILE_ATTR];
-    int     len;
-
-    struct  laystack    * laywk;
+    char            attrwork[MAX_FILE_ATTR];
+    size_t          len;
+    struct laystack *laywk;
 
     if( tokennext == NULL
       || tokennext->bol
@@ -858,8 +855,7 @@ static void set_layout( option * opt )
 
 static void set_outfile( option * opt )
 {
-    char    attrwork[MAX_FILE_ATTR];
-    int     len;
+    char        attrwork[MAX_FILE_ATTR];
 
     if( tokennext == NULL
       || tokennext->bol
@@ -1040,7 +1036,7 @@ static void set_OPTFile( option * opt )
 {
     char        attrwork[MAX_FILE_ATTR];
     char    *   str;
-    int         len;
+    size_t      len;
 
     if( tokennext == NULL
       || tokennext->bol
@@ -1113,7 +1109,7 @@ static void set_OPTFile( option * opt )
 static void set_incpath( option * opt )
 {
     char        str[_MAX_PATH];
-    int         len;
+    size_t      len;
 
     if( tokennext == NULL
       || tokennext->bol
@@ -1146,7 +1142,7 @@ static void set_incpath( option * opt )
 static void set_libpath( option * opt )
 {
     char        str[256];
-    int         len;
+    size_t      len;
 
     if( tokennext == NULL
       || tokennext->bol
@@ -1189,7 +1185,7 @@ static void set_quiet( option * opt )
 static void set_research( option * opt )
 {
     char        str[256];
-    int         len;
+    size_t      len;
 
     WgmlFlags.research = opt->value;
 
@@ -1375,7 +1371,7 @@ void split_attr_file( char * filename , char * attr, size_t attrlen )
 /*  test for delimiter                                                     */
 /***************************************************************************/
 
-static bool option_delimiter( char c )
+static bool option_delimiter( int c )
 {
     return( c == ' ' || c == '-' || c == '\t' || c == '(' || c == switch_char || c == '\n' );
 }
@@ -1416,7 +1412,7 @@ static void strip_quotes( char * fname )
 static cmd_tok * process_option( option * op_table, cmd_tok * tok )
 {
     bool        opt_delim_start;
-    char        first_c;
+    int         first_c;
     char    *   opt;
     char    *   option_start;
     char    *   p;
@@ -1473,13 +1469,13 @@ static cmd_tok * process_option_old( option * op_table, cmd_tok * tok )
 {
     bool        opt_delim_start;
     char        c;
-    char        first_c;
+    int         first_c;
     char    *   opt;
     char    *   option_start;
     char    *   p;
     char    *   pa;
     int         i;
-    int         len;
+    size_t      len;
 
     p = tok->token;
     option_start = p;
@@ -1614,9 +1610,9 @@ static cmd_tok * process_option_old( option * op_table, cmd_tok * tok )
 static bool is_option( void )
 {
     int         i;
-    int         len;
+    size_t      len;
     char    *   opt;
-    char        c;
+    int         c;
     char    *   p;
     char    *   option_start;
 
@@ -1626,7 +1622,7 @@ static bool is_option( void )
     option_start = p;
     len = tokennext->toklen;
     c = my_tolower( *p );
-    if(  c == '(' ) {
+    if( c == '(' ) {
         if( len == 1 ) {            // skip single (
             tokennext = tokennext->nxt;
             p = tokennext->token;
@@ -1689,11 +1685,13 @@ static bool is_option( void )
 static cmd_tok * process_master_filename( cmd_tok * tok )
 {
     char        attrwork[MAX_FILE_ATTR];
+    char        *p;
 
-    g_info_research( inf_recognized_xxx, "document source file", tok->token );
+    p = tok->token;
+    g_info_research( inf_recognized_xxx, "document source file", p );
     if( master_fname != NULL ) {         // more than one master file ?
         g_banner();
-        bad_cmd_line( err_doc_duplicate, tok->token, ' ' );
+        bad_cmd_line( err_doc_duplicate, p, ' ' );
     } else if( *p != '\0' ) {
         master_fname = mem_strdup( p );
         strip_quotes( master_fname );
