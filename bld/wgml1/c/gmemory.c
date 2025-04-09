@@ -143,6 +143,26 @@ void *mem_realloc( void * oldp, size_t size )
     return( p );
 }
 
+/***************************************************************************/
+/*  Duplicate string                                                           */
+/***************************************************************************/
+
+char *mem_strdup( const char *str )
+{
+    char    *p;
+
+    if( str == NULL )
+        str = "";
+#ifdef TRMEM
+    p = _trmem_alloc( strlen( str ) + 1, _trmem_guess_who(), handle );
+#else
+    p = malloc( strlen( str ) + 1 );
+#endif
+    if( p == NULL ) {
+        xx_simple_err( err_nomem_avail );
+    }
+    return( strcpy( p, str ) );
+}
 
 /***************************************************************************/
 /*  Free storage                                                           */
