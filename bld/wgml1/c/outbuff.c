@@ -870,8 +870,7 @@ static void set_out_file( void )
     if( temp_outfile[0] != '\0' ) {
         if( out_file != NULL )
             mem_free( out_file );
-        out_file = mem_alloc( strnlen_s( temp_outfile, _MAX_PATH ) + 1 );
-        strcpy_s( out_file, _MAX_PATH, temp_outfile );
+        out_file = mem_strdup( temp_outfile );
     }
 
     return;
@@ -994,9 +993,8 @@ static int copy_file_out( record_buffer *x, FILE *fpi, bool inp_has_rec_type )
     int         rc;
 
     count = fread( x->text, 1, x->length, fpi );
-    if( ferror( fpi ) ) {
+    if( ferror( fpi ) )
         return( 1 );
-    }
     rc = 0;
     while( count == x->length ) {
         x->current = count;
@@ -1004,11 +1002,15 @@ static int copy_file_out( record_buffer *x, FILE *fpi, bool inp_has_rec_type )
             rc = 2;
             break;
         }
-        if( !inp_has_rec_type )
-            ob_flush();
+        if( !inp_has_rec_type ) {
+            if( fputs( TEXT_NL, out_file_fp ) == EOF ) {
+                rc = 2;
+                break;
+            }
+        }
         count = fread( x->text, 1, x->length, fpi );
         if( ferror( fpi ) ) {
-                rc = 1;
+            rc = 1;
             break;
         }
     }
@@ -1037,8 +1039,7 @@ void ob_binclude( binclude_element * in_el )
     /*
      * flush all data from output buffer
      */
-    if( fwrite( buffout.text, 1, buffout.current, out_file_fp )
-            < buffout.current ) {
+    if( fwrite( buffout.text, 1, buffout.current, out_file_fp ) < buffout.current ) {
         xx_simple_err_c( err_write_out_file, out_file );
     }
     buffout.current = 0;
