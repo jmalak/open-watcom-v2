@@ -31,7 +31,7 @@ void    init_page_geometry( void )
     uint32_t    page_depth_org;
     uint32_t    net_top_margin;
     uint32_t    net_y_start;
-    uint32_t    rm_test;
+    int32_t     rm_test;
     uint32_t    top_margin;
     uint32_t    y_start_correction;
 

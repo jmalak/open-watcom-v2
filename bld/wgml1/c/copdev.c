@@ -514,7 +514,7 @@ cop_device * parse_device( FILE * in_file )
         return( out_device );
     }
 
-    /* Get the count and verify that it contains 0x0F. */
+    /* Get the count and verify that it contains 15. */
 
     fread( &count8, 1, sizeof( count8 ), in_file );
     if( ferror( in_file ) || feof( in_file ) ) {
@@ -523,15 +523,15 @@ cop_device * parse_device( FILE * in_file )
         return( out_device );
     }
 
-    if( count8 != 0x0F ) {
+    if( count8 != 15 ) {
         mem_free( out_device );
         out_device = NULL;
         return( out_device );
     }
 
-    /* There are 0x0F bytes in the file but only 11 values. */
+    /* There are 15 bytes in the file but only 11 values. */
 
-    fread( &out_device->box.horizontal_line, 1, sizeof( out_device->box.horizontal_line ), in_file );
+    fread( &out_device->box.horizontal_line, 11, sizeof( out_device->box.horizontal_line ), in_file );
     if( ferror( in_file ) || feof( in_file ) ) {
         mem_free( out_device );
         out_device = NULL;

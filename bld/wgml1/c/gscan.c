@@ -161,7 +161,7 @@ static void scan_gml( void )
 
     p = scan_start + 1;
     g_tok_start = scan_start;
-    while( (*p != ' ') && (*p != '.') && (*p != '\0') ) {   // search end of TAG
+    while( !IS_TAG_END( p ) && (*p != '\0') ) {   // search end of TAG
         p++;
     }
     toklen = p - g_tok_start - 1;
