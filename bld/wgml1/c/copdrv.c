@@ -108,7 +108,6 @@ static cop_driver * resize_cop_driver( cop_driver * in_driver, size_t in_size )
 
 static cop_driver *parse_finish_block( cop_driver *in_driver, const char **current, const char *base )
 {
-
     code_block *    cop_codeblocks  = NULL;
     code_text *     code_text_ptr   = NULL;
     uint8_t         designator;
@@ -281,7 +280,7 @@ static cop_driver *parse_font_style( FILE *in_file, cop_driver *in_driver,
 
     /* Get the number of line passes, which can be 0. */
 
-    fread( &fontstyle_block_ptr->line_passes, sizeof( fontstyle_block_ptr->line_passes ), 1, in_file );
+    fread( &fontstyle_block_ptr->line_passes, 1, sizeof( fontstyle_block_ptr->line_passes ), in_file );
     if( ferror( in_file ) || feof( in_file ) ) {
         mem_free( in_driver );
         in_driver = NULL;
@@ -291,7 +290,7 @@ static cop_driver *parse_font_style( FILE *in_file, cop_driver *in_driver,
 
     /* Get the unknown_count, and verify that it is 1. */
 
-    fread( &count16, sizeof( count16 ), 1, in_file );
+    fread( &count16, 1, sizeof( count16 ), in_file );
     if( ferror( in_file ) || feof( in_file ) ) {
         mem_free( in_driver );
         in_driver = NULL;
@@ -307,7 +306,7 @@ static cop_driver *parse_font_style( FILE *in_file, cop_driver *in_driver,
 
     /* Get the two nulls, and verify they contain the value 0. */
 
-    fread( &count16, sizeof( count16 ), 1, in_file );
+    fread( &count16, 1, sizeof( count16 ), in_file );
     if( ferror( in_file ) || feof( in_file ) ) {
         mem_free( in_driver );
         in_driver = NULL;
@@ -345,7 +344,7 @@ static cop_driver *parse_font_style( FILE *in_file, cop_driver *in_driver,
 
         /* Acquire the type. */
 
-        fread( string_ptr, count, 1, in_file );
+        fread( string_ptr, 1, count, in_file );
         if( ferror( in_file ) || feof( in_file ) ) {
             mem_free( in_driver );
             in_driver = NULL;
@@ -965,7 +964,7 @@ bool is_drv_file( FILE * in_file)
 
     /* Get the descriminator. */
 
-    fread( &descriminator, 3, 1, in_file );
+    fread( &descriminator, 1, 3, in_file );
     if( ferror( in_file ) || feof( in_file ) ) {
         return( false );
     }
@@ -1059,7 +1058,7 @@ cop_driver * parse_driver( FILE * in_file )
 
     /* Get the rec_spec. */
 
-    fread( &length, sizeof( length ), 1, in_file );
+    fread( &length, 1, sizeof( length ), in_file );
     if( ferror( in_file ) || feof( in_file ) ) {
         mem_free( out_driver );
         out_driver = NULL;
@@ -1073,7 +1072,7 @@ cop_driver * parse_driver( FILE * in_file )
         out_driver->rec_spec = OUT_DRV_CUR_OFF();
 
         string_ptr = OUT_DRV_CUR_PTR();
-        fread( string_ptr, length, 1, in_file );
+        fread( string_ptr, 1, length, in_file );
         if( ferror( in_file ) || feof( in_file ) ) {
             mem_free( out_driver );
             out_driver = NULL;
@@ -1087,7 +1086,7 @@ cop_driver * parse_driver( FILE * in_file )
 
     /* Get the unknown value and verify that it contains 0x04. */
 
-    fread( &count8, sizeof( count8 ), 1, in_file );
+    fread( &count8, 1, sizeof( count8 ), in_file );
     if( ferror( in_file ) || feof( in_file ) ) {
         mem_free( out_driver );
         out_driver = NULL;
@@ -1102,7 +1101,7 @@ cop_driver * parse_driver( FILE * in_file )
 
     /* Get the fill_char. */
 
-    fread( &out_driver->fill_char, sizeof( out_driver->fill_char ), 1, in_file );
+    fread( &out_driver->fill_char, 1, sizeof( out_driver->fill_char ), in_file );
     if( ferror( in_file ) || feof( in_file ) ) {
         mem_free( out_driver );
         out_driver = NULL;
@@ -1111,7 +1110,7 @@ cop_driver * parse_driver( FILE * in_file )
 
     /* Get the x_positive flag. */
 
-    fread( &out_driver->x_positive, sizeof( out_driver->x_positive ), 1, in_file );
+    fread( &out_driver->x_positive, 1, sizeof( out_driver->x_positive ), in_file );
     if( ferror( in_file ) || feof( in_file ) ) {
         mem_free( out_driver );
         out_driver = NULL;
@@ -1120,7 +1119,7 @@ cop_driver * parse_driver( FILE * in_file )
 
     /* Get the y_positive flag. */
 
-    fread( &out_driver->y_positive, sizeof( out_driver->y_positive ), 1, in_file );
+    fread( &out_driver->y_positive, 1, sizeof( out_driver->y_positive ), in_file );
     if( ferror( in_file ) || feof( in_file ) ) {
         mem_free( out_driver );
         out_driver = NULL;
@@ -1129,7 +1128,7 @@ cop_driver * parse_driver( FILE * in_file )
 
     /* Get the null byte and verify that it is, in fact, null. */
 
-    fread( &count8, sizeof( count8 ), 1, in_file );
+    fread( &count8, 1, sizeof( count8 ), in_file );
     if( ferror( in_file ) || feof( in_file ) ) {
         mem_free( out_driver );
         out_driver = NULL;
@@ -1713,7 +1712,7 @@ cop_driver * parse_driver( FILE * in_file )
 
     /* Get the data_count and ensure it is not 0. */
 
-    fread( &count8, sizeof( count8 ), 1, in_file );
+    fread( &count8, 1, sizeof( count8 ), in_file );
     if( ferror( in_file ) || feof( in_file ) ) {
         mem_free( out_driver );
         out_driver = NULL;
@@ -1728,8 +1727,7 @@ cop_driver * parse_driver( FILE * in_file )
 
     /* Get the fontstyle_count and ensure it is not 0. */
 
-    fread( &out_driver->fontstyles.count, sizeof( out_driver->fontstyles.count ),
-           1, in_file );
+    fread( &out_driver->fontstyles.count, 1, sizeof( out_driver->fontstyles.count ), in_file );
     if( ferror( in_file ) || feof( in_file ) ) {
         mem_free( out_driver );
         out_driver = NULL;
@@ -1805,7 +1803,7 @@ cop_driver * parse_driver( FILE * in_file )
 
         /* Get the data_count and ensure it is not 0. */
 
-        fread( &count8, sizeof( count8 ), 1, in_file );
+        fread( &count8, 1, sizeof( count8 ), in_file );
         if( ferror( in_file ) || feof( in_file ) ) {
             mem_free( out_driver );
             out_driver = NULL;
@@ -1947,7 +1945,7 @@ cop_driver * parse_driver( FILE * in_file )
 
         /* Ensure that the count is 0x04. */
 
-        fread( &count8, sizeof( count8 ), 1, in_file );
+        fread( &count8, 1, sizeof( count8 ), in_file );
         if( ferror( in_file ) || feof( in_file ) ) {
             mem_free( out_driver );
             out_driver = NULL;
@@ -1962,7 +1960,7 @@ cop_driver * parse_driver( FILE * in_file )
 
         /* Get the thickness. */
 
-        fread( &out_driver->hline.thickness, sizeof( out_driver->hline.thickness ), 1, in_file );
+        fread( &out_driver->hline.thickness, 1, sizeof( out_driver->hline.thickness ), in_file );
         if( ferror( in_file ) || feof( in_file ) ) {
             mem_free( out_driver );
             out_driver = NULL;
@@ -2055,7 +2053,7 @@ cop_driver * parse_driver( FILE * in_file )
 
         /* Ensure that the count in 0x04. */
 
-        fread( &count8, sizeof( count8 ), 1, in_file );
+        fread( &count8, 1, sizeof( count8 ), in_file );
         if( ferror( in_file ) || feof( in_file ) ) {
             mem_free( out_driver );
             out_driver = NULL;
@@ -2070,7 +2068,7 @@ cop_driver * parse_driver( FILE * in_file )
 
         /* Get the thickness. */
 
-        fread( &out_driver->vline.thickness, sizeof( out_driver->vline.thickness ), 1, in_file );
+        fread( &out_driver->vline.thickness, 1, sizeof( out_driver->vline.thickness ), in_file );
         if( ferror( in_file ) || feof( in_file ) ) {
             mem_free( out_driver );
             out_driver = NULL;
@@ -2156,7 +2154,7 @@ cop_driver * parse_driver( FILE * in_file )
 
         /* Ensure that the count in 0x04. */
 
-        fread( &count8, sizeof( count8 ), 1, in_file );
+        fread( &count8, 1, sizeof( count8 ), in_file );
         if( ferror( in_file ) || feof( in_file ) ) {
             mem_free( out_driver );
             out_driver = NULL;
@@ -2171,7 +2169,7 @@ cop_driver * parse_driver( FILE * in_file )
 
         /* Get the thickness. */
 
-        fread( &out_driver->dbox.thickness, sizeof( out_driver->dbox.thickness ), 1, in_file );
+        fread( &out_driver->dbox.thickness, 1, sizeof( out_driver->dbox.thickness ), in_file );
         if( ferror( in_file ) || feof( in_file ) ) {
             mem_free( out_driver );
             out_driver = NULL;

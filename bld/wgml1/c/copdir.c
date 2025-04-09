@@ -65,7 +65,7 @@ entry_found get_compact_entry( FILE *fp, directory_entry *entry )
     /* Get the defined_name. An empty value is allowed; see the Wiki. */
 
     if( count > 0 ) {
-        fread( entry->defined_name, count, 1, fp );
+        fread( entry->defined_name, 1, count, fp );
         if( ferror( fp )
           || feof( fp ) ) {
             return( not_valid_entry );
@@ -90,7 +90,7 @@ entry_found get_compact_entry( FILE *fp, directory_entry *entry )
 
     /* Get the member_name. */
 
-    fread( entry->member_name, count, 1, fp );
+    fread( entry->member_name, 1, count, fp );
     if( ferror( fp )
       || feof( fp ) ) {
         return( not_valid_entry );
@@ -142,7 +142,7 @@ entry_found get_extended_entry( FILE *fp, directory_entry *entry )
     /* Get the defined_name. An empty value is allowed; see the Wiki. */
 
     if( count > 0 ) {
-        fread( entry->defined_name, count, 1, fp );
+        fread( entry->defined_name, 1, count, fp );
         if( ferror( fp )
           || feof( fp ) ) {
             return( not_valid_entry );
@@ -175,7 +175,7 @@ entry_found get_extended_entry( FILE *fp, directory_entry *entry )
 
     /* Get the member_name. */
 
-    fread( entry->member_name, count, 1, fp );
+    fread( entry->member_name, 1, count, fp );
     if( ferror( fp )
       || feof( fp ) ) {
         return( not_valid_entry );
@@ -264,7 +264,7 @@ char *get_member_name( FILE *fp, char const *in_name )
              * ExtendedDirEntry.
              */
 
-            fread( &entry_type, sizeof( entry_type ), 1, fp );
+            fread( &entry_type, 1, sizeof( entry_type ), fp );
 
             /* Exit the loop when the final entry has been processed. */
 
@@ -292,7 +292,7 @@ char *get_member_name( FILE *fp, char const *in_name )
                      * metatype has already been read.
                      */
 
-                    fread( &entry_type, sizeof( entry_type ), 1, fp );
+                    fread( &entry_type, 1, sizeof( entry_type ), fp );
 
                     /* Exit the loop when the final entry has been processed. */
 

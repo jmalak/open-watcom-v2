@@ -57,7 +57,7 @@ cop_file_type parse_header( FILE * in_file )
 
     /* Get the version. */
 
-    fread( &version, 2, 1, in_file );
+    fread( &version, 1, 2, in_file );
     if( ferror( in_file ) || feof( in_file ) ) {
         return( file_error );
     }
@@ -84,7 +84,7 @@ cop_file_type parse_header( FILE * in_file )
 
     /* Verify the text_version. */
 
-    fread( &text_version, sizeof( VERSION_TEXT ) - 1, 1, in_file );
+    fread( &text_version, 1, sizeof( VERSION_TEXT ) - 1, in_file );
     if( ferror( in_file ) || feof( in_file ) ) {
         return( file_error );
     }
