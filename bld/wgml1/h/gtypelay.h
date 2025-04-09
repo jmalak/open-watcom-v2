@@ -750,7 +750,7 @@ typedef struct region_lay_tag {
     su                  voffset;            // vertical space unit
     su                  depth;              // vertical space unit
     font_number         font;               // non negative integer
-    int8_t              refnum;             // positive integer
+    uint8_t             refnum;             // positive integer
     page_pos            region_position;    // special enum
     reg_pour            pouring;            // special enum
     script_ban_reg      script_region[3];   // speed up processing if script_format
