@@ -96,14 +96,17 @@ static int split_tokens( char *str )
         if( *str == '\0' ) {
             break;
         }
-        if( *str == '"' || *str == '\'' ) {
+        if( *str == '"'
+          || *str == '\'' ) {
             quote = *str++;
         } else {
             quote = '\0';
         }
         tokstart = str;
         while( *str != '\0' ) {
-            if( quote == '\0' && is_space_tab_char( *str ) || *str == '\n' ) {
+            if( quote == '\0'
+              && is_space_tab_char( *str )
+              || *str == '\n' ) {
                 break;
             }
             if( *str == quote ) {
@@ -151,13 +154,18 @@ static char * bad_cmd_line( msg_ids msg, char *str, char n )
     p = pbuff;
 
     for( ; ; ) {
-        if( *str == '\0' ) break;
-        if( *str == '\n' ) break;
+        if( *str == '\0' )
+            break;
+        if( *str == '\n' )
+            break;
         *p++ = *str++;
-        if( *str == '-' ) break;
-        if( *str == switch_char ) break;
-
-        if( *str == n ) break;         // for additional stop char '(' or ' '
+        if( *str == '-' )
+            break;
+        if( *str == switch_char )
+            break;
+        if( *str == n ) {
+            break;         // for additional stop char '(' or ' '
+        }
     }
     *p = '\0';
     g_banner();
@@ -232,10 +240,14 @@ static void ign_option( option * opt )
         int     k;
 
         for( k = 0; k < opt->parmcount; k++ ) {
-            if( tokennext == NULL )  break;
-            if( tokennext->bol ) break;
-            if( tokennext->token[0] == '(' ) break;
-            if( is_option() ) break;
+            if( tokennext == NULL )
+                break;
+            if( tokennext->bol )
+                break;
+            if( tokennext->token[0] == '(' )
+                break;
+            if( is_option() )
+                break;
             tokennext = tokennext->nxt;
         }
     }
@@ -253,10 +265,14 @@ static void wng_option( option * opt )
         int     k;
 
         for( k = 0; k < opt->parmcount; k++ ) {
-            if( tokennext == NULL )  break;
-            if( tokennext->bol ) break;
-            if( tokennext->token[0] == '(' ) break;
-            if( is_option() ) break;
+            if( tokennext == NULL )
+                break;
+            if( tokennext->bol )
+                break;
+            if( tokennext->token[0] == '(' )
+                break;
+            if( is_option() )
+                break;
             tokennext = tokennext->nxt;
         }
     }
@@ -274,7 +290,9 @@ static void set_altext( option * opt )
     char    *   p;
     int         len;
 
-    if( tokennext == NULL || tokennext->bol || is_option() ) {
+    if( tokennext == NULL
+      || tokennext->bol
+      || is_option() ) {
         bad_cmd_line( err_missing_opt_value, opt->option, ' ' );
     } else {
         len = tokennext->toklen;
@@ -305,8 +323,10 @@ static void set_bind( option * opt )
     bool        scanerr;
     su          bindwork;
 
-    if( tokennext == NULL || tokennext->bol || tokennext->token[0] == '('
-                                            || is_option() ) {
+    if( tokennext == NULL
+      || tokennext->bol
+      || tokennext->token[0] == '('
+      || is_option() ) {
         xx_simple_err_cc( err_miss_inv_opt_value, opt->option, "" );
     } else {
         val_start = tokennext->token;
@@ -315,18 +335,19 @@ static void set_bind( option * opt )
         if( scanerr ) {
             xx_simple_err_cc( err_miss_inv_opt_value, opt->option, tokennext->token );
         } else {
-            memcpy_s( &bind_odd, sizeof( bind_odd), &bindwork, sizeof( bindwork ) );
+            memcpy( &bind_odd, &bindwork, sizeof( bindwork ) );
 
             out_msg_research( "\tbind odd  value %lii (%limm) '%s' %li %li \n",
                      bind_odd.su_inch, bind_odd.su_mm, bind_odd.su_txt,
                      bind_odd.su_whole, bind_odd.su_dec );
 
             tokennext = tokennext->nxt; // check for optional bind even val
-            if( tokennext == NULL || tokennext->bol ||
-                tokennext->token[0] == '(' || is_option() ) {
-
-                memcpy_s( &bind_even, sizeof( bind_even), &bind_odd,
-                          sizeof( bind_odd ) );  // use bind_odd
+            if( tokennext == NULL
+              || tokennext->bol
+              || tokennext->token[0] == '('
+              || is_option() ) {
+                // use bind_odd
+                memcpy( &bind_even, &bind_odd, sizeof( bind_odd ) );
             } else {
                 val_start = tokennext->token;
                 val_len = tokennext->toklen;
@@ -353,17 +374,18 @@ static void set_bind( option * opt )
 
 static void set_cpinch( option * opt )
 {
-    char    *   p;
     char        wkstring[MAX_L_AS_STR];
 
-    if( tokennext == NULL || tokennext->bol ||
-        tokennext->token[0] == '(' || is_option() ) {
-
+    if( tokennext == NULL
+      || tokennext->bol
+      || tokennext->token[0] == '('
+      || is_option() ) {
         xx_simple_err_c( err_missing_opt_value, opt->option );
     } else {
         p = tokennext->token;
         opt_value = get_num_value( p );
-        if( opt_value < 1 || opt_value > MAX_CPI ) {
+        if( opt_value < 1
+          || opt_value > MAX_CPI ) {
             xx_simple_err_c( err_out_range, "cpinch" );
         } else {
             CPI = opt_value;
@@ -382,16 +404,15 @@ static void set_cpinch( option * opt )
 
 static void set_lpinch( option * opt )
 {
-    char    *   p;
-
-    if( tokennext == NULL || tokennext->bol ||
-        tokennext->token[0] == '(' || is_option() ) {
-
+    if( tokennext == NULL
+      || tokennext->bol
+      || tokennext->token[0] == '('
+      || is_option() ) {
         xx_simple_err_c( err_missing_opt_value, opt->option );
     } else {
-        p = tokennext->token;
-        opt_value = get_num_value( p );
-        if( opt_value < 1 || opt_value > MAX_LPI ) {
+        opt_value = get_num_value( tokennext->token );
+        if( opt_value < 1
+          || opt_value > MAX_LPI ) {
             xx_simple_err_c( err_out_range, "lpinch" );
         } else {
             LPI = opt_value;
@@ -411,7 +432,8 @@ static void set_lpinch( option * opt )
 
 static void set_delim( option * opt )
 {
-    if( tokennext == NULL || is_option()
+    if( tokennext == NULL
+      || is_option()
       || tokennext->toklen != 1 ) {     // not length 1
         xx_simple_err_cc( err_miss_inv_opt_value, opt->option,
                           tokennext == NULL ? " " : tokennext->token );
@@ -428,28 +450,16 @@ static void set_delim( option * opt )
 
 static void set_device( option * opt )
 {
-
-    char    *   p;
-    char    *   pw;
-    int         len;
-
-    if( tokennext == NULL || tokennext->bol || is_option() ) {
+    if( tokennext == NULL
+      || tokennext->bol
+      || is_option() ) {
         bad_cmd_line( err_missing_device_name, opt->option, ' ' );
     } else {
-        len = tokennext->toklen;
-        p = tokennext->token;
-
-        g_info_research( inf_recognized_xxx, "device name", p );
-        if( dev_name ) {
+        g_info_research( inf_recognized_xxx, "device name", tokennext->token );
+        if( dev_name != NULL ) {
             mem_free( dev_name );
         }
-        dev_name = mem_alloc( len + 1 );
-        pw = dev_name;
-        while( len > 0 ) {
-             len--;
-             *pw++ = *p++;
-        }
-        *pw = '\0';
+        dev_name = mem_strdup( tokennext->token );
         tokennext = tokennext->nxt;
     }
     return;
@@ -492,7 +502,9 @@ static bool font_points( cmd_tok * in_tok, char buff[5] )
             has_pt = true;
         }
     }
-    if( !good || pre_pt > 2 || post_pt > 2 )
+    if( !good
+      || pre_pt > 2
+      || post_pt > 2 )
         return( false );
     i = 0;
     if( pre_pt > 0 ) {
@@ -558,7 +570,9 @@ static void set_font( option * opt )
     opts[1] = NULL;
     opts[2] = NULL;
 
-    if( tokennext == NULL || tokennext->bol || is_option() ) {
+    if( tokennext == NULL
+      || tokennext->bol
+      || is_option() ) {
         bad_cmd_line( err_missing_font_number, opt->option, ' ' );
     } else {
         len = tokennext->toklen;
@@ -586,34 +600,36 @@ static void set_font( option * opt )
         }
     }
 
-    if( tokennext == NULL || tokennext->bol || is_option() ) {
+    if( tokennext == NULL
+      || tokennext->bol
+      || is_option() ) {
         bad_cmd_line( err_missing_font_name, opt->option, ' ' );
     } else {
         len = tokennext->toklen;
         p = tokennext->token;
 
         g_info_research( inf_recognized_xxx, "font name", p );
-        new_font->name = mem_alloc( len + 1 );
-        pw = new_font->name;
-        while( len > 0 ) {
-             len--;
-             *pw++ = *p++;
-        }
-        *pw = '\0';
+        new_font->name = mem_strdup( p );
         tokennext = tokennext->nxt;
     }
 
-    if( tokennext != NULL && !tokennext->bol && !is_option() ) {
+    if( tokennext != NULL
+      && !tokennext->bol
+      && !is_option() ) {
         opts_cnt++;
         opts[0] = tokennext;
         tokennext = tokennext->nxt;
 
-        if( tokennext != NULL && !tokennext->bol && !is_option() ) {
+        if( tokennext != NULL
+          && !tokennext->bol
+          && !is_option() ) {
             opts_cnt++;
             opts[1] = tokennext;
             tokennext = tokennext->nxt;
 
-            if( tokennext != NULL && !tokennext->bol && !is_option() ) {
+            if( tokennext != NULL
+              && !tokennext->bol
+              && !is_option() ) {
                 opts_cnt++;
                 opts[2] = tokennext;
                 tokennext = tokennext->nxt;
@@ -639,13 +655,7 @@ static void set_font( option * opt )
             }
         } else {
             g_info_research( inf_recognized_xxx, "font style", p );
-            new_font->style = mem_alloc( len + 1 );
-            pw = new_font->style;
-            while( len > 0 ) {
-                 len--;
-                 *pw++ = *p++;
-            }
-            *pw = '\0';
+            new_font->style = mem_strdup( p );
         }
 
         break;
@@ -697,13 +707,7 @@ static void set_font( option * opt )
                 }
             } else {
                 g_info_research( inf_recognized_xxx, "font style", p );
-                new_font->style = mem_alloc( len + 1 );
-                pw = new_font->style;
-                while( len > 0 ) {
-                     len--;
-                     *pw++ = *p++;
-                }
-                *pw = '\0';
+                new_font->style = mem_strdup( p );
 
                 for( i = 0; i < 4; i++ ) pts[i] = '0';
                 pts[4] = '\0';
@@ -726,13 +730,7 @@ static void set_font( option * opt )
         len = opts[0]->toklen;
         p = opts[0]->token;
         g_info_research( inf_recognized_xxx, "font style", p );
-        new_font->style = mem_alloc( len + 1 );
-        pw = new_font->style;
-        while( len > 0 ) {
-             len--;
-             *pw++ = *p++;
-        }
-        *pw = '\0';
+        new_font->style = mem_strdup( p );
 
         if( strcmp( opts[1]->token, "''" ) == 0 ) {
             for( i = 0; i < 4; i++ ) pts[i] = '0';
@@ -829,7 +827,9 @@ static void set_layout( option * opt )
 
     struct  laystack    * laywk;
 
-    if( tokennext == NULL || tokennext->bol || is_option() ) {
+    if( tokennext == NULL
+      || tokennext->bol
+      || is_option() ) {
         xx_simple_err_cc( err_miss_inv_opt_value, opt->option, "" );
     } else {
         len = tokennext->toklen;
@@ -861,18 +861,15 @@ static void set_outfile( option * opt )
     char    attrwork[MAX_FILE_ATTR];
     int     len;
 
-    if( tokennext == NULL || tokennext->bol || is_option() ) {
+    if( tokennext == NULL
+      || tokennext->bol
+      || is_option() ) {
         xx_simple_err_cc( err_miss_inv_opt_value, opt->option, "" );
     } else {
-        len = tokennext->toklen;
-        out_file = mem_alloc( len + 1 );
-        strncpy( out_file, tokennext->token, len );
-        out_file[len] = '\0';
+        out_file = mem_strdup( tokennext->token );
         split_attr_file( out_file, attrwork, sizeof( attrwork ) );
         if( attrwork[0] != '\0' ) {
-            len = 1 + strlen( attrwork );
-            out_file_attr = mem_alloc( len );
-            strcpy( out_file_attr, attrwork );
+            out_file_attr = mem_strdup( attrwork );
         } else {
             out_file_attr = NULL;
         }
@@ -891,13 +888,16 @@ static void set_passes( option * opt )
     char        linestr2[MAX_L_AS_STR];
     char    *   p;
 
-    if( tokennext == NULL || tokennext->bol ||
-            tokennext->token[0] == '(' || is_option() ) {
+    if( tokennext == NULL
+      || tokennext->bol
+      || tokennext->token[0] == '('
+      || is_option() ) {
         xx_simple_err_c( err_missing_opt_value, opt->option );
     } else {
         p = tokennext->token;
         opt_value = get_num_value( p );
-        if( opt_value < 1 || opt_value > MAX_PASSES ) {
+        if( opt_value < 1
+          || opt_value > MAX_PASSES ) {
             ulongtodec( MAX_PASSES, linestr );
             ulongtodec( opt_value, linestr2 );
             xx_simple_err_cc( err_passes_value, linestr, linestr2 );
@@ -916,14 +916,16 @@ static void set_from( option * opt )
 {
     char    *   p;
 
-    if( tokennext == NULL || tokennext->bol ||
-        tokennext->token[0] == '(' || is_option() ) {
-
+    if( tokennext == NULL
+      || tokennext->bol
+      || tokennext->token[0] == '('
+      || is_option() ) {
         xx_simple_err_c( err_missing_opt_value, opt->option );
     } else {
         p = tokennext->token;
         opt_value = get_num_value( p );
-        if( opt_value < 1 || opt_value >= LONG_MAX ) {
+        if( opt_value < 1
+          || opt_value >= LONG_MAX ) {
             xx_simple_err_c( err_out_range, "from" );
         } else {
             print_from = opt_value;
@@ -943,17 +945,20 @@ static void set_symbol( option * opt )
     char    *   value;
     int32_t     rc;
 
-    if( tokennext == NULL || tokennext->bol ||
-            tokennext->token[0] == '(' || is_option() ) {
+    if( tokennext == NULL
+      || tokennext->bol
+      || tokennext->token[0] == '('
+      || is_option() ) {
         xx_simple_err_c( err_missing_name, opt->option );
     } else {
         name = tokennext->token;
 
         tokennext = tokennext->nxt;
 
-        if( tokennext == NULL || tokennext->bol ||
-            tokennext->token[0] == '(' || is_option() ) {
-
+        if( tokennext == NULL
+          || tokennext->bol
+          || tokennext->token[0] == '('
+          || is_option() ) {
             xx_simple_err_c( err_missing_value, opt->option );
         } else {
             value = tokennext->token;
@@ -972,14 +977,16 @@ static void set_to( option * opt )
 {
     char    *   p;
 
-    if( tokennext == NULL || tokennext->bol ||
-        tokennext->token[0] == '(' || is_option() ) {
-
+    if( tokennext == NULL
+      || tokennext->bol
+      || tokennext->token[0] == '('
+      || is_option() ) {
         xx_simple_err_c( err_missing_value, opt->option );
     } else {
         p = tokennext->token;
         opt_value = get_num_value( p );
-        if( opt_value < 1 || opt_value >= LONG_MAX ) {
+        if( opt_value < 1
+          || opt_value >= LONG_MAX ) {
             xx_simple_err_c( err_out_range, "to" );
         } else {
             print_to = opt_value;
@@ -1035,9 +1042,10 @@ static void set_OPTFile( option * opt )
     char    *   str;
     int         len;
 
-    if( tokennext == NULL || tokennext->bol || is_option()
-        /* || tokennext->token[0] == '('  allow (t:123)file.opt construct */
-                                         ) {
+    if( tokennext == NULL
+      || tokennext->bol
+/*      || tokennext->token[0] == '('  allow (t:123)file.opt construct */
+      || is_option() ) {
         xx_simple_err_c( err_missing_value, opt->option );
     } else {
         len = tokennext->toklen;
@@ -1067,8 +1075,7 @@ static void set_OPTFile( option * opt )
                         }
                     }
                 }
-                file_names[++level] = mem_alloc( strlen( try_file_name ) + 1 );
-                strcpy( file_names[level], try_file_name );
+                file_names[++level] = mem_strdup( try_file_name );
                 str = read_indirect_file( try_fp );
                 split_tokens( str );
                 mem_free( str );
@@ -1108,8 +1115,10 @@ static void set_incpath( option * opt )
     char        str[_MAX_PATH];
     int         len;
 
-    if( tokennext == NULL || tokennext->bol || is_option()
-            || tokennext->token[0] == '(' ) {
+    if( tokennext == NULL
+      || tokennext->bol
+      || is_option()
+      || tokennext->token[0] == '(' ) {
         str[0] = '\0';
         xx_simple_err_c( err_missing_value, opt->option );
     } else {
@@ -1139,8 +1148,10 @@ static void set_libpath( option * opt )
     char        str[256];
     int         len;
 
-    if( tokennext == NULL || tokennext->bol || is_option()
-            || tokennext->token[0] == '(' ) {
+    if( tokennext == NULL
+      || tokennext->bol
+      || is_option()
+      || tokennext->token[0] == '(' ) {
         str[0] = '\0';
         xx_simple_err_c( err_missing_value, opt->option );
     } else {
@@ -1182,8 +1193,10 @@ static void set_research( option * opt )
 
     WgmlFlags.research = opt->value;
 
-    if( tokennext == NULL || tokennext->bol || is_option()
-            || tokennext->token[0] == '(' ) {
+    if( tokennext == NULL
+      || tokennext->bol
+      || is_option()
+      || tokennext->token[0] == '(' ) {
         str[0] = '\0';
     } else {
         len = tokennext->toklen;
@@ -1199,19 +1212,23 @@ static void set_research( option * opt )
         research_file_name[0] = '\0';   // no filename
         if( my_isalpha( *str ) ) {      // filename ?
             if( len < sizeof( research_file_name ) ) {
-                strcpy_s( research_file_name, sizeof( research_file_name ), str );
+                strcpy( research_file_name, str );
             }
             tokennext = tokennext->nxt;
-            if( tokennext == NULL || tokennext->bol || is_option()
-                    || tokennext->token[0] == '(' ) {
+            if( tokennext == NULL
+              || tokennext->bol
+              || is_option()
+              || tokennext->token[0] == '(' ) {
                 /* nothing to do */
             } else {                    // get from and to values
                 research_from = get_num_value( tokennext->token );
                 strcat( str, " " );
                 strcat( str, tokennext->token );
                 tokennext = tokennext->nxt;
-                if( tokennext == NULL || tokennext->bol || is_option()
-                        || tokennext->token[0] == '(' ) {
+                if( tokennext == NULL
+                  || tokennext->bol
+                  || is_option()
+                  || tokennext->token[0] == '(' ) {
                     /* nothing to do */
                 } else {
                     research_to = get_num_value( tokennext->token );
@@ -1221,14 +1238,18 @@ static void set_research( option * opt )
                 }
             }
         } else {
-            if( tokennext == NULL || tokennext->bol || is_option()
-                    || tokennext->token[0] == '(' ) {
+            if( tokennext == NULL
+              || tokennext->bol
+              || is_option()
+              || tokennext->token[0] == '(' ) {
                 /* nothing to do */
             } else {                    // get from and to values
                 research_from = get_num_value( tokennext->token );
                 tokennext = tokennext->nxt;
-                if( tokennext == NULL || tokennext->bol || is_option()
-                        || tokennext->token[0] == '(' ) {
+                if( tokennext == NULL
+                  || tokennext->bol
+                  || is_option()
+                  || tokennext->token[0] == '(' ) {
                     /* nothing to do */
                 } else {
                     research_to = get_num_value( tokennext->token );
@@ -1374,9 +1395,11 @@ static void strip_quotes( char * fname )
         d = fname;
         for( s = d + 1; *s && *s != '"'; ++s ) {
         /* collapse double backslashes, only then look for escaped quotes */
-             if( s[0] == '\\' && s[1] == '\\' ) {
+             if( s[0] == '\\'
+               && s[1] == '\\' ) {
                  ++s;
-             } else if( s[0] == '\\' && s[1] == '"' ) {
+             } else if( s[0] == '\\'
+               && s[1] == '"' ) {
                  ++s;
              }
              *d++ = *s;
@@ -1416,7 +1439,8 @@ static cmd_tok * process_option( option * op_table, cmd_tok * tok )
                 if( *opt == '\0' ) {
                     if( opt_delim_start ) {
                         // make sure end of option
-                        if( *pa != '\0' && !option_delimiter( *pa ) ) {
+                        if( *pa != '\0'
+                          && !option_delimiter( *pa ) ) {
                             break;
                         }
                     }
@@ -1426,7 +1450,8 @@ static cmd_tok * process_option( option * op_table, cmd_tok * tok )
                     return( tokennext );
                 }
                 if( *opt != (char)my_tolower( *pa ) ) {
-                    if( *opt < 'A' || *opt > 'Z' )
+                    if( *opt < 'A'
+                      || *opt > 'Z' )
                         break;
                     if( *opt != *pa ) {
                         break;
@@ -1486,10 +1511,12 @@ static cmd_tok * process_option_old( option * op_table, cmd_tok * tok )
         /* otherwise all input characters are changed to lower case before matching */
         opt_value = op_table[i].value;
         for( pa = p + len, opt += op_table[i].optionLen; ; opt++ ) {
-            if( *opt == '\0' || *opt == '*' ) {
+            if( *opt == '\0'
+              || *opt == '*' ) {
                 if( *opt == '\0' ) {
                     if( opt_delim_start ) {
-                        if( *pa != '\0' && !option_delimiter( *pa ) ) { // make sure end of option
+                        if( *pa != '\0'
+                          && !option_delimiter( *pa ) ) { // make sure end of option
                             break;
                         }
                     }
@@ -1514,10 +1541,14 @@ static cmd_tok * process_option_old( option * op_table, cmd_tok * tok )
                     pa++;
                 opt_parm = pa;
                 for( ; (c = *pa) != '\0'; pa++ ) {
-                    if( c == '-' ) break;
-                    if( c == '(' ) break;
-                    if( c == ' ' ) break;
-                    if( c == switch_char ) break;
+                    if( c == '-' )
+                        break;
+                    if( c == '(' )
+                        break;
+                    if( c == ' ' )
+                        break;
+                    if( c == switch_char )
+                        break;
                     if( c == '\n' ) {
                         *pa = ' ';
                         break;
@@ -1552,12 +1583,14 @@ static cmd_tok * process_option_old( option * op_table, cmd_tok * tok )
                 }
                 g_info_research( inf_recognized_xxx, "fn", option_start );
             } else if( *opt == '=' ) {  // collect an optional '='
-                if( *pa == '=' || *pa == '#' ) {
+                if( *pa == '='
+                  || *pa == '#' ) {
                     pa++;
                 }
             } else {
                 if( *opt != (char)my_tolower( *pa ) ) {
-                    if( *opt < 'A' || *opt > 'Z' )
+                    if( *opt < 'A'
+                      || *opt > 'Z' )
                         break;
                     if( *opt != *pa ) {
                         break;
@@ -1608,12 +1641,17 @@ static bool is_option( void )
     }
     for( i = 0; ; i++ ) {
         opt = GML_old_Options[i].option;
-        if( opt == NULL ) break;    // end of table
-        if( c != *opt )  continue;  // easy disqualifiers: first char & length
-        if( len < GML_old_Options[i].minLength ) continue;
-        if( len > GML_old_Options[i].optionLen ) continue;
-        if( strnicmp( opt, p, len ) ) continue; // no match
-        return( true );                         // match found
+        if( opt == NULL )
+            break;      // end of table
+        if( c != *opt )
+            continue;   // easy disqualifiers: first char & length
+        if( len < GML_old_Options[i].minLength )
+            continue;
+        if( len > GML_old_Options[i].optionLen )
+            continue;
+        if( strnicmp( opt, p, len ) )
+            continue;   // no match
+        return( true ); // match found
     }
 
     p = tokennext->token;
@@ -1627,12 +1665,17 @@ static bool is_option( void )
 
         for( i = 0; ; i++ ) {
             opt = GML_new_Options[i].option;
-            if( opt == NULL ) break;    // end of table
-            if( c != *opt )  continue;  // easy disqualifiers: first char & length
-            if( len < GML_new_Options[i].minLength ) continue;
-            if( len > GML_new_Options[i].optionLen ) continue;
-            if( strnicmp( opt, p, len ) ) continue; // no match
-            return( true );                         // match found
+            if( opt == NULL )
+                break;      // end of table
+            if( c != *opt )
+                continue;   // easy disqualifiers: first char & length
+            if( len < GML_new_Options[i].minLength )
+                continue;
+            if( len > GML_new_Options[i].optionLen )
+                continue;
+            if( strnicmp( opt, p, len ) )
+                continue;   // no match
+            return( true ); // match found
         }
     }
     return( false );
@@ -1646,26 +1689,21 @@ static bool is_option( void )
 static cmd_tok * process_master_filename( cmd_tok * tok )
 {
     char        attrwork[MAX_FILE_ATTR];
-    char    *   p;
 
-    p = mem_alloc( tok->toklen + 1 );
-    strncpy( p, tok->token, tok->toklen );
-    p[tok->toklen] = '\0';
-    g_info_research( inf_recognized_xxx, "document source file", p );
-    strip_quotes( p );
+    g_info_research( inf_recognized_xxx, "document source file", tok->token );
     if( master_fname != NULL ) {         // more than one master file ?
         g_banner();
         bad_cmd_line( err_doc_duplicate, tok->token, ' ' );
-    } else {
-        split_attr_file( p , attrwork, sizeof( attrwork ) );
-        if( attrwork[0]  ) {
-            xx_warn_cc( wng_fileattr_ignored, attrwork, p );
-            master_fname_attr = mem_alloc( 1 + strlen( attrwork ) );
-            strcpy( master_fname_attr, attrwork );
+    } else if( *p != '\0' ) {
+        master_fname = mem_strdup( p );
+        strip_quotes( master_fname );
+        split_attr_file( master_fname , attrwork, sizeof( attrwork ) );
+        if( attrwork[0] != '\0' ) {
+            xx_warn_cc( wng_fileattr_ignored, attrwork, master_fname );
+            master_fname_attr = mem_strdup( attrwork );
         } else {
             master_fname_attr = NULL;
         }
-        master_fname = p;
     }
     return( tok->nxt );
 }
@@ -1717,14 +1755,16 @@ int proc_options( char * string )
             sol = tok->bol;
             c = tok->token[0];
 
-            if( c == '-' || c == switch_char ) {
+            if( c == '-'
+              || c == switch_char ) {
 
                 /***************************************************************/
                 /*  process 'new' options -x or /x                             */
                 /***************************************************************/
                 tok = process_option( GML_new_Options, tok );
 
-                if( tok != NULL && !tok->bol ) {
+                if( tok != NULL
+                  && !tok->bol ) {
 
                     /*******************************************************/
                     /*  allow master filename if following 'new' option    */
@@ -1732,7 +1772,8 @@ int proc_options( char * string )
                     tok->bol = sol;
                 }
             } else {
-                if( c == '(' || !sol ) {
+                if( c == '('
+                  || !sol ) {
 
                     /*******************************************************/
                     /*  process 'old' options  ( xxx                       */

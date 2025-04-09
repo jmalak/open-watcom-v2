@@ -141,15 +141,13 @@ void gml_figref( const gmltag * entry )
             format_num( cur_re->u.ffh.entry->pageno, buffer, sizeof( buffer ),
                         cur_re->u.ffh.entry->style );
             bu_len = strlen( buffer );
-            ref_text = (char *) mem_alloc( len + op_len + bu_len  + 1 );
-            strcpy_s( ref_text, len + 1, cur_re->u.ffh.entry->prefix );
+            ref_text = (char *)mem_alloc( len + op_len + bu_len  + 1 );
+            strcpy( ref_text, cur_re->u.ffh.entry->prefix );
             ref_text[len - 1] = '\0';       // remove delim
-            len += (dr_len + op_len + bu_len );
-            strcat( ref_text, on_page );
-            strcat_s( ref_text, len + 1, buffer );
+            strcpy( ref_text + len - 1, on_page );
+            strcat( ref_text + len - 1, buffer );
         } else {
-            ref_text = (char *) mem_alloc( len + 1 );
-            strcpy_s( ref_text, len + 1, cur_re->u.ffh.entry->prefix );
+            ref_text = mem_strdup( cur_re->u.ffh.entry->prefix );
             ref_text[len - 1] = '\0';       // remove delim
         }
     }
@@ -157,7 +155,8 @@ void gml_figref( const gmltag * entry )
     mem_free( ref_text );
     ref_text = NULL;
 
-    if( !ProcFlags.reprocess_line && *p != '\0' ) {
+    if( !ProcFlags.reprocess_line
+      && *p != '\0' ) {
         SkipDot( p );                       // possible tag end
         if( *p != '\0' ) {                  // only if text follows
             post_space = 0;                 // cancel space after ref_text
@@ -249,10 +248,10 @@ void gml_hdref( const gmltag * entry )
     dr_len = strlen( def_ref );
     op_len = strlen( on_page );
     if( cur_re == NULL ) {              // undefined refid
-        ref_text = (char *) mem_alloc( dp_len + dr_len + 1 );
+        ref_text = (char *)mem_alloc( dp_len + dr_len + 1 );
         strcpy( ref_text, def_ref );
         if( do_page ) {
-          strcat( ref_text, def_page );
+            strcat( ref_text, def_page );
         }
     } else {
         len = strlen( cur_re->u.ffh.entry->text ) + 2;        // allow for quote chars
@@ -263,14 +262,14 @@ void gml_hdref( const gmltag * entry )
             len += (op_len + bu_len );
             ref_text = (char *) mem_alloc( len + 1 );
             strcpy( ref_text, "\"" );
-            strcat_s( ref_text, len + 1, cur_re->u.ffh.entry->text );
+            strcpy( ref_text + 1, cur_re->u.ffh.entry->text );
             strcat( ref_text, "\"" );
             strcat( ref_text, on_page );
-            strcat_s( ref_text, len + 1, buffer );
+            strcat( ref_text, buffer );
         } else {
-            ref_text = (char *) mem_alloc( len + 1 );
+            ref_text = (char *)mem_alloc( len + 1 );
             strcpy( ref_text, "\"" );
-            strcat_s( ref_text, len + 1, cur_re->u.ffh.entry->text );
+            strcpy( ref_text + 1, cur_re->u.ffh.entry->text );
             strcat( ref_text, "\"" );
         }
     }
@@ -282,8 +281,9 @@ void gml_hdref( const gmltag * entry )
 
     if( post_space == 0 ) {
         post_space = wgml_fonts[g_curr_font].spc_width;
-        if( !ProcFlags.dd_space && !ProcFlags.as_text_line &&
-                is_stop_char( t_line->last->text[t_line->last->count - 1] ) ) {
+        if( !ProcFlags.dd_space
+          && !ProcFlags.as_text_line
+          && is_stop_char( t_line->last->text[t_line->last->count - 1] ) ) {
             post_space += wgml_fonts[g_curr_font].spc_width;
         }
     }
@@ -292,7 +292,8 @@ void gml_hdref( const gmltag * entry )
     mem_free( ref_text );
     ref_text = NULL;
 
-    if( !ProcFlags.reprocess_line && *p != '\0' ) {
+    if( !ProcFlags.reprocess_line
+      && *p != '\0' ) {
         SkipDot( p );                       // possible tag end
         if( *p != '\0' ) {                  // only if text follows
             ProcFlags.ct = true;
@@ -352,7 +353,8 @@ void gml_fnref( const gmltag * entry )
         process_text( buffer, layout_work.fnref.font );
     }
 
-    if( !ProcFlags.reprocess_line && *p != '\0' ) {
+    if( !ProcFlags.reprocess_line
+      && *p != '\0' ) {
         SkipDot( p );                       // possible tag end
         if( *p != '\0' ) {                  // only if text follows
             post_space = 0;                 // cancel space after ref_text

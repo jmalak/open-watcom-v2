@@ -484,8 +484,7 @@ static bool add_symvar_sub( symvar * var, char * val, sub_index sub, symsub * * 
         newsub->next      = NULL;
         newsub->base      = var;
         newsub->subscript = sub;
-        newsub->value     = mem_alloc( strlen( val ) + 1 );
-        strcpy_s( newsub->value, strlen( val ) + 1, val );
+        newsub->value     = mem_strdup( val );
 
 /*
  * insert subscript in ascending sort order

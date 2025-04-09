@@ -57,8 +57,7 @@ void init_global_vars( void )
     switch_char         = _dos_switch_char();
     alt_ext             = mem_alloc( 5 );   // alternate extension   .xxx
     *alt_ext            = '\0';
-    def_ext             = mem_alloc( sizeof( GML_EXT ) );
-    strcpy_s( def_ext, sizeof( GML_EXT ), GML_EXT );
+    def_ext             = mem_strdup( GML_EXT );
     ampchar             = '&';
 
     gotarget[0]         = '\0';         // no .go to target yet
@@ -355,13 +354,13 @@ void init_pass_data( void )
 
         /* These never change, so can be done on the first pass only */
 
-        strcpy_s( hd_nums[hds_h0].tag, 3, "H0");
-        strcpy_s( hd_nums[hds_h1].tag, 3, "H1");
-        strcpy_s( hd_nums[hds_h2].tag, 3, "H2");
-        strcpy_s( hd_nums[hds_h3].tag, 3, "H3");
-        strcpy_s( hd_nums[hds_h4].tag, 3, "H4");
-        strcpy_s( hd_nums[hds_h5].tag, 3, "H5");
-        strcpy_s( hd_nums[hds_h6].tag, 3, "H6");
+        strcpy( hd_nums[hds_h0].tag, "H0");
+        strcpy( hd_nums[hds_h1].tag, "H1");
+        strcpy( hd_nums[hds_h2].tag, "H2");
+        strcpy( hd_nums[hds_h3].tag, "H3");
+        strcpy( hd_nums[hds_h4].tag, "H4");
+        strcpy( hd_nums[hds_h5].tag, "H5");
+        strcpy( hd_nums[hds_h6].tag, "H6");
 
     } else {
 
