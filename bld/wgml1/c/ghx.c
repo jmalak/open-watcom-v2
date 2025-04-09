@@ -155,10 +155,8 @@ void gen_heading( char * h_text, char * id, hdsrc hn_lvl, hdsrc hds_lvl )
     doc_element *   cur_el;
     group_type      sav_group_type;         // save prior group type
     int             k;
-    size_t          current;
     size_t          headlen;
     size_t          prefixlen;
-    size_t          txtlen;
     page_pos        old_line_pos;
     ref_entry   *   cur_ref         = NULL;
     uint32_t        bot_depth;

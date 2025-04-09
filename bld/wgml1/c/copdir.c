@@ -217,7 +217,6 @@ char *get_member_name( FILE *fp, char const *in_name )
     cop_file_type   file_type;
     directory_entry current_entry;
     entry_found     entry_status;
-    size_t          member_length;
     uint16_t        entry_type;
 
     /* See if in_name is found in try_file_name. */
