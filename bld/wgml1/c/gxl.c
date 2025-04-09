@@ -62,7 +62,8 @@ static void gml_xl_lp_common( e_tags t )
 
     end_lp();                           // terminate :LP if active
 
-    if( ProcFlags.overprint && ProcFlags.cc_cp_done ) {
+    if( ProcFlags.overprint
+      && ProcFlags.cc_cp_done ) {
         ProcFlags.overprint = false;    // cancel overprint
     }
 
@@ -86,7 +87,8 @@ static void gml_xl_lp_common( e_tags t )
     SkipSpaces( p );                        // skip spaces
     SkipDot( p );                           // skip tag end
     if( t != t_LP ) {                       // text only allowed for :LP
-        if( t != t_DL && t != t_GL ) {      // DL/GL don't require LI/LP
+        if( t != t_DL
+          && t != t_GL ) {      // DL/GL don't require LI/LP
             ProcFlags.need_li_lp = true;    // :LI or :LP  next
         } else {
             dl_gl_starting = true;
@@ -97,7 +99,8 @@ static void gml_xl_lp_common( e_tags t )
             ProcFlags.para_starting = false;    // clear for this tag's first break
         }
         scr_process_break();
-        if( !ProcFlags.reprocess_line && *p != '\0' ) {
+        if( !ProcFlags.reprocess_line
+          && *p != '\0' ) {
             process_text( p, g_curr_font );
         }
     }
@@ -687,7 +690,8 @@ static void     gml_exl_common( const gmltag * entry )
     SkipDot( p );                       // over '.'
     SkipSpaces( p );                    // over WS to <text line>
     if( *p != '\0' ) {
-        if( !input_cbs->hidden_head->ip_start && IS_CONT_CHAR( p ) ) { // text is continuation character only
+        if( !input_cbs->hidden_head->ip_start
+          && IS_CONT_CHAR( p ) ) { // text is continuation character only
             if( &l_post_skip != NULL ) {
                 g_post_skip = conv_vert_unit( &l_post_skip , g_text_spacing, l_font );
             } else {
@@ -1221,11 +1225,13 @@ void gml_dthd( const gmltag * entry )
     ju_x_start = t_page.cur_width;
 
     p = get_text_line( p );
-    pa = p + strlen(p);
-    if( (pa > p) && !IS_CONT_CHAR( pa - 1 ) ) { // text exists and does not end with a continue character
-        ADD_CONT_CHAR( pa );
+    if( *p != '\0' ) {
+        pa = p + strlen(p);
+        if( !IS_CONT_CHAR( pa - 1 ) ) { // text exists and does not end with a continue character
+            // add continue character to GT text
+            ADD_CONT_CHAR( pa );
+        }
     }
-
     if( !ProcFlags.reprocess_line ) {
         SkipSpaces( p );                    // skip initial spaces
         ProcFlags.as_text_line = true;
@@ -1359,11 +1365,13 @@ void gml_dt( const gmltag * entry )
     ju_x_start = t_page.cur_width;
 
     p = get_text_line( p );
-    pa = p + strlen(p);
-    if( (pa > p) && !IS_CONT_CHAR( pa - 1 ) ) { // text exists and does not end with a continue character
-        ADD_CONT_CHAR( pa );
+    if( *p != '\0' ) {
+        pa = p + strlen(p);
+        if( !IS_CONT_CHAR( pa - 1 ) ) { // text exists and does not end with a continue character
+            // add continue character to GT text
+            ADD_CONT_CHAR( pa );
+        }
     }
-
     if( !ProcFlags.reprocess_line ) {
         if( (input_cbs->fmflags & II_macro) && ProcFlags.null_value ) {
             ProcFlags.dt_space = true;
@@ -1503,11 +1511,13 @@ void gml_gt( const gmltag * entry )
     }
 
     p = get_text_line( p );
-    pa = p + strlen(p);
-    if( (pa > p) && !IS_CONT_CHAR( pa - 1 ) ) { // text exists and does not end with a continue character
-        ADD_CONT_CHAR( pa );
+    if( *p != '\0' ) {
+        pa = p + strlen(p);
+        if( !IS_CONT_CHAR( pa - 1 ) ) { // text exists and does not end with a continue character
+            // add continue character to GT text
+            ADD_CONT_CHAR( pa );
+        }
     }
-
     if( !ProcFlags.reprocess_line ) {
         SkipSpaces( p );                    // skip initial spaces
         ProcFlags.as_text_line = true;
