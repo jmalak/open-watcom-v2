@@ -42,7 +42,7 @@ void gml_fn( const gmltag * entry )
     (void)entry;
 
     start_doc_sect();
-    scr_process_break();
+    script_process_break();
     scan_err = false;
 
     g_keep_nest( "Footnote" );          // catch nesting errors
@@ -179,7 +179,7 @@ void gml_efn( const gmltag * entry )
 
     (void)entry;
 
-    scr_process_break();
+    script_process_break();
     rs_loc = 0;
 
     if( cur_group_type != gt_fn ) {         // no preceding :FN tag

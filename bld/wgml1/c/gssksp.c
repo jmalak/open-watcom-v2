@@ -156,7 +156,7 @@ static void sksp_common( void )
 
 void    scr_sk( void )
 {
-    scr_process_break();
+    script_process_break();
     sksp_common();                  // set vspace
 
     if( !ProcFlags.concat && (ProcFlags.overprint || (vspace > 0 )) ) {
@@ -194,7 +194,7 @@ void    scr_sk( void )
 
 void    scr_sp( void )
 {
-    scr_process_break();
+    script_process_break();
     sksp_common();                  // set vspace
     if( g_space < vspace ) {        // merge with existing value
         g_space = vspace;

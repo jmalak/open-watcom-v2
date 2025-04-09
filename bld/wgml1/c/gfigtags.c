@@ -286,7 +286,7 @@ static void insert_frame_line( void )
             line_buff.text[line_buff.current] = '\0';
         }
         process_text( line_buff.text, FONT0 );  // matches wgml 4.0
-        scr_process_break();        // commit line
+        script_process_break();        // commit line
     } else {                                        // page-oriented device
         if( frame.type == rule_frame ) {
 
@@ -342,7 +342,7 @@ static void insert_frame_line( void )
             line_buff.current = cur_count;
             line_buff.text[line_buff.current] = '\0';
             process_text( line_buff.text, FONT0 );  // matches wgml 4.0
-            scr_process_break();        // commit line
+            script_process_break();        // commit line
         }
     }
     return;
@@ -389,7 +389,7 @@ void gml_fig( const gmltag * entry )
     (void)entry;
 
     start_doc_sect();
-    scr_process_break();
+    script_process_break();
     scan_err = false;
 
     if( is_ip_tag( nest_cb->c_tag ) ) {                 // inline phrase not closed
@@ -539,7 +539,7 @@ void gml_fig( const gmltag * entry )
           && (bin_driver->dbox.text != NULL) ) {
             g_blank_units_lines += g_subs_skip;
             g_subs_skip = 0;
-            scr_process_break();
+            script_process_break();
         }
     }
 
@@ -603,11 +603,11 @@ void gml_fig( const gmltag * entry )
         if( depth > g_subs_skip ) {
             g_blank_units_lines = depth;
             g_subs_skip = 0;
-            scr_process_break();
+            script_process_break();
         }
     } else {
         g_blank_units_lines = depth;
-        scr_process_break();
+        script_process_break();
     }
 
     /* Select the width to use */
@@ -723,7 +723,7 @@ void gml_efig( const gmltag * entry )
 
     (void)entry;
 
-    scr_process_break();
+    script_process_break();
     rs_loc = 0;
 
     /* Done here because needed for the minimum post_skip */
@@ -1109,7 +1109,7 @@ void gml_figcap( const gmltag * entry )
     (void)entry;
 
     start_doc_sect();
-    scr_process_break();
+    script_process_break();
     rs_loc = figcap_tag;
 
     scan_err = false;
@@ -1209,7 +1209,7 @@ void gml_figdesc( const gmltag * entry )
         process_text( ":", g_curr_font);        // uses FIGCAP font
         g_curr_font = layout_work.figdesc.font; // change to FIGDESC font
     } else {                                    // FIGCAP not present
-        scr_process_break();
+        script_process_break();
         if( ProcFlags.has_aa_block ) {          // matches wgml 4.0
             t_page.max_width += tab_col;
         }
@@ -1227,7 +1227,7 @@ void gml_figdesc( const gmltag * entry )
         if( !figcap_done ) {            // if no FIGCAP was present
             g_blank_units_lines += g_subs_skip;
             g_subs_skip = 0;
-            scr_process_break();
+            script_process_break();
         }
     }
     scan_start = scan_stop + 1;

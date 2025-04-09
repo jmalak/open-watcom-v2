@@ -42,7 +42,7 @@ void    gml_graphic( const gmltag * entry )
         }
     }
 
-    scr_process_break();                // flush existing text
+    script_process_break();                // flush existing text
     start_doc_sect();                   // if not already done
 
     file[0] = '\0';
