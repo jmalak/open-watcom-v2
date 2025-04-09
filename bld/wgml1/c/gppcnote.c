@@ -30,7 +30,7 @@ static void p_pc_setup( p_lay_tag * p_pc )
     if( g_line_indent == 0 ) {
         ProcFlags.para_starting = false;    // clear for this tag's break
     }
-    scr_process_break();
+    script_process_break();
 
     g_line_indent = conv_hor_unit( &(p_pc->line_indent), g_curr_font );
 
@@ -118,7 +118,7 @@ extern void gml_note( const gmltag * entry )
 
     start_doc_sect();                   // if not already done
 
-    scr_process_break();
+    script_process_break();
 
     font_save = g_curr_font;
     set_skip_vars( &layout_work.note.pre_skip, NULL, &layout_work.note.post_skip,

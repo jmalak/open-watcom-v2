@@ -585,7 +585,7 @@ static  void    proc_input( char * filename )
         }
 
         if( inc_level == 1 ) {          // EOF for master file end
-            scr_process_break();        // flush any final text from this pass
+            script_process_break();     // flush any final text from this pass
             last_page_out();            // forces final page(s) out
 
             /***************************************************************/

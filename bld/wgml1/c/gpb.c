@@ -40,10 +40,10 @@ extern  void    gml_pb( const gmltag * entry )
 
     start_doc_sect();                   // if not already done
     if( ProcFlags.concat ) {
-        ProcFlags.para_starting = false;// avoid set_skip_vars in scr_process_break()
+        ProcFlags.para_starting = false;// avoid set_skip_vars in script_process_break()
     }
     has_text = ProcFlags.para_has_text; // save value
-    scr_process_break();                // clears ProcFlags.para_has_text
+    script_process_break();                // clears ProcFlags.para_has_text
 
     if( ProcFlags.concat ) {
         if( has_text ) {

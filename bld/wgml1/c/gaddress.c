@@ -94,7 +94,7 @@ void gml_eaddress( const gmltag * entry )
         t_doc_el_group = t_doc_el_group->next;  // processed doc_elements go to next group, if any
         cur_doc_el_group->next = NULL;
 
-        scr_process_break();                    // commit any existing text
+        script_process_break();                    // commit any existing text
         if( first_aline ) {                     // empty ADDRESS block: no ALINEs
             set_skip_vars( NULL, NULL, NULL, g_text_spacing, g_curr_font);
             g_subs_skip = 0;                    // matches wgml 4.0
@@ -135,7 +135,7 @@ void gml_eaddress( const gmltag * entry )
         cur_doc_el_group = NULL;
     }
 
-    scr_process_break();                // commit last address line
+    script_process_break();                // commit last address line
     line_position = old_line_pos;
     scan_start = scan_stop + 1;
     return;
@@ -161,7 +161,7 @@ void gml_aline( const gmltag * entry )
     SkipDot( p );                           // over '.'
     SkipSpaces( p );                        // over WS to <text line>
 
-    scr_process_break();
+    script_process_break();
     start_doc_sect();                       // if not already done
 
     g_curr_font = layout_work.address.font;
@@ -192,7 +192,7 @@ void gml_aline( const gmltag * entry )
     } else {
         ProcFlags.titlep_starting = true;
     }
-    scr_process_break();                // commit address line (or blank line)
+    script_process_break();                // commit address line (or blank line)
 
     first_aline = false;
     scan_start = scan_stop + 1;

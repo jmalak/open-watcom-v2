@@ -79,11 +79,11 @@ static void gml_inline_common( const gmltag * entry, font_number font, e_tags t 
       && (input_cbs->fmflags & II_tag)
       && (cur_group_type == gt_xmp) ) {
         if( ProcFlags.xmp_ut_sf ) {     // matches wgml 4.0
-            scr_process_break();
+            script_process_break();
         } else {
             ProcFlags.xmp_ut_sf = true;
             if( !(input_cbs->s.m->tag->tagflags & tag_cont) ) {
-                scr_process_break();        // tag not defined with CONT
+                script_process_break();        // tag not defined with CONT
             }
         }
     }
@@ -172,7 +172,7 @@ static void gml_inline_common( const gmltag * entry, font_number font, e_tags t 
       && !ProcFlags.cont_char
       && ((input_cbs->fmflags & II_file)
       || (input_cbs->fmflags & II_macro)) ) {
-        scr_process_break();            // ensure line is output
+        script_process_break();            // ensure line is output
     }
     scan_start = scan_stop + 1;
     return;
@@ -254,7 +254,7 @@ static void gml_e_inlne_common( const gmltag * entry, e_tags t )
         }
 
         if( ProcFlags.xmp_ut_sf ) {   // matches wgml 4.0
-            scr_process_break();
+            script_process_break();
         }
         if( nest_cb->prev->font == tt_font ) {      // returning to second stack entry
             tt_stack = nest_cb->prev;               // set tt_stack
@@ -333,7 +333,7 @@ static void gml_e_inlne_common( const gmltag * entry, e_tags t )
           && !ProcFlags.cont_char
           && ((input_cbs->fmflags & II_file)
           || (input_cbs->fmflags & II_macro)) ) {
-            scr_process_break();        // ensure line is output
+            script_process_break();        // ensure line is output
         }
     }
     scan_start = scan_stop + 1;

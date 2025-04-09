@@ -43,7 +43,7 @@ void gml_author( const gmltag * entry )
         ProcFlags.author_tag_seen = true;
     }
 
-    scr_process_break();
+    script_process_break();
     start_doc_sect();                       // if not already done
 
     font_save = g_curr_font;
@@ -81,7 +81,7 @@ void gml_author( const gmltag * entry )
     } else {
         ProcFlags.titlep_starting = true;
     }
-    scr_process_break();                // commit author line (or blank line)
+    script_process_break();                // commit author line (or blank line)
 
     line_position = old_line_pos;
     g_curr_font = font_save;

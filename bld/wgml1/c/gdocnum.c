@@ -57,7 +57,7 @@ void    gml_docnum( const gmltag * entry )
     }
     ProcFlags.docnum_tag_seen = true;
 
-    scr_process_break();
+    script_process_break();
     start_doc_sect();                       // if not already done
 
     font_save = g_curr_font;
@@ -91,7 +91,7 @@ void    gml_docnum( const gmltag * entry )
     } else {
         ProcFlags.titlep_starting = true;
     }
-    scr_process_break();                // commit docnum line (or blank line)
+    script_process_break();                // commit docnum line (or blank line)
 
     if( buff != NULL ) {
         mem_free( buff );

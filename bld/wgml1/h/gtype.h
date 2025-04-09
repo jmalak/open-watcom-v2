@@ -420,11 +420,11 @@ typedef struct  inputcb {
 } inputcb;
 
 /***************************************************************************/
-/*  scr keywords                                                           */
+/*  script keywords                                                           */
 /***************************************************************************/
 
 typedef enum {
-    cw_break    = 1,           // control word causes break, ie. flush output
+    cw_break    = 1,                    // control word causes break, ie. flush output
     cw_o_t                              // control word produces output text
 } scrflags;
 
@@ -606,7 +606,7 @@ typedef enum condcode {            // return code for some scanning functions
 }  condcode;
 
 /***************************************************************************/
-/*  scr string functions                                                   */
+/*  script string functions                                                   */
 /***************************************************************************/
 
 typedef struct parm {
@@ -1622,12 +1622,12 @@ typedef struct proc_flags {
     unsigned        goto_active         : 1;// processing .go label
     unsigned        newLevelFile        : 1;// start new include Level (file)
     unsigned        gml_tag             : 1;// input buf starts with GML_char
-    unsigned        scr_cw              : 1;// input buf starts with SCR_char
+    unsigned        script_cw           : 1;// input buf starts with SCR_char
     unsigned        if_cond             : 1;// symbol substitution in if condition
     unsigned        macro_ignore        : 1;// .. in col 1-2
-    unsigned        CW_force_sep        : 1;// scr cw line was indented and separator must be recognized
+    unsigned        CW_force_sep        : 1;// script cw line was indented and separator must be recognized
     unsigned        CW_noblank          : 1;// no blank between CW/macro and first operand
-    unsigned        CW_sep_ignore       : 1;// ignore scr cw separator
+    unsigned        CW_sep_ignore       : 1;// ignore script cw separator
     unsigned        indented_text       : 1;// text was indented
     unsigned        in_macro_define     : 1;// macro definition active
     unsigned        suppress_msg        : 1;// suppress error msg (during scanning)
@@ -1665,10 +1665,10 @@ typedef struct proc_flags {
     unsigned        keep_left_margin    : 1;// for indent NOTE tag paragraph
     unsigned        skip_blank_line     : 1;// for XMP/eXMP blocks in macros
     unsigned        in_reduced          : 1;// position resulting from IN reduced to left edge of device page
-    unsigned        dd_starting         : 1;// DD after break had no text (in next scr_process_break())
-    unsigned        para_starting       : 1;// :LP, :P or :PC had no text (in scr_process_break())
+    unsigned        dd_starting         : 1;// DD after break had no text (in next script_process_break())
+    unsigned        para_starting       : 1;// :LP, :P or :PC had no text (in script_process_break())
     unsigned        para_has_text       : 1;// :LP, :P, :PB or :PC had text (used by PB)
-    unsigned        titlep_starting     : 1;// AUTHOR or TITLE had no text (in scr_process_break())
+    unsigned        titlep_starting     : 1;// AUTHOR or TITLE had no text (in script_process_break())
     unsigned        space_fnd           : 1;// last input record ended with a space character
     unsigned        force_op            : 1;// force overprint (used with BX CAN/BX DEL)
     unsigned        op_done             : 1;// overprint done (used for heading page adjustment)

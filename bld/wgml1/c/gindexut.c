@@ -172,7 +172,7 @@ void find_create_ix_e_entry( ix_h_blk * ixhwork, char * ref, size_t len,
             /**********************************************************/
             /*  if there is no pending text, then add this entry to   */
             /*  g_eol_ix so that it can be assigned properly in       */
-            /*  attach_eol() (used by scr_process_break())            */
+            /*  attach_eol() (used by script_process_break())         */
             /*                                                        */
             /*  NOTE: flag "found" is borrowed from the code that     */
             /*        determines whether to create a new ix_e_block   */

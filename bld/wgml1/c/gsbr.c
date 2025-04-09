@@ -255,7 +255,7 @@ void    scr_br( void )
             split_input( scan_start, p, input_cbs->fmflags );   // line operand
         }
     }
-    scr_process_break();                // break processing
+    script_process_break();                // break processing
 
     scan_restart = scan_stop + 1;
     return;
@@ -267,7 +267,7 @@ void    scr_br( void )
 /*  insert t_element into t_page and reset it to NULL                      */
 /***************************************************************************/
 
-void  scr_process_break( void )
+void  script_process_break( void )
 {
     doc_element *   cur_el;
     text_chars  *   marker  = NULL;
