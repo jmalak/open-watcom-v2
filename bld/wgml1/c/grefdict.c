@@ -22,7 +22,7 @@
 
 char * get_refid_value( char * p, char * refid )
 {
-    int k;
+    size_t  k;
 
     p = get_att_value( p );
 
