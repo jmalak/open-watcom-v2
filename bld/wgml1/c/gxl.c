@@ -68,7 +68,7 @@ static void gml_xl_lp_common( e_tags t )
     }
 
     if( ProcFlags.dd_starting ) {
-        scr_process_break();
+        script_process_break();
         t_element = alloc_doc_el( el_vspace );
         t_element->depth = wgml_fonts[g_curr_font].line_height;
         insert_col_main( t_element );
@@ -98,7 +98,7 @@ static void gml_xl_lp_common( e_tags t )
         if( g_line_indent == 0 ) {
             ProcFlags.para_starting = false;    // clear for this tag's first break
         }
-        scr_process_break();
+        script_process_break();
         if( !ProcFlags.reprocess_line
           && *p != '\0' ) {
             process_text( p, g_curr_font );
@@ -747,7 +747,7 @@ void    gml_edl( const gmltag * entry )
     if( g_line_indent == 0 ) {
         ProcFlags.para_starting = false;    // clear for this tag's break
     }
-    scr_process_break();
+    script_process_break();
     if( nest_cb->c_tag == t_LP ) {      // terminate :LP if active
         end_lp();
     }
@@ -774,7 +774,7 @@ void    gml_egl( const gmltag * entry )
     if( g_line_indent == 0 ) {
         ProcFlags.para_starting = false;    // clear for this tag's break
     }
-    scr_process_break();
+    script_process_break();
     if( nest_cb->c_tag == t_LP ) {      // terminate :LP if active
         end_lp();
     }
@@ -801,7 +801,7 @@ void    gml_eol( const gmltag * entry )
     if( g_line_indent == 0 ) {
         ProcFlags.para_starting = false;    // clear for this tag's break
     }
-    scr_process_break();
+    script_process_break();
     if( nest_cb->c_tag == t_LP ) {      // terminate :LP if active
         end_lp();
         g_curr_font = nest_cb->font;    // restore font
@@ -829,7 +829,7 @@ void    gml_esl( const gmltag * entry )
     if( g_line_indent == 0 ) {
         ProcFlags.para_starting = false;    // clear for this tag's break
     }
-    scr_process_break();
+    script_process_break();
     if( nest_cb->c_tag == t_LP ) {      // terminate :LP if active
         end_lp();
         g_curr_font = nest_cb->font;    // restore font
@@ -857,7 +857,7 @@ void    gml_eul( const gmltag * entry )
     if( g_line_indent == 0 ) {
         ProcFlags.para_starting = false;    // clear for this tag's break
     }
-    scr_process_break();
+    script_process_break();
     if( nest_cb->c_tag == t_LP ) {      // terminate :LP if active
         end_lp();
         g_curr_font = nest_cb->font;    // restore font
@@ -894,7 +894,7 @@ static  void    gml_li_ol( const gmltag * entry )
 
     (void)entry;
 
-    scr_process_break();
+    script_process_break();
 
     scan_err = false;
     p = scan_start;
@@ -962,7 +962,7 @@ static  void    gml_li_sl( const gmltag * entry )
 
     (void)entry;
 
-    scr_process_break();
+    script_process_break();
 
     scan_err = false;
     p = scan_start;
@@ -1008,7 +1008,7 @@ static  void    gml_li_ul( const gmltag * entry )
 
     (void)entry;
 
-    scr_process_break();
+    script_process_break();
 
     scan_err = false;
     p = scan_start;
@@ -1135,7 +1135,7 @@ void    gml_lp( const gmltag * entry )
     if( g_line_indent == 0 ) {
         ProcFlags.para_starting = false;    // clear for this tag's first break
     }
-    scr_process_break();
+    script_process_break();
 
     nest_cb->compact = false;
     nest_cb->font = g_curr_font;
@@ -1202,7 +1202,7 @@ void gml_dthd( const gmltag * entry )
     if( !ProcFlags.start_section ) {
         start_doc_sect();
     }
-    scr_process_break();
+    script_process_break();
 
     p = scan_start;
 
@@ -1329,7 +1329,7 @@ void gml_dt( const gmltag * entry )
     if( !ProcFlags.start_section ) {
         start_doc_sect();
     }
-    scr_process_break();
+    script_process_break();
 
     p = scan_start;
 
@@ -1338,7 +1338,7 @@ void gml_dt( const gmltag * entry )
     }
 
     if( ProcFlags.dd_starting ) {
-        scr_process_break();
+        script_process_break();
         t_element = alloc_doc_el( el_vspace );
         t_element->depth = wgml_fonts[g_curr_font].line_height;
         insert_col_main( t_element );
@@ -1487,7 +1487,7 @@ void gml_gt( const gmltag * entry )
     if( !ProcFlags.start_section ) {
         start_doc_sect();
     }
-    scr_process_break();
+    script_process_break();
 
     p = scan_start;
 

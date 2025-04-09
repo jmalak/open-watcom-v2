@@ -155,7 +155,7 @@ static void restore_state( bool fb )
         /* replacing ":eDL &*" with ":eDL" in ELIBF eliminates the problem        */
         /* but trying to fix this in eDL processing was not successful, as other  */
         /* files then began reporting similar lists of "unfreed chunks"           */
-        /* using scr_process_break() here does NOT solve the problem              */
+        /* using script_process_break() here does NOT solve the problem           */
         /* but this does                                                          */
         /**************************************************************************/
         if( t_line != NULL ) {
@@ -327,7 +327,7 @@ void scr_fb( void )
 
     switch( cur_cmd) {
     case fbk_begin :
-        scr_process_break();                // finalize current doc_element
+        script_process_break();             // finalize current doc_element
         g_keep_nest( "FB" );                // catch nesting errors
         save_state( true );
         sav_group_type = cur_group_type;
@@ -340,7 +340,7 @@ void scr_fb( void )
     case fbk_end :
         if( cur_group_type == gt_fb ) {
             sav_post_space = post_space;
-            scr_process_break();                    // for the last doc_element in the block
+            script_process_break();         // for the last doc_element in the block
             post_space = sav_post_space;
             cur_group_type = sav_group_type;
             cur_doc_el_group = t_doc_el_group;
@@ -435,7 +435,7 @@ void scr_fk( void )
 
     switch( cur_cmd) {
     case fbk_begin :
-        scr_process_break();                // for the last doc_element before the block
+        script_process_break();             // for the last doc_element before the block
         g_keep_nest( "FK" );                // catch nesting errors
         save_state( false );
         sav_group_type = cur_group_type;
@@ -448,7 +448,7 @@ void scr_fk( void )
     case fbk_end :
         if( cur_group_type == gt_fk ) {
             sav_post_space = post_space;
-            scr_process_break();
+            script_process_break();
             post_space = sav_post_space;
             cur_group_type = sav_group_type;
             cur_doc_el_group = t_doc_el_group;

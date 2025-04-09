@@ -1477,11 +1477,11 @@ void set_h_start( void )
 }
 
 
-/***************************************************************************/
-/* finalize line and place into t_element                                  */
-/* Note: this now presumes that a_line->next is NULL on entry              */
-/* Note: invoking start_doc_sect() sets up a loop with scr_process_break() */
-/***************************************************************************/
+/******************************************************************************/
+/* finalize line and place into t_element                                     */
+/* Note: this now presumes that a_line->next is NULL on entry                 */
+/* Note: invoking start_doc_sect() sets up a loop with script_process_break() */
+/******************************************************************************/
 
 void process_line_full( text_line * a_line, bool justify )
 {
@@ -1940,17 +1940,17 @@ void process_text( char * text, font_number font )
                   && (c_stop->column >= user_tabs.tabs[user_tabs.current - 1].column))
                   || (*p == tab_char) ) {    // the final test
 
-                    /********************************************************/
-                    /* scr_process_break() can produce a doc_element with a */
-                    /* blank line; ensure that line has the line height of  */
-                    /* font 0                                               */
-                    /* Note: this is necessary after P and PC, but appears  */
-                    /* to work more generally                               */
-                    /********************************************************/
+                    /***********************************************************/
+                    /* script_process_break() can produce a doc_element with a */
+                    /* blank line; ensure that line has the line height of     */
+                    /* font 0                                                  */
+                    /* Note: this is necessary after P and PC, but appears     */
+                    /* to work more generally                                  */
+                    /***********************************************************/
 
                     temp_font = g_curr_font;
                     g_curr_font = FONT0;
-                    scr_process_break();        // treat new line as break
+                    script_process_break();        // treat new line as break
                     tab_space = 0;
 
                     /* Restore font for current text fragment */

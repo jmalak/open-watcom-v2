@@ -282,7 +282,7 @@ extern  font_number scr_style_font( font_number in_font );
 
 
 /* gsbr.c                               */
-extern  void    scr_process_break( void );
+extern  void    script_process_break( void );
 
 
 /* gsbx.c                               */

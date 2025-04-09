@@ -494,7 +494,7 @@ static bool parse_r2l( sym_list_entry * stack, char * buf, bool subscript )
                 for( p = buf; *p != ' '; p++ ) cw_lg++;     // length of . plus CW
                 cw_lg++;                                    // plus space after CW
                 if( input_cbs->hidden_head ) {
-                    if( ProcFlags.scr_cw
+                    if( ProcFlags.script_cw
                       && (buf + cw_lg == curr->start) ) {
                         input_cbs->hidden_head->sym_space = false;  // space is space after cw
                     } else {
@@ -561,7 +561,7 @@ static char * scan_sym_or_sep( char *buf, bool splittable )
             break;
         } else if( *pa == CW_sep_char ) {
             if( splittable
-              && (ProcFlags.scr_cw
+              && (ProcFlags.script_cw
               || ProcFlags.CW_force_sep)
               && !ProcFlags.CW_sep_ignore ) {
                 split_input( buff2, pa + 1, II_none );      // split after CW_sep_char
@@ -855,14 +855,14 @@ void classify_record( char c )
 {
     if( c == GML_char ) {               // classify input
         ProcFlags.gml_tag = true;
-        ProcFlags.scr_cw = false;
+        ProcFlags.script_cw = false;
         ProcFlags.CW_force_sep = false;
     } else {
         ProcFlags.gml_tag = false;
         if( c == SCR_char ) {
-            ProcFlags.scr_cw = true;
+            ProcFlags.script_cw = true;
         } else {
-            ProcFlags.scr_cw = false;
+            ProcFlags.script_cw = false;
         }
     }
 }
@@ -879,10 +879,10 @@ static void reclassify_record( char c )
     // a SCRIPT control word (if that's even possible). But a record that
     // wasn't already a GML tag will *not* become one after substitution.
     if( c == SCR_char ) {
-        ProcFlags.scr_cw  = true;
+        ProcFlags.script_cw  = true;
         ProcFlags.gml_tag = false;
     } else {
-        ProcFlags.scr_cw  = false;
+        ProcFlags.script_cw  = false;
     }
 }
 
@@ -952,7 +952,7 @@ void process_line( void )
     /*  note that symbol substition is done before IF is actually processed    */
     /*  this can probably be improved                                          */
     /***************************************************************************/
-    if( ProcFlags.scr_cw
+    if( ProcFlags.script_cw
       && (((toupper(*(buff2 + 1)) == 'I')
       && (toupper(*(buff2 + 2)) == 'F'))
       || ((toupper(*(buff2 + 1)) == 'E')
