@@ -450,13 +450,14 @@ void gml_fig( const gmltag * entry )
                     frame.type = char_frame;
                 }
                 if( frame.type == char_frame ) {
-                    memcpy_s( frame.string, str_size, val_start, val_len );
-                    if( val_len < str_size ) {
-                        frame.string[val_len] = '\0';
-                    } else {
-                        frame.string[str_size - 1] = '\0';
-                    }
-                    if( strnlen_s( frame.string, str_size ) == 0 ) {
+                    size_t  len;
+
+                    len = val_len;
+                    if( len > str_size - 1 )
+                        len = str_size - 1;
+                    strncpy( frame.string, val_start, len );
+                    frame.string[len] = '\0';
+                    if( len == 0 ) {
                         frame.type = none;      // treat null string as "none"
                     }
                 } else {                        // blank any existing frame.string value
@@ -1131,10 +1132,10 @@ void gml_figcap( const gmltag * entry )
         ulongtodec( fig_entry->number, buffer );
         count += strlen( buffer );
         count ++;                       // for the delimiter character
-        prefix = (char *) mem_alloc( count + 1);
-        strcpy_s( prefix, count, layout_work.figcap.string );
+        prefix = (char *)mem_alloc( count + 1);
+        strcpy( prefix, layout_work.figcap.string );
         current = strlen( prefix );
-        strcat_s( &prefix[current], count - current, buffer );
+        strcpy( &prefix[current], buffer );
         current = strlen( prefix );
         prefix[current] = layout_work.figcap.delim;
         prefix[current + 1] = '\0';
@@ -1167,9 +1168,7 @@ void gml_figcap( const gmltag * entry )
         SkipSpaces( p );                    // skip preceding spaces
         post_space = 0;                     // no additional space
         if( pass == 1 ) {                   // only on first pass
-            current = strlen( p );
-            fig_entry->text = (char *) mem_alloc( current + 1 );
-            strcpy_s( fig_entry->text, current + 1, p );
+            fig_entry->text = mem_strdup( p );
         }
         process_text( fig_entry->text, g_curr_font );   // if text follows
     } else {
