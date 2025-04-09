@@ -620,6 +620,28 @@ void    o_int8( FILE * f, lay_att curr, const int8_t * tm )
     return;
 }
 
+bool    i_uint8( char * p, lay_att curr, uint8_t * tm )
+{
+    long    wk;
+
+    (void)curr;
+
+    wk = strtol( p, NULL, 10 );
+    if( abs( wk ) > 255 ) {
+        xx_line_err_c( err_i_8, p );
+    }
+    *tm = wk;
+    return( false );
+}
+
+void    o_uint8( FILE * f, lay_att curr, const uint8_t * tm )
+{
+    int     wk = *tm;
+
+    fprintf_s( f, "        %s = %d\n", att_names[curr], wk );
+    return;
+}
+
 
 /***************************************************************************/
 /*  font number                                                            */

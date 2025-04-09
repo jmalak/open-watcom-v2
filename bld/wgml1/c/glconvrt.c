@@ -387,7 +387,7 @@ static  void    put_lay_region( FILE * layfile, region_lay_tag * reg )
             o_font_number( layfile, curr, &reg->font );
             break;
         case   e_refnum:
-            o_int8( layfile, curr, &reg->refnum );
+            o_uint8( layfile, curr, &reg->refnum );
             break;
         case   e_region_position:
             o_page_position( layfile, curr, &reg->region_position );
