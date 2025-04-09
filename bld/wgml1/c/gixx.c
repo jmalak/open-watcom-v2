@@ -131,7 +131,9 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
                 if( val_start == NULL ) {
                     break;
                 }
-                if( (hx_lvl == 0) || ((hx_lvl > 1) && (hxstring[2] == lvlc)) ) {
+                if( (hx_lvl == 0)
+                  || ((hx_lvl > 1)
+                  && (hxstring[2] == lvlc)) ) {
                     refidseen = true;   // refid attribute found
                     refwk = find_refid( ix_ref_dict, refid );
                     if( refwk == NULL ) {   // refid not in dict
@@ -153,7 +155,8 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
                 if( val_start == NULL ) {
                     break;
                 }
-                if( (hx_lvl == 0) || (hxstring[2] == lvlc) ) {
+                if( (hx_lvl == 0)
+                  || (hxstring[2] == lvlc) ) {
                     pgseen = true;
                     if( quote_char == '\0' ) {  // value not quoted
                         if( strnicmp( "start", val_start, 5 ) == 0 ) {
@@ -205,7 +208,8 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
                 if( val_start == NULL ) {
                     break;
                 }
-                if( (hx_lvl == 0) || (hxstring[3] == lvlc) ) {  // IREF IHx
+                if( (hx_lvl == 0)
+                  || (hxstring[3] == lvlc) ) {  // IREF IHx
                     seeidseen = true;
                     seeidwk = find_refid( ix_ref_dict, seeid );
                     if( seeidwk == NULL ) {             // not in dict, this is an error
@@ -228,7 +232,8 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
                 if( val_start == NULL ) {
                     break;
                 }
-                if( hx_lvl == 0 || (hxstring[3] == lvlc) ) {// :IREF :IHx
+                if( hx_lvl == 0
+                  || (hxstring[3] == lvlc) ) {// :IREF :IHx
                     seeseen = true;
                     seetext = mem_alloc( val_len + 1 );
                     strncpy( seetext, val_start, val_len );
@@ -249,13 +254,15 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
                 gn.ignore_blanks = 0;
                 cc = getnum( &gn );
 
-                if( (cc == pos) || (cc == neg) ) {
+                if( (cc == pos)
+                  || (cc == neg) ) {
 
                     /* Groups are ignored, issue warning */
 
                     xx_warn_c( wng_unsupp_att, "ix" );
 
-                    if( (gn.result < 1) || (gn.result > 9) ) { // out of range
+                    if( (gn.result < 1)
+                      || (gn.result > 9) ) { // out of range
                         xx_line_err_c( err_struct_range, val_start );
                     }
                 }
@@ -328,13 +335,15 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
         /* processing for :IREF                                                */
         /***********************************************************************/
 
-            if( refidseen && (refwk != NULL) ) {
+            if( refidseen
+              && (refwk != NULL) ) {
                 ixhwk = refwk->u.ix.hblk;
             } else {
                 ixhwk = ixhtag[hx_lvl];
             }
 
-            if( !ProcFlags.reprocess_line && *p != '\0' ) {
+            if( !ProcFlags.reprocess_line
+              && *p != '\0' ) {
                 SkipDot( p );                       // possible tag end
                 if( *p != '\0' ) {
                     process_text( p, g_curr_font);  // if text follows
@@ -348,7 +357,7 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
         /***********************************************************************/
 
             switch( hx_lvl ) {              // processing for :I1 :I2 :I3
-            case 1 :
+            case 1:
                 ixhbase = ixhtag[hx_lvl - 1];
                 ixhwork = index_dict;
                 ixhwk = find_create_ix_h_entry( ixhwork, ixhbase, printtxt, printtxtlen,
@@ -358,9 +367,10 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
                 }
                 ixhtag[hx_lvl] = ixhwk;
                 break;
-            case 2 :
-            case 3 :
-                if( refidseen && (refwk != NULL) ) {
+            case 2:
+            case 3:
+                if( refidseen
+                  && (refwk != NULL) ) {
                     if( hx_lvl > refwk->u.ix.hblk->ix_lvl ) {
                         ixhbase = refwk->u.ix.hblk;
                         ixhwork = refwk->u.ix.hblk->lower;
@@ -377,7 +387,8 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
                 if( ixhwk->prt_term == printtxt ) {         // printtxt was reassigned
                     printtxt = NULL;
                 }
-                if( !refidseen && (hx_lvl == 2) ) {
+                if( !refidseen
+                  && (hx_lvl == 2) ) {
                     ixhtag[hx_lvl] = ixhwk;
                 }
                 break;
@@ -392,7 +403,7 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
         /***********************************************************************/
 
             switch( hx_lvl ) {              // processing for :IH1 :IH2 :IH3
-            case 1 :
+            case 1:
                 ixhbase = ixhtag[hx_lvl - 1];
                 ixhwork = index_dict;
                 ixhwk = find_create_ix_h_entry( ixhwork, ixhbase, printtxt, printtxtlen,
@@ -402,8 +413,8 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
                 }
                 ixhtag[hx_lvl] = ixhwk;
                 break;
-            case 2 :
-            case 3 :
+            case 2:
+            case 3:
                 ixhbase = ixhtag[hx_lvl - 1];
                 ixhwork = ixhtag[hx_lvl - 1]->lower;
                 ixhwk = find_create_ix_h_entry( ixhwork, ixhbase, printtxt, printtxtlen,
@@ -449,7 +460,8 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
     }
 
     if( idseen ) {                 // ID specified create reference entry
-        if( WgmlFlags.firstpass || WgmlFlags.lastpass ) {
+        if( WgmlFlags.firstpass
+          || WgmlFlags.lastpass ) {
             refwork = find_refid( ix_ref_dict, id );
             if( WgmlFlags.firstpass ) {           // first pass: build dict
                 if( refwork == NULL ) {             // new entry

@@ -97,7 +97,7 @@ static void puncadj( text_line * line, int32_t * delta0, int32_t rem,
             tn = tw->next;
             ch = tw->text[tw->count - 1];
             switch( loop_cnt ) {
-            case   3:                   // test full stop
+            case 3:                   // test full stop
                 if( ch == '.'
                   || ch == '!'
                   || ch == '?'
@@ -115,7 +115,7 @@ static void puncadj( text_line * line, int32_t * delta0, int32_t rem,
                     changed = true;
                 }
                 break;
-            case   2:                   // test half stop
+            case 2:                   // test half stop
                 if( ch == ':'
                   || ch == ';' ) {
 #if 0
@@ -139,7 +139,7 @@ static void puncadj( text_line * line, int32_t * delta0, int32_t rem,
                     changed = true;
                 }
                 break;
-            case   1:
+            case 1:
                 if( ch == ','
                   || ch == ')' ) {
 #if 0
@@ -180,7 +180,7 @@ static void puncadj( text_line * line, int32_t * delta0, int32_t rem,
 
 static uint32_t text_chars_width( const char *text, size_t count, font_number font )
 {
-    int         i;
+    size_t      i;
     size_t      cur_count   = 0;
     uint32_t    retval      = 0;
 
@@ -205,7 +205,7 @@ static uint32_t text_chars_width( const char *text, size_t count, font_number fo
 
 static void next_tab( void )
 {
-    int                 i;
+    uint16_t            i;
     int                 last_i;
     int32_t             cur_h;
     tab_stop            l_tab;
@@ -232,12 +232,12 @@ static void next_tab( void )
             last_i = i;
         }
         for( ; i < user_tabs.current; i++ ) {
-            if( cur_h < ((int32_t) user_tabs.tabs[i].column) ) {
+            if( cur_h < ((int32_t)user_tabs.tabs[i].column) ) {
                 c_tab = &user_tabs.tabs[i];
                 break;
             }
         }
-        if( last_i < i - 1 ) {
+        if( last_i < (int)i - 1 ) {
             user_tab_skip = true;
         }
     }
@@ -516,10 +516,10 @@ static void wgml_tabs( void )
               && ((c_stop->alignment != al_left)
               || !(input_cbs->fmflags & II_tag_mac)) ) {
                 // remove all markers/fill chars
-                if( tab_chars.first->prev !=NULL) {
+                if( tab_chars.first->prev != NULL ) {
                     tab_chars.first->prev->next = tab_chars.last->next;
                 }
-                if( tab_chars.last->next != NULL) {
+                if( tab_chars.last->next != NULL ) {
                     tab_chars.last->next->prev = tab_chars.first->prev;
                 }
                 if( in_chars->prev == tab_chars.last ) {
@@ -689,7 +689,7 @@ static void wgml_tabs( void )
                 def_tab_count--;            // default tab skipped
             }
             if( tab_chars.first != NULL ) {  // remove all markers/fill chars
-                if( tab_chars.first->prev !=NULL ) {
+                if( tab_chars.first->prev != NULL ) {
                     tab_chars.first->prev->next = tab_chars.last->next;
                 }
                 if( tab_chars.last->next != NULL ) {
@@ -775,7 +775,8 @@ static void wgml_tabs( void )
 
             // Not for text from macros, even if font number changes
 
-            if( (c_font != s_chars->font) && !(input_cbs->fmflags & II_macro) ) {
+            if( (c_font != s_chars->font)
+              && !(input_cbs->fmflags & II_macro) ) {
                 c_chars = do_c_chars( c_chars, in_chars, NULL, 0,
                                 t_page.cur_width, 0, c_font, c_type );
                 if( tab_chars.first == NULL ) {
@@ -789,7 +790,7 @@ static void wgml_tabs( void )
                   && (c_type != tx_norm) ) {
                     c_chars = do_c_chars( c_chars, in_chars, NULL, 0,
                                         t_page.cur_width, 0, c_font, c_type );
-                    if( tab_chars.first == NULL) {
+                    if( tab_chars.first == NULL ) {
                         tab_chars.first = c_chars;
                     }
                     tab_chars.last = c_chars;
@@ -842,7 +843,7 @@ static void wgml_tabs( void )
                 }
             }
             if( t_width == 0 ) {    // no text: position marker
-                if( tab_chars.first == NULL) {
+                if( tab_chars.first == NULL ) {
                     tab_chars.first = c_chars;
                 }
                 tab_chars.last = c_chars;
@@ -850,7 +851,7 @@ static void wgml_tabs( void )
                   && (c_type != tx_norm) ) {
                     c_chars = do_c_chars( c_chars, in_chars, NULL, 0, gap_start,
                                                         0, c_font, c_type );
-                    if( tab_chars.first == NULL) {
+                    if( tab_chars.first == NULL ) {
                         tab_chars.first = c_chars;
                     }
                     tab_chars.last = c_chars;
@@ -911,7 +912,7 @@ static void wgml_tabs( void )
               && (c_type == tx_norm) ) {
                 c_chars = do_c_chars( c_chars, in_chars, NULL, 0, gap_start,
                                         0, c_font, c_type );
-                if( tab_chars.first == NULL) {
+                if( tab_chars.first == NULL ) {
                     tab_chars.first = c_chars;
                 }
                 tab_chars.last = c_chars;
@@ -1221,7 +1222,8 @@ void do_justify( uint32_t lm, uint32_t rm, text_line * line )
     line_width = rm - lm;
 
 //    if( (sum_w <= 0) || (hor_end >= rm) || (line_width < 1) ) {
-    if( (hor_end >= rm) || (line_width < 1) ) {
+    if( (hor_end >= rm)
+      || (line_width < 1) ) {
         return;                         // no justify needed / possible
     }
     delta0 = rm - hor_end;
@@ -1405,7 +1407,7 @@ void insert_hard_spaces( const char * spaces, size_t len, font_number font )
             t_line = alloc_text_line();
             t_line->first = process_word( spaces, len, font, true );
             t_line->last = t_line->first;
-        } else if( t_line->last == NULL) {      // can happen if UL bullet is a space character
+        } else if( t_line->last == NULL ) {      // can happen if UL bullet is a space character
             t_line->first = process_word( spaces, len, font, true );
             t_line->last = t_line->first;
         } else {
@@ -1974,7 +1976,7 @@ void process_text( char * text, font_number font )
             tab_space = p - pa;
             post_space = 0;
             /* tab_space > 0 is only needed where shown */
-            if( *p == '\0' ) {                                      // spaces only
+            if( p[0] == '\0' ) {                                      // spaces only
                 if( input_cbs->hidden_head != NULL ) {              // something follows (not EOL)
                     spaces_at_start = true;                         // catch text next time
                 }

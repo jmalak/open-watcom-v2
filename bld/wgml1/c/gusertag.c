@@ -113,8 +113,8 @@ static bool check_att_value( gaentry * ga, gtentry * ge, dict_hdl loc_dict )
         } else {
             if( gaval->valflags & val_range ) {
                 attval = strtol( token_buf, NULL, 10 );
-                if( attval < gaval->a.range[0] ||
-                    attval > gaval->a.range[1]  ) {
+                if( attval < gaval->a.range[0]
+                  || attval > gaval->a.range[1] ) {
                     xx_err( ERR_ATT_RANGE_INV );// value outside range
                     msg_done = true;
                     break;
@@ -184,20 +184,15 @@ bool process_tag( gtentry * ge, mac_entry * me )
         if( input_cbs->hidden_head != NULL ) {
             pline = input_cbs->hidden_head;
             input_cbs->hidden_head = input_cbs->hidden_head->next;
-            len = strlen( pline->value );
-            p2 = p;
-            while( *p != '\0' ) {
-                p++;
+            p2 = p + strlen( p );
+            if( IS_CONT_CHAR( p2 - 1 ) ) {    // remove continue character if present
+                *(--p2) = '\0';
             }
-            if( IS_CONT_CHAR( p - 1 ) ) {    // remove continue character if present
-                p--;
-                *p = '\0';
-            }
-            strcpy_s( p, len + 1, pline->value );
+            strcpy( p2, pline->value );
             mem_free( pline );
-            p = p2;
         }
-    } else if( ge->attribs != NULL && (ge->tagflags & tag_attr) ) {
+    } else if( ge->attribs != NULL
+      && (ge->tagflags & tag_attr) ) {
 
         /***********************************************************************/
         /*  only process attributes if ATTribute was used and at least one     */
@@ -229,7 +224,8 @@ bool process_tag( gtentry * ge, mac_entry * me )
                         }
 
                         /* no line end allowed before '=' except with TEXTLine */
-                        if( (*p == '\0') && !(ge->tagflags & tag_textline) ) {
+                        if( (*p == '\0')
+                          && !(ge->tagflags & tag_textline) ) {
                             xx_line_err_cc( err_no_att_val, token_buf, p );
                         }
 
@@ -335,7 +331,8 @@ bool process_tag( gtentry * ge, mac_entry * me )
     } else if( ge->tagflags & tag_attr ) {
         p2 = p;                                 // save value
         SkipSpaces( p );
-        if( (*p != '.') && (*p != '\0') ) {
+        if( (*p != '.')
+          && (*p != '\0') ) {
             xx_line_warn_cc( wng_att_name, p, p );
         }
         p = p2;                                 // restore value
@@ -351,7 +348,9 @@ bool process_tag( gtentry * ge, mac_entry * me )
 
     p2 = p;                         // p2 saves the start value for p
     SkipSpaces( p );                // skip spaces before the '.', if one is present
-    if( (*p2 != '.') && (p2 != p) && (*p == '.') ) {
+    if( (*p2 != '.')
+      && (p2 != p)
+      && (*p == '.') ) {
         p2 = p;                     // reset p2 to '.' ending tag
     }
     SkipDot( p );                   // skip the '.', if present
@@ -380,30 +379,29 @@ bool process_tag( gtentry * ge, mac_entry * me )
         if( *p2 == '.' ) {
             SkipDot( p );
         } else {
-            if( (ge->tagflags & tag_attr) && !(ge->tagflags & tag_textline) ) {
+            if( (ge->tagflags & tag_attr)
+              && !(ge->tagflags & tag_textline) ) {
                 SkipSpaces( p );
             }
         }
 
         // remove trailing spaces
-        len = strlen( p );
-        if( !ProcFlags.null_value && (len != 0) && (input_cbs->hidden_head == NULL) ) {
-            while( *(p + len - 1) == ' ' ) {        // remove trailing spaces
-                len--;
-                if( len == 0 ) {                    // empty operand
-                    break;
-                }
+        if( !ProcFlags.null_value
+          && (*p != '\0')
+          && (input_cbs->hidden_head == NULL) ) {
+            len = strlen( p );
+            p2 = p + len - 1;
+            while( *p2 == ' ' && len-- > 0 ) {        // remove trailing spaces
+                *(p2--) = '\0';
             }
-            *(p + len) = '\0';                      // end after last non-space character
         }
 
         // remove trailing continue character if tag has NOCONTinue option
         if( (ge->tagflags & tag_nocont) ) {
-            len = strlen( p );
-            if( IS_CONT_CHAR( p + len - 1 ) ) {
-                len--;
+            p2 = p + strlen( p );
+            if( IS_CONT_CHAR( p2 - 1 ) ) {
+                *(--p2) = '\0';
             }
-            *(p + len) = '\0';
         }
     }
     strcpy( token_buf, p );
@@ -436,7 +434,8 @@ bool process_tag( gtentry * ge, mac_entry * me )
         ProcFlags.utc = true;
     }
 
-    if( (input_cbs->fmflags & II_research) && WgmlFlags.firstpass ) {
+    if( (input_cbs->fmflags & II_research)
+      && WgmlFlags.firstpass ) {
         print_sym_dict( input_cbs->local_dict );
     }
 

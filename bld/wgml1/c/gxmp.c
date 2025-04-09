@@ -135,7 +135,8 @@ void gml_xmp( const gmltag * entry )
         scr_process_break();
     }
 
-    if( !ProcFlags.reprocess_line && *p != '\0' ) { // text after tag
+    if( !ProcFlags.reprocess_line
+      && *p != '\0' ) { // text after tag
         SkipDot( p );                               // possible tag end
         if( *p != '\0' ) {
             if( IS_CONT_CHAR( p ) ) { // text is continuation character only
@@ -180,7 +181,8 @@ void gml_exmp( const gmltag * entry )
 
     /* Ensure blank lines at end of XMP use correct font */
 
-    if( (g_blank_units_lines == 0) && (g_blank_text_lines > 0) ) {
+    if( (g_blank_units_lines == 0)
+      && (g_blank_text_lines > 0) ) {
         g_blank_units_lines = g_blank_text_lines * wgml_fonts[layout_work.xmp.font].line_height;
     }
     g_blank_text_lines = 0;
@@ -221,13 +223,16 @@ void gml_exmp( const gmltag * entry )
         list_top = true;
         while( cur_doc_el_group->first != NULL ) {
             cur_el = cur_doc_el_group->first;
-            if( list_top && (input_cbs->fmflags & II_macro) && (cur_el->type == el_vspace) ) {     // first element is vspace
+            if( list_top
+              && (input_cbs->fmflags & II_macro)
+              && (cur_el->type == el_vspace) ) {     // first element is vspace
                 if( cur_el->blank_lines > 0 ) {
                     cur_el->blank_lines -= wgml_fonts[cur_el->element.vspace.font].line_height;
                 }
             }
-            if( (cur_el->next != NULL) && (cur_el->type == el_text) &&
-                    (cur_el->next->type == el_vspace) ) {
+            if( (cur_el->next != NULL)
+              && (cur_el->type == el_text)
+              && (cur_el->next->type == el_vspace) ) {
                 cur_el->element.text.vspace_next = true;        // matches wgml 4.0
             }
             cur_doc_el_group->first = cur_doc_el_group->first->next;
@@ -246,8 +251,9 @@ void gml_exmp( const gmltag * entry )
     p = scan_start;
     SkipDot( p );                       // over '.'
     if( *p != '\0' ) {
-        if( (input_cbs->hidden_head != NULL) && !input_cbs->hidden_head->ip_start
-                && IS_CONT_CHAR( p ) ) { // text is continuation character only
+        if( (input_cbs->hidden_head != NULL)
+          && !input_cbs->hidden_head->ip_start
+          && IS_CONT_CHAR( p ) ) { // text is continuation character only
             if( input_cbs->fmflags & II_macro ) {
                 /* placeholder */
             } else {
