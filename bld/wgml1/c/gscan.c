@@ -85,14 +85,17 @@ static void build_scr_cw_lookup( void )
     // index (-1) during lookup.
     for( i = 0; i <= SCR_KWDMAX; ++i ) {
         cw = &script_kwds[i];
-        if( islower( cw->tagname[0] ) && islower( cw->tagname[1] ) ) {
+        if( islower( cw->tagname[0] )
+          && islower( cw->tagname[1] ) ) {
             hash = (cw->tagname[0] - 'a') * 26 + (cw->tagname[1] - 'a');
             scr_lkup_tbl[hash] = i + 1;
-        } else if( cw->tagname[0] == 'h' && cw->tagname[1] == '0' ) {
+        } else if( cw->tagname[0] == 'h'
+          && cw->tagname[1] == '0' ) {
             hash = ('h' - 'a') * 26 + ('z' - 'a');  // fake it as .HZ
             scr_lkup_tbl[hash] = i + 1;
             scr_cw_hx = i;
-        } else if( cw->tagname[0] == '.' && cw->tagname[1] == '.' ) {
+        } else if( cw->tagname[0] == '.'
+          && cw->tagname[1] == '.' ) {
             scr_cw_label = i;   // the ... label
         } else {
             // .H1 to .H9 -- ignored here
@@ -102,7 +105,7 @@ static void build_scr_cw_lookup( void )
 }
 
 
-static int find_scr_cw( const char *str )
+static int find_script_cw( const char *str )
 {
     int     hash;
     int     index = -1;
@@ -110,12 +113,15 @@ static int find_scr_cw( const char *str )
     if( !scr_lkup_setup )
         build_scr_cw_lookup();
 
-    if( islower( str[0] ) && islower( str[1] ) ) {
+    if( islower( str[0] )
+      && islower( str[1] ) ) {
         hash  = (str[0] - 'a') * 26 + (str[1] - 'a');
         index = scr_lkup_tbl[hash] - 1;
-    } else if( str[0] == '.' && str[1] == '.' ) {
+    } else if( str[0] == '.'
+      && str[1] == '.' ) {
         index = scr_cw_label;
-    } else if( str[0] == 'h' && isdigit( str[1] ) ) {
+    } else if( str[0] == 'h'
+      && isdigit( str[1] ) ) {
         index = scr_cw_hx + str[1] - '0';
     }
 
@@ -178,7 +184,8 @@ static void scan_gml( void )
     csave = *p;
     *p = '\0';
 
-    if( WgmlFlags.firstpass && (cb->fmflags & II_research) ) {
+    if( WgmlFlags.firstpass
+      && (cb->fmflags & II_research) ) {
 
         if( IS_CMT_TAG( g_tok_start ) ) {   // quiet for :cmt.
 
@@ -227,7 +234,8 @@ static void scan_gml( void )
             /*  user-defined tag definitions.                                  */
             /*******************************************************************/
 
-            if( (cb->fmflags & II_tag_mac) && ge->overload ) {
+            if( (cb->fmflags & II_tag_mac)
+              && ge->overload ) {
                 me = NULL;
             }
 
@@ -305,10 +313,10 @@ static void scan_gml( void )
                         /*  tag SET.                                                       */
                         /*******************************************************************/
 
-                        if( ((gml_tags[k].tagclass & ip_start_tag) == 0) &&
-                                ((gml_tags[k].tagclass & ip_end_tag) == 0) &&
-                                ((gml_tags[k].tagclass & index_tag) == 0) &&
-                                strcmp( gml_tags[k].tagname, "SET") ) {
+                        if( ((gml_tags[k].tagclass & ip_start_tag) == 0)
+                          && ((gml_tags[k].tagclass & ip_end_tag) == 0)
+                          && ((gml_tags[k].tagclass & index_tag) == 0)
+                          && strcmp( gml_tags[k].tagname, "SET") ) {
                             ProcFlags.force_pc = false;
                         }
 
@@ -418,13 +426,14 @@ static char *   search_separator( char * str, char sep )
     bool        instring = false;
     char        quote = '\0';
 
-    while( *str != '\0' ) {
+    for( ; *str != '\0'; str++ ) {
         if( instring ) {
             if( *str == quote ) {
                 instring = false;
             }
         } else {
-            if( (*str == '\"') || (*str == '\'') ) {
+            if( (*str == '\"')
+              || (*str == '\'') ) {
                 instring = true;
                 quote = *str;
             } else {
@@ -433,7 +442,6 @@ static char *   search_separator( char * str, char sep )
                 }
             }
         }
-        str++;
     }
     if( *str == sep ) {
         return( str );
@@ -463,11 +471,12 @@ static void     scan_script( void )
 
     cb = input_cbs;
     p = scan_start + 1;
-    if( !ProcFlags.literal && (*p == '\0') ) {  // catch line with only "." in it
+    if( !ProcFlags.literal
+      && (*p == '\0') ) {               // catch line with only "." in it
         if( ProcFlags.concat ) {
-            *scan_start = ' ';                  // make line blank
+            *scan_start = ' ';          // make line blank
         } else {
-            scan_start = scan_stop + 1;         // treat as comment
+            scan_start = scan_stop + 1; // treat as comment
         }
         return;
     }
@@ -479,7 +488,8 @@ static void     scan_script( void )
         return;
     }
 
-    if( *p == SCR_char && *(p+1) == SCR_char ) {
+    if( *p == SCR_char
+      && *(p+1) == SCR_char ) {
             pt = token_buf;
             *pt++ = SCR_char;               // special for ...label
             *pt++ = SCR_char;
@@ -541,8 +551,10 @@ static void     scan_script( void )
         }
         *pt = '\0';
 
-        if( !ProcFlags.CW_sep_ignore &&
-                ((*token_buf == '\0') || (*token_buf == ' ') || (toklen == 0)) ) {
+        if( !ProcFlags.CW_sep_ignore
+          && ((*token_buf == '\0')
+          || (*token_buf == ' ')
+          || (toklen == 0)) ) {
             // no valid script controlword / macro, treat as text
             scan_start = scan_restart;
             return;
@@ -556,7 +568,8 @@ static void     scan_script( void )
     }
 
     if( me != NULL ) {                  // macro found
-        if( WgmlFlags.firstpass && (cb->fmflags & II_research) ) {
+        if( WgmlFlags.firstpass
+          && (cb->fmflags & II_research) ) {
             if( cb->fmflags & II_tag_mac ) {
                 printf_research( "L%d    %c%s macro found in macro %s(%d)\n\n",
                                  inc_level, SCR_char, token_buf,
@@ -579,7 +592,8 @@ static void     scan_script( void )
     } else if( !ProcFlags.literal ) {   // try script controlword if not in LI
         scan_start += SCR_KW_LENGTH;
         p = scan_start;
-        if( (cb->fmflags & II_research) && WgmlFlags.firstpass ) {
+        if( (cb->fmflags & II_research)
+          && WgmlFlags.firstpass ) {
             if( cb->fmflags & II_tag_mac ) {
                 printf_research( "L%d    %c%s CW found in macro %s(%d)\n\n",
                                  inc_level, SCR_char, token_buf,
@@ -597,10 +611,11 @@ static void     scan_script( void )
             return;
         }
 
-        k = find_scr_cw( token_buf );               // non-negative if valid
+        k = find_script_cw( token_buf );            // non-negative if valid
         if( k >= 0 ) {
-            if( !ProcFlags.layout && !ProcFlags.fb_document_done
-                                    && (script_kwds[k].cwflags & cw_o_t) ) {
+            if( !ProcFlags.layout
+              && !ProcFlags.fb_document_done
+              && (script_kwds[k].cwflags & cw_o_t) ) {
 
                 /********************************************************/
                 /* this is the first control word which produces output */
@@ -611,7 +626,7 @@ static void     scan_script( void )
                 start_doc_sect();
             }
             ProcFlags.CW_noblank = false;           // blank after CW is default
-            if( ProcFlags.literal  ) {              // .li active
+            if( ProcFlags.literal ) {              // .li active
                 if( strcmp( token_buf, "li" ) == 0 ) {  // .li
                     ProcFlags.CW_noblank = (*p != ' ');
                     scan_start = p; // found, process
@@ -651,16 +666,17 @@ condcode    test_process( ifcb * cb )
 #ifdef DEBTESTPROC
     int     start_level = cb->if_level;
 
-    if( (input_cbs->fmflags & II_research) && WgmlFlags.firstpass
-        && cb->if_level ) {
+    if( (input_cbs->fmflags & II_research)
+      && WgmlFlags.firstpass
+      && cb->if_level ) {
         show_ifcb( "Anf teif", cb );
     }
 #endif
 
     cc = no;
 //mainif
-    if( cb->if_flags[cb->if_level].iflast   // 1. rec after .if
-        && !cb->if_flags[cb->if_level].ifcwte) {// not .th or .el
+    if( cb->if_flags[cb->if_level].iflast           // 1. rec after .if
+      && !cb->if_flags[cb->if_level].ifcwte) {      // not .th or .el
 
         cb->if_flags[cb->if_level].iflast = false;  // reset first switch
         cb->if_flags[cb->if_level].ifthen = true;   // treat as then
@@ -670,11 +686,10 @@ condcode    test_process( ifcb * cb )
     if( cb->if_flags[cb->if_level].ifcwif ) {   // .if
 //mnif03
         if( cb->if_flags[cb->if_level].ifthen
-            || cb->if_flags[cb->if_level].ifelse ) {// object of .th or .el
+          || cb->if_flags[cb->if_level].ifelse ) {// object of .th or .el
 
             cc = pos;
         } else {
-
 //mnif03a
             while( cb->if_level > 0 ) { // pop one level
                 cb->if_level--;
@@ -686,8 +701,10 @@ condcode    test_process( ifcb * cb )
         }
 
 #ifdef DEBTESTPROC
-        if( (input_cbs->fmflags & II_research) && WgmlFlags.firstpass
-            && (start_level || cb->if_level) ) {
+        if( (input_cbs->fmflags & II_research)
+          && WgmlFlags.firstpass
+          && (start_level
+          || cb->if_level) ) {
             char * txt = (cc == pos ? "EX1 pos" : "EX1 no" );
 
             show_ifcb( txt, cb );
@@ -701,8 +718,10 @@ condcode    test_process( ifcb * cb )
         if( cb->if_flags[cb->if_level].ifcwdo ) {   // if  .do
             cc = pos;
 #ifdef DEBTESTPROC
-        if( (input_cbs->fmflags & II_research) && WgmlFlags.firstpass
-                && (start_level || cb->if_level) ) {
+        if( (input_cbs->fmflags & II_research)
+          && WgmlFlags.firstpass
+          && (start_level
+          || cb->if_level) ) {
                 char * txt = (cc == pos ? "Edo pos" : "Edo no" );
 
                 show_ifcb( txt, cb );
@@ -712,7 +731,7 @@ condcode    test_process( ifcb * cb )
         }
 
         if( cb->if_flags[cb->if_level].ifthen
-            || cb->if_flags[cb->if_level].ifelse ) {// object of .th or .el
+          || cb->if_flags[cb->if_level].ifelse ) {// object of .th or .el
 //mnif05
             if( cb->if_flags[cb->if_level].ifelse ) {   // object of .el
 //mnif06
@@ -766,8 +785,10 @@ condcode    test_process( ifcb * cb )
         g_err_if_int();
     }
 #ifdef DEBTESTPROC
-    if( (input_cbs->fmflags & II_research) && WgmlFlags.firstpass
-        && (start_level || cb->if_level) ) {
+    if( (input_cbs->fmflags & II_research)
+      && WgmlFlags.firstpass
+      && (start_level
+      || cb->if_level) ) {
         char * txt = (cc == pos ? "EX3 pos" : "EX3 no" );
 
         show_ifcb( txt, cb );
@@ -788,27 +809,19 @@ condcode    test_process( ifcb * cb )
 
 void set_if_then_do( ifcb * cb )
 {
-    char            cw[9];
-    char        *   p;
-    char        *   pb;
+    char            cw[MAC_NAME_LENGTH + 1];
+    char            *p;
     uint32_t        len;
 
     len = 0;
-    p = cw;
-    pb = buff2;
-    if( *pb == SCR_char ) {              // only test script control words
-        pb++;
-        if( (*pb == SCR_char)  || (*pb == '\'') ) {
-            pb++;                       // over ".." or ".'"
+    p = buff2;
+    if( *p == SCR_char ) {              // only test script control words
+        p++;
+        if( (*p == SCR_char)
+          || (*p == '\'') ) {
+            p++;                       // over ".." or ".'"
         }
-        while( len < MAC_NAME_LENGTH ) {
-            if( is_space_tab_char( *pb ) || (*pb == '\0') ) { // largest possible macro/cw
-                break;
-            }
-           *p++ = my_tolower( *pb++ );      // copy lowercase to TokenBuf
-           len++;
-        }
-        *p = '\0';
+        get_macro_name( p, cw )
         if( strncmp( cw, "if", SCR_KW_LENGTH ) == 0 ) {
             if( len > SCR_KW_LENGTH ) {
                 cb->if_flags[cb->if_level].ifcwif = (find_macro( macro_dict, cw ) == NULL);
@@ -867,8 +880,10 @@ void    scan_line( void )
         /*  or for unprocessed text in the input record                    */
         /*******************************************************************/
 
-        if( (*scan_start != '\0') && (scan_start <= scan_stop) ) {
-            if( (input_cbs->fmflags & II_research) && WgmlFlags.firstpass ) {
+        if( (*scan_start != '\0')
+          && (scan_start <= scan_stop) ) {
+            if( (input_cbs->fmflags & II_research)
+              && WgmlFlags.firstpass ) {
                 g_info_lm( inf_text_line, scan_start );
             }
             if( ProcFlags.layout ) {    // LAYOUT active: should not happen
@@ -879,7 +894,8 @@ void    scan_line( void )
                     start_doc_sect();   // if not already done
                     // catch blank lines: not an error
                     while( scan_start < scan_stop ) {
-                        if( (*scan_start != ' ') && (*scan_start != '\0') ) {
+                        if( (*scan_start != ' ')
+                          && (*scan_start != '\0') ) {
                             break;
                         }
                         scan_start++;
@@ -891,9 +907,10 @@ void    scan_line( void )
 
                     /* This test skips blank lines at the top of xmp blocks inside macros */
 
-                    if( !(ProcFlags.skip_blank_line && (*scan_start == ' ') &&
-                            ((scan_stop - scan_start) == 1) &&
-                            (input_cbs->fmflags & II_file)) ) {
+                    if( !(ProcFlags.skip_blank_line
+                      && (*scan_start == ' ')
+                      && ((scan_stop - scan_start) == 1)
+                      && (input_cbs->fmflags & II_file)) ) {
                         if( ProcFlags.force_pc ) {
                             do_force_pc( scan_start );
                         } else {
@@ -910,9 +927,11 @@ void    scan_line( void )
         /* ensure the line is output                                       */
         /*******************************************************************/
 
-        if( !ProcFlags.layout && (input_cbs->hidden_head == NULL) ) {
-            if( !ProcFlags.concat &&
-                ((input_cbs->fmflags & II_file) || (input_cbs->fmflags & II_macro)) ) {
+        if( !ProcFlags.layout
+          && (input_cbs->hidden_head == NULL) ) {
+            if( !ProcFlags.concat
+              && ((input_cbs->fmflags & II_file)
+              || (input_cbs->fmflags & II_macro)) ) {
 
                 /*******************************************************************/
                 /* This fixes a problem found when BX was implemented: when PA is  */
@@ -921,15 +940,18 @@ void    scan_line( void )
                 /* remains to be determined                                        */
                 /*******************************************************************/
 
-                if( ProcFlags.in_bx_box && !ProcFlags.keep_left_margin) {
+                if( ProcFlags.in_bx_box
+                  && !ProcFlags.keep_left_margin) {
                     t_page.cur_width = g_indent;
                 }
-                if( !ProcFlags.cont_char && !ProcFlags.para_has_text ) {
+                if( !ProcFlags.cont_char
+                  && !ProcFlags.para_has_text ) {
                     script_process_break();
                 }
             }
         }
-    } else if( (input_cbs->fmflags & II_research) && WgmlFlags.firstpass ) {
+    } else if( (input_cbs->fmflags & II_research)
+      && WgmlFlags.firstpass ) {
         g_info_lm( inf_skip_line );     // show skipped line
     }
     if( ProcFlags.literal ) {
@@ -995,12 +1017,13 @@ const gmltag * find_lay_tag( char * token, size_t toklen )
 
 bool is_ip_tag( e_tags offset )
 {
-    if( (offset < t_NONE) || (offset >= t_MAX) ) {  // catch invalid offset values
+    if( (offset < t_NONE)
+      || (offset >= t_MAX) ) {          // catch invalid offset values
         internal_err( __FILE__, __LINE__ );
-    } else if( offset != t_NONE ) {                 // t_NONE is valid, but is not an ip_start_tag
+    } else if( offset != t_NONE ) {     // t_NONE is valid, but is not an ip_start_tag
         return( gml_tags[offset - 1].tagclass & ip_start_tag );
     }
-    return( false );                                // not found
+    return( false );                    // not found
 }
 
 /***************************************************************************/
@@ -1050,7 +1073,7 @@ char * get_text_line( char * p )
         SkipSpaces( p );                // skip initial spaces
         if( *p != '\0' ) {              // text exists
             classify_record( *p );      // sets ProcFlags used below if appropriate
-            if( ProcFlags.script_cw) {
+            if( ProcFlags.script_cw ) {
                 tl_found = false;       // control word, macro, or whatever
             } else if( ProcFlags.gml_tag ) {
                 p++;
