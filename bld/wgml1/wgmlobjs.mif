@@ -140,6 +140,7 @@ scr_objs =  &
         gsfbfk.obj   &
         gsfc2d.obj   &
         gsfc2x.obj   &
+        gsfcompa.obj &
         gsfd2c.obj   &
         gsfdelst.obj &
         gsfindex.obj &

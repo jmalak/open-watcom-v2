@@ -10,6 +10,7 @@
 *
 *             add_macro_cb_entry  -- add macro as input source
 *             add_macro_parms     -- add macro call/file include parms to local dictionary
+*             get_macro_name      -- get normalized macro name (lowercased and correct length)
 *             free_lines          -- free macro source lines
 *             verify_sym          -- identify name=value pairs
 *
@@ -22,6 +23,19 @@
 
 #include "wgml.h"
 
+
+char *get_macro_name( const char *p, char *dst )
+{
+    for( len = 0; len < MAC_NAME_LENGTH; len++ ) {
+        if( is_space_tab_char( *p )
+          || (*p == '\0') ) { // largest possible macro name
+            break;
+        }
+        *dst++ = my_tolower( *p++ );     // copy lowercase macroname
+    }
+    *dst = '\0';
+    return( dst );
+}
 
 /*****************************************************************************/
 /* verify that p points to a <symbol>=<value> pair                           */
@@ -55,7 +69,8 @@ static char *verify_sym( char * p )
 
     pa = NULL;
     if( *p == '=' ) {                   // "=" found
-        if( !star_found || local ) {    // exclude constructs like "*=.()", which are text
+        if( !star_found
+          || local ) {    // exclude constructs like "*=.()", which are text
             p++;
             SkipSpaces( p );                // skip over spaces
             if( *p != '\0' ) {              // something follows "="
@@ -126,16 +141,13 @@ static const char *is_quoted_string( const char *p )
     /* Delimiter must be at the beginning and end of the string. */
     if( is_quote_char( *p ) ) {
         quote = *p;
-        pa = p;
-        pa++;                   // skip over delimiter
-        while( *pa != '\0' ) {
-            if( (pa[0] == quote) && ((pa[1] == ' ') || (pa[1] == '\0')) ) {
-                break;          // matching delimiter found
+        // first skip over delimiter
+        for( pa = p + 1; *pa != '\0'; pa++ ) {
+            if( (pa[0] == quote)
+              && ((pa[1] == ' ')
+              || (pa[1] == '\0')) ) {
+                return( pa );   // matching delimiter found
             }
-            pa++;
-        }
-        if( *pa == quote ) {    // matching delimiter found
-            return( pa );
         }
     }
     return( NULL );
@@ -194,7 +206,6 @@ void    add_macro_parms( char * p )
 {
     char        c;
     char    *   pa;
-    char        quote;                  // delimiter character at start of parameter, if any
     char        starbuf[12];
     condcode    cc;
     int         star0;
@@ -216,7 +227,9 @@ void    add_macro_parms( char * p )
         o_len = strlen( p );
         len = o_len;
         if ( ProcFlags.pre_fsp ) {      // space characters from symbol/attribute/function evaluation
-            if( ProcFlags.concat && (len > 2) && (*(p + len - 1) == ' ') ) {
+            if( ProcFlags.concat
+              && (len > 2)
+              && (*(p + len - 1) == ' ') ) {
                 while( *(p + len - 2) == ' ' ) {        // remove trailing spaces
                     len--;
                     if( len == 0 ) {                    // empty operand
@@ -226,7 +239,9 @@ void    add_macro_parms( char * p )
                 *(p + len) = '\0';                      // end after last non-space character
             }
         } else {                        // explicit space characters
-            if( !ProcFlags.null_value && (input_cbs->prev->hidden_head == NULL) && (len != 0) ) {
+            if( !ProcFlags.null_value
+              && (input_cbs->prev->hidden_head == NULL)
+              && (len != 0) ) {
                 while( *(p + len - 1) == ' ' ) {        // remove trailing spaces
                     len--;
                     if( len == 0 ) {                    // empty operand
@@ -244,29 +259,16 @@ void    add_macro_parms( char * p )
         g_tok_start = p;                  // save start of parameter
         SkipSpaces( p );                // find first nonspace character
         while( *p != '\0' ) {           // as long as there are parms
-            if( is_quoted_string( p ) ) {   // argument is quoted
+            pa = is_quoted_string( p );
+            if( pa != NULL ) {          // argument is quoted
                 star0++;
                 sprintf( starbuf, "%d", star0 );
-                quote = *p;
-                pa = p;
-                pa++;
-                while( *pa != '\0' ) {
-                    if( (pa[0] == quote) && ((pa[1] == ' ') || (pa[1] == '\0')) ) {
-                        break;          // matching delimiter found
-                    }
-                    pa++;
-                }
-                if( *pa == quote ) {    // matching delimiter found
-                    p++;                // exclude initial delimiter
-                }
+                p++;
                 c = *pa;                // prepare value end
                 *pa = '\0';             // terminate string
                 add_symvar( input_cbs->local_dict, starbuf, p, no_subscript, local_var );
                 *pa = c;                // restore original char at string end
-                if( *pa == quote ) {    // pa was decremented above
-                    pa++;               // point to character after parameter
-                }
-                p = pa;
+                pa++;               // point to character after parameter
             } else {                    // look if it is a symbolic variable definition
                 char    *ps;
 
@@ -307,15 +309,16 @@ void    add_macro_parms( char * p )
                                 no_subscript, local_var );
                     *pa = c;            // restore original char at string end
                 }
-                p = pa;
             }
+            p = pa;
             SkipSpaces( p );            // over spaces
         }
                                         // the positional parameter count
         add_symvar( input_cbs->local_dict, "0", starbuf, no_subscript, local_var );
     }
 
-    if( (input_cbs->fmflags & II_research) && WgmlFlags.firstpass ) {
+    if( (input_cbs->fmflags & II_research)
+      && WgmlFlags.firstpass ) {
         print_sym_dict( input_cbs->local_dict );
     }
 }
@@ -329,13 +332,11 @@ void    add_macro_parms( char * p )
 void    free_lines( inp_line * line )
 {
     inp_line    *wk;
-    inp_line    *wk1;
+    inp_line    *next;
 
-    wk = line;
-    while( wk != NULL ) {
-         wk1 = wk->next;
+    for( wk = line; wk != NULL; wk = next ) {
+         next = wk->next;
          mem_free( wk );
-         wk = wk1;
     }
     return;
 }
@@ -345,13 +346,13 @@ void    free_lines( inp_line * line )
 /* ".name" as  a user-defined control word  or as an Execute  Macro (.EM)  */
 /* operand.                                                                */
 /*                                                                         */
-/*      ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿       */
+/*      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿       */
 /*      |       |                                                  |       */
 /*      |       |    name /line1/.../linen</>                      |       */
 /*      |  .DM  |    name <BEGIN|END>                              |       */
 /*      |       |    name DELETE                                   |       */
 /*      |       |                                                  |       */
-/*      ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ       */
+/*      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       */
 /*                                                                         */
 /* Such user macros may be used for common sequences of control words and  */
 /* text.   Keyword and positional parameters (&*, &*0, &*1, etc.)  may be  */
@@ -395,7 +396,6 @@ void    free_lines( inp_line * line )
 
 void    scr_dm( void )
 {
-    char            cw[9];
     char        *   nmstart;
     char        *   p;
     char        *   pa;
@@ -405,7 +405,8 @@ void    scr_dm( void )
     int             macro_line_count;
     int             compbegin;
     int             compend;
-    char            macname[MAC_NAME_LENGTH + 1];
+    char            macname1[MAC_NAME_LENGTH + 1];
+    char            macname2[MAC_NAME_LENGTH + 1];
     inp_line    *   head;
     inp_line    *   last;
     inp_line    *   work;
@@ -422,26 +423,16 @@ void    scr_dm( void )
         xx_source_err( err_missing_name );
     }
 
-    /*  truncate name if too long WITHOUT error msg
+    /*
+     *  truncate name if too long WITHOUT error msg
      *  this is wgml 4.0 behaviour
-     *
      */
-    len = 0;
-    p   = g_tok_start;
-    pn  = macname;
-    while( len < MAC_NAME_LENGTH ) {
-        if( is_space_tab_char( *p ) || (*p == '\0') ) { // largest possible macro name
-            break;
-        }
-        *pn++ = my_tolower( *p++ );     // copy lowercase macroname
-        len++;
-    }
-    *pn = '\0';
+    get_macro_name( g_tok_start, macname1 );
 
     cc = getarg();
     if( cc == omit ) {                  // nothing found
         // SC--048 A control word parameter is missing
-        xx_source_err_c( err_mac_def_fun, macname );
+        xx_source_err_c( err_mac_def_fun, macname1 );
     }
 
     p    = scan_start;
@@ -492,13 +483,15 @@ void    scr_dm( void )
         compend = 1;                    // so the end processing will happen
     }                                   // BEGIN or END not found
 
-    if( compend && !(ProcFlags.in_macro_define) ) {
+    if( compend
+      && !(ProcFlags.in_macro_define) ) {
         // SC--003: A macro is not being defined
-        xx_source_err_c( err_mac_def_end, macname );
+        xx_source_err_c( err_mac_def_end, macname1 );
     }
-    if( compbegin && (ProcFlags.in_macro_define) ) {
+    if( compbegin
+      && (ProcFlags.in_macro_define) ) {
         // SC--002 The control word parameter '%s' is invalid
-        xx_source_err_c( err_mac_def_nest, macname );
+        xx_source_err_c( err_mac_def_nest, macname1 );
     }
     *p  = save;
     if( compbegin ) {                   // start new macro define
@@ -514,9 +507,7 @@ void    scr_dm( void )
                 break;                  // out of read loop
             }
 
-            len = 0;
             p = buff2;
-            pa = cw;
             if( *p == SCR_char ) {              // only test script control words
                 p++;
 
@@ -525,45 +516,39 @@ void    scr_dm( void )
                 /* constructs like "..'" ".'." have yet to be explored          */
                 /****************************************************************/
 
-                if( (*p == SCR_char)  || (*p == '\'') ) {
+                if( (*p == SCR_char)
+                  || (*p == '\'') ) {
                     p++;                        // over ".." or ".'"
                 }
-                while( len < MAC_NAME_LENGTH ) {
-                    if( is_space_tab_char( *p ) || (*p == '\0') ) { // largest possible macro/cw
-                        break;
-                    }
-                   *pa++ = my_tolower( *p++ );  // copy lowercase to TokenBuf
-                   len++;
-                }
-                *pa = '\0';
-                if( strncmp( cw, "dm", SCR_KW_LENGTH ) == 0 ) {
-                    if( (len == SCR_KW_LENGTH) || ((len > SCR_KW_LENGTH) &&
-                                (find_macro( macro_dict, cw ) == NULL)) ) { // .dm control word
+
+                get_macro_name( p, macname2 );
+
+                if( strncmp( macname2, "dm", SCR_KW_LENGTH ) == 0 ) {
+                    if( (len == SCR_KW_LENGTH)
+                      || ((len > SCR_KW_LENGTH)
+                      && (find_macro( macro_dict, macname2 ) == NULL)) ) { // .dm control word
+
                         cc = getarg();
                         if( cc == omit ) {  // only .dm  means macro end
                             compend = 1;
                             break;          // out of read loop
                         }
-                        p = scan_start;
-                        save = *p;
-                        *p = '\0';
-                        if( strnicmp( macname, g_tok_start, MAC_NAME_LENGTH ) ) {
+                        get_macro_name( g_tok_start, macname2 );
+                        if( strcmp( macname1, macname2 ) ) {
                             // macroname from begin different from end
                             // SC--005 Macro '%s' is not being defined
-                            xx_source_err_c( err_mac_def_not, g_tok_start );
+                            xx_source_err_c( err_mac_def_not, macname2 );
                         }
-                        *p = save;
+
                         cc = getarg();
                         if( cc == omit ) {
                             // SC--048 A control word parameter is missing
                             xx_source_err( err_mac_def_miss );
                         }
-                        p = scan_start;
-                        save = *p;
-                        *p = '\0';
+                        get_macro_name( g_tok_start, macname2 );
                         if( stricmp( g_tok_start, "end") ) {
                             // SC--002 The control word parameter '%s' is invalid
-                            xx_source_err_c( err_mac_def_inv, g_tok_start );
+                            xx_source_err_c( err_mac_def_inv, macname2 );
                         }
                         compend = 1;
                         break;              // out of read loop
@@ -585,14 +570,14 @@ void    scr_dm( void )
         if( cb->s.f->flags & (FF_eof | FF_err) ) {
             // error SC--004 End of file reached
             // macro '%s' is still being defined
-            xx_source_err_c( err_mac_def_eof, macname );
+            xx_source_err_c( err_mac_def_eof, macname1 );
         }
     }                                   // end compbegin
 
     if( compend ) {                     // macro END definition processing
         mac_entry   *   me;
 
-        me = find_macro( macro_dict, macname );
+        me = find_macro( macro_dict, macname1 );
         if( me != NULL ) {              // delete macro with same name
             free_macro_entry( macro_dict, me );
         }
@@ -602,19 +587,20 @@ void    scr_dm( void )
         me  = mem_alloc( sizeof( mac_entry ) );
         me->next = NULL;
         me->label_cb = NULL;
-        strcpy( me->name, macname );
+        strcpy( me->name, macname1 );
         me->macline = head;
         me->lineno = lineno_start;
         me->mac_file_name = cb->s.f->filename;
 
         add_macro_entry( macro_dict, me );
 
-        if( (cb->fmflags & II_research) && WgmlFlags.firstpass ) {
+        if( (cb->fmflags & II_research)
+          && WgmlFlags.firstpass ) {
             ulongtodec( macro_line_count, linestr );
-            g_info( inf_mac_defined, macname, linestr );
+            g_info( inf_mac_defined, macname1, linestr );
         }
     } else {
-        xx_source_err_c( err_mac_def_logic, macname );
+        xx_source_err_c( err_mac_def_logic, macname1 );
     }
     scan_restart = scan_stop + 1;
     return;
@@ -692,15 +678,15 @@ void    scr_me( void )
 /* treats the operand line as a  macro,  even if Macro Substitution (.MS)  */
 /* is OFF.                                                                 */
 /*                                                                         */
-/*      ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿       */
+/*      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿       */
 /*      |       |                                                  |       */
 /*      |  .EM  |    <YES|NO|OFFNO>  !not implemented              |       */
 /*      |       |                                                  |       */
-/*      |ÄÄÄÄÄÄÄ|ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ|       */
+/*      |ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½|ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½|       */
 /*      |       |                                                  |       */
 /*      |  .EM  |    .macro <args>                                 |       */
 /*      |       |                                                  |       */
-/*      ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ       */
+/*      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½       */
 /*                                                                         */
 /* Neither form of this control word causes a break.                       */
 /*                                                                         */
@@ -753,22 +739,11 @@ void    scr_em( void )
     }
 
     if( *g_tok_start == SCR_char ) {      // possible macro name
-        p   = g_tok_start + 1;            // over .
-
-        /*  truncate name if too long WITHOUT error msg
+        /*
+         *  truncate name if too long WITHOUT error msg
          *  this is wgml 4.0 behaviour
-         *
          */
-        len = 0;
-        pn  = macname;
-        while( len < MAC_NAME_LENGTH ) {
-            if( is_space_tab_char( *p ) || (*p == '\0') ) {     // largest possible macro/cw
-                break;
-            }
-            *pn++ = *p++;           // copy macroname
-            len++;
-        }
-        *pn = '\0';
+        get_macro_name( g_tok_start + 1, macname );
 
         me = find_macro( macro_dict, macname );
     } else {
