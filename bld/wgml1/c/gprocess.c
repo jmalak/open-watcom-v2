@@ -190,6 +190,11 @@ static void split_at_GML_tag( void )
         for( p2 = pchar + 1; is_id_char( *p2 ); p2++ )
             {} /* empty loop */
 
+        if( IS_CMT_TAG( pchar ) && IS_TAG_END( pchar + 4 ) ) {
+            // is comment
+            *pchar = '\0';
+            return;
+        }
         if( (p2 > pchar + 1)
           && (IS_TAG_END2( p2 )
           || (*p2 == GML_char)) ) { // 'good' tag end
