@@ -1893,6 +1893,7 @@ void process_text( char * text, font_number font )
 
     if( tab_char == '\t' ) {                        // ignore keyboard tabs
         count = strlen( text );
+        p = text;                                   // restore p to start of text
     } else {
         count = 0;
         for( p = text; *p != '\0'; p++ ) {
