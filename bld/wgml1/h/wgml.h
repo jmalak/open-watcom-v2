@@ -333,6 +333,7 @@ extern char *   scan_sym( char * p, symvar * sym, sub_index * subscript, char * 
 extern  void    add_macro_cb_entry( mac_entry * me, gtentry * ge );
 extern  void    add_macro_parms( char * p );
 extern  void    free_lines( inp_line * line );
+extern  char    *get_macro_name( const char *p, char *dst );
 
 
 /* gspe.c                               */
