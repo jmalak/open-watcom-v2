@@ -821,7 +821,7 @@ void set_if_then_do( ifcb * cb )
           || (*p == '\'') ) {
             p++;                       // over ".." or ".'"
         }
-        get_macro_name( p, cw )
+        get_macro_name( p, cw );
         if( strncmp( cw, "if", SCR_KW_LENGTH ) == 0 ) {
             if( len > SCR_KW_LENGTH ) {
                 cb->if_flags[cb->if_level].ifcwif = (find_macro( macro_dict, cw ) == NULL);

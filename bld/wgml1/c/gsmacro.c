@@ -26,6 +26,8 @@
 
 char *get_macro_name( const char *p, char *dst )
 {
+    size_t  len;
+
     for( len = 0; len < MAC_NAME_LENGTH; len++ ) {
         if( is_space_tab_char( *p )
           || (*p == '\0') ) { // largest possible macro name
