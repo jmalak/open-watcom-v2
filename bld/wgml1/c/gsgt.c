@@ -331,9 +331,7 @@ static  condcode    scan_tag_options( gtflags * tag_flags )
 void    scr_gt( void )
 {
     char        *   p;
-    char        *   pn;
     char            savetag;
-    int             len;
     char            macname[MAC_NAME_LENGTH + 1];
     condcode        cc;
     gtentry     *   wk;

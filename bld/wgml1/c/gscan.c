@@ -71,7 +71,7 @@ static bool     scr_lkup_setup = false;
 /*  remaining control words as exceptions.                                 */
 /***************************************************************************/
 
-static void build_scr_cw_lookup( void )
+static void build_script_cw_lookup( void )
 {
     int             i;
     int             hash;
@@ -111,7 +111,7 @@ static int find_script_cw( const char *str )
     int     index = -1;
 
     if( !scr_lkup_setup )
-        build_scr_cw_lookup();
+        build_script_cw_lookup();
 
     if( islower( str[0] )
       && islower( str[1] ) ) {
