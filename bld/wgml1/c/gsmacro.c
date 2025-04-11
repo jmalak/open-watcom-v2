@@ -24,7 +24,7 @@
 #include "wgml.h"
 
 
-bool    get_macro_name( const char *p, char *dst )
+bool    get_macro_name( const char *p, char *macname )
 {
     size_t  len;
 
@@ -32,9 +32,9 @@ bool    get_macro_name( const char *p, char *dst )
         if( IS_MACRO_END( p ) ) {
             break;
         }
-        *dst++ = my_tolower( *p++ );     // copy lowercase macroname
+        *macname++ = my_tolower( *p++ );     // copy lowercase macroname
     }
-    *dst = '\0';
+    *macname = '\0';
     return( !IS_MACRO_END( p ) );
 }
 
@@ -524,10 +524,9 @@ void    scr_dm( void )
 
                 get_macro_name( p, macname2 );
 
-                if( strncmp( macname2, "dm", SCR_KW_LENGTH ) == 0 ) {
-                    if( (len == SCR_KW_LENGTH)
-                      || ((len > SCR_KW_LENGTH)
-                      && (find_macro( macro_dict, macname2 ) == NULL)) ) { // .dm control word
+                if( macname2[0] == 'd' && macname2[1] == 'm' ) {
+                    if( macname2[2] == '\0'
+                      || find_macro( macro_dict, macname2 ) == NULL ) { // .dm control word
 
                         cc = getarg();
                         if( cc == omit ) {  // only .dm  means macro end

@@ -16,6 +16,22 @@
 #include "wgml.h"
 
 
+#define IS_ATTNAME_END(p)   (!is_macro_char(*p))
+
+static bool     get_att_name( const char *p, char *attname )
+{
+    size_t  len;
+
+    for( len = 0; len < ATT_NAME_LENGTH; len++ ) {
+        if( IS_ATTNAME_END( p ) ) {
+            break;
+        }
+        *attname++ = my_tolower( *p++ );     // copy lowercase macroname
+    }
+    *attname = '\0';
+    return( !IS_ATTNAME_END( p ) );
+}
+
 /***************************************************************************/
 /* GML ATTRIBUTE defines an attribute of a GML tag.  Multiple uses of the  */
 /* control word are needed to define the  list of values that this attri-  */
@@ -485,15 +501,7 @@ void    scr_ga( void )
 
         init_tag_att();                     // forget previous values for quick access
 
-        len = 0;
-        pn = g_tagname;
-        while( is_macro_char( *p ) && len < TAG_NAME_LENGTH ) {
-            *pn++ = my_tolower( *p++ );     // copy lowercase tagname
-            len++;
-        }
-        *pn = '\0';
-
-        if( len < arg_flen ) {
+        if( get_tag_name( p, g_tagname ) ) {
             xx_err( err_tag_name_inv );     // name contains invalid or too many chars
             return;
         }
@@ -530,16 +538,7 @@ void    scr_ga( void )
     } else {
         saveatt = ' ';                      // no quick access
         att_entry = NULL;
-
-        len = 0;
-        pn = g_attname;
-        while( is_macro_char( *p ) && len < ATT_NAME_LENGTH ) {
-            *pn++ = my_tolower( *p++ ); // copy lowercase tagname
-            len++;
-        }
-        *pn = '\0';
-
-        if( len < arg_flen ) {
+        if( get_att_name( p, g_attname ) ) {
             xx_err( err_att_name_inv );// attname with invalid or too many chars
             cc = neg;
             return;
@@ -555,7 +554,7 @@ void    scr_ga( void )
         if( saveatt != '*' ) {          // no quickaccess for attribute
             gawk = NULL;
             for( gawk = tag_entry->attribs; gawk != NULL; gawk = gawk->next ) {
-                if( stricmp( g_attname, gawk->name ) == 0 ) {
+                if( stricmp( g_attname, gawk->attname ) == 0 ) {
                     att_flags = gawk->attflags; // get possible uppercase option
                     break;
                 }
@@ -580,7 +579,7 @@ void    scr_ga( void )
     /***********************************************************************/
     if( saveatt != '*' ) {              // no quickaccess for attribute
         for( att_entry = tag_entry->attribs; att_entry != NULL; att_entry = att_entry->next ) {
-            if( stricmp( g_attname, att_entry->name ) == 0 ) {
+            if( stricmp( g_attname, att_entry->attname ) == 0 ) {
                 break;
             }
         }
@@ -593,7 +592,7 @@ void    scr_ga( void )
 
         att_entry->vals = NULL;
         att_entry->attflags = att_flags;
-        strcpy( att_entry->name, g_attname );
+        strcpy( att_entry->attname, g_attname );
     } else {
         att_entry->attflags = att_flags;// update flags
     }
