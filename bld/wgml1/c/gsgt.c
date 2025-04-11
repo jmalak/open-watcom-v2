@@ -441,15 +441,8 @@ void    scr_gt( void )
             xx_err( err_tag_mac_name );
             return;
         }
-        p = g_tok_start;
 
-        len = 0;
-        pn = macname;
-        while( is_macro_char( *p ) && len < MAC_NAME_LENGTH ) {
-            *pn++ = my_tolower( *p++ );     // copy lowercase macroname
-            len++;
-        }
-        *pn = '\0';
+        get_macro_name( g_tok_start, macname );
 
         tag_flags = 0;
 

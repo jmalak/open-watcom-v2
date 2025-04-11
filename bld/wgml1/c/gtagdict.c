@@ -30,7 +30,7 @@ void    init_tag_dict( gtentry * * dict )
 /*              if tag already defined error                               */
 /***************************************************************************/
 
-gtentry *   add_tag( gtentry * * dict, const char * name, const char * mac,
+gtentry *   add_tag( gtentry **dict, const char *name, const char *macname,
                      const int flags )
 {
     gtentry     *   ge;
@@ -48,7 +48,7 @@ gtentry *   add_tag( gtentry * * dict, const char * name, const char * mac,
 
     memcpy( ge->name, name, sizeof( ge->name ) );
     ge->namelen = strlen( ge->name );
-    strcpy_s( ge->macname, sizeof( ge->macname ), mac );
+    strcpy( ge->macname, macname );
     ge->tagflags = flags;
     ge->attribs = NULL;
     ge->usecount = 0;
@@ -61,14 +61,14 @@ gtentry *   add_tag( gtentry * * dict, const char * name, const char * mac,
 /*  change_tag     change macro to execute in tag entry                    */
 /***************************************************************************/
 
-gtentry *   change_tag( gtentry * * dict, const char * name, const char * mac )
+gtentry *   change_tag( gtentry **dict, const char *name, const char *macname )
 {
     gtentry     *   ge = NULL;
 
     if( *dict != NULL ) {
         ge = find_tag( dict, name );
         if( ge != NULL ) {
-           strcpy_s( ge->macname, sizeof( ge->macname ), mac );
+           strcpy( ge->macname, macname );
         }
     }
     return( ge );

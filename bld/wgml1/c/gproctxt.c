@@ -1865,6 +1865,9 @@ void process_text( char * text, font_number font )
     /*  note: ProcFlags.doc_sect will be doc_sect_body                  */
     /********************************************************************/
 
+    if( ProcFlags.doc_sect == dos_sect_none )
+        return;
+
     if( !ProcFlags.start_section ) {
         start_doc_sect();
     }
