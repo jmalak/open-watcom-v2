@@ -30,15 +30,14 @@ void    init_tag_dict( gtentry * * dict )
 /*              if tag already defined error                               */
 /***************************************************************************/
 
-gtentry *   add_tag( gtentry * * dict, const char * name, const char * mac,
-                     const int flags )
+gtentry *add_tag( gtentry **dict, const char *tagname, const char *macname, const int flags )
 {
     gtentry     *   ge;
     gtentry     *   wk;
 
-    wk = find_tag( dict, name );
+    wk = find_tag( dict, tagname );
     if( wk != NULL ) {
-        xx_source_err_c( err_tag_exist, name );
+        xx_source_err_c( err_tag_exist, tagname );
     }
 
     ge = mem_alloc( sizeof( gtentry ) );
@@ -46,9 +45,9 @@ gtentry *   add_tag( gtentry * * dict, const char * name, const char * mac,
     ge->next = *dict;
     *dict = ge;
 
-    memcpy( ge->tagname, name, sizeof( ge->tagname ) );
+    strcpy( ge->tagname, tagname );
     ge->tagnamelen = strlen( ge->tagname );
-    strcpy_s( ge->macname, sizeof( ge->macname ), mac );
+    strcpy( ge->macname, macname );
     ge->tagflags = flags;
     ge->attribs = NULL;
     ge->usecount = 0;
@@ -61,14 +60,14 @@ gtentry *   add_tag( gtentry * * dict, const char * name, const char * mac,
 /*  change_tag     change macro to execute in tag entry                    */
 /***************************************************************************/
 
-gtentry *   change_tag( gtentry * * dict, const char * name, const char * mac )
+gtentry *change_tag( gtentry **dict, const char *tagname, const char *macname )
 {
     gtentry     *   ge = NULL;
 
     if( *dict != NULL ) {
-        ge = find_tag( dict, name );
+        ge = find_tag( dict, tagname );
         if( ge != NULL ) {
-           strcpy_s( ge->macname, sizeof( ge->macname ), mac );
+           strcpy( ge->macname, macname );
         }
     }
     return( ge );
@@ -157,7 +156,7 @@ void    free_tag_dict( gtentry * * dict )
 /*  returns ptr to tag or NULL if not found                                */
 /***************************************************************************/
 
-gtentry     *   find_tag( gtentry **dict, const char *tagname )
+gtentry     *find_tag( gtentry **dict, const char *tagname )
 {
     gtentry     *   wk;
 
@@ -300,7 +299,7 @@ static  void    print_att_entry( gaentry *wk )
         find++;
         flags >>= 1;
     }
-    out_msg( "att:     %-13.13s %s\n", wk->name, opt );
+    out_msg( "att:     %-13.13s %s\n", wk->attname, opt );
     for( gaval = wk->vals; gaval != NULL; gaval = gaval->next ) {
         print_val_entry( gaval );
     }

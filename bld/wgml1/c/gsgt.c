@@ -17,6 +17,22 @@
 #include "wgml.h"
 
 
+#define IS_TAGNAME_END(p)   (!is_macro_char(*p))
+
+bool    get_tag_name( const char *p, char *tagname )
+{
+    size_t  len;
+
+    for( len = 0; len < TAG_NAME_LENGTH; len++ ) {
+        if( IS_TAGNAME_END( p ) ) {
+            break;
+        }
+        *tagname++ = my_tolower( *p++ );     // copy lowercase macroname
+    }
+    *tagname = '\0';
+    return( !IS_TAGNAME_END( p ) );
+}
+
 /***************************************************************************/
 /*  reset last used  tag and att entries                                   */
 /***************************************************************************/
@@ -362,15 +378,7 @@ void    scr_gt( void )
         init_tag_att();                     // forget previous values for quick access
         g_attname[0] = '*';
 
-        len = 0;
-        pn = g_tagname;
-        while( is_macro_char( *p ) && len < TAG_NAME_LENGTH ) {
-            *pn++ = my_tolower( *p++ ); // copy lowercase tagname
-            len++;
-        }
-        *pn = '\0';
-
-        if( len < arg_flen ) {
+        if( get_tag_name( p, g_tagname ) ) {
             xx_err( err_tag_name_inv );
             return;
         }
