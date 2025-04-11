@@ -575,7 +575,7 @@ void show_include_stack( void )
         if( input_cbs->fmflags & II_tag_mac ) {
             ulongtodec( input_cbs->s.m->lineno, linestr );
             ulongtodec( input_cbs->s.m->mac->lineno, linemac );
-            g_info( err_inf_mac_def, linestr, input_cbs->s.m->mac->name,
+            g_info( err_inf_mac_def, linestr, input_cbs->s.m->mac->macname,
                     linemac, input_cbs->s.m->mac->mac_file_name);
 //      } else {
 //          ulongtodec( input_cbs->s.f->lineno, linestr );
@@ -593,12 +593,12 @@ void show_include_stack( void )
             g_info( err_inf_line_file, linestr, ip->s.f->filename );
             break;
         case    II_tag :
-            g_info( err_inf_tag, ip->s.m->tag->name );
+            g_info( err_inf_tag, ip->s.m->tag->tagname );
             // fallthrough
         case    II_macro :
             ulongtodec( ip->s.m->lineno, linestr );
             ulongtodec( ip->s.m->mac->lineno, linemac );
-            g_info( err_inf_mac_def, linestr, ip->s.m->mac->name,
+            g_info( err_inf_mac_def, linestr, ip->s.m->mac->macname,
                     linemac, ip->s.m->mac->mac_file_name);
             break;
         default:

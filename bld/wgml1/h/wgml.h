@@ -315,6 +315,7 @@ extern  char    *   scr_single_funcs( char * in, char * end, char * * result );
 /* gsgoto.c                             */
 extern  void    print_labels( labelcb * lb, char * name );
 extern  bool    gotarget_reached( void );
+extern  bool    gotarget_err( void );
 
 
 /* gsgt.c                               */
@@ -333,7 +334,7 @@ extern char *   scan_sym( char * p, symvar * sym, sub_index * subscript, char * 
 extern  void    add_macro_cb_entry( mac_entry * me, gtentry * ge );
 extern  void    add_macro_parms( char * p );
 extern  void    free_lines( inp_line * line );
-extern  char    *get_macro_name( const char *p, char *dst );
+extern  bool    get_macro_name( const char *p, char *dst );
 
 
 /* gspe.c                               */

@@ -103,7 +103,7 @@ void    add_macro_entry( mac_dict * dict_parm, mac_entry * me )
     int             hash;
     mac_dcp     *   dict = dict_parm;
 
-    hash = mac_hash( me->name );
+    hash = mac_hash( me->macname );
     wk = dict->htbl[hash];          // find the hash chain
 
     if( wk ) {
@@ -132,7 +132,7 @@ static  void    free_macro_entry_short( mac_entry * me )
     if( me != NULL ) {
         cb = me->label_cb;
         if( WgmlFlags.research ) {
-            print_labels( cb, me->name );   // print label info
+            print_labels( cb, me->macname );   // print label info
         }
         while( cb != NULL ) {
             me->label_cb = cb->prev;
@@ -166,7 +166,7 @@ void    free_macro_entry( mac_dict * dict_parm, mac_entry * me )
     if( me != NULL ) {
         cb = me->label_cb;
         if( WgmlFlags.research ) {
-            print_labels( cb, me->name );// print label info
+            print_labels( cb, me->macname );// print label info
         }
         while( cb != NULL ) {
             me->label_cb = cb->prev;
@@ -180,7 +180,7 @@ void    free_macro_entry( mac_dict * dict_parm, mac_entry * me )
              ml = mln;
         }
 
-        hash = mac_hash( me->name );
+        hash = mac_hash( me->macname );
         wk = dict->htbl[hash];          // find the hash chain
 
         if( wk == me ) {                // first entry in the chain?
@@ -234,7 +234,7 @@ void    free_macro_dict( mac_dict * * dict_parm )
 /*  returns ptr to macro or NULL if not found                              */
 /***************************************************************************/
 
-mac_entry   * find_macro( mac_dict * dict_parm, const char * name )
+mac_entry   * find_macro( mac_dict * dict_parm, const char *macname )
 {
     int             hash;
     mac_entry   *   wk;
@@ -242,13 +242,13 @@ mac_entry   * find_macro( mac_dict * dict_parm, const char * name )
     mac_dcp     *   dict = dict_parm;
 
     wk   = NULL;
-    hash = mac_hash( name );
+    hash = mac_hash( macname );
     curr = dict->htbl[hash];        // find the hash chain
 
     dict->lookups++;
     while( curr ) {
         dict->compares++;
-        if( strncmp( curr->name, name, MAC_NAME_LENGTH ) == 0 ) {
+        if( strncmp( curr->macname, macname, MAC_NAME_LENGTH ) == 0 ) {
             wk = curr;
             break;
         }
@@ -278,8 +278,8 @@ void    print_macro_dict( mac_dict * dict_parm, bool with_mac_lines )
     for( i = 0; i < MAC_HASH_SIZE; ++i ) {
         for( wk = dict->htbl[i]; wk != NULL; wk = wk->next ) {
 
-            len =  strlen( wk->name );
-            out_msg( "Macro='%s'%sdefined line %d file '%s'\n", wk->name,
+            len =  strlen( wk->macname );
+            out_msg( "Macro='%s'%sdefined line %d file '%s'\n", wk->macname,
                     &fill[len], wk->lineno, wk->mac_file_name );
             if( with_mac_lines ) {
                 for( ml = wk->macline, lc = 1; ml != NULL; ml = ml->next, lc++ ) {

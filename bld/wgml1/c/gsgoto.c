@@ -16,6 +16,9 @@
 #include "wgml.h"
 
 
+static char         gotarget[LABEL_NAME_LENGTH + 1] = { '\0' };
+static int32_t      gotargetno = 0;
+
 /***************************************************************************/
 /*  search for  label name in current input label control block            */
 /***************************************************************************/
@@ -42,6 +45,25 @@ static  labelcb *   find_label( char    *   name )
 /*  check whether current input line is the active go to target            */
 /***************************************************************************/
 
+void    gotarget_err( void )
+{
+    char    linestr[MAX_L_AS_STR];
+
+    if( input_cbs->fmflags & II_tag_mac ) {
+        if( gotargetno > 0 ) {
+            ulongtodec( gotargetno, linestr );
+            xx_err_cc( err_goto, linestr, input_cbs->s.m->mac->macname );
+        } else {
+            xx_err_cc( err_goto, gotarget, input_cbs->s.m->mac->macname );
+        }
+    } else {
+        xx_err_cc( err_goto, gotarget, input_cbs->s.f->filename );
+    }
+    gotargetno = 0;
+    *gotarget = '\0';
+}
+
+
 bool        gotarget_reached( void )
 {
     bool        reached;
@@ -56,8 +78,9 @@ bool        gotarget_reached( void )
             reached = input_cbs->s.f->lineno == gotargetno;
         }
     } else {                            // label name search
-        if( (*buff2 == *(buff2 + 1)) && (*buff2 == *(buff2 + 2)) ) {// "..."
-            p = buff2 + 3;
+        p = buff2;
+        if( p[0] == '.' && p[1] == '.' && p[2] == '.' ) { // "..."
+            p += 3;
             SkipSpaces( p );
             if( *p != '\0' ) {
                 k = 0;
@@ -184,7 +207,7 @@ void    scr_label( void )
                     len++;
                 }
                 *pt = '\0';
-                if( len >  MAC_NAME_LENGTH ) {
+                if( len > LABEL_NAME_LENGTH ) {
                     xx_source_err_c( err_sym_long, token_buf );
                 }
 
@@ -330,11 +353,11 @@ void    scr_go( void )
     } else {                            // no numeric target label
 
         gotargetno = 0;                 // no target lineno known
-        if( arg_flen >  MAC_NAME_LENGTH ) {
+        if( arg_flen > LABEL_NAME_LENGTH ) {
             xx_source_err_c( err_sym_long, g_tok_start );
         }
 
-        for( k = 0; k < MAC_NAME_LENGTH; k++ ) {// copy to work
+        for( k = 0; k < LABEL_NAME_LENGTH; k++ ) {// copy to work
             gotarget[k] = *g_tok_start++;
         }
         gotarget[k] = '\0';
