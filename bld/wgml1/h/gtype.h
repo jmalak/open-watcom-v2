@@ -554,7 +554,7 @@ typedef enum {
 typedef struct gaentry {
     struct gaentry  *   next;
     gavalentry      *   vals;
-    char                name[ATT_NAME_LENGTH + 1];
+    char                attname[ATT_NAME_LENGTH + 1];
     gaflags             attflags;
 } gaentry;
 
@@ -584,7 +584,7 @@ typedef struct gtentry {
     struct gtentry  *   next;
     gaentry         *   attribs;        // list of attributes
     ulong               usecount;
-    size_t              namelen;        // actual length of name
+    size_t              tagnamelen;     // actual length of name
     char                tagname[TAG_NAME_LENGTH + 1];
     char                macname[MAC_NAME_LENGTH + 2];   // macro to call
     gtflags             tagflags;

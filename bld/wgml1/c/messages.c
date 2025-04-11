@@ -522,12 +522,9 @@ void dup_id_err( const char * id, const char * context )
 /*  error msgs for missing or duplicate :XXX :eXXX tags                    */
 /***************************************************************************/
 
-static void g_err_tag_common( const char * tag, bool nest )
+static void g_err_tag_common( const char *tagname, bool nest )
 {
-    char    tagn[TAG_NAME_LENGTH + 1];
-
-    sprintf_s( tagn, TAG_NAME_LENGTH + 1, "%s", tag );
-    g_err( err_tag_expected, tagn );
+    g_err( err_tag_expected, tagname );
     if( nest ) {
         file_mac_info_nest();
     } else {
@@ -537,15 +534,15 @@ static void g_err_tag_common( const char * tag, bool nest )
     return;
 }
 
-void g_err_tag( const char * tag )
+void g_err_tag( const char *tagname )
 {
-    g_err_tag_common( tag, 0 );         // 'normal' stack display
+    g_err_tag_common( tagname, false );         // 'normal' stack display
     err_exit();
 }
 
-void g_err_tag_nest( const char * tag )
+void g_err_tag_nest( const char *tagname )
 {
-    g_err_tag_common( tag, 1 );         // nested tag stack display
+    g_err_tag_common( tagname, true );         // nested tag stack display
     err_exit();
 }
 
@@ -571,7 +568,7 @@ void g_err_if_int( void )
 
 /* SC--037: The macro 'xxxxxx' for the gml tag 'yyyyy' is not defined */
 
-void g_err_tag_mac( gtentry * ge )
+void g_err_tag_mac( gtentry *ge )
 {
     char    linestr[MAX_L_AS_STR];
 
@@ -589,43 +586,43 @@ void g_err_tag_mac( gtentry * ge )
     err_exit();
 }
 
-void g_err_tag_no( const char * tag )
+void g_err_tag_no( const char *tagname )
 {
     char    tagn[TAG_NAME_LENGTH + 1];
 
-    sprintf_s( tagn, TAG_NAME_LENGTH + 1, "%c%s", GML_char, tag );
+    sprintf_s( tagn, TAG_NAME_LENGTH + 1, "%c%s", GML_char, tagname );
     g_err( err_tag_not_expected, tagn );
     file_mac_info_nest();
     err_count++;
     err_exit();
 }
 
-void g_err_tag_prec( const char * tag )
+void g_err_tag_prec( const char *tagname )
 {
     char    tagn[TAG_NAME_LENGTH + 1];
 
-    sprintf_s( tagn, TAG_NAME_LENGTH + 1, "%c%s", GML_char, tag );
+    sprintf_s( tagn, TAG_NAME_LENGTH + 1, "%c%s", GML_char, tagname );
     g_err( err_tag_preceding, tagn );
     file_mac_info();
     err_count++;
     err_exit();
 }
 
-void g_err_tag_rsloc( locflags inloc, const char * pa )
+void g_err_tag_rsloc( locflags inloc, const char *pa )
 {
-    const char  *   tag_name    = NULL;
-    int             i;
+    const char  *tagname = NULL;
+    int         i;
 
     for( i = 0; i < L2N_ENTRIES; i++ ) {
         if( l2n_names[i].location == inloc ) {
-            tag_name = l2n_names[i].tagname;
+            tagname = l2n_names[i].tagname;
             break;
         }
     }
-    if( tag_name == NULL ) {
-        tag_name = "unknown";
+    if( tagname == NULL ) {
+        tagname = "unknown";
     }
-    g_err_tag_common( tag_name, 1 );
+    g_err_tag_common( tagname, true );
     show_line_error( pa );
 
     err_exit();

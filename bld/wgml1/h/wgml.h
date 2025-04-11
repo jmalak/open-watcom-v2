@@ -189,12 +189,12 @@ extern void         banner_defaults( void );
 
 
 /* gmacdict.c                           */
-extern  void        add_macro_entry( mac_dict * dict, mac_entry * me );
-extern  void        init_macro_dict( mac_dict * * dict );
-extern  void        free_macro_dict( mac_dict * * dict );
-extern  void        free_macro_entry( mac_dict * dict, mac_entry * me );
-extern  void        print_macro_dict( mac_dict * dict, bool with_mac_lines );
-extern  mac_entry * find_macro( mac_dict * dict, char const * name );
+extern  void        add_macro_entry( mac_dict *dict, mac_entry *me );
+extern  void        init_macro_dict( mac_dict **dict );
+extern  void        free_macro_dict( mac_dict **dict );
+extern  void        free_macro_entry( mac_dict *dict, mac_entry *me );
+extern  void        print_macro_dict( mac_dict *dict, bool with_mac_lines );
+extern  mac_entry * find_macro( mac_dict *dict, const char *macname );
 
 
 /* gmemory.c                            */
@@ -255,7 +255,7 @@ extern  void            add_ref_entry( ref_entry * * dict, ref_entry * me );
 extern  void            init_ref_dict( ref_entry * * dict );
 extern  void            free_ref_dict( ref_entry * * dict );
 extern  void            print_ref_dict( ref_entry * dict, const char * type );
-extern  ref_entry   *   find_refid( ref_entry * dict, char const * id );
+extern  ref_entry   *   find_refid( ref_entry * dict, const char * id );
 extern  void            init_ref_entry( ref_entry * re, char * id );
 extern  char        *   get_refid_value( char * p, char * refid );
 
@@ -320,6 +320,7 @@ extern  bool    gotarget_err( void );
 
 /* gsgt.c                               */
 extern  void    init_tag_att( void );
+extern  bool    get_tag_name( const char *p, char *tagname );
 
 
 /* gsifdoel.c                           */
@@ -334,7 +335,7 @@ extern char *   scan_sym( char * p, symvar * sym, sub_index * subscript, char * 
 extern  void    add_macro_cb_entry( mac_entry * me, gtentry * ge );
 extern  void    add_macro_parms( char * p );
 extern  void    free_lines( inp_line * line );
-extern  bool    get_macro_name( const char *p, char *dst );
+extern  bool    get_macro_name( const char *p, char *macname );
 
 
 /* gspe.c                               */
@@ -365,14 +366,14 @@ extern void     link_sym( dict_hdl dict, symvar * sym );
 
 
 /* gtagdict.c                           */
-extern  gtentry *   add_tag( gtentry * * dict, char const * name, char const * macro, const int flags );
-extern  gtentry *   change_tag( gtentry * * dict, char const * name, char const * macro );
-extern  void        init_tag_dict( gtentry * * dict );
-extern  void        free_tag_dict( gtentry * * dict );
-extern  gtentry *   free_tag( gtentry * * dict, gtentry * ge );
-extern  void        print_tag_dict( gtentry * dict );
-extern  void        print_tag_entry( gtentry * entry );
-extern  gtentry *   find_tag( gtentry * * dict, char const * name );
+extern  gtentry *   add_tag( gtentry **dict, const char *tagname, const char *macname, const int flags );
+extern  gtentry *   change_tag( gtentry **dict, const char *tagname, const char *macname );
+extern  void        init_tag_dict( gtentry **dict );
+extern  void        free_tag_dict( gtentry **dict );
+extern  gtentry *   free_tag( gtentry **dict, gtentry *ge );
+extern  void        print_tag_dict( gtentry *dict );
+extern  void        print_tag_entry( gtentry *entry );
+extern  gtentry *   find_tag( gtentry **dict, const char *tagname );
 
 /* gtxtpool.c                           */
 extern  void                add_single_text_chars_to_pool( text_chars * a_chars );
@@ -441,7 +442,7 @@ extern  void    g_info_lm( const msg_ids err, ... );
 extern  void    g_info_research( const msg_ids num, ... );
 extern  void    file_mac_info( void );
 extern  void    file_mac_info_nest( void );
-extern  void    att_req_err( const char * tagname, const char * attname );
+extern  void    att_req_err( const char *tagname, const char *attname );
 extern  void    ban_reg_err( msg_ids num, banner_lay_tag * in_ban1, banner_lay_tag * in_ban2, region_lay_tag * in_reg1, region_lay_tag * in_reg2 );
 extern  void    internal_err( const char * file, int line );
 extern  void    list_level_err( const char * xl_tag, uint8_t xl_level );
@@ -451,21 +452,21 @@ extern  void    symbol_name_length_err( const char * symname );
 extern  void    val_parse_err( const char * pa, bool tag );
 extern  void    dup_id_err( const char * id, const char * context );
 extern  void    g_err_if_int( void );
-extern  void    g_err_tag( const char * tagname );
+extern  void    g_err_tag( const char *tagname );
 extern  void    g_err_tag_mac( gtentry * ge );
-extern  void    g_err_tag_nest( const char * tagname );
-extern  void    g_err_tag_no( const char * tagname );
-extern  void    g_err_tag_prec( const char * tagname );
+extern  void    g_err_tag_nest( const char *tagname );
+extern  void    g_err_tag_no( const char *tagname );
+extern  void    g_err_tag_prec( const char *tagname );
 extern  void    g_err_tag_rsloc( locflags inloc, const char * pa );
 extern  void    g_wng_hlevel( hdsrc hd_found, hdsrc hd_expected );
 extern  void    keep_nest_err( const char * arg1, const char * arg2 );
 extern  void    xx_err( const msg_ids errid );
-extern  void    xx_err_c( const msg_ids errid, char const * arg );
+extern  void    xx_err_c( const msg_ids errid, const char * arg );
 extern  void    xx_err_cc( const msg_ids errid, const char * arg1, const char * arg2 );
 extern  void    xx_line_err_c( const msg_ids errid, const char * pa );
 extern  void    xx_line_err_ci( const msg_ids errid, const char * pa, size_t len );
-extern  void    xx_line_err_cc( const msg_ids errid, char const * cw, const char * pa );
-extern  void    xx_line_err_cci( const msg_ids errid, char const * cw, char const * pa, size_t len );
+extern  void    xx_line_err_cc( const msg_ids errid, const char * cw, const char * pa );
+extern  void    xx_line_err_cci( const msg_ids errid, const char * cw, const char * pa, size_t len );
 extern  void    xx_nest_err( const msg_ids errid );
 extern  void    xx_nest_err_cc( const msg_ids errid, const char * arg1, const char * arg2 );
 extern  void    xx_simple_err( const msg_ids errid );
@@ -504,7 +505,7 @@ extern  bool    get_msg( msg_ids resourceid, char *buffer, size_t buflen );
 /* wgmlsupp.c                           */
 extern  void    free_some_mem( void );
 extern  void    g_banner( void );
-// extern  char  * get_filename_full_path( char * buff, char const * name, size_t max );
+// extern  char  * get_filename_full_path( char * buff, const char * name, size_t max );
 extern  bool    check_realloc_line_buff( size_t len );
 extern  bool    get_line( bool researchoutput );
 extern  void    inc_inc_level( void );
