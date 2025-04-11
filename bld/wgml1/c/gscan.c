@@ -135,10 +135,10 @@ void set_overload( gtentry * in_gt )
     uint8_t len;        // user tag name max length is 15
 
     in_gt->overload = false;
-    len = strlen( in_gt->name );
+    len = strlen( in_gt->tagname );
     for( k = 0; k < GML_TAGMAX; ++k ) {
         if( len == gml_tags[k].taglen ) {
-            if( stricmp( gml_tags[k].tagname, in_gt->name ) == 0 ) {
+            if( stricmp( gml_tags[k].tagname, in_gt->tagname ) == 0 ) {
                 in_gt->overload = true;
                 break;
             }
@@ -192,7 +192,7 @@ static void scan_gml( void )
             if( cb->fmflags & II_tag_mac ) {
                 printf_research( "L%d    %c%s tag found in macro %s(%d)\n\n",
                                  inc_level, GML_char, g_tok_start + 1,
-                                 cb->s.m->mac->name, cb->s.m->lineno );
+                                 cb->s.m->mac->macname, cb->s.m->lineno );
             } else {
                 printf_research( "L%d    %c%s tag found in file %s(%d)\n\n",
                                  inc_level, GML_char, g_tok_start + 1,
@@ -573,7 +573,7 @@ static void     scan_script( void )
             if( cb->fmflags & II_tag_mac ) {
                 printf_research( "L%d    %c%s macro found in macro %s(%d)\n\n",
                                  inc_level, SCR_char, token_buf,
-                                 cb->s.m->mac->name, cb->s.m->lineno );
+                                 cb->s.m->mac->macname, cb->s.m->lineno );
             } else {
                 printf_research( "L%d    %c%s macro found in file %s(%d)\n\n",
                                  inc_level, SCR_char, token_buf,
@@ -597,7 +597,7 @@ static void     scan_script( void )
             if( cb->fmflags & II_tag_mac ) {
                 printf_research( "L%d    %c%s CW found in macro %s(%d)\n\n",
                                  inc_level, SCR_char, token_buf,
-                                 cb->s.m->mac->name, cb->s.m->lineno );
+                                 cb->s.m->mac->macname, cb->s.m->lineno );
             } else {
                 printf_research( "L%d    %c%s CW found in file %s(%d)\n\n",
                                  inc_level, SCR_char, token_buf,
@@ -822,24 +822,24 @@ void set_if_then_do( ifcb * cb )
             p++;                       // over ".." or ".'"
         }
         get_macro_name( p, cw );
-        if( strncmp( cw, "if", SCR_KW_LENGTH ) == 0 ) {
-            if( len > SCR_KW_LENGTH ) {
-                cb->if_flags[cb->if_level].ifcwif = (find_macro( macro_dict, cw ) == NULL);
-            } else {
+        if( cw[0] == 'i' && cw[1] == 'f' ) {
+            if( cw[2] == '\0' ) {
                 cb->if_flags[cb->if_level].ifcwif = true;
-            }
-        } else if( strncmp( cw, "do", SCR_KW_LENGTH ) == 0 ) {
-            if( len > SCR_KW_LENGTH ) {
-                cb->if_flags[cb->if_level].ifcwdo = (find_macro( macro_dict, cw ) == NULL);
             } else {
+                cb->if_flags[cb->if_level].ifcwif = (find_macro( macro_dict, cw ) == NULL);
+            }
+        } else if( cw[0] == 'd' && cw[1] == 'o' ) {
+            if( cw[2] == '\0' ) {
                 cb->if_flags[cb->if_level].ifcwdo = true;
-            }
-        } else if( strncmp( cw, "th", SCR_KW_LENGTH ) == 0
-          || strncmp( cw, "el", SCR_KW_LENGTH ) == 0 ) {
-            if( len > SCR_KW_LENGTH ) {
-                cb->if_flags[cb->if_level].ifcwte = (find_macro( macro_dict, cw ) == NULL);
             } else {
+                cb->if_flags[cb->if_level].ifcwdo = (find_macro( macro_dict, cw ) == NULL);
+            }
+        } else if( cw[0] == 't' && cw[1] == 'h'
+          || cw[0] == 'e' && cw[1] == 'l' ) {
+            if( cw[2] == '\0' ) {
                 cb->if_flags[cb->if_level].ifcwte = true;
+            } else {
+                cb->if_flags[cb->if_level].ifcwte = (find_macro( macro_dict, cw ) == NULL);
             }
         }
     }

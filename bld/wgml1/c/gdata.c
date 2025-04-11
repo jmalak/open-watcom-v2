@@ -60,9 +60,6 @@ void init_global_vars( void )
     def_ext             = mem_strdup( GML_EXT );
     ampchar             = '&';
 
-    gotarget[0]         = '\0';         // no .go to target yet
-    gotargetno          = 0;            // no .go to target lineno
-
     err_count           = 0;            // total error count
     wng_count           = 0;            // total warnig count
 

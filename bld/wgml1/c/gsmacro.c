@@ -24,19 +24,18 @@
 #include "wgml.h"
 
 
-char *get_macro_name( const char *p, char *dst )
+bool    get_macro_name( const char *p, char *dst )
 {
     size_t  len;
 
     for( len = 0; len < MAC_NAME_LENGTH; len++ ) {
-        if( is_space_tab_char( *p )
-          || (*p == '\0') ) { // largest possible macro name
+        if( IS_MACRO_END( p ) ) {
             break;
         }
         *dst++ = my_tolower( *p++ );     // copy lowercase macroname
     }
     *dst = '\0';
-    return( dst );
+    return( !IS_MACRO_END( p ) );
 }
 
 /*****************************************************************************/
@@ -589,7 +588,7 @@ void    scr_dm( void )
         me  = mem_alloc( sizeof( mac_entry ) );
         me->next = NULL;
         me->label_cb = NULL;
-        strcpy( me->name, macname1 );
+        strcpy( me->macname, macname1 );
         me->macline = head;
         me->lineno = lineno_start;
         me->mac_file_name = cb->s.f->filename;

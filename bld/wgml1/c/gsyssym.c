@@ -365,7 +365,7 @@ static void sysfilefun( symvar * e )    // name of current input file/macro
         if( input_cbs->fmflags & II_file ) {
             sysfile0.value = input_cbs->s.f->filename;
         } else {
-            sysfile0.value = input_cbs->s.m->mac->name;
+            sysfile0.value = input_cbs->s.m->mac->macname;
         }
     }
     return;

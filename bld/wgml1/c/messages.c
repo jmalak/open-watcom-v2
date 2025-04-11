@@ -306,7 +306,7 @@ void file_mac_info( void )
         if( input_cbs->fmflags & II_tag_mac ) {
             ulongtodec( input_cbs->s.m->lineno, linestr );
             ulongtodec( input_cbs->s.m->mac->lineno, linemac );
-            g_info( err_inf_mac_def, linestr, input_cbs->s.m->mac->name,
+            g_info( err_inf_mac_def, linestr, input_cbs->s.m->mac->macname,
                     linemac, input_cbs->s.m->mac->mac_file_name);
         } else {
             ulongtodec( input_cbs->s.f->lineno, linestr );
@@ -333,7 +333,7 @@ void file_mac_info_nest( void )
         if( input_cbs->fmflags & II_tag_mac ) {
             ulongtodec( input_cbs->s.m->lineno, linestr );
             ulongtodec( input_cbs->s.m->mac->lineno, linemac );
-            g_info( err_inf_mac_def, linestr, input_cbs->s.m->mac->name,
+            g_info( err_inf_mac_def, linestr, input_cbs->s.m->mac->macname,
                     linemac, input_cbs->s.m->mac->mac_file_name);
         } else {
             ulongtodec( input_cbs->s.f->lineno, linestr );
@@ -350,12 +350,12 @@ void file_mac_info_nest( void )
                 g_info( inf_file_line, linestr, nw->s.filename );
                 break;
             case    II_tag :
-                g_info( err_inf_tag, nw->s.mt.tag_m->name );
+                g_info( err_inf_tag, nw->s.mt.tag_m->tagname );
                 // fallthrough
             case    II_macro :
                 ulongtodec( nw->lineno, linestr );
                 ulongtodec( nw->s.mt.m->lineno, linemac );
-                g_info( err_inf_mac_def, linestr, nw->s.mt.m->name,
+                g_info( err_inf_mac_def, linestr, nw->s.mt.m->macname,
                         linemac, nw->s.mt.m->mac_file_name);
                 break;
             default:
@@ -465,7 +465,7 @@ void numb_err( void )                                           // for scr_pu()
     err_count++;
     if( input_cbs->fmflags & II_tag_mac ) {
         ulongtodec( input_cbs->s.m->lineno, linestr );
-        g_err( err_pu_num, linestr, "macro", input_cbs->s.m->mac->name );
+        g_err( err_pu_num, linestr, "macro", input_cbs->s.m->mac->macname );
     } else {
         ulongtodec( input_cbs->s.f->lineno, linestr );
         g_err( err_pu_num, linestr, "file", input_cbs->s.f->filename );
@@ -483,7 +483,7 @@ void symbol_name_length_err( const char * symname )
     g_info( inf_sym_10 );
     if( input_cbs->fmflags & II_tag_mac ) {
         ulongtodec( input_cbs->s.m->lineno, linestr );
-        g_info( inf_mac_line, linestr, input_cbs->s.m->mac->name );
+        g_info( inf_mac_line, linestr, input_cbs->s.m->mac->macname );
     } else {
         ulongtodec( input_cbs->s.f->lineno, linestr );
         g_info( inf_file_line, linestr, input_cbs->s.f->filename );
@@ -557,7 +557,7 @@ void g_err_if_int( void )
 
     if( input_cbs->fmflags & II_tag_mac ) {
         ulongtodec( input_cbs->s.m->lineno, linestr );
-        g_err( err_if_intern, linestr, "macro", input_cbs->s.m->mac->name );
+        g_err( err_if_intern, linestr, "macro", input_cbs->s.m->mac->macname );
     } else {
         ulongtodec( input_cbs->s.f->lineno, linestr );
         g_err( err_if_intern, linestr, "file", input_cbs->s.f->filename );
@@ -577,10 +577,10 @@ void g_err_tag_mac( gtentry * ge )
 
     if( input_cbs->fmflags & II_tag_mac ) {
         ulongtodec( input_cbs->s.m->lineno, linestr );
-        g_err( err_tag_macro, ge->macname, ge->name, linestr, "macro", input_cbs->s.m->mac->name );
+        g_err( err_tag_macro, ge->macname, ge->tagname, linestr, "macro", input_cbs->s.m->mac->macname );
     } else {
         ulongtodec( input_cbs->s.f->lineno, linestr );
-        g_err( err_tag_macro, ge->macname, ge->name, linestr, "file", input_cbs->s.f->filename );
+        g_err( err_tag_macro, ge->macname, ge->tagname, linestr, "file", input_cbs->s.f->filename );
     }
     if( inc_level > 0 ) {
         show_include_stack();
@@ -765,7 +765,7 @@ void xx_source_err( const msg_ids errid )
     g_err( errid );
     if( input_cbs->fmflags & II_tag_mac ) {
         ulongtodec( input_cbs->s.m->lineno, linestr );
-        g_info( inf_mac_line, linestr, input_cbs->s.m->mac->name );
+        g_info( inf_mac_line, linestr, input_cbs->s.m->mac->macname );
     } else {
         ulongtodec( input_cbs->s.f->lineno, linestr );
         g_info( inf_file_line, linestr, input_cbs->s.f->filename );
@@ -782,7 +782,7 @@ void xx_source_err_c( const msg_ids errid, const char * arg )
     g_err( errid, arg );
     if( input_cbs->fmflags & II_tag_mac ) {
         ulongtodec( input_cbs->s.m->lineno, linestr );
-        g_info( inf_mac_line, linestr, input_cbs->s.m->mac->name );
+        g_info( inf_mac_line, linestr, input_cbs->s.m->mac->macname );
     } else {
         ulongtodec( input_cbs->s.f->lineno, linestr );
         g_info( inf_file_line, linestr, input_cbs->s.f->filename );

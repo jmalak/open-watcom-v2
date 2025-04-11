@@ -310,7 +310,7 @@ static bool ifcompare( termcb * t1, relop r, termcb * t2 )
         if( input_cbs->fmflags & II_tag_mac ) {
             out_msg( "ERR_ifcompare internal logic error\n"
                      "\t\t\tLine %d of macro '%s'\n",
-                     input_cbs->s.m->lineno, input_cbs->s.m->mac->name );
+                     input_cbs->s.m->lineno, input_cbs->s.m->mac->macname );
         } else {
             out_msg( "ERR_ifcompare internal logic error\n"
                      "\t\t\tLine %d of file '%s'\n",
