@@ -584,7 +584,7 @@ typedef struct gtentry {
     ulong               usecount;
     size_t              namelen;        // actual length of name
     char                name[TAG_NAME_LENGTH + 1];
-    char                macname[MAC_NAME_LENGTH + 2];   // macro to call
+    char                macname[MAC_NAME_LENGTH + 1];   // macro to call
     gtflags             tagflags;
     bool                overload;       // user tag has same name as predefined tag
 } gtentry;

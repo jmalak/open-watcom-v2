@@ -333,7 +333,7 @@ extern char *   scan_sym( char * p, symvar * sym, sub_index * subscript, char * 
 extern  void    add_macro_cb_entry( mac_entry * me, gtentry * ge );
 extern  void    add_macro_parms( char * p );
 extern  void    free_lines( inp_line * line );
-extern  char    *get_macro_name( const char *p, char *dst );
+extern  bool    get_macro_name( const char *p, char *macname );
 
 
 /* gspe.c                               */
@@ -364,14 +364,14 @@ extern void     link_sym( dict_hdl dict, symvar * sym );
 
 
 /* gtagdict.c                           */
-extern  gtentry *   add_tag( gtentry * * dict, char const * name, char const * macro, const int flags );
-extern  gtentry *   change_tag( gtentry * * dict, char const * name, char const * macro );
-extern  void        init_tag_dict( gtentry * * dict );
-extern  void        free_tag_dict( gtentry * * dict );
-extern  gtentry *   free_tag( gtentry * * dict, gtentry * ge );
-extern  void        print_tag_dict( gtentry * dict );
-extern  void        print_tag_entry( gtentry * entry );
-extern  gtentry *   find_tag( gtentry * * dict, char const * name );
+extern  gtentry *   add_tag( gtentry **dict, char const *name, char const *macname, const int flags );
+extern  gtentry *   change_tag( gtentry **dict, char const *name, char const *macname );
+extern  void        init_tag_dict( gtentry **dict );
+extern  void        free_tag_dict( gtentry **dict );
+extern  gtentry *   free_tag( gtentry **dict, gtentry *ge );
+extern  void        print_tag_dict( gtentry *dict );
+extern  void        print_tag_entry( gtentry *entry );
+extern  gtentry *   find_tag( gtentry **dict, char const *name );
 
 /* gtxtpool.c                           */
 extern  void                add_single_text_chars_to_pool( text_chars * a_chars );

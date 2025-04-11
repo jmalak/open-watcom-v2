@@ -24,19 +24,19 @@
 #include "wgml.h"
 
 
-char *get_macro_name( const char *p, char *dst )
+#define IS_MACRO_END(p)     ((p)[0] == ' ' || (p)[0] == '\t' || (p)[0] == '\0')
+
+bool get_macro_name( const char *p, char *macname )
 {
     size_t  len;
 
     for( len = 0; len < MAC_NAME_LENGTH; len++ ) {
-        if( is_space_tab_char( *p )
-          || (*p == '\0') ) { // largest possible macro name
+        if( IS_MACRO_END( p ) )
             break;
-        }
-        *dst++ = my_tolower( *p++ );     // copy lowercase macroname
+        *macname++ = my_tolower( *p++ );     // copy lowercase macroname
     }
-    *dst = '\0';
-    return( dst );
+    *macname = '\0';
+    return( !IS_MACRO_END( p ) );
 }
 
 /*****************************************************************************/
@@ -434,7 +434,7 @@ void    scr_dm( void )
     cc = getarg();
     if( cc == omit ) {                  // nothing found
         // SC--048 A control word parameter is missing
-        xx_source_err_c( err_mac_def_fun, macname1 );
+        xx_source_err_c( err_mac_def_fun, g_tok_start );
     }
 
     p    = scan_start;
@@ -488,12 +488,12 @@ void    scr_dm( void )
     if( compend
       && !(ProcFlags.in_macro_define) ) {
         // SC--003: A macro is not being defined
-        xx_source_err_c( err_mac_def_end, macname1 );
+        xx_source_err_c( err_mac_def_end, g_tok_start );
     }
     if( compbegin
       && (ProcFlags.in_macro_define) ) {
         // SC--002 The control word parameter '%s' is invalid
-        xx_source_err_c( err_mac_def_nest, macname1 );
+        xx_source_err_c( err_mac_def_nest, g_tok_start );
     }
     *p  = save;
     if( compbegin ) {                   // start new macro define
@@ -522,14 +522,10 @@ void    scr_dm( void )
                   || (*p == '\'') ) {
                     p++;                        // over ".." or ".'"
                 }
-
                 get_macro_name( p, macname2 );
-
-                if( strncmp( macname2, "dm", SCR_KW_LENGTH ) == 0 ) {
-                    if( (len == SCR_KW_LENGTH)
-                      || ((len > SCR_KW_LENGTH)
-                      && (find_macro( macro_dict, macname2 ) == NULL)) ) { // .dm control word
-
+                if( macname2[0] == 'd' && macname2[1] == 'm' ) == 0 ) {
+                    if( macname2[2] == '\0'
+                      || find_macro( macro_dict, macname2 ) == NULL ) { // .dm control word
                         cc = getarg();
                         if( cc == omit ) {  // only .dm  means macro end
                             compend = 1;
@@ -539,7 +535,7 @@ void    scr_dm( void )
                         if( strcmp( macname1, macname2 ) ) {
                             // macroname from begin different from end
                             // SC--005 Macro '%s' is not being defined
-                            xx_source_err_c( err_mac_def_not, macname2 );
+                            xx_source_err_c( err_mac_def_not, g_tok_start );
                         }
 
                         cc = getarg();
@@ -548,9 +544,9 @@ void    scr_dm( void )
                             xx_source_err( err_mac_def_miss );
                         }
                         get_macro_name( g_tok_start, macname2 );
-                        if( stricmp( g_tok_start, "end") ) {
+                        if( strcmp( macname2, "end") ) {
                             // SC--002 The control word parameter '%s' is invalid
-                            xx_source_err_c( err_mac_def_inv, macname2 );
+                            xx_source_err_c( err_mac_def_inv, g_tok_start );
                         }
                         compend = 1;
                         break;              // out of read loop

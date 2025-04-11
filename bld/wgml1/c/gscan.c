@@ -71,7 +71,7 @@ static bool     scr_lkup_setup = false;
 /*  remaining control words as exceptions.                                 */
 /***************************************************************************/
 
-static void build_scr_cw_lookup( void )
+static void build_script_cw_lookup( void )
 {
     int             i;
     int             hash;
@@ -111,7 +111,7 @@ static int find_script_cw( const char *str )
     int     index = -1;
 
     if( !scr_lkup_setup )
-        build_scr_cw_lookup();
+        build_script_cw_lookup();
 
     if( islower( str[0] )
       && islower( str[1] ) ) {
@@ -400,7 +400,7 @@ static void scan_gml( void )
                     if( toklen == lay_tags[k].taglen ) {
                         if( strcmp( lay_tags[k].tagname, tok_upper ) == 0 ) {
                             xx_err_c( err_lay_in_gml, lay_tags[k].tagname );
-                       }
+                        }
                     }
                 }
             }
@@ -543,18 +543,8 @@ static void     scan_script( void )
 
         scan_start = p;
 
-        pt = token_buf;
-        toklen = 0;
-        while( !is_space_tab_char( *p ) && (*p != '\0') ) {
-           *pt++ = my_tolower( *p++ );      // copy lowercase to TokenBuf
-           toklen++;
-        }
-        *pt = '\0';
-
-        if( !ProcFlags.CW_sep_ignore
-          && ((*token_buf == '\0')
-          || (*token_buf == ' ')
-          || (toklen == 0)) ) {
+        if( get_macro_name( p, token_buf )
+          || !ProcFlags.CW_sep_ignore ) {
             // no valid script controlword / macro, treat as text
             scan_start = scan_restart;
             return;
@@ -677,7 +667,6 @@ condcode    test_process( ifcb * cb )
 //mainif
     if( cb->if_flags[cb->if_level].iflast           // 1. rec after .if
       && !cb->if_flags[cb->if_level].ifcwte) {      // not .th or .el
-
         cb->if_flags[cb->if_level].iflast = false;  // reset first switch
         cb->if_flags[cb->if_level].ifthen = true;   // treat as then
     }
@@ -687,7 +676,6 @@ condcode    test_process( ifcb * cb )
 //mnif03
         if( cb->if_flags[cb->if_level].ifthen
           || cb->if_flags[cb->if_level].ifelse ) {// object of .th or .el
-
             cc = pos;
         } else {
 //mnif03a
@@ -699,31 +687,26 @@ condcode    test_process( ifcb * cb )
             }
             cc = pos;                   // .do or all popped
         }
-
 #ifdef DEBTESTPROC
         if( (input_cbs->fmflags & II_research)
           && WgmlFlags.firstpass
           && (start_level
           || cb->if_level) ) {
             char * txt = (cc == pos ? "EX1 pos" : "EX1 no" );
-
             show_ifcb( txt, cb );
         }
 #endif
         return( cc );
-
     } else {                            // not .if
-
 //mnif01 cont.
         if( cb->if_flags[cb->if_level].ifcwdo ) {   // if  .do
             cc = pos;
 #ifdef DEBTESTPROC
-        if( (input_cbs->fmflags & II_research)
-          && WgmlFlags.firstpass
-          && (start_level
-          || cb->if_level) ) {
+            if( (input_cbs->fmflags & II_research)
+              && WgmlFlags.firstpass
+              && (start_level
+              || cb->if_level) ) {
                 char * txt = (cc == pos ? "Edo pos" : "Edo no" );
-
                 show_ifcb( txt, cb );
             }
 #endif
@@ -790,7 +773,6 @@ condcode    test_process( ifcb * cb )
       && (start_level
       || cb->if_level) ) {
         char * txt = (cc == pos ? "EX3 pos" : "EX3 no" );
-
         show_ifcb( txt, cb );
     }
 #endif
@@ -822,24 +804,24 @@ void set_if_then_do( ifcb * cb )
             p++;                       // over ".." or ".'"
         }
         get_macro_name( p, cw );
-        if( strncmp( cw, "if", SCR_KW_LENGTH ) == 0 ) {
-            if( len > SCR_KW_LENGTH ) {
-                cb->if_flags[cb->if_level].ifcwif = (find_macro( macro_dict, cw ) == NULL);
-            } else {
+        if( cw[0] == 'i' && cw[1] == 'f' ) {
+            if( cw[2] == '\0' ) {
                 cb->if_flags[cb->if_level].ifcwif = true;
-            }
-        } else if( strncmp( cw, "do", SCR_KW_LENGTH ) == 0 ) {
-            if( len > SCR_KW_LENGTH ) {
-                cb->if_flags[cb->if_level].ifcwdo = (find_macro( macro_dict, cw ) == NULL);
             } else {
+                cb->if_flags[cb->if_level].ifcwif = (find_macro( macro_dict, cw ) == NULL);
+            }
+        } else if( cw[0] == 'd' && cw[1] == 'o' ) {
+            if( cw[2] == '\0' ) {
                 cb->if_flags[cb->if_level].ifcwdo = true;
-            }
-        } else if( strncmp( cw, "th", SCR_KW_LENGTH ) == 0
-          || strncmp( cw, "el", SCR_KW_LENGTH ) == 0 ) {
-            if( len > SCR_KW_LENGTH ) {
-                cb->if_flags[cb->if_level].ifcwte = (find_macro( macro_dict, cw ) == NULL);
             } else {
+                cb->if_flags[cb->if_level].ifcwdo = (find_macro( macro_dict, cw ) == NULL);
+            }
+        } else if( cw[0] == 't' && cw[1] == 'h'
+          || cw[0] == 'e' && cw[1] == 'l' ) {
+            if( cw[2] == '\0' ) {
                 cb->if_flags[cb->if_level].ifcwte = true;
+            } else {
+                cb->if_flags[cb->if_level].ifcwte = (find_macro( macro_dict, cw ) == NULL);
             }
         }
     }
