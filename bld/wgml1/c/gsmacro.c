@@ -134,7 +134,7 @@ void    add_macro_cb_entry( mac_entry * me, gtentry * ge )
 }
 
 
-static const char *is_quoted_string( const char *p )
+static char *is_quoted_string( const char *p )
 {
     char        quote;
     const char  *pa;
@@ -147,7 +147,7 @@ static const char *is_quoted_string( const char *p )
             if( (pa[0] == quote)
               && ((pa[1] == ' ')
               || (pa[1] == '\0')) ) {
-                return( pa );   // matching delimiter found
+                return( (char *)pa );   // matching delimiter found
             }
         }
     }
@@ -399,8 +399,6 @@ void    scr_dm( void )
 {
     char        *   nmstart;
     char        *   p;
-    char        *   pa;
-    char        *   pn;
     char            save;
     int             len;
     int             macro_line_count;
@@ -722,13 +720,10 @@ void    scr_me( void )
 
 void    scr_em( void )
 {
-    char        *   p;
-    char        *   pn;
     char            macname[MAC_NAME_LENGTH + 1];
     condcode        cc;
     inputcb     *   cb;
     mac_entry   *   me;
-    int             len;
 
     cb = input_cbs;
 
