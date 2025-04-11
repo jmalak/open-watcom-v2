@@ -479,19 +479,8 @@ static  void    proc_input( char * filename )
 
             if( !get_line( true ) ) {
                 if( ProcFlags.goto_active ) {   // goto active at EOF
-                    char    linestr[MAX_L_AS_STR];
-
+                    gotarget_err();
                     ProcFlags.goto_active = false;
-                    if( input_cbs->fmflags & II_tag_mac ) {
-                        if( gotargetno > 0 ) {
-                            ulongtodec( gotargetno, linestr );
-                            xx_err_cc( err_goto, linestr, input_cbs->s.m->mac->name );
-                        } else {
-                            xx_err_cc( err_goto, gotarget, input_cbs->s.m->mac->name );
-                        }
-                    } else {
-                        xx_err_cc( err_goto, gotarget, input_cbs->s.f->filename );
-                    }
                 }
                 break;                  // EOF
             }
@@ -615,7 +604,7 @@ static  void    proc_input( char * filename )
             }
         } else {
             if( WgmlFlags.inclist && WgmlFlags.research ) {     // only when -r specified
-                g_info_lm( inf_curr_macro, input_cbs->s.m->mac->name,
+                g_info_lm( inf_curr_macro, input_cbs->s.m->mac->macname,
                                            input_cbs->s.m->mac->mac_file_name  );
             }
         }

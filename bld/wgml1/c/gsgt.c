@@ -353,7 +353,7 @@ void    scr_gt( void )
         savetag = '*';         // remember for possible global delete / print
         if( WgmlFlags.firstpass && (input_cbs->fmflags & II_research) ) {
             if( tag_entry != NULL ) {
-                out_msg("  using tagname %s %s\n", g_tagname, tag_entry->name );
+                out_msg("  using tagname %s %s\n", g_tagname, tag_entry->tagname );
             }
         }
     } else {
@@ -441,15 +441,8 @@ void    scr_gt( void )
             xx_err( err_tag_mac_name );
             return;
         }
-        p = g_tok_start;
 
-        len = 0;
-        pn = macname;
-        while( is_macro_char( *p ) && len < MAC_NAME_LENGTH ) {
-            *pn++ = my_tolower( *p++ );     // copy lowercase macroname
-            len++;
-        }
-        *pn = '\0';
+        get_macro_name( g_tok_start, macname );
 
         tag_flags = 0;
 

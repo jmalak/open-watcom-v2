@@ -46,8 +46,8 @@ gtentry *   add_tag( gtentry * * dict, const char * name, const char * mac,
     ge->next = *dict;
     *dict = ge;
 
-    memcpy( ge->name, name, sizeof( ge->name ) );
-    ge->namelen = strlen( ge->name );
+    memcpy( ge->tagname, name, sizeof( ge->tagname ) );
+    ge->tagnamelen = strlen( ge->tagname );
     strcpy_s( ge->macname, sizeof( ge->macname ), mac );
     ge->tagflags = flags;
     ge->attribs = NULL;
@@ -157,12 +157,12 @@ void    free_tag_dict( gtentry * * dict )
 /*  returns ptr to tag or NULL if not found                                */
 /***************************************************************************/
 
-gtentry     *   find_tag( gtentry * * dict, const char * name )
+gtentry     *   find_tag( gtentry **dict, const char *tagname )
 {
     gtentry     *   wk;
 
     for( wk = *dict; wk != NULL; wk = wk->next ) {
-        if( stricmp( wk->name, name ) == 0 ) {
+        if( stricmp( wk->tagname, tagname ) == 0 ) {
             break;
         }
     }
@@ -344,7 +344,7 @@ void    print_tag_entry( gtentry * wk )
         find++;
         flags >>= 1;
     }
-    out_msg( "tag:  %-16.16s tagcount=%d macro=%s %s\n", wk->name,
+    out_msg( "tag:  %-16.16s tagcount=%d macro=%s %s\n", wk->tagname,
              wk->usecount, wk->macname, opt );
     for( gawk = wk->attribs; gawk != NULL; gawk = gawk->next ) {
         print_att_entry( gawk );

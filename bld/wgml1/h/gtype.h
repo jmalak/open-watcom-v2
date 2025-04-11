@@ -29,6 +29,8 @@
 #define IS_TAG_END2(p)      (*(p) == '.' || *(p) == ' ' || *(p) == '\t' || *(p) == '\0')
 #define IS_CMT_TAG(p)       ((p)[0] == GML_char && strnicmp( p + 1, "CMT", sizeof( "CMT" ) - 1 ) == 0)
 
+#define IS_MACRO_END(p)     (*(p) == ' ' || *(p) == '\t' || *(p) == '\0')
+
 #define ulong           unsigned long
 
 //================= Some global defines ========================
@@ -316,7 +318,7 @@ typedef struct mac_entry {
     line_number             lineno;     // lineno start of macro definition
     labelcb             *   label_cb;   // controlling label definitions
     char                *   mac_file_name;  // file name macro definition
-    char                    name[MAC_NAME_LENGTH + 1];  // macro name
+    char                    macname[MAC_NAME_LENGTH + 1];  // macro name
 } mac_entry;
 
 /***************************************************************************/
@@ -583,7 +585,7 @@ typedef struct gtentry {
     gaentry         *   attribs;        // list of attributes
     ulong               usecount;
     size_t              namelen;        // actual length of name
-    char                name[TAG_NAME_LENGTH + 1];
+    char                tagname[TAG_NAME_LENGTH + 1];
     char                macname[MAC_NAME_LENGTH + 2];   // macro to call
     gtflags             tagflags;
     bool                overload;       // user tag has same name as predefined tag
