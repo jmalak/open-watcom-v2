@@ -251,13 +251,14 @@ extern  void            set_h_start( void );
 
 
 /* grefdict.c                           */
-extern  void            add_ref_entry( ref_entry * * dict, ref_entry * me );
-extern  void            init_ref_dict( ref_entry * * dict );
-extern  void            free_ref_dict( ref_entry * * dict );
-extern  void            print_ref_dict( ref_entry * dict, const char * type );
-extern  ref_entry   *   find_refid( ref_entry * dict, const char * id );
-extern  void            init_ref_entry( ref_entry * re, char * id );
-extern  char        *   get_refid_value( char * p, char * refid );
+extern  void        add_ref_entry( ref_dict *dict, ref_entry *me );
+extern  void        init_ref_dict( ref_dict *dict );
+extern  void        free_ref_dict( ref_dict *dict );
+extern  void        print_ref_dict( ref_dict dict, const char *type );
+extern  ref_entry   *find_refid( ref_dict dict, const char *id );
+extern  void        init_ref_entry( ref_entry *re, const char *id, ffh_entry *ffh );
+extern  char        *get_refid_value( char *p, char *refid );
+extern  ref_entry   *add_new_refid( ref_dict *dict, const char *id, ffh_entry *ffh );
 
 /* gresrch.c                            */
 extern  void    add_GML_tag_research( char * tag );

@@ -122,11 +122,7 @@ void gml_fn( const gmltag * entry )
         if( id_seen ) {                 // add this entry to fn_ref_dict
             cur_ref = find_refid( fn_ref_dict, id );
             if( cur_ref == NULL ) {     // new entry
-                cur_ref = mem_alloc( sizeof( ref_entry ) );
-                init_ref_entry( cur_ref, id );
-                cur_ref->flags = rf_ffh;
-                cur_ref->u.ffh.entry = fn_entry;
-                add_ref_entry( &fn_ref_dict, cur_ref );
+                cur_ref = add_new_refid( &fn_ref_dict, id, fn_entry );
             } else {
                 dup_id_err( cur_ref->id, "footnote" );
             }

@@ -1522,6 +1522,8 @@ typedef struct ref_entry {
     } u;
 } ref_entry;
 
+typedef ref_entry       *ref_dict;
+
 /***************************************************************************/
 /*  forward reference / undefined id / page change                         */
 /*   used for :FIG, :FN, :Hx, :FIGREF, :FNREF, :HDREF                      */

@@ -465,12 +465,7 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
             refwork = find_refid( ix_ref_dict, id );
             if( WgmlFlags.firstpass ) {           // first pass: build dict
                 if( refwork == NULL ) {             // new entry
-                    refwork = (ref_entry *) mem_alloc( sizeof( ref_entry ) ) ;
-                    init_ref_entry( refwork, id );
-                    refwork->flags = rf_ix;
-                    refwork->u.ix.hblk = NULL;
-                    refwork->u.ix.base = NULL;
-                    add_ref_entry( &ix_ref_dict, refwork );
+                    refwork = add_new_refid( &ix_ref_dict, id, NULL );
                 } else {                            // duplicate id
                     dup_id_err( refwork->id, "figure" );
                 }
