@@ -147,7 +147,7 @@ static void hx_header( char * h_num, char * h_text, hdsrc hn_lvl, hdsrc hds_lvl 
 /* document sections which have headings                                      */
 /******************************************************************************/
 
-void gen_heading( char * h_text, char * id, hdsrc hn_lvl, hdsrc hds_lvl )
+void gen_heading( char * h_text, const char *hdrefid, hdsrc hn_lvl, hdsrc hds_lvl )
 {
     bool            page_width  = false;
     char        *   headp;
@@ -275,13 +275,12 @@ void gen_heading( char * h_text, char * id, hdsrc hn_lvl, hdsrc hds_lvl )
         /* for document sections, it is NULL, as it has no meaning for them    */
         /***********************************************************************/
 
-        if( (id != NULL)
-          && *id != '\0' ) {             // add this entry to fig_ref_dict
-            cur_ref = find_refid( hd_ref_dict, id );
+        if( *hdrefid != '\0' ) {             // add this entry to fig_ref_dict
+            cur_ref = find_refid( hd_ref_dict, hdrefid );
             if( cur_ref == NULL ) {             // new entry
-                cur_ref = add_new_refid( &hd_ref_dict, id, hd_entry );
+                cur_ref = add_new_refid( &hd_ref_dict, hdrefid, hd_entry );
             } else {                // duplicate id
-                dup_id_err( cur_ref->id, "heading" );
+                dup_id_err( cur_ref->refid, "heading" );
             }
         }
     }
@@ -536,7 +535,7 @@ void gen_heading( char * h_text, char * id, hdsrc hn_lvl, hdsrc hds_lvl )
 static void gml_hx_common( const gmltag * entry, hdsrc hn_lvl )
 {
     bool            id_seen     = false;
-    char            id[ID_LEN];
+    char            hdrefid[ID_LEN + 1];
     char        *   p;
     char        *   pa;
     hdsrc           hds_lvl;
@@ -561,7 +560,7 @@ static void gml_hx_common( const gmltag * entry, hdsrc hn_lvl )
         ProcFlags.dd_starting = false;
     }
 
-    id[0] = '\0';                           // null string if no id found
+    hdrefid[0] = '\0';                           // null string if no id found
     switch( hn_lvl ) {
     case   hds_h0:
         if( !((ProcFlags.doc_sect == doc_sect_body)
@@ -639,7 +638,7 @@ static void gml_hx_common( const gmltag * entry, hdsrc hn_lvl )
             }
             if( strnicmp( "id", p, 2 ) == 0 ) {
                 p += 2;
-                p = get_refid_value( p, id );
+                p = get_refid_value( p, hdrefid );
                 if( val_start == NULL ) {
                     break;
                 }
@@ -719,10 +718,10 @@ static void gml_hx_common( const gmltag * entry, hdsrc hn_lvl )
           && layout_work.hx.hx_head[hds_lvl].line_break ) {
             ProcFlags.overprint = false;        // cancel overprint
         }
-        gen_heading( p, id, hn_lvl, hds_lvl );
+        gen_heading( p, hdrefid, hn_lvl, hds_lvl );
         scan_start = scan_stop + 1;
     } else {
-        gen_heading( "", id, hn_lvl, hds_lvl );
+        gen_heading( "", hdrefid, hn_lvl, hds_lvl );
     }
 
     g_text_spacing = sav_spacing;
@@ -838,8 +837,8 @@ void out_head_page( ffh_entry *in_entry, ref_entry *in_ref, uint32_t in_pageno )
             in_entry->pageno = currno;
             if( WgmlFlags.lastpass ) {
                 if( (in_ref != NULL)
-                  && in_ref->id[0] != '\0' ) {
-                    hd_fwd_refs = init_fwd_ref( hd_fwd_refs, in_ref->id );
+                  && in_ref->refid[0] != '\0' ) {
+                    hd_fwd_refs = init_fwd_ref( hd_fwd_refs, in_ref->refid );
                 }
                 ProcFlags.new_pagenr = true;
             }

@@ -1509,7 +1509,7 @@ typedef enum {
 
 typedef struct ref_entry {
     struct ref_entry    *   next;
-    char                    id[ID_LEN+1];   // reference id
+    char                    refid[ID_LEN+1];    // reference id
     refflags                flags;
     union {
         struct {
@@ -1531,7 +1531,7 @@ typedef ref_entry       *ref_dict;
 
 typedef struct fwd_ref {
     struct fwd_ref  *   next;
-    char                id[ID_LEN+1];   // reference id
+    char                refid[ID_LEN+1];   // reference id
 } fwd_ref;
 
 /********************************************************************************/
