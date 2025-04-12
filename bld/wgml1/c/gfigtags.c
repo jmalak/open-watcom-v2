@@ -21,7 +21,7 @@ static  bool            figcap_done;            // FIGCAP done for current FIG
 static  bool            page_width;             // FIG flag used by eFIG
 static  bool            splitting;              // FIG is being split
 static  bool            t_page_width    = false;// FIG will actually go into page_width section
-static  char            id[ID_LEN];             // FIG attribute used by eFIG
+static  char            figrefid[ID_LEN + 1];   // FIG attribute used by eFIG
 static  def_frame       frame;                  // FIG attribute used by eFIG
 static  group_type      sav_group_type;         // save prior group type
 static  ju_enum         justify_save;           // for ProcFlags.justify
@@ -398,7 +398,7 @@ void gml_fig( const gmltag * entry )
     g_keep_nest( "Figure" );            // catch nesting errors
 
     figcap_done = false;                // reset for this FIG
-    id[0] = '\0';
+    figrefid[0] = '\0';
     page_width = false;
     p = scan_start;
     depth = 0;                          // default value; depth is space reserved for some other item
@@ -468,7 +468,7 @@ void gml_fig( const gmltag * entry )
                 }
             } else if( strnicmp( "id", p, 2 ) == 0 ) {
                 p += 2;
-                p = get_refid_value( p, id );
+                p = get_refid_value( p, figrefid );
                 if( val_start == NULL ) {
                     break;
                 }
@@ -571,11 +571,11 @@ void gml_fig( const gmltag * entry )
             fig_list = fig_entry;
         }
         if( id_seen ) {                 // add this entry to fig_ref_dict
-            cur_ref = find_refid( fig_ref_dict, id );
+            cur_ref = find_refid( fig_ref_dict, figrefid );
             if( cur_ref == NULL ) {             // new entry
-                cur_ref = add_new_refid( &fig_ref_dict, id, fig_entry );
+                cur_ref = add_new_refid( &fig_ref_dict, figrefid, fig_entry );
             } else {                // duplicate id
-                dup_id_err( cur_ref->id, "figure" );
+                dup_id_err( cur_ref->refid, "figure" );
             }
         }
     }
@@ -776,7 +776,7 @@ void gml_efig( const gmltag * entry )
 
     ProcFlags.skips_valid = false;      // activate post_skip for next element
 
-    if( (strlen( id ) > 0)
+    if( *figrefid != '\0'
       && !figcap_done ) {  // FIG id requires FIGCAP
         xx_err( err_fig_id_cap );
     }
@@ -1032,8 +1032,8 @@ void gml_efig( const gmltag * entry )
             if( page_pred != fig_entry->pageno ) {  // page number changed
                 fig_entry->pageno = page_pred;
                 if( WgmlFlags.lastpass ) {        // last pass only
-                    if( strlen( id ) > 0 ) {     // FIG id exists
-                        fig_fwd_refs = init_fwd_ref( fig_fwd_refs, id );
+                    if( *figrefid != '\0' ) {     // FIG id exists
+                        fig_fwd_refs = init_fwd_ref( fig_fwd_refs, figrefid );
                     }
                     ProcFlags.new_pagenr = true;
                 }

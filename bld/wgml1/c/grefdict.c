@@ -31,14 +31,14 @@ char    *get_refid_value( char *p, char *refid )
     }
     if( val_len < ID_LEN ) {
         for( k = 0; k < val_len; k++ ) {
-            refid[k] = my_tolower( *(val_start + k) );
+            refid[k] = my_tolower( val_start[k] );
         }
         refid[val_len] = '\0';
     } else {
         for( k = 0; k < ID_LEN; k++ ) {
-            refid[k] = my_tolower( *(val_start + k) );
+            refid[k] = my_tolower( val_start[k] );
         }
-        refid[ID_LEN - 1] = '\0';
+        refid[ID_LEN] = '\0';
     }
     if( val_len > 7 ) {                     // wgml 4 warning level
         xx_warn_c_info( wng_id_xxx, refid, inf_id_len );
@@ -62,9 +62,9 @@ void    init_ref_dict( ref_dict *dict )
 /*  add_ref_entry   add ref entry to dictionary                            */
 /***************************************************************************/
 
-void    add_ref_entry( ref_dict *dict, ref_entry * re )
+void    add_ref_entry( ref_dict *dict, ref_entry *re )
 {
-    ref_entry   *   wk;
+    ref_entry   *wk;
 
     if( *dict == NULL ) {               // empty dictionary
         *dict = re;
@@ -82,10 +82,10 @@ void    add_ref_entry( ref_dict *dict, ref_entry * re )
 /*  free_ref_entry  delete single refentry                                 */
 /***************************************************************************/
 
-static void    free_ref_entry( ref_dict *dict, ref_entry * me )
+static void    free_ref_entry( ref_dict *dict, ref_entry *me )
 {
-    ref_entry   *   wk;
-    ref_entry   *   wkn;
+    ref_entry   *wk;
+    ref_entry   *wkn;
 
     if( me != NULL ) {
         if( *dict == me ) {             // delete first entry
@@ -113,8 +113,8 @@ static void    free_ref_entry( ref_dict *dict, ref_entry * me )
 
 void    free_ref_dict( ref_dict *dict )
 {
-    ref_entry   *   wk;
-    ref_entry   *   wkn;
+    ref_entry   *wk;
+    ref_entry   *wkn;
 
     wk = *dict;
     while( wk != NULL ) {
@@ -131,10 +131,10 @@ void    free_ref_dict( ref_dict *dict )
 /* init ref entry with some values    assumes :hx :fig variant             */
 /***************************************************************************/
 
-void init_ref_entry( ref_entry *re, const char *id, ffh_entry *ffh )
+void init_ref_entry( ref_entry *re, const char *refid, ffh_entry *ffh )
 {
     re->next = NULL;
-    strcpy_s( re->id, ID_LEN, id );
+    strcpy( re->refid, refid );
     if( ffh != NULL ) {
         re->flags = rf_ffh;
         re->u.ffh.entry = ffh;
@@ -152,15 +152,15 @@ void init_ref_entry( ref_entry *re, const char *id, ffh_entry *ffh )
 /*  returns ptr to entry or NULL if not found                              */
 /***************************************************************************/
 
-ref_entry   * find_refid( ref_dict dict, const char *name )
+ref_entry   *find_refid( ref_dict dict, const char *refid )
 {
-    ref_entry   *   wk;
-    ref_entry   *   curr;
+    ref_entry   *wk;
+    ref_entry   *curr;
 
     wk = NULL;
-    if( strlen( name ) > 0 ) {          // don't match case with no id
+    if( *refid != '\0' ) {          // don't match case with no id
         for( curr = dict; curr != NULL; curr = curr->next ) {
-            if( strcmp( curr->id, name ) == 0 ) {
+            if( strcmp( curr->refid, refid ) == 0 ) {
                 wk = curr;
                 break;
             }
@@ -178,37 +178,40 @@ ref_entry   * find_refid( ref_dict dict, const char *name )
 
 void    print_ref_dict( ref_dict dict, const char *type )
 {
-    ref_entry           *   wk;
-    int                     cnt;
-    int                     len;
-    static  const   char    fill[17] = "                ";
-    bool                    withnumber;
-    char                *   text;
+    ref_entry           *wk;
+    int                 cnt;
+    size_t              len;
+    char                fill[ID_LEN + 1];
+    bool                withnumber;
+    char                *text;
+
     cnt = 0;
     if( dict != NULL ) {
+        memset( fill, ' ', ID_LEN );
+        fill[ID_LEN] = '\0';
         out_msg( "\nList of %s entries:\n\n", type );
         if( strcmp( "INDEX", type ) ) {
             withnumber = strcmp( "HDREF", type );   // true for :FIG and :FN
             for( wk = dict; wk != NULL; wk = wk->next ) {
-                len = strlen( wk->id );
+                len = strlen( wk->refid );
                 if( withnumber ) {
-                    out_msg( "%4ld ID='%s'%spage %-3ld text='%s'\n", wk->u.ffh.entry->number,
-                             wk->id, &fill[len], wk->u.ffh.entry->pageno, wk->u.ffh.entry->text );
+                    out_msg( "%4ld ID='%s'%s page %-3ld text='%s'\n", wk->u.ffh.entry->number,
+                             wk->refid, &fill[len], wk->u.ffh.entry->pageno, wk->u.ffh.entry->text );
                 } else {
-                    out_msg( "ID='%s'%spage %-3ld text='%s'\n", wk->id,
+                    out_msg( "ID='%s'%s page %-3ld text='%s'\n", wk->refid,
                             &fill[len], wk->u.ffh.entry->pageno, wk->u.ffh.entry->text );
                 }
                 cnt++;
             }
         } else {                        // "INDEX"
             for( wk = dict; wk != NULL; wk = wk->next ) {
-                len = strlen( wk->id );
+                len = strlen( wk->refid );
                 if( wk->u.ix.hblk->prt_term != NULL ) {
                     text = wk->u.ix.hblk->prt_term;
                 } else {
                     text = wk->u.ix.hblk->ix_term;
                 }
-                out_msg( "ID='%s'%s'%s'\n", wk->id,
+                out_msg( "ID='%s'%s '%s'\n", wk->refid,
                          &fill[len], text );
                 cnt++;
             }
@@ -218,12 +221,12 @@ void    print_ref_dict( ref_dict dict, const char *type )
     return;
 }
 
-ref_entry *add_new_refid( ref_dict *dict, const char *id, ffh_entry *ffh )
+ref_entry *add_new_refid( ref_dict *dict, const char *refid, ffh_entry *ffh )
 {
     ref_entry   *ref;
 
     ref = (ref_entry *)mem_alloc( sizeof( ref_entry ) ) ;
-    init_ref_entry( ref, id, ffh );
+    init_ref_entry( ref, refid, ffh );
     add_ref_entry( dict, ref );
     return( ref );
 }

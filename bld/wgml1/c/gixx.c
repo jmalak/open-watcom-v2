@@ -34,9 +34,9 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
     bool            seeidseen   = false;    // used in processing IHx
     bool            seeseen     = false;    // needed to catch empty string values
     char            hxstring[TAG_NAME_LENGTH + 1];
-    char            id[ID_LEN];             // holds attribute id value
-    char            refid[ID_LEN];          // holds attribute refid value
-    char            seeid[ID_LEN];          // holds attribute seeid value
+    char            ixrefid[ID_LEN + 1];    // holds attribute id value
+    char            refrefid[ID_LEN + 1];   // holds attribute refid value
+    char            seerefid[ID_LEN + 1];   // holds attribute seeid value
     char            lvlc;
     char        *   p;
     char        *   pa;
@@ -112,7 +112,7 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
 
             if( strnicmp( "id", p, 2 ) == 0 ) {
                 p += 2;
-                p = get_refid_value( p, id );
+                p = get_refid_value( p, ixrefid );
                 if( val_start == NULL ) {
                     break;
                 }
@@ -127,7 +127,7 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
                 }
             } else if( strnicmp( "refid", p, 5 ) == 0 ) {
                 p += 5;
-                p = get_refid_value( p, refid );
+                p = get_refid_value( p, refrefid );
                 if( val_start == NULL ) {
                     break;
                 }
@@ -135,10 +135,10 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
                   || ((hx_lvl > 1)
                   && (hxstring[2] == lvlc)) ) {
                     refidseen = true;   // refid attribute found
-                    refwk = find_refid( ix_ref_dict, refid );
+                    refwk = find_refid( ix_ref_dict, refrefid );
                     if( refwk == NULL ) {   // refid not in dict
                         if( WgmlFlags.lastpass ) {// this is an error
-                            xx_line_err_cc( err_id_undefined, refid, val_start );
+                            xx_line_err_cc( err_id_undefined, refrefid, val_start );
                         }
                     }
                 } else {                // not allowed for :I1 and :IHx
@@ -204,17 +204,17 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
                 }
             } else if( strnicmp( "seeid", p, 5 ) == 0 ) {
                 p += 5;
-                p = get_refid_value( p, seeid );
+                p = get_refid_value( p, seerefid );
                 if( val_start == NULL ) {
                     break;
                 }
                 if( (hx_lvl == 0)
                   || (hxstring[3] == lvlc) ) {  // IREF IHx
                     seeidseen = true;
-                    seeidwk = find_refid( ix_ref_dict, seeid );
+                    seeidwk = find_refid( ix_ref_dict, seerefid );
                     if( seeidwk == NULL ) {             // not in dict, this is an error
                         if( WgmlFlags.lastpass ) {    // during lastpass
-                            xx_line_err_cc( err_id_undefined, seeid, val_start );
+                            xx_line_err_cc( err_id_undefined, seerefid, val_start );
                         }
                     }
                 } else {                        // end-of-tag for Ix
@@ -462,17 +462,17 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
     if( idseen ) {                 // ID specified create reference entry
         if( WgmlFlags.firstpass
           || WgmlFlags.lastpass ) {
-            refwork = find_refid( ix_ref_dict, id );
+            refwork = find_refid( ix_ref_dict, ixrefid );
             if( WgmlFlags.firstpass ) {           // first pass: build dict
                 if( refwork == NULL ) {             // new entry
-                    refwork = add_new_refid( &ix_ref_dict, id, NULL );
+                    refwork = add_new_refid( &ix_ref_dict, ixrefid, NULL );
                 } else {                            // duplicate id
-                    dup_id_err( refwork->id, "figure" );
+                    dup_id_err( refwork->refid, "figure" );
                 }
             }
             if( WgmlFlags.lastpass ){         // last pass: add data
                 if( refwork == NULL ) {         // shouldn't happen
-                    xx_err_c( err_id_undefined, id );
+                    xx_err_c( err_id_undefined, ixrefid );
                 } else {
                     refwork->u.ix.hblk = ixhwk;
                     refwork->u.ix.base = ixhtag[hx_lvl - 1];

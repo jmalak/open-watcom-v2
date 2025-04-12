@@ -16,7 +16,7 @@
 #include "wgml.h"
 
 static  bool            concat_save;            // for ProcFlags.concat
-static  char            id[ID_LEN];             // FIG attribute used by eFIG
+static  char            fnrefid[ID_LEN + 1];    // FIG attribute used by eFIG
 static  group_type      sav_group_type;         // save prior group type
 static  ju_enum         justify_save;           // for ProcFlags.justify
 
@@ -62,7 +62,7 @@ void gml_fn( const gmltag * entry )
             }
             if( strnicmp( "id", p, 2 ) == 0 ) {
                 p += 2;
-                p = get_refid_value( p, id );
+                p = get_refid_value( p, fnrefid );
                 if( val_start == NULL ) {
                     break;
                 }
@@ -120,19 +120,19 @@ void gml_fn( const gmltag * entry )
             fn_list = fn_entry;
         }
         if( id_seen ) {                 // add this entry to fn_ref_dict
-            cur_ref = find_refid( fn_ref_dict, id );
+            cur_ref = find_refid( fn_ref_dict, fnrefid );
             if( cur_ref == NULL ) {     // new entry
-                cur_ref = add_new_refid( &fn_ref_dict, id, fn_entry );
+                cur_ref = add_new_refid( &fn_ref_dict, fnrefid, fn_entry );
             } else {
-                dup_id_err( cur_ref->id, "footnote" );
+                dup_id_err( cur_ref->refid, "footnote" );
             }
         }
     } else {
         if( (page + 1) != fn_entry->pageno ) {  // page number changed
             fn_entry->pageno = page + 1;
             if( WgmlFlags.lastpass ) {        // last pass only
-                if( strlen( id ) > 0 ) {        // FN id exists
-                    fn_fwd_refs = init_fwd_ref( fn_fwd_refs, id );
+                if( *fnrefid != '\0' ) {        // FN id exists
+                    fn_fwd_refs = init_fwd_ref( fn_fwd_refs, fnrefid );
                 }
             }
         }

@@ -1373,7 +1373,7 @@ void start_doc_sect( void )
         ProcFlags.concat = true;
         justify_save = ProcFlags.justify;
         ProcFlags.justify = ju_off;
-        gen_heading( h_text, NULL, 0, hds_lvl );
+        gen_heading( h_text, "", 0, hds_lvl );
         g_indent = 0;                           // reset for section body
         ProcFlags.concat = concat_save;
         ProcFlags.justify = justify_save;
@@ -1686,26 +1686,26 @@ void gml_egdoc( const gmltag * entry )
             }
             // output figure forward/undefined references
             for( curr = fig_fwd_refs; curr != NULL; curr = curr->next ) {
-                if( find_refid( fig_ref_dict, curr->id ) != NULL ) {
-                    xx_simple_warn_info_cc( wng_id_xxx, curr->id, inf_id_forward, "figure" );
+                if( find_refid( fig_ref_dict, curr->refid ) != NULL ) {
+                    xx_simple_warn_info_cc( wng_id_xxx, curr->refid, inf_id_forward, "figure" );
                 } else {
-                    xx_simple_warn_info_cc( wng_id_xxx, curr->id, inf_id_unknown, "Figure" );
+                    xx_simple_warn_info_cc( wng_id_xxx, curr->refid, inf_id_unknown, "Figure" );
                 }
             }
             // output header forward/undefined references
             for( curr = hd_fwd_refs; curr != NULL; curr = curr->next ) {
-                if( find_refid( hd_ref_dict, curr->id ) != NULL ) {
-                    xx_simple_warn_info_cc( wng_id_xxx, curr->id, inf_id_forward, "heading" );
+                if( find_refid( hd_ref_dict, curr->refid ) != NULL ) {
+                    xx_simple_warn_info_cc( wng_id_xxx, curr->refid, inf_id_forward, "heading" );
                 } else {
-                    xx_simple_warn_info_cc( wng_id_xxx, curr->id, inf_id_unknown, "Heading" );
+                    xx_simple_warn_info_cc( wng_id_xxx, curr->refid, inf_id_unknown, "Heading" );
                 }
             }
             // output footnote forward/undefined references
             for( curr = fn_fwd_refs; curr != NULL; curr = curr->next ) {
-                if( find_refid( fn_ref_dict, curr->id ) != NULL ) {
-                    xx_simple_warn_info_cc( wng_id_xxx, curr->id, inf_id_forward, "footnote" );
+                if( find_refid( fn_ref_dict, curr->refid ) != NULL ) {
+                    xx_simple_warn_info_cc( wng_id_xxx, curr->refid, inf_id_forward, "footnote" );
                 } else {
-                    xx_simple_warn_info_cc( wng_id_xxx, curr->id, inf_id_unknown, "Footnote" );
+                    xx_simple_warn_info_cc( wng_id_xxx, curr->refid, inf_id_unknown, "Footnote" );
                 }
             }
             if( figlist_toc ) {
@@ -1714,11 +1714,11 @@ void gml_egdoc( const gmltag * entry )
         } else {                                    // last pass of at least 2
             // output figure undefined/page change references
             for( curr = fig_fwd_refs; curr != NULL; curr = curr->next ) {
-                xx_simple_warn_info_cc( wng_id_xxx, curr->id, inf_id_forward, "figure" );
+                xx_simple_warn_info_cc( wng_id_xxx, curr->refid, inf_id_forward, "figure" );
             }
             // output header undefined/page change references
             for( curr = hd_fwd_refs; curr != NULL; curr = curr->next ) {
-                xx_simple_warn_info_cc( wng_id_xxx, curr->id, inf_id_forward, "heading" );
+                xx_simple_warn_info_cc( wng_id_xxx, curr->refid, inf_id_forward, "heading" );
             }
             if( ProcFlags.new_pagenr ) {
                 xx_simple_warn( wng_pass_many );    // at least one more pass needed

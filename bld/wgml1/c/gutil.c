@@ -1260,7 +1260,7 @@ ffh_entry * init_ffh_entry( ffh_entry * ffh_list )
 /*  initalize a fwd_ref instance and insert it (if new) in alpha order     */
 /***************************************************************************/
 
-fwd_ref * init_fwd_ref( fwd_ref * fr_dict, const char * fr_id )
+fwd_ref * init_fwd_ref( fwd_ref * fr_dict, const char *refid )
 {
     fwd_ref *   curr;
     fwd_ref *   local;
@@ -1269,24 +1269,24 @@ fwd_ref * init_fwd_ref( fwd_ref * fr_dict, const char * fr_id )
     if( fr_dict == NULL ) {
         curr = (fwd_ref *) mem_alloc( sizeof( fwd_ref ) );
         curr->next = NULL;
-        strcpy_s( curr->id, ID_LEN, fr_id );
+        strcpy( curr->refid, refid );
         fr_dict = curr;         // first entry
     } else {
         local = fr_dict;
         prev = NULL;
-        while( (local != NULL) && (strcmp( local->id, fr_id ) < 0) ) {
+        while( (local != NULL) && (strcmp( local->refid, refid ) < 0) ) {
             prev = local;
             local = local->next;
         }
         if( local == NULL ) {       // curr goes at end of list
-            curr = (fwd_ref *) mem_alloc( sizeof( fwd_ref ) );
+            curr = (fwd_ref *)mem_alloc( sizeof( fwd_ref ) );
             curr->next = NULL;
-            strcpy_s( curr->id, ID_LEN, fr_id );
+            strcpy( curr->refid, refid );
             prev->next = curr;
-        } else if( strcmp( local->id, fr_id ) > 0 ) {   // note: duplicate id ignored
-            curr = (fwd_ref *) mem_alloc( sizeof( fwd_ref ) );
+        } else if( strcmp( local->refid, refid ) > 0 ) {   // note: duplicate id ignored
+            curr = (fwd_ref *)mem_alloc( sizeof( fwd_ref ) );
             curr->next = NULL;
-            strcpy_s( curr->id, ID_LEN, fr_id );
+            strcpy( curr->refid, refid );
             if( prev == NULL ) {    // curr goes at start of list
                 fr_dict = curr;
             } else {
