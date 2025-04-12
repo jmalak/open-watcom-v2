@@ -573,11 +573,7 @@ void gml_fig( const gmltag * entry )
         if( id_seen ) {                 // add this entry to fig_ref_dict
             cur_ref = find_refid( fig_ref_dict, id );
             if( cur_ref == NULL ) {             // new entry
-                cur_ref = (ref_entry *) mem_alloc( sizeof( ref_entry ) ) ;
-                init_ref_entry( cur_ref, id );
-                cur_ref->flags = rf_ffh;
-                cur_ref->u.ffh.entry = fig_entry;
-                add_ref_entry( &fig_ref_dict, cur_ref );
+                cur_ref = add_new_refid( &fig_ref_dict, id, fig_entry );
             } else {                // duplicate id
                 dup_id_err( cur_ref->id, "figure" );
             }

@@ -157,20 +157,20 @@ global  ffh_entry       *   fig_entry;      // current fig_list entry
 global  fwd_ref         *   fig_fwd_refs;   // forward reference/undefined id/page change
 global  ffh_entry       *   fig_list;       // list of figures in order encountered
 global  record_buffer       line_buff;      // used for some frame types
-global  ref_entry       *   fig_ref_dict;   // reference dictionary :FIG tags
+global  ref_dict            fig_ref_dict;   // reference dictionary :FIG tags
 
 // footnote support
 global  uint32_t        fn_count;       // footnote number
 global  ffh_entry   *   fn_entry;       // current fn_list entry
 global  fwd_ref     *   fn_fwd_refs;    // forward reference/undefined id
-global  ref_entry   *   fn_ref_dict;    // reference dictionary :FN tags
+global  ref_dict        fn_ref_dict;    // reference dictionary :FN tags
 global  ffh_entry   *   fn_list;        // list of footnotes in order encountered
 
 // heading support
 global  ffh_entry   *   hd_entry;       // current hd_list entry
 global  fwd_ref     *   hd_fwd_refs;    // forward reference/undefined id/page change
 global  hdsrc           hd_level;       // current heading level
-global  ref_entry   *   hd_ref_dict;    // reference dictionary :Hx tags
+global  ref_dict        hd_ref_dict;    // reference dictionary :Hx tags
 global  ffh_entry   *   hd_list;        // list of headings in order encountered
 global  hd_num_data     hd_nums[hds_appendix];  // heading hierarchy numbering
 
@@ -180,7 +180,7 @@ global  eol_ix      *   eol_ix_pool;    // eol_ix pool
 global  eol_ix      *   g_eol_ix;       // global list of eol_ix instances
 global  ix_h_blk    *   index_dict;     // index structure dictionary
 global  ix_h_blk    *   ixhtag[3];      // current entry for each level in index
-global  ref_entry   *   ix_ref_dict;    // reference id dictionary :Ix :IHx :IREF
+global  ref_dict        ix_ref_dict;    // reference id dictionary :Ix :IHx :IREF
 
 // page number format
 global  num_style       pgnum_style[pns_max];

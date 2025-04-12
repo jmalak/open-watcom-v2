@@ -279,11 +279,7 @@ void gen_heading( char * h_text, char * id, hdsrc hn_lvl, hdsrc hds_lvl )
           && *id != '\0' ) {             // add this entry to fig_ref_dict
             cur_ref = find_refid( hd_ref_dict, id );
             if( cur_ref == NULL ) {             // new entry
-                cur_ref = (ref_entry *) mem_alloc( sizeof( ref_entry ) );
-                init_ref_entry( cur_ref, id );
-                cur_ref->flags = rf_ffh;
-                cur_ref->u.ffh.entry = hd_entry;
-                add_ref_entry( &hd_ref_dict, cur_ref );
+                cur_ref = add_new_refid( &hd_ref_dict, id, hd_entry );
             } else {                // duplicate id
                 dup_id_err( cur_ref->id, "heading" );
             }
@@ -818,7 +814,7 @@ void gml_h6( const gmltag * entry )
 /*        ref_entry unless it has an id                                       */
 /******************************************************************************/
 
-void out_head_page( ffh_entry * in_entry, ref_entry * in_ref, uint32_t in_pageno )
+void out_head_page( ffh_entry *in_entry, ref_entry *in_ref, uint32_t in_pageno )
 {
     uint32_t    currno;
 
@@ -842,8 +838,7 @@ void out_head_page( ffh_entry * in_entry, ref_entry * in_ref, uint32_t in_pageno
             in_entry->pageno = currno;
             if( WgmlFlags.lastpass ) {
                 if( (in_ref != NULL)
-                  && (in_ref->id != NULL)
-                  && in_ref->id[0] ) {
+                  && in_ref->id[0] != '\0' ) {
                     hd_fwd_refs = init_fwd_ref( hd_fwd_refs, in_ref->id );
                 }
                 ProcFlags.new_pagenr = true;

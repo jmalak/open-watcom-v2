@@ -20,7 +20,7 @@
 /*  Note: parameter refid should be a pointer to char[ID_LEN]              */
 /***************************************************************************/
 
-char * get_refid_value( char * p, char * refid )
+char    *get_refid_value( char *p, char *refid )
 {
     size_t  k;
 
@@ -51,7 +51,7 @@ char * get_refid_value( char * p, char * refid )
 /*  init_ref_dict   initialize dictionary pointer                          */
 /***************************************************************************/
 
-void    init_ref_dict( ref_entry * * dict )
+void    init_ref_dict( ref_dict *dict )
 {
     *dict = NULL;
     return;
@@ -62,7 +62,7 @@ void    init_ref_dict( ref_entry * * dict )
 /*  add_ref_entry   add ref entry to dictionary                            */
 /***************************************************************************/
 
-void    add_ref_entry( ref_entry * * dict, ref_entry * re )
+void    add_ref_entry( ref_dict *dict, ref_entry * re )
 {
     ref_entry   *   wk;
 
@@ -82,7 +82,7 @@ void    add_ref_entry( ref_entry * * dict, ref_entry * re )
 /*  free_ref_entry  delete single refentry                                 */
 /***************************************************************************/
 
-static void    free_ref_entry( ref_entry * * dict, ref_entry * me )
+static void    free_ref_entry( ref_dict *dict, ref_entry * me )
 {
     ref_entry   *   wk;
     ref_entry   *   wkn;
@@ -111,7 +111,7 @@ static void    free_ref_entry( ref_entry * * dict, ref_entry * me )
 /*  free_ref_dict   free all ref dictionary entries                        */
 /***************************************************************************/
 
-void    free_ref_dict( ref_entry * * dict )
+void    free_ref_dict( ref_dict *dict )
 {
     ref_entry   *   wk;
     ref_entry   *   wkn;
@@ -131,10 +131,18 @@ void    free_ref_dict( ref_entry * * dict )
 /* init ref entry with some values    assumes :hx :fig variant             */
 /***************************************************************************/
 
-void init_ref_entry( ref_entry * re, char * id )
+void init_ref_entry( ref_entry *re, const char *id, ffh_entry *ffh )
 {
     re->next = NULL;
     strcpy_s( re->id, ID_LEN, id );
+    if( ffh != NULL ) {
+        re->flags = rf_ffh;
+        re->u.ffh.entry = ffh;
+    } else {
+        re->flags = rf_ix;
+        re->u.ix.hblk = NULL;
+        re->u.ix.base = NULL;
+    }
 }
 
 
@@ -144,7 +152,7 @@ void init_ref_entry( ref_entry * re, char * id )
 /*  returns ptr to entry or NULL if not found                              */
 /***************************************************************************/
 
-ref_entry   * find_refid( ref_entry * dict, const char * name )
+ref_entry   * find_refid( ref_dict dict, const char *name )
 {
     ref_entry   *   wk;
     ref_entry   *   curr;
@@ -168,7 +176,7 @@ ref_entry   * find_refid( ref_entry * dict, const char * name )
 /*  and INDEX                                                              */
 /***************************************************************************/
 
-void    print_ref_dict( ref_entry * dict, const char * type )
+void    print_ref_dict( ref_dict dict, const char *type )
 {
     ref_entry           *   wk;
     int                     cnt;
@@ -210,3 +218,12 @@ void    print_ref_dict( ref_entry * dict, const char * type )
     return;
 }
 
+ref_entry *add_new_refid( ref_dict *dict, const char *id, ffh_entry *ffh )
+{
+    ref_entry   *ref;
+
+    ref = (ref_entry *)mem_alloc( sizeof( ref_entry ) ) ;
+    init_ref_entry( ref, id, ffh );
+    add_ref_entry( dict, ref );
+    return( ref );
+}
