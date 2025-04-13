@@ -79,7 +79,7 @@ void    scr_li( void )
     } else {
         gn.arg.s = pa;
         gn.arg.e = scan_stop;
-        gn.ignore_blanks = 0;
+        gn.ignore_blanks = false;
 
         cc = getnum ( &gn );            // try to get numeric value
         if( cc == notnum ) {

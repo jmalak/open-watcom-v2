@@ -145,7 +145,7 @@ void    scr_im( void )
     SkipSpaces( p );
     gn.arg.s = p;
     gn.arg.e = scan_stop;
-    gn.ignore_blanks = 0;
+    gn.ignore_blanks = false;
     cc = getnum( &gn );
 
     if( (cc == pos) && (gn.result < 10) ) { // include SYSUSR0x.GML

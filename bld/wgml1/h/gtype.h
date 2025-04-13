@@ -651,14 +651,14 @@ typedef enum {
 
 typedef struct getnum_block {
     tok_type    arg;
-    int         ignore_blanks;          // 1 if blanks are ignored
     char    *   errstart;
     char    *   first;
     long        length;
     long        result;                 // result as long
     char        resultstr[12];          // result in char format
     getnumrc    error;
-    char        num_sign;              // remember absolute or relative value
+    char        num_sign;               // remember absolute or relative value
+    bool        ignore_blanks;          // true if blanks are ignored
     condcode    cc;
 } getnum_block;
 

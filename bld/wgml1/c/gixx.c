@@ -251,7 +251,7 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
                 p = get_att_value( p );
                 gn.arg.s = val_start;
                 gn.arg.e = val_start + val_len;
-                gn.ignore_blanks = 0;
+                gn.ignore_blanks = false;
                 cc = getnum( &gn );
 
                 if( (cc == pos)

@@ -45,7 +45,7 @@ static  int     nparens;                // nesting level
 
 static  char    oper_stack[MAXOPER];    // operator stack
 static  long    value_stack[MAXTERM];   // argument stack
-static  int     ignore_blanks;
+static  bool    ignore_blanks;
 
 
 /*
