@@ -58,7 +58,7 @@ condcode    scr_left( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * resu
         return( pos );
     }
 
-    if( parms[1].e >= parms[1].a ) {// length specified
+    if( parms[1].a <= parms[1].e ) {// length specified
         gn.argstart = parms[1].a;
         gn.argstop  = parms[1].e;
         cc = getnum( &gn );

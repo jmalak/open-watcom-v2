@@ -66,7 +66,7 @@ condcode    scr_d2c( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * resul
     n   = 0;
     gn.ignore_blanks = false;
 
-    if( parms[1].e >= parms[1].a ) {
+    if( parms[1].a <= parms[1].e ) {
         gn.argstart = pval;
         gn.argstop  = pend;
         cc = getnum( &gn );

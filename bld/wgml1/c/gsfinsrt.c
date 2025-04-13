@@ -78,7 +78,7 @@ condcode    scr_insert( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * re
     gn.ignore_blanks = false;
 
     if( parmcount > 2 ) {               // evalute startpos
-        if( parms[2].e >= parms[2].a ) {
+        if( parms[2].a <= parms[2].e ) {
             gn.argstart = parms[2].a;
             gn.argstop  = parms[2].e;
             cc = getnum( &gn );
