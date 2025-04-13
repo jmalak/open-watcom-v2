@@ -42,26 +42,24 @@ static unsigned char hex( unsigned char c )
 
 condcode    scr_c2x( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * result, int32_t ressize )
 {
-    char            *   pval;
-    char            *   pend;
+    tok_type        parm1;
 
     if( parmcount != 1 ) {              // only 1 parm valid
         return( neg );
     }
 
-    pval = parms[0].a;
-    pend = parms[0].e;
+    parm1 = parms[0].arg;
 
-    unquote_if_quoted( &pval, &pend );
+    unquote_if_quoted( &parm1 );
 
-    while( (pval <= pend) && (ressize > 1) ) {
-        **result = hex( (unsigned)*pval >> 4 );
+    while( (parm1.s <= parm1.e) && (ressize > 1) ) {
+        unsigned char c = *parm1.s++;
+        **result = hex( c >> 4 );
         *result += 1;
-        **result = hex( (unsigned)*pval & 0x0f );
+        **result = hex( c & 0x0f );
         *result += 1;
         **result = 0;
         ressize -= 2;
-        pval++;
     }
     return( pos );
 }

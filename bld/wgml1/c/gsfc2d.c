@@ -39,29 +39,23 @@
 
 condcode    scr_c2d( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * result, int32_t ressize )
 {
-    char            *   pval;
-    char            *   pend;
-    condcode            cc;
-    uint32_t            n;
-    char                linestr[MAX_L_AS_STR];
-    char            *   p;
+    tok_type        parm1;
+    condcode        cc;
+    uint32_t        n;
+    char            linestr[MAX_L_AS_STR];
+    char            *p;
 
     if( (parmcount < 1) || (parmcount > 2) ) {// accept 2. parm, but ignore it
         cc = neg;
         return( cc );
     }
-
-    pval = parms[0].a;
-    pend = parms[0].e;
-
-    unquote_if_quoted( &pval, &pend );
-
+    parm1 = parms[0].arg;
+    unquote_if_quoted( &parm1 );
 
     n = 0;
-    while( pval <= pend ) {
+    while( parm1.s <= parm1.e ) {
         n *= 256;                      // ignore overflow, let it wrap around
-        n += (unsigned char)*pval;
-        pval++;
+        n += (unsigned char)*parm1.s++;
     }
     ulongtodec( n, linestr );
     p = linestr;

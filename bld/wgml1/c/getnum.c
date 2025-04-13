@@ -383,8 +383,8 @@ condcode getnum( getnum_block *gn )
     char        c;
     int         rc;
 
-    a = gn->argstart;
-    z = gn->argstop;
+    a = gn->arg.s;
+    z = gn->arg.e;
 
     while( a < z && *a == ' ' ) {
         a++;                            // skip leading blanks
@@ -409,7 +409,7 @@ condcode getnum( getnum_block *gn )
     if( rc != 0 ) {
         gn->cc = notnum;
     } else {
-        gn->argstart = a + 1;       // start for next scan
+        gn->arg.s = a + 1;       // start for next scan
         gn->length = sprintf_s( gn->resultstr, sizeof( gn->resultstr ), "%ld",
                                 gn->result );
         if( gn->result >= 0 ) {

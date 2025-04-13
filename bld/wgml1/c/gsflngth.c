@@ -34,9 +34,8 @@
 
 condcode    scr_length( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * result, int32_t ressize )
 {
-    char            *   pval;
-    char            *   pend;
-    int                 len;
+    tok_type        parm1;
+    int             len;
 
     (void)ressize;
 
@@ -44,12 +43,9 @@ condcode    scr_length( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * re
         return( neg );
     }
 
-    pval = parms[0].a;
-    pend = parms[0].e;
-
-    unquote_if_quoted( &pval, &pend );
-
-    len = pend - pval + 1;
+    parm1 = parms[0].arg;
+    unquote_if_quoted( &parm1 );
+    len = parm1.e - parm1.s + 1;
 
     *result += sprintf( *result, "%d", len );
 

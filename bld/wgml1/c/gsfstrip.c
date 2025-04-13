@@ -37,24 +37,18 @@
 
 condcode    scr_strip( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * result, int32_t ressize )
 {
-    char            *   pval;
-    char            *   pend;
-    char            *   pa;
-    char            *   pe;
-    int                 len;
-    char                stripchar;
-    char                type;
+    tok_type        parm1;
+    int             len;
+    char            stripchar;
+    char            type;
 
     if( (parmcount < 1) || (parmcount > 3) ) {
         return( neg );
     }
 
-    pval = parms[0].a;
-    pend = parms[0].e;
-
-    unquote_if_quoted( &pval, &pend );
-
-    len = pend - pval + 1;              // default length
+    parm1 = parms[0].arg;
+    unquote_if_quoted( &parm1 );
+    len = parm1.e - parm1.s + 1;        // default length
 
     if( len <= 0 ) {                    // null string nothing to do
         **result = '\0';
@@ -65,12 +59,10 @@ condcode    scr_strip( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * res
     type      = 'b';                    // default strip both ends
 
     if( parmcount > 1 ) {               // evalute type
-        if( parms[1].a <= parms[1].e ) {// type
-            pa  = parms[1].a;
-            pe  = parms[1].e;
-
-            unquote_if_quoted( &pa, &pe );
-            type = my_tolower( *pa );
+        if( parms[1].arg.s <= parms[1].arg.e ) {// type
+            tok_type parm = parms[1].arg;
+            unquote_if_quoted( &parm );
+            type = my_tolower( *parm.s );
 
             switch( type ) {
             case   'b':
@@ -89,28 +81,26 @@ condcode    scr_strip( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * res
     }
 
     if( parmcount > 2 ) {               // stripchar
-        if( parms[2].a <= parms[2].e ) {
-            pa  = parms[2].a;
-            pe  = parms[2].e;
-
-            unquote_if_quoted( &pa, &pe );
-            stripchar = *pa;
+        if( parms[2].arg.s <= parms[2].arg.e ) {
+            tok_type parm = parms[2].arg;
+            unquote_if_quoted( &parm );
+            stripchar = *parm.s;
         }
     }
 
     if( type != 't' ) {                 // strip leading requested
-        for( ; pval <= pend; pval++ ) {
-            if( *pval != stripchar ) {
+        for( ; parm1.s <= parm1.e; parm1.s++ ) {
+            if( *parm1.s != stripchar ) {
                 break;
             }
         }
     }
 
-    for( ; pval <= pend; pval++ ) {
+    while( parm1.s <= parm1.e ) {
         if( ressize <= 0 ) {
             break;
         }
-        **result = *pval;
+        **result = *parm1.s++;
         *result += 1;
         ressize--;
     }

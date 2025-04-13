@@ -176,14 +176,14 @@ char * scan_sym( char * p, symvar * sym, sub_index * subscript, char * * result,
                 if( ProcFlags.unresolved ) {
                     scan_err = true;
                 } else {
-                    gn.argstart      = valbuf;
-                    gn.argstop       = valbuf;
-                    while( *gn.argstop != '\0' && (*gn.argstop != ')') ) {
-                        gn.argstop++;
+                    gn.arg.s = valbuf;
+                    gn.arg.e = valbuf;
+                    while( *gn.arg.e != '\0' && (*gn.arg.e != ')') ) {
+                        gn.arg.e++;
                     }
 
-                    *gn.argstop      = '\0';    // make nul terminated string
-                    gn.argstop--;
+                    *gn.arg.e = '\0';    // make nul terminated string
+                    gn.arg.e--;
                     gn.ignore_blanks = 0;
 
                     cc = getnum( &gn );     // try numeric expression evaluation
@@ -314,8 +314,8 @@ void    scr_se( void )
                 getnum_block    gn;
                 condcode        cc;
 
-                gn.argstart      = valstart;
-                gn.argstop       = scan_stop;
+                gn.arg.s = valstart;
+                gn.arg.e = scan_stop;
                 gn.ignore_blanks = 1;
 
                 cc = getnum( &gn );             // try numeric expression evaluation

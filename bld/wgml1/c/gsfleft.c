@@ -34,33 +34,28 @@
 
 condcode    scr_left( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * result, int32_t ressize )
 {
-    char            *   pval;
-    char            *   pend;
-    condcode            cc;
-    int                 k;
-    int                 len;
-    getnum_block        gn;
+    tok_type        parm1;
+    condcode        cc;
+    int             k;
+    int             len;
+    getnum_block    gn;
 
     if( parmcount != 2 ) {
         cc = neg;
         return( cc );
     }
 
-    pval = parms[0].a;
-    pend = parms[0].e;
-
-    unquote_if_quoted( &pval, &pend );
-
-    len = pend - pval + 1;              // default length
+    parm1 = parms[0].arg;
+    unquote_if_quoted( &parm1 );
+    len = parm1.e - parm1.s + 1;        // default length
 
     if( len <= 0 ) {                    // null string nothing to do
         **result = '\0';
         return( pos );
     }
 
-    if( parms[1].a <= parms[1].e ) {// length specified
-        gn.argstart = parms[1].a;
-        gn.argstop  = parms[1].e;
+    if( parms[1].arg.s <= parms[1].arg.e ) {// length specified
+        gn.arg = parms[1].arg;
         cc = getnum( &gn );
         if( cc != pos ) {
             if( !ProcFlags.suppress_msg ) {
@@ -72,10 +67,10 @@ condcode    scr_left( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * resu
     }
 
     for( k = 0; k < len; k++ ) {        // copy from start
-        if( (pval > pend) || (ressize <= 0) ) {
+        if( (parm1.s > parm1.e) || (ressize <= 0) ) {
             break;
         }
-        **result = *pval++;
+        **result = *parm1.s++;
         *result += 1;
         ressize--;
     }

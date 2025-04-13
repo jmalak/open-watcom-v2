@@ -58,25 +58,21 @@
 static condcode scr_lowup( parm parms[MAX_FUN_PARMS], size_t parmcount,
                            char * * result, int32_t ressize, bool upper )
 {
-    char            *   pval;
-    char            *   pend;
-    condcode            cc;
-    int                 k;
-    int                 n;
-    int                 len;
-    getnum_block        gn;
+    tok_type        parm1;
+    condcode        cc;
+    int             k;
+    int             n;
+    int             len;
+    getnum_block    gn;
 
     if( (parmcount < 1) || (parmcount > 3) ) {
         cc = neg;
         return( cc );
     }
 
-    pval = parms[0].a;
-    pend = parms[0].e;
-
-    unquote_if_quoted( &pval, &pend );
-
-    len = pend - pval + 1;              // default length
+    parm1 = parms[0].arg;
+    unquote_if_quoted( &parm1 );
+    len = parm1.e - parm1.s + 1;              // default length
 
     if( len <= 0 ) {                    // null string nothing to do
         **result = '\0';
@@ -87,9 +83,8 @@ static condcode scr_lowup( parm parms[MAX_FUN_PARMS], size_t parmcount,
     gn.ignore_blanks = false;
 
     if( parmcount > 1 ) {               // evalute start pos
-        if( parms[1].a <= parms[1].e ) {// start pos specified
-            gn.argstart = parms[1].a;
-            gn.argstop  = parms[1].e;
+        if( parms[1].arg.s <= parms[1].arg.e ) {// start pos specified
+            gn.arg = parms[1].arg;
             cc = getnum( &gn );
             if( (cc != pos) || (gn.result > len) ) {
                 if( !ProcFlags.suppress_msg ) {
@@ -102,9 +97,8 @@ static condcode scr_lowup( parm parms[MAX_FUN_PARMS], size_t parmcount,
     }
 
     if( parmcount > 2 ) {               // evalute length for upper
-        if( parms[2].a <= parms[2].e ) {// length specified
-            gn.argstart = parms[2].a;
-            gn.argstop  = parms[2].e;
+        if( parms[2].arg.s <= parms[2].arg.e ) {// length specified
+            gn.arg = parms[2].arg;
             cc = getnum( &gn );
             if( (cc != pos) || (gn.result == 0) ) {
                 if( !ProcFlags.suppress_msg ) {
@@ -117,32 +111,32 @@ static condcode scr_lowup( parm parms[MAX_FUN_PARMS], size_t parmcount,
     }
 
     for( k = 0; k < n; k++ ) {          // copy unchanged before startpos
-        if( (pval > pend) || (ressize <= 0) ) {
+        if( (parm1.s > parm1.e) || (ressize <= 0) ) {
             break;
         }
-        **result = *pval++;
+        **result = *parm1.s++;
         *result += 1;
         ressize--;
     }
 
     for( k = 0; k < len; k++ ) {        // translate
-        if( (pval > pend) || (ressize <= 0) ) {
+        if( (parm1.s > parm1.e) || (ressize <= 0) ) {
             break;
         }
         if( upper ) {
-           **result = my_toupper( *pval++ );
+           **result = my_toupper( *parm1.s++ );
         } else {
-           **result = my_tolower( *pval++ );
+           **result = my_tolower( *parm1.s++ );
         }
         *result += 1;
         ressize--;
     }
 
-    for( ; pval <= pend; pval++ ) {     // copy unchanged
+    for( ; parm1.s <= parm1.e; parm1.s++ ) {     // copy unchanged
         if( ressize <= 0 ) {
             break;
         }
-        **result = *pval;
+        **result = *parm1.s;
         *result += 1;
         ressize--;
     }

@@ -40,47 +40,36 @@
 
 condcode    scr_insert( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * result, int32_t ressize )
 {
-    char            *   pval;
-    char            *   pend;
-    condcode            cc;
-    int                 k;
-    int                 n;
-    int                 len;
-    getnum_block        gn;
-    char            *   ptarget;
-    char            *   ptargetend;
+    tok_type        parm1;
+    tok_type        parm2;
+    condcode        cc;
+    int             k;
+    int             n;
+    int             len;
+    getnum_block    gn;
 
     if( (parmcount < 2) || (parmcount > 3) ) {
         cc = neg;
         return( cc );
     }
 
-    pval = parms[0].a;                // string to insert
-    pend = parms[0].e;
+    parm1 = parms[0].arg;           // string to insert
+    unquote_if_quoted( &parm1 );
+    len = parm1.e - parm1.s + 1;    // length to insert
 
-    unquote_if_quoted( &pval, &pend );
+    parm2 = parms[1].arg;           // string to be modified
+    unquote_if_quoted( &parm2 );
 
-    len = pend - pval + 1;              // length to insert
-
-
-    ptarget    = parms[1].a;          // string to be modified
-    ptargetend = parms[1].e;
-
-    unquote_if_quoted( &ptarget, &ptargetend );
-
-
-    if( len <= 0 ) {                    // null string insert nothing to do
+    if( len <= 0 ) {                // null string insert nothing to do
         **result = '\0';
         return( pos );
     }
 
-    n = 0;                              // default start pos
+    n = 0;                          // default start pos
     gn.ignore_blanks = false;
-
-    if( parmcount > 2 ) {               // evalute startpos
-        if( parms[2].a <= parms[2].e ) {
-            gn.argstart = parms[2].a;
-            gn.argstop  = parms[2].e;
+    if( parmcount > 2 ) {           // evalute startpos
+        if( parms[2].arg.s <= parms[2].arg.e ) {
+            gn.arg = parms[2].arg;
             cc = getnum( &gn );
             if( cc != pos ) {
                 if( !ProcFlags.suppress_msg ) {
@@ -93,8 +82,8 @@ condcode    scr_insert( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * re
     }
 
     k = 0;
-    while( (k < n) && (ptarget <= ptargetend) && (ressize > 0) ) { // copy up to startpos
-        **result = *ptarget++;
+    while( (k < n) && (parm2.s <= parm2.e) && (ressize > 0) ) { // copy up to startpos
+        **result = *parm2.s++;
         *result += 1;
         k++;
         ressize--;
@@ -105,14 +94,14 @@ condcode    scr_insert( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * re
         ressize--;
     }
 
-    while( (pval <= pend) && (ressize > 0) ) { // insert new string
-        **result = *pval++;
+    while( (parm1.s <= parm1.e) && (ressize > 0) ) { // insert new string
+        **result = *parm1.s++;
         *result += 1;
         ressize--;
     }
 
-    while( (ptarget <= ptargetend) && (ressize > 0) ) { // copy rest (if any)
-        **result = *ptarget++;
+    while( (parm2.s <= parm2.e) && (ressize > 0) ) { // copy rest (if any)
+        **result = *parm2.s++;
         *result += 1;
         ressize--;
     }

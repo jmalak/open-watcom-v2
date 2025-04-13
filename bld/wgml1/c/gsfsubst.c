@@ -45,26 +45,22 @@
 
 condcode    scr_substr( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * result, int32_t ressize )
 {
-    char            *   pval;
-    char            *   pend;
-    condcode            cc;
-    int                 k;
-    int                 n;
-    int                 stringlen;
-    int                 len;
-    getnum_block        gn;
-    char                padchar;
+    tok_type        parm1;
+    condcode        cc;
+    int             k;
+    int             n;
+    int             stringlen;
+    int             len;
+    getnum_block    gn;
+    char            padchar;
 
     if( (parmcount < 2) || (parmcount > 4) ) {
         return( neg );
     }
 
-    pval = parms[0].a;
-    pend = parms[0].e;
-
-    unquote_if_quoted( &pval, &pend );
-
-    stringlen = pend - pval + 1;        // length of string
+    parm1 = parms[0].arg;
+    unquote_if_quoted( &parm1 );
+    stringlen = parm1.e - parm1.s + 1;  // length of string
     padchar = ' ';                      // default padchar
     len = 0;
 
@@ -72,9 +68,8 @@ condcode    scr_substr( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * re
     gn.ignore_blanks = false;
 
     if( parmcount > 1 ) {               // evalute start pos
-        if( parms[1].a <= parms[1].e ) {// start pos specified
-            gn.argstart = parms[1].a;
-            gn.argstop  = parms[1].e;
+        if( parms[1].arg.s <= parms[1].arg.e ) {// start pos specified
+            gn.arg = parms[1].arg;
             cc = getnum( &gn );
             if( (cc != pos) || (gn.result == 0) ) {
                 if( !ProcFlags.suppress_msg ) {
@@ -87,9 +82,8 @@ condcode    scr_substr( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * re
     }
 
     if( parmcount > 2 ) {               // evalute length
-        if( parms[2].a <= parms[2].e ) {// length specified
-            gn.argstart = parms[2].a;
-            gn.argstop  = parms[2].e;
+        if( parms[2].arg.s <= parms[2].arg.e ) {// length specified
+            gn.arg = parms[2].arg;
             cc = getnum( &gn );
             if( (cc != pos) || (gn.result == 0) ) {
                 if( !ProcFlags.suppress_msg ) {
@@ -102,27 +96,25 @@ condcode    scr_substr( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * re
     }
 
     if( parmcount > 3 ) {               // isolate padchar
-        if( parms[3].a <= parms[3].e ) {
-            char *  pa = parms[3].a;
-            char *  pe = parms[3].e;
-
-            unquote_if_quoted( &pa, &pe );
-            padchar = *pa;
+        if( parms[3].arg.s <= parms[3].arg.e ) {
+            tok_type parm = parms[3].arg;
+            unquote_if_quoted( &parm );
+            padchar = *parm.s;
         }
     }
 
-    pval += n;                          // position to startpos
+    parm1.s += n;                       // position to startpos
     if( len == 0 ) {                    // no length specified
-        len = pend - pval + 1;          // take rest of string
+        len = parm1.e - parm1.s + 1;    // take rest of string
         if( len < 0 ) {                 // if there is one
             len = 0;
         }
     }
     for( k = 0; k < len; k++ ) {
-        if( (pval > pend) || (ressize <= 0) ) {
+        if( (parm1.s > parm1.e) || (ressize <= 0) ) {
             break;
         }
-        **result = *pval++;
+        **result = *parm1.s++;
         *result += 1;
         ressize--;
     }

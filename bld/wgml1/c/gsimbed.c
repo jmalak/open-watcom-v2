@@ -28,13 +28,13 @@
 /* IMBED suspends  processing of the  current input file,   processes the  */
 /* specified input file, and resumes processing of the suspended file.     */
 /*                                                                         */
-/*      здддддддддддддддддддддддддддддддддддддддддддддддддддддддддд©       */
+/*      О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫д©       */
 /*      |       |                                                  |       */
 /*      |       |    Filename                < . <n1 <n2>>>        |       */
 /*      |  .IM  |                     <args>                       |       */
 /*      |       |    Filename(member)        < . <label>>          |       */
 /*      |       |                                                  |       */
-/*      юдддддддддддддддддддддддддддддддддддддддддддддддддддддддддды       */
+/*      О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫       */
 /*                                                                         */
 /* This control word does not cause a break.   The operands are identical  */
 /* to those  for the APPEND  control word;   see the .AP  description for  */
@@ -57,13 +57,13 @@
 /* APPEND  terminates processing  of the  current input  file and  starts  */
 /* processing of the specified input file.                                 */
 /*                                                                         */
-/*      здддддддддддддддддддддддддддддддддддддддддддддддддддддддддд©       */
+/*      О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫д©       */
 /*      |       |                                                  |       */
 /*      |       |    Filename                < . <n1 <n2>>>        |       */
 /*      |  .AP  |                     <args>                       |       */
 /*      |       |    Filename(member)        < . <label>>          |       */
 /*      |       |                                                  |       */
-/*      юдддддддддддддддддддддддддддддддддддддддддддддддддддддддддды       */
+/*      О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫       */
 /*                                                                         */
 /*                                                                         */
 /* Filename<(member)>:  If no operands other than the filename are speci-  */
@@ -143,10 +143,9 @@ void    scr_im( void )
 
     p = scan_start;
     SkipSpaces( p );
-    gn.argstart = p;
-    gn.argstop  = scan_stop;
+    gn.arg.s = p;
+    gn.arg.e = scan_stop;
     gn.ignore_blanks = 0;
-
     cc = getnum( &gn );
 
     if( (cc == pos) && (gn.result < 10) ) { // include SYSUSR0x.GML
@@ -156,7 +155,7 @@ void    scr_im( void )
         strcat_s( token_buf, buf_size, gn.resultstr );
 
     } else {
-        p = gn.argstart;
+        p = gn.arg.s;
 
         if( *p == '"' || *p == '\'' ) {
             quote = *p;

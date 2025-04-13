@@ -210,7 +210,7 @@ void    scr_tb( void )
             pa = p;                             // tab position start
 
             t_pos.ignore_blanks = false;
-            t_pos.argstart = p;
+            t_pos.arg.s = p;
             SkipNonSpaces( p );                 // tab position end plus 1
             if( *p != '\0' && (p > pa) ) {      // as needed by getnum
                 p--;                            // *p is last character of tab stop
@@ -219,7 +219,7 @@ void    scr_tb( void )
                 p--;
             }
             pb = p + 1;
-            t_pos.argstop = p;
+            t_pos.arg.e = p;
             cc = getnum( &t_pos );
             p = pb;                             // alignment start
             if( t_pos.num_sign == ' ' ) {

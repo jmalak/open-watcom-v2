@@ -37,12 +37,11 @@
 
 condcode    scr_d2c( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * result, int32_t ressize )
 {
-    char            *   pval;
-    char            *   pend;
-    condcode            cc;
-    int                 n;
-    int                 len;
-    getnum_block        gn;
+    tok_type        parm1;
+    condcode        cc;
+    int             n;
+    int             len;
+    getnum_block    gn;
 
     (void)ressize;
 
@@ -51,14 +50,11 @@ condcode    scr_d2c( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * resul
         return( cc );
     }
 
-    pval = parms[0].a;
-    pend = parms[0].e;
+    parm1 = parms[0].arg;
+    unquote_if_quoted( &parm1 );
+    len = parm1.e - parm1.s + 1;    // default length
 
-    unquote_if_quoted( &pval, &pend );
-
-    len = pend - pval + 1;              // default length
-
-    if( len <= 0 ) {                    // null string nothing to do
+    if( len <= 0 ) {                // null string nothing to do
         **result = '\0';
         return( pos );
     }
@@ -66,9 +62,8 @@ condcode    scr_d2c( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * resul
     n   = 0;
     gn.ignore_blanks = false;
 
-    if( parms[1].a <= parms[1].e ) {
-        gn.argstart = pval;
-        gn.argstop  = pend;
+    if( parms[1].arg.s <= parms[1].arg.e ) {
+        gn.arg = parm1;
         cc = getnum( &gn );
         if( (cc != pos) ) {
             if( !ProcFlags.suppress_msg ) {

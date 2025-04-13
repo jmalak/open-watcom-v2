@@ -285,7 +285,7 @@ void    add_macro_parms( char * p )
                 ps = verify_sym( scan_start );
                 if( ps ) {              // have name=value pair?
                     *pa = c;            // have to put old char back
-                    ps = (char *)is_quoted_string( ps );    // have name='string'?
+                    ps = is_quoted_string( ps );    // have name='string'?
                     if( ps ) {
                         pa = ps + 1;    // point past delimiter
                         c = *pa;

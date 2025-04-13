@@ -121,11 +121,11 @@ static  condcode    test_duplicate( char *name, line_number lineno )
 /**************************************************************************/
 /* ... (SET LABEL) defines an input line that has a "label".              */
 /*                                                                        */
-/*      здддддддддддддддддддддддддддддддддддддддддддддддддддддддддд©      */
+/*      О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫д©      */
 /*      |       |                                                  |      */
 /*      |  ...  |    <label|n>  <line>                             |      */
 /*      |       |                                                  |      */
-/*      юдддддддддддддддддддддддддддддддддддддддддддддддддддддддддды      */
+/*      О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫      */
 /*                                                                        */
 /* A blank is not required between the ... and the label.                 */
 /*                                                                        */
@@ -164,14 +164,13 @@ void    scr_label( void )
         xx_source_err_c( err_missing_name, "" );
     } else {
 
-        gn.argstart      = scan_start;
-        gn.argstop       = scan_stop;
+        gn.arg.s = scan_start;
+        gn.arg.e = scan_stop;
         gn.ignore_blanks = 0;
-
         cc = getnum( &gn );             // try numeric expression evaluation
         if( cc == pos ) {               // numeric linenumber
 
-            scan_start = gn.argstart;   // start for next token
+            scan_start = gn.arg.s;   // start for next token
 
             // check if lineno from label matches actual lineno
 
@@ -268,11 +267,11 @@ void    scr_label( void )
 /* GOTO transfers processing  to the specified input line  in the current  */
 /* file or macro.                                                          */
 /*                                                                         */
-/*      здддддддддддддддддддддддддддддддддддддддддддддддддддддддддд©       */
+/*      О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫д©       */
 /*      |       |                                                  |       */
 /*      |  .GO  |    <label|n|+n|-n>                               |       */
 /*      |       |                                                  |       */
-/*      юдддддддддддддддддддддддддддддддддддддддддддддддддддддддддды       */
+/*      О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫       */
 /*                                                                         */
 /*                                                                         */
 /* <label>:   The specified  label  will be  converted  to uppercase  and  */
@@ -323,10 +322,9 @@ void    scr_go( void )
         xx_source_err_c( err_missing_name, "" );
     }
 
-    gn.argstart      = g_tok_start;
-    gn.argstop       = scan_stop;
+    gn.arg.s = g_tok_start;
+    gn.arg.e = scan_stop;
     gn.ignore_blanks = 0;
-
     cc = getnum( &gn );             // try numeric expression evaluation
     if( cc == pos  || cc  == neg) {     // numeric linenumber
         gotarget[0] = '\0';             // no target label name

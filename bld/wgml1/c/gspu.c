@@ -130,8 +130,8 @@ void    scr_pu( void )
         workn = 1;                      // "1" is default
     } else {
 
-        gn.argstart = pa;
-        gn.argstop = p;
+        gn.arg.s = pa;
+        gn.arg.e = p;
         gn.ignore_blanks = 0;
         cc = getnum( &gn );
 

@@ -40,13 +40,11 @@
 
 condcode    scr_width( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * result, int32_t ressize )
 {
-    char            *   pval;
-    char            *   pend;
-    char            *   pa;
-    char            *   pe;
-    int                 len;
-    char                type;
-    uint32_t            width;
+    tok_type        parm1;
+    tok_type        parm2;
+    int             len;
+    char            type;
+    uint32_t        width;
 
     (void)ressize;
 
@@ -54,12 +52,9 @@ condcode    scr_width( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * res
         return( neg );
     }
 
-    pval = parms[0].a;
-    pend = parms[0].e;
-
-    unquote_if_quoted( &pval, &pend );
-
-    len = pend - pval + 1;
+    parm1 = parms[0].arg;
+    unquote_if_quoted( &parm1 );
+    len = parm1.e - parm1.s + 1;
 
     if( len <= 0 ) {                    // null string width 0
         **result = '0';
@@ -69,20 +64,17 @@ condcode    scr_width( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * res
     }
 
     if( parmcount > 1 ) {               // evalute type
-        if( parms[1].a <= parms[1].e ) {// type
-            pa  = parms[1].a;
-            pe  = parms[1].e;
-
-            unquote_if_quoted( &pa, &pe );
-
-            type = my_tolower( *pa );
+        if( parms[1].arg.s <= parms[1].arg.e ) {// type
+            parm2 = parms[1].arg;
+            unquote_if_quoted( &parm2 );
+            type = my_tolower( *parm2.s );
             switch( type ) {
             case   'c':                 // CPI
-                width = cop_text_width( pval, len, g_curr_font );
+                width = cop_text_width( parm1.s, len, g_curr_font );
                 width = (width * CPI + g_resh / 2) / g_resh;
                 break;
             case   'u':                 // Device Units
-                width = cop_text_width( pval, len, g_curr_font );
+                width = cop_text_width( parm1.s, len, g_curr_font );
                 break;
             case   'n':                 // character count
                 width = len;
@@ -92,7 +84,7 @@ condcode    scr_width( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * res
             }
         }
     } else {                            // default type c processing
-        width = cop_text_width( pval, len, g_curr_font );
+        width = cop_text_width( parm1.s, len, g_curr_font );
         width = (width * CPI + g_resh / 2) / g_resh;
     }
 

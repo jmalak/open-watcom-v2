@@ -37,9 +37,8 @@
 
 condcode    scr_compare( parm parms[MAX_FUN_PARMS], size_t parmcount, char ** result, int32_t ressize )
 {
-    char            *pend;
-    char            *pval1;
-    char            *pval2;
+    tok_type        parm1;
+    tok_type        parm2;
     condcode        cc;
     int             i;
     int             index;
@@ -55,19 +54,13 @@ condcode    scr_compare( parm parms[MAX_FUN_PARMS], size_t parmcount, char ** re
         return( cc );
     }
 
-    pval1 = parms[0].a;
-    pend = parms[0].e;
+    parm1 = parms[0].arg;
+    unquote_if_quoted( &parm1 );
+    len1 = parm1.e - parm1.s + 1;   // parm1 length
 
-    unquote_if_quoted( &pval1, &pend );
-
-    len1 = pend - pval1 + 1;   // param1 length
-
-    pval2 = parms[1].a;
-    pend = parms[1].e;
-
-    unquote_if_quoted( &pval2, &pend );
-
-    len2 = pend - pval2 + 1;   // param2 length
+    parm2 = parms[1].arg;
+    unquote_if_quoted( &parm2 );
+    len2 = parm2.e - parm2.s + 1;   // parm2 length
 
     len = len1;
     if( len < len2 )
@@ -77,23 +70,23 @@ condcode    scr_compare( parm parms[MAX_FUN_PARMS], size_t parmcount, char ** re
     if( len > 0 ) {
         padchar = ' ';
         if( parmcount > 2 ) {
-            char *pval = parms[2].a;
-
-            pend = parms[2].e;
-            unquote_if_quoted( &pval, &pend );
-            padchar = *pval;
+            tok_type param = parms[2].arg;
+            unquote_if_quoted( &param );
+            if( param.s[0] != '\0' ) {
+                padchar = param.s[0];
+            }
         }
         for( i = 0; i < len; i++ ) {
             char    c1;
             char    c2;
 
             if( i < len1 ) {
-                c1 = pval1[i];
+                c1 = parm1.s[i];
             } else {
                 c1 = padchar;
             }
             if( i < len2 ) {
-                c2 = pval2[i];
+                c2 = parm2.s[i];
             } else {
                 c2 = padchar;
             }
