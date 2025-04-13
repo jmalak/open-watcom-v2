@@ -202,7 +202,7 @@ void scr_ix( void )
 
         gn.arg.s = g_tok_start;
         gn.arg.e = scan_stop;
-        gn.ignore_blanks = 0;
+        gn.ignore_blanks = false;
         cc = getnum( &gn );
 
         if( (cc == pos) || (cc == neg) ) {

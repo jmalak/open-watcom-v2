@@ -132,7 +132,7 @@ void    scr_pu( void )
 
         gn.arg.s = pa;
         gn.arg.e = p;
-        gn.ignore_blanks = 0;
+        gn.ignore_blanks = false;
         cc = getnum( &gn );
 
         if( cc != notnum ) {            // number found
