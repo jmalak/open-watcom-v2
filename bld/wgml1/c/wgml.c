@@ -690,8 +690,10 @@ static  void    init_pass( void )
 
 //      free_dict( global_dict );      // free dictionaries
 //      global_dict = NULL;
-//      free_macro_dict( &macro_dict );
-        free_tag_dict( &tag_dict );
+//      free_macro_dict( macro_dict );
+//      macro_dict = NULL;
+        free_tag_dict( tag_dict );
+        tag_dict = NULL;
         init_nest_cb();
     } else {
         WgmlFlags.firstpass = 1;

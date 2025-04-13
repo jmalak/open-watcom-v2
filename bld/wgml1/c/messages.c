@@ -351,7 +351,7 @@ void file_mac_info_nest( void )
                 break;
             case    II_tag :
                 g_info( err_inf_tag, nw->s.mt.tag_m->tagname );
-                // fallthrough
+                /* fall through */
             case    II_macro :
                 ulongtodec( nw->lineno, linestr );
                 ulongtodec( nw->s.mt.m->lineno, linemac );

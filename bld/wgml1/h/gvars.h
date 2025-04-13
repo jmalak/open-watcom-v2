@@ -104,10 +104,10 @@ global  int32_t         g_fm;           // footing margin          &$fm
 global  int32_t         g_lm;           // left margin             &$pagelm
 global  int32_t         g_rm;           // right margin            &$pagerm
 
-global  dict_hdl        global_dict;    // global symbol dictionary
-global  dict_hdl        sys_dict;       // global system symbol dictionary
-global  mac_dict    *   macro_dict;     // macro dictionary
-global  gtentry     *   tag_dict;       // user tag dictionary
+global  sym_dict_hdl    global_dict;    // global symbol dictionary
+global  sym_dict_hdl    sys_dict;       // global system symbol dictionary
+global  mac_dict_hdl    macro_dict;     // macro dictionary
+global  tag_dict_hdl    tag_dict;       // user tag dictionary
 
 global  char            research_file_name[48]; // filename for research
 global  line_number     research_from;  // line no start for research output
@@ -128,9 +128,9 @@ global size_t           buff2_lg;       // input buffer used length
 
 // the following to manage .gt * and .ga * * syntax
 global char         g_tagname[TAG_NAME_LENGTH + 1];// last defined GML tag name
-global gtentry  *   tag_entry;          // ... entry in tag_dict
+global struct gtentry   *g_tag_entry;   // ... entry in tag_dict
 global char         g_attname[ATT_NAME_LENGTH + 1];// last defined GML attribute
-global gaentry  *   att_entry;          // ... entry in tag_dict
+global struct gaentry   *g_att_entry;   // ... entry in tag_dict
 
 global  long        li_cnt;             // remaining count for .li processing
 

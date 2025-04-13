@@ -18,10 +18,20 @@
 /*  init_tag_dict   initialize dictionary pointer                          */
 /***************************************************************************/
 
-void    init_tag_dict( gtentry * * dict )
+tag_dict_hdl    init_tag_dict( void )
 {
-    *dict = NULL;
-    return;
+    return( NULL );
+}
+
+
+static gtentry  *add_tag_dict( tag_dict_hdl *dict )
+{
+    gtentry     *new;
+
+    new = mem_alloc( sizeof( *new ) );
+    new->next = *dict;
+    *dict = new;
+    return( new );
 }
 
 
@@ -30,28 +40,21 @@ void    init_tag_dict( gtentry * * dict )
 /*              if tag already defined error                               */
 /***************************************************************************/
 
-gtentry *add_tag( gtentry **dict, const char *tagname, const char *macname, const int flags )
+gtentry *add_tag( tag_dict_hdl *dict, const char *tagname, const char *macname, const int flags )
 {
-    gtentry     *   ge;
-    gtentry     *   wk;
+    gtentry     *ge;
 
-    wk = find_tag( dict, tagname );
-    if( wk != NULL ) {
+    ge = find_tag( *dict, tagname );
+    if( ge != NULL ) {
         xx_source_err_c( err_tag_exist, tagname );
     }
-
-    ge = mem_alloc( sizeof( gtentry ) );
-
-    ge->next = *dict;
-    *dict = ge;
-
+    ge = add_tag_dict( dict );
     strcpy( ge->tagname, tagname );
     ge->tagnamelen = strlen( ge->tagname );
     strcpy( ge->macname, macname );
     ge->tagflags = flags;
     ge->attribs = NULL;
     ge->usecount = 0;
-
     return( ge );
 }
 
@@ -60,15 +63,13 @@ gtentry *add_tag( gtentry **dict, const char *tagname, const char *macname, cons
 /*  change_tag     change macro to execute in tag entry                    */
 /***************************************************************************/
 
-gtentry *change_tag( gtentry **dict, const char *tagname, const char *macname )
+gtentry *change_tag( tag_dict_hdl dict, const char *tagname, const char *macname )
 {
-    gtentry     *   ge = NULL;
+    gtentry     *ge;
 
-    if( *dict != NULL ) {
-        ge = find_tag( dict, tagname );
-        if( ge != NULL ) {
-           strcpy( ge->macname, macname );
-        }
+    ge = find_tag( dict, tagname );
+    if( ge != NULL ) {
+       strcpy( ge->macname, macname );
     }
     return( ge );
 }
@@ -100,7 +101,7 @@ static  void    free_att( gaentry * ga )
 /*            returns previuos entry or null if first deleted              */
 /***************************************************************************/
 
-gtentry     *   free_tag( gtentry * * dict, gtentry * ge )
+gtentry     *free_tag( tag_dict_hdl *dict, gtentry * ge )
 {
     gtentry     *   wk;
     gaentry     *   gaw;
@@ -136,16 +137,14 @@ gtentry     *   free_tag( gtentry * * dict, gtentry * ge )
 /*  free_tag_dict   free all user tag dictionary entries                   */
 /***************************************************************************/
 
-void    free_tag_dict( gtentry * * dict )
+void    free_tag_dict( tag_dict_hdl dict )
 {
-    gtentry     *   gtw;
-    gtentry     *   gtwn;
+    gtentry     *gtw;
+    gtentry     *next;
 
-    gtw = *dict;
-    while( gtw != NULL ) {
-        gtwn = gtw->next;;
-        free_tag( dict, gtw );
-        gtw = gtwn;
+    for( gtw = dict; gtw != NULL; gtw = next ) {
+        next = gtw->next;;
+        mem_free( gtw );
     }
     return;
 }
@@ -156,16 +155,16 @@ void    free_tag_dict( gtentry * * dict )
 /*  returns ptr to tag or NULL if not found                                */
 /***************************************************************************/
 
-gtentry     *find_tag( gtentry **dict, const char *tagname )
+gtentry     *find_tag( tag_dict_hdl dict, const char *tagname )
 {
-    gtentry     *   wk;
+    gtentry     *ge;
 
-    for( wk = *dict; wk != NULL; wk = wk->next ) {
-        if( stricmp( wk->tagname, tagname ) == 0 ) {
+    for( ge = dict; ge != NULL; ge = ge->next ) {
+        if( stricmp( ge->tagname, tagname ) == 0 ) {
             break;
         }
     }
-    return( wk );
+    return( ge );
 }
 
 
@@ -357,10 +356,10 @@ void    print_tag_entry( gtentry * wk )
 /*  print_tag_dict  output all of the user tag dictionary                  */
 /***************************************************************************/
 
-void    print_tag_dict( gtentry * dict )
+void    print_tag_dict( tag_dict_hdl dict )
 {
-    gtentry         *   wk;
-    int                 cnt;
+    gtentry         *wk;
+    int             cnt;
 
     cnt = 0;
     out_msg( "\nList of defined User GML tags:\n" );
