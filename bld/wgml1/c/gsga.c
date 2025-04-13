@@ -26,7 +26,7 @@ static bool     get_att_name( const char *p, char *attname )
         if( IS_ATTNAME_END( p ) ) {
             break;
         }
-        *attname++ = my_tolower( *p++ );     // copy lowercase macroname
+        *attname++ = my_tolower( *p++ );     // copy lowercase macro name
     }
     *attname = '\0';
     return( !IS_ATTNAME_END( p ) );

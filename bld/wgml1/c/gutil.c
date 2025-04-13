@@ -160,24 +160,24 @@ static const bool internal_to_su( su *in_su, bool tag, const char *base )
 
     if( unit[1] == '\0' ) {                     // single letter unit
         switch( unit[0] ) {
-        case 'i' :
+        case 'i':
             s->su_u = SU_inch;
             break;
-        case 'm' :
+        case 'm':
             s->su_u = SU_ems;
             if( pd != NULL ) {                  // no decimals with "M"
                 val_parse_err( base + (ps - s->su_txt), tag );
             }
             break;
-        case 'c' :
+        case 'c':
             s->su_u = SU_cicero;
             is_cp = true;
             break;
-        case 'p' :
+        case 'p':
             s->su_u = SU_pica;
             is_cp = true;
             break;
-        case '\0' :                             // no unit is characters or lines
+        case '\0':                             // no unit is characters or lines
             s->su_u = SU_chars_lines;
             break;
         default:
@@ -245,23 +245,23 @@ static const bool internal_to_su( su *in_su, bool tag, const char *base )
     }
     switch( s->su_u ) {
     // the relative units are only stored, not converted
-    case SU_chars_lines :
-    case SU_ems :
-    case SU_dv :
+    case SU_chars_lines:
+    case SU_ems:
+    case SU_dv:
         break;
-    case SU_inch :                      // inch, cm, mm valid with decimals
+    case SU_inch:                      // inch, cm, mm valid with decimals
         s->su_mm   = (wh * 100L + wd * k) * 2540L;
         s->su_inch = (wh * 100L + wd * k) *  100L;
         break;
-    case SU_cm :
+    case SU_cm:
         s->su_mm   = (wh * 100L + wd * k) * 1000L;
         s->su_inch = s->su_mm * 10L / 254L;
         break;
-    case SU_mm :
+    case SU_mm:
         s->su_mm   = (wh * 100L + wd * k) *  100L;
         s->su_inch = s->su_mm * 10L / 254L;
         break;
-    case SU_cicero :                    // cicero
+    case SU_cicero:                    // cicero
         if( wd > 11 ) {
             div = ldiv( wd, 12L);
             wh += div.quot;
@@ -271,7 +271,7 @@ static const bool internal_to_su( su *in_su, bool tag, const char *base )
         s->su_inch = (int64_t)s->su_inch * 10656L / 10000L;
         s->su_mm = s->su_inch * 254L / 10L;
         break;
-    case SU_pica :                      // pica
+    case SU_pica:                      // pica
         if( wd > 11 ) {
             div = ldiv( wd, 12L);
             wh += div.quot;
@@ -309,10 +309,10 @@ static bool su_expression( su * in_su )
     getnum_block        value;
 
     value.ignore_blanks = false;
-    value.arg.s = p;
-    while( *p != '\0' )
-        p++;
-    value.arg.e = p - 1;
+    value.arg.e = value.arg.s = p;
+    while( *value.arg.e != '\0' )
+        value.arg.e++;
+    value.arg.e--;
     cc = getnum( &value );
 
     if( cc == notnum ) {
@@ -759,20 +759,20 @@ int32_t conv_hor_unit( su * s, font_number font )
     int32_t     ds;
 
     switch( s->su_u ) {
-    case SU_chars_lines :
+    case SU_chars_lines:
         ds = s->su_whole * (int32_t)bin_device->horizontal_base_units / CPI;
         break;
-    case SU_dv :
+    case SU_dv:
         ds = s->su_whole;
         break;
-    case SU_ems :
+    case SU_ems:
         ds = s->su_whole * wgml_fonts[font].em_base;
         break;
-    case SU_inch :
-    case SU_cm :
-    case SU_mm :
-    case SU_cicero :
-    case SU_pica :
+    case SU_inch:
+    case SU_cm:
+    case SU_mm:
+    case SU_cicero:
+    case SU_pica:
         ds = (int64_t)s->su_inch * bin_device->horizontal_base_units / 10000L;
         break;
     default:
@@ -791,26 +791,26 @@ int32_t conv_vert_unit( su *s, text_space text_spacing, font_number font )
         text_spacing = g_text_spacing;  // else default
     }
     switch( s->su_u ) {
-    case SU_chars_lines :
-    case SU_ems :
+    case SU_chars_lines:
+    case SU_ems:
         // no decimals, use spacing, round negative values down
         ds = text_spacing * s->su_whole * wgml_fonts[font].line_height;
         if( ds < 0 ) {
             ds++;
         }
         break;
-    case SU_dv :
+    case SU_dv:
         // no decimals, no spacing, round negative values down
         ds = s->su_whole;
         if( ds < 0 ) {
             ds++;
         }
         break;
-    case SU_inch :
-    case SU_cm :
-    case SU_mm :
-    case SU_cicero :
-    case SU_pica :
+    case SU_inch:
+    case SU_cm:
+    case SU_mm:
+    case SU_cicero:
+    case SU_pica:
         if ( s->su_inch == 0 ) {    // if the value is "0", ds is "0"
             ds = 0;
             break;
@@ -875,8 +875,8 @@ char * format_num( uint32_t n, char * r, size_t rsize, num_style ns )
         }
     }
     switch( ns & char1_style ) {
-    case a_style :                      // lower case alphabetic
-    case b_style :                      // UPPER case alphabetic
+    case a_style:                      // lower case alphabetic
+    case b_style:                      // UPPER case alphabetic
         a1 = n / 27;
         a2 = n % 27;
         if( a1 > 0 ) {
@@ -895,7 +895,7 @@ char * format_num( uint32_t n, char * r, size_t rsize, num_style ns )
             }
         }
         break;
-    case h_style :                      // arabic
+    case h_style:                      // arabic
         ulongtodec( n, p );
         pos1 = strlen( p );
         pos += pos1;
@@ -904,7 +904,7 @@ char * format_num( uint32_t n, char * r, size_t rsize, num_style ns )
         }
         p += pos1;
         break;
-    case r_style :                      // lower case roman
+    case r_style:                      // lower case roman
         rp = int_to_roman( n, p, rsize - pos );
         if( rp == NULL ) {
             return( NULL );             // field overflow
@@ -912,7 +912,7 @@ char * format_num( uint32_t n, char * r, size_t rsize, num_style ns )
         pos1 = strlen( rp );
         p += pos1;
         break;
-    case c_style :                      // UPPER case roman
+    case c_style:                      // UPPER case roman
         rp = int_to_roman( n, p, rsize - pos );
         if( rp == NULL ) {
             return( NULL );             // field overflow
@@ -1214,15 +1214,15 @@ char * get_value( char * p )
 
 void g_keep_nest( const char * cw_tag ) {
     switch( cur_group_type ) {
-    case gt_fb :
+    case gt_fb:
         keep_nest_err( cw_tag, "a floating block" );
-    case gt_fig :
+    case gt_fig:
         keep_nest_err( cw_tag, "a figure" );
-    case gt_fk :
+    case gt_fk:
         keep_nest_err( cw_tag, "a floating keep" );
-    case gt_fn :
+    case gt_fn:
         keep_nest_err( cw_tag, "a footnote" );
-    case gt_xmp :
+    case gt_xmp:
         keep_nest_err( cw_tag, "an example" );
     }
     return;
@@ -1396,12 +1396,12 @@ num_style find_pgnum_style( void )
     /****************************************************/
 
     switch( ProcFlags.doc_sect ) {
-    case doc_sect_abstract :
-    case doc_sect_preface :
-    case doc_sect_body :
-    case doc_sect_appendix :
-    case doc_sect_backm :
-    case doc_sect_index :
+    case doc_sect_abstract:
+    case doc_sect_preface:
+    case doc_sect_body:
+    case doc_sect_appendix:
+    case doc_sect_backm:
+    case doc_sect_index:
         if( ProcFlags.doc_sect == doc_sect_abstract ) {
             retval = pgnum_style[pns_abstract];
         } else if( ProcFlags.doc_sect == doc_sect_appendix ) {
@@ -1416,7 +1416,7 @@ num_style find_pgnum_style( void )
             retval = pgnum_style[pns_preface];
         }
         break;
-    default :
+    default:
         internal_err( __FILE__, __LINE__ );
         break;
     }

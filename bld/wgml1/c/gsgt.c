@@ -27,7 +27,7 @@ bool    get_tag_name( const char *p, char *tagname )
         if( IS_TAGNAME_END( p ) ) {
             break;
         }
-        *tagname++ = my_tolower( *p++ );     // copy lowercase macroname
+        *tagname++ = my_tolower( *p++ );     // copy lowercase macro name
     }
     *tagname = '\0';
     return( !IS_TAGNAME_END( p ) );
@@ -439,10 +439,10 @@ void    scr_gt( void )
     cc = getarg();                      // get possible next parm
 
     /***********************************************************************/
-    /*  for add and change    get macroname                                */
+    /*  for add and change    get macro name                                */
     /***********************************************************************/
 
-    if( function == f_add || function == f_change ) {   // need macroname
+    if( function == f_add || function == f_change ) {   // need macro name
         if( cc == omit ) {
             xx_err( err_tag_mac_name );
             return;
