@@ -226,7 +226,7 @@ void    free_macro_dict( mac_dict_hdl dict )
 /*  returns ptr to macro or NULL if not found                              */
 /***************************************************************************/
 
-mac_entry   * find_macro( mac_dict_hdl dict, const char *macname )
+mac_entry   *find_macro( mac_dict_hdl dict, const char *macname )
 {
     int             hash;
     mac_entry   *   wk;
@@ -234,16 +234,14 @@ mac_entry   * find_macro( mac_dict_hdl dict, const char *macname )
 
     wk   = NULL;
     hash = mac_hash( macname );
-    curr = dict->htbl[hash];        // find the hash chain
-
     dict->lookups++;
-    while( curr ) {
+    // find the hash chain
+    for( curr = dict->htbl[hash]; curr != NULL; curr = curr->next ) {
         dict->compares++;
         if( strncmp( curr->macname, macname, MAC_NAME_LENGTH ) == 0 ) {
             wk = curr;
             break;
         }
-        curr = curr->next;
     }
     return( wk );
 }
