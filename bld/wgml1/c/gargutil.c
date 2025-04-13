@@ -246,10 +246,10 @@ condcode getqst( void )
 }
 
 /*
- * Test character as valid for an LAYOUT attribute name
+ * Test character as valid for a predefined attribute name
  */
 
-bool is_lay_att_char( char c )
+bool is_att_char( char c )
 {
     bool    test;
 
@@ -342,11 +342,10 @@ bool is_space_tab_char( char c )
  * than one character
  */
 
-void unquote_if_quoted( char **a, char **z )
+void unquote_if_quoted( tok_type *tok )
 {
-    if( (*a != *z) && (**a == **z) && is_quote_char( **a ) ) {
-        *a += 1;
-        *z -= 1;
+    if( (tok->s != tok->e) && (tok->s[0] == tok->e[0]) && is_quote_char( tok->s[0] ) ) {
+        tok->s++;
+        tok->e--;
     }
 }
-

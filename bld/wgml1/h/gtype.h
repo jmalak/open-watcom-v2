@@ -122,6 +122,11 @@ typedef uint32_t    line_number;
 typedef uint8_t     text_space;
 typedef uint32_t    units_space;
 
+typedef struct tok_type {
+    char    *s;     // start of string
+    char    *e;     // end of string (after last character)
+} tok_type;
+
 /***************************************************************************/
 /*  Space units Horiz + Vert              to be redesigned      TBD        */
 /***************************************************************************/
@@ -616,8 +621,7 @@ typedef enum condcode {            // return code for some scanning functions
 /***************************************************************************/
 
 typedef struct parm {
-    char    *       a;                  // start of parm ptr
-    char    *       e;                  // end of parm ptr
+    tok_type        arg;
     bool            redo;               // parm starts with "&"
 } parm;
 
@@ -627,7 +631,7 @@ typedef struct scrfunc {
     const   size_t  parm_cnt;           // mandatory parms
     const   size_t  opt_parm_cnt;       // optional parms
     condcode        (*fun)( parm parms[MAX_FUN_PARMS], size_t parm_count,
-                            char * * ppval, int32_t valsize );
+                            char **ppval, int32_t valsize );
 } scrfunc;
 
 /***************************************************************************/
@@ -646,9 +650,8 @@ typedef enum {
 } getnumrc;
 
 typedef struct getnum_block {
+    tok_type    arg;
     int         ignore_blanks;          // 1 if blanks are ignored
-    char    *   argstart;
-    char    *   argstop;
     char    *   errstart;
     char    *   first;
     long        length;
@@ -875,7 +878,7 @@ typedef struct nest_stack {
     union {
         char            *filename;      // file name of :xl, :HPx :SF call
         struct mt {
-            gtentry  	*tag_m;         // for usertag / macro
+            gtentry     *tag_m;         // for usertag / macro
             mac_entry   *m;             // macro entry of :xl, :HPx :SF call
         } mt;
     } s;
@@ -1750,6 +1753,7 @@ typedef struct attr_flags {
     unsigned    docnum_string       : 1;
     unsigned    docsect             : 1;
     unsigned    figcap_string       : 1;
+    unsigned    file                : 1;
     unsigned    fill_string         : 1;
     unsigned    font                : 1;
     unsigned    frame               : 1;
@@ -1791,6 +1795,7 @@ typedef struct attr_flags {
     unsigned    refnum              : 1;
     unsigned    refplace            : 1;
     unsigned    region_position     : 1;
+    unsigned    reposition          : 1;
     unsigned    right_adjust        : 1;
     unsigned    right_indent        : 1;
     unsigned    right_margin        : 1;

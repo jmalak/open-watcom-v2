@@ -33,31 +33,25 @@
 
 condcode    scr_right( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * result, int32_t ressize )
 {
-    char            *   pval;
-    char            *   pend;
-    condcode            cc;
-    int                 k;
-    int                 n;
-    int                 len;
-    getnum_block        gn;
-    char                padchar;
+    tok_type        parm1;
+    condcode        cc;
+    int             k;
+    int             n;
+    int             len;
+    getnum_block    gn;
+    char            padchar;
 
     if( (parmcount < 2) || (parmcount > 3) ) {
         cc = neg;
         return( cc );
     }
 
-    pval = parms[0].a;
-    pend = parms[0].e;
-
-    unquote_if_quoted( &pval, &pend );
-
-    len = pend - pval + 1;              // total length
+    parm1 = parms[0].arg;
+    unquote_if_quoted( &parm1 );
+    len = parm1.e - parm1.s + 1;              // total length
 
     gn.ignore_blanks = false;
-
-    gn.argstart = parms[1].a;
-    gn.argstop  = parms[1].e;
+    gn.arg = parms[1].arg;
     cc = getnum( &gn );
     if( cc != pos ) {
         if( !ProcFlags.suppress_msg ) {
@@ -71,12 +65,10 @@ condcode    scr_right( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * res
         if( n > len ) {                 // padding needed
             padchar = ' ';              // default padchar
             if( parmcount > 2 ) {       // pad character specified
-                if( parms[2].a <= parms[2].e ) {
-                    char * pa = parms[2].a;
-                    char * pe = parms[2].e;
-
-                    unquote_if_quoted( &pa, &pe);
-                    padchar = *pa;
+                if( parms[2].arg.s <= parms[2].arg.e ) {
+                    tok_type parm = parms[2].arg;
+                    unquote_if_quoted( &parm);
+                    padchar = *parm.s;
                 }
             }
             for( k = n - len; k > 0; k-- ) {
@@ -87,22 +79,22 @@ condcode    scr_right( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * res
                 *result += 1;
                 ressize--;
             }
-            for( ; pval <= pend; pval++ ) {
+            while( parm1.s <= parm1.e ) {
                 if( ressize <= 0 ) {
                     break;
                 }
-                **result = *pval;
+                **result = *parm1.s++;
                 *result += 1;
                 ressize--;
             }
         } else {                        // no padding
 
-            pval += len - n;
-            for( ; pval <= pend; pval++ ) {
+            parm1.s += len - n;
+            while( parm1.s <= parm1.e ) {
                 if( ressize <= 0 ) {
                     break;
                 }
-                **result = *pval;
+                **result = *parm1.s++;
                 *result += 1;
                 ressize--;
             }

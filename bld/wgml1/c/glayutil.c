@@ -157,7 +157,7 @@ condcode    get_attr_and_value( void )
     g_att_val.val_len = -1;                 // switch for scanning error
 
     for(;;) {                               // loop until attribute/value pair or rescan line found
-        while( is_lay_att_char( *p ) ) {
+        while( is_att_char( *p ) ) {
             p++;
         }
         if( *p == '\0' ) {                  // end of line: get new line

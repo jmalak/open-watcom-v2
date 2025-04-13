@@ -54,9 +54,8 @@ static  bool    is_word;          // true if word call, false if subword call
 static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], size_t parmcount,
                                  char * * result, int32_t ressize )
 {
-    char            *   pval;
-    char            *   pend;
-    char            *   ptok;
+    tok_type        parm1;
+    char            *ptok;
     condcode            cc;
     int                 k;
     int                 n;
@@ -67,12 +66,9 @@ static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], size_t parmcount,
         return( neg );
     }
 
-    pval = parms[0].a;
-    pend = parms[0].e;
-
-    unquote_if_quoted( &pval, &pend );
-
-    len = pend - pval + 1;              // default length
+    parm1 = parms[0].arg;
+    unquote_if_quoted( &parm1 );
+    len = parm1.e - parm1.s + 1;              // default length
 
     if( len <= 0 ) {                    // null string nothing to do
         **result = '\0';
@@ -82,9 +78,8 @@ static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], size_t parmcount,
     n   = 0;                            // default start pos
     gn.ignore_blanks = false;
 
-    if( parms[1].a <= parms[1].e ) {// start pos specified
-        gn.argstart = parms[1].a;
-        gn.argstop  = parms[1].e;
+    if( parms[1].arg.s <= parms[1].arg.e ) {// start pos specified
+        gn.arg = parms[1].arg;
         cc = getnum( &gn );
         if( (cc != pos) || (gn.result > len) ) {
             if( !ProcFlags.suppress_msg ) {
@@ -99,9 +94,8 @@ static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], size_t parmcount,
         len = 1;                        // only one word
     } else {
         if( parmcount > 2 ) {           // evalute word count
-            if( parms[2].a <= parms[2].e ) {
-                gn.argstart = parms[2].a;
-                gn.argstop  = parms[2].e;
+            if( parms[2].arg.s <= parms[2].arg.e ) {
+                gn.arg = parms[2].arg;
                 cc = getnum( &gn );
                 if( (cc != pos) || (gn.result == 0) ) {
                     if( !ProcFlags.suppress_msg ) {
@@ -114,8 +108,8 @@ static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], size_t parmcount,
         }
     }
 
-    scan_start = pval;
-    scan_stop  = pend;
+    scan_start = parm1.s;
+    scan_stop  = parm1.e;
     k = 0;
     cc = pos;
     while( (k < n) && (cc != omit) ) {  // find start word
@@ -127,15 +121,15 @@ static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], size_t parmcount,
         return( pos );
     }
 
-    pval = g_tok_start;                 // start word
+    parm1.s = g_tok_start;                 // start word
 
     if( len == 0 ) {                    // default word count = to end of string
-        ptok = pend;
-        for( ; pval <= ptok; pval++ ) { // copy rest of words
+        ptok = parm1.e;
+        for( ; parm1.s <= ptok; parm1.s++ ) { // copy rest of words
             if( ressize <= 0 ) {
                 break;
             }
-            **result = *pval;
+            **result = *parm1.s;
             *result += 1;
             ressize--;
         }
@@ -145,24 +139,24 @@ static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], size_t parmcount,
             ptok = g_tok_start;
             cc = getarg();
             if( cc == omit ) {
-                ptok = pend;
+                ptok = parm1.e;
                 break;
             }
         }
-        for( ; pval <= ptok; pval++ ) { // copy rest of words
+        for( ; parm1.s <= ptok; parm1.s++ ) { // copy rest of words
             if( ressize <= 0 ) {
                 break;
             }
-            **result = *pval;
+            **result = *parm1.s;
             *result += 1;
             ressize--;
         }
-        if( pval < g_tok_start && ( *pval != ' ' ) ) {    // copy last word
-            for( ; pval < g_tok_start; pval++ ) {
-                if( ( *pval == ' ' ) || ( ressize <= 0 ) ) {
+        if( parm1.s < g_tok_start && ( *parm1.s != ' ' ) ) {    // copy last word
+            for( ; parm1.s < g_tok_start; parm1.s++ ) {
+                if( ( *parm1.s == ' ' ) || ( ressize <= 0 ) ) {
                     break;
                 }
-                **result = *pval;
+                **result = *parm1.s;
                 *result += 1;
                 ressize--;
             }
@@ -210,10 +204,9 @@ condcode    scr_subword( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * r
 
 condcode    scr_words( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * result, int32_t ressize )
 {
-    char            *   pval;
-    char            *   pend;
-    int                 wc;
-    int                 len;
+    tok_type        parm1;
+    int             wc;
+    int             len;
 
     (void)ressize;
 
@@ -221,12 +214,9 @@ condcode    scr_words( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * res
         return( neg );
     }
 
-    pval = parms[0].a;
-    pend = parms[0].e;
-
-    unquote_if_quoted( &pval, &pend );
-
-    len = pend - pval + 1;
+    parm1 = parms[0].arg;
+    unquote_if_quoted( &parm1 );
+    len = parm1.e - parm1.s + 1;
 
     if( len <= 0 ) {                    // null string nothing to do
         **result = '0';
@@ -236,20 +226,20 @@ condcode    scr_words( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * res
     }
 
     wc = 0;
-    for( ; pval <= pend; pval++ ) {     // for all chars in string
+    for( ; parm1.s <= parm1.e; parm1.s++ ) {     // for all chars in string
 
-        for( ; pval <= pend; pval++ ) { // skip leading blanks
-            if( *pval != ' ' ) {
+        for( ; parm1.s <= parm1.e; parm1.s++ ) { // skip leading blanks
+            if( *parm1.s != ' ' ) {
                 break;
             }
         }
-        if( pval > pend ) {             // at end
+        if( parm1.s > parm1.e ) {             // at end
             break;
         }
         wc++;                           // start of word found
 
-        for( ; pval <= pend; pval++ ) {
-            if( *pval == ' ' ) {        // end of word found
+        for( ; parm1.s <= parm1.e; parm1.s++ ) {
+            if( *parm1.s == ' ' ) {        // end of word found
                 break;
             }
         }
@@ -276,20 +266,18 @@ condcode    scr_words( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * res
 
 condcode    scr_wordpos( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * result, int32_t ressize )
 {
-    char            *   phrase;
-    char            *   phrasend;
-    char            *   pstr;
-    char            *   pstrend;
-    char            *   pp;
+    tok_type        phrase;
+    tok_type        pstr;
+    char            *pp;
 
-    int                 index;
-    condcode            cc;
-    int                 k;
-    int                 n;
-    int                 len;
-    getnum_block        gn;
-    bool                inword;
-    bool                found;
+    int             index;
+    condcode        cc;
+    int             k;
+    int             n;
+    int             len;
+    getnum_block    gn;
+    bool            inword;
+    bool            found;
 
     (void)ressize;
 
@@ -297,20 +285,15 @@ condcode    scr_wordpos( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * r
         return( neg );
     }
 
-    phrase = parms[0].a;
-    phrasend = parms[0].e;
+    phrase = parms[0].arg;
+    unquote_if_quoted( &phrase );
+    len = phrase.e - phrase.s + 1;
 
-    unquote_if_quoted( &phrase, &phrasend );
-
-    len = phrasend - phrase + 1;
-
-    pstr    = parms[1].a;
-    pstrend = parms[1].e;
-
-    unquote_if_quoted( &pstr, &pstrend );
+    pstr = parms[1].arg;
+    unquote_if_quoted( &pstr );
 
     if( (len <= 0) ||                   // null phrase nothing to do
-        (pstrend - pstr + 1 <= 0) ) {   // null string nothing to do
+        (pstr.e - pstr.s + 1 <= 0) ) {   // null string nothing to do
 
         **result = '0';
         *result += 1;
@@ -322,10 +305,9 @@ condcode    scr_wordpos( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * r
     n = 0;                              // default start word - 1
 
     if( parmcount > 2 ) {               // evalute start word
-        if( parms[2].a <= parms[2].e ) {
+        if( parms[2].arg.s <= parms[2].arg.e ) {
+            gn.arg = parms[2].arg;
             gn.ignore_blanks = false;
-            gn.argstart = parms[2].a;
-            gn.argstop  = parms[2].e;
             cc = getnum( &gn );
             if( (cc != pos) || (gn.result == 0) ) {
                 if( !ProcFlags.suppress_msg ) {
@@ -336,11 +318,11 @@ condcode    scr_wordpos( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * r
             n = gn.result - 1;
         }
     }
-    scan_start = pstr;
-    scan_stop  = pstrend;
+    scan_start = pstr.s;
+    scan_stop  = pstr.e;
     k = 0;
     cc = pos;
-    g_tok_start = pstr;
+    g_tok_start = pstr.s;
     while( ( k <= n ) && ( cc != omit ) ) { // find start word
         cc = getarg();
         k++;
@@ -352,34 +334,34 @@ condcode    scr_wordpos( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * r
         return( pos );
     }
 
-    pstr = g_tok_start;                   // start word in string
+    pstr.s = g_tok_start;                   // start word in string
     index = 0;
-    pp = phrase;
+    pp = phrase.s;
     inword = true;
     found = false;
-    for( ; pstr <= pstrend; pstr++ ) {
+    for( ; pstr.s <= pstr.e; pstr.s++ ) {
         if( !inword ) {
             n++;
             inword = true;
         }
-        if( *pstr == *pp ) {
+        if( *pstr.s == *pp ) {
 
             /* at end of phrase, but must also be at end of token */
 
-            if( (pp == phrasend) && ((*(pstr + 1) == ' ') || (*(pstr + 1) == '\0')) ) {
+            if( (pp == phrase.e) && ((*(pstr.s + 1) == ' ') || (*(pstr.s + 1) == '\0')) ) {
                 found = true;
                 break;
             } else {
-                if( *pstr == ' ' ) {
+                if( *pstr.s == ' ' ) {
                     inword = false;     // word end
-                    for( ; pstr <= pstrend; pstr++ ) {  // find next word
-                        if( *pstr != ' ' ) {
+                    for( ; pstr.s <= pstr.e; pstr.s++ ) {  // find next word
+                        if( *pstr.s != ' ' ) {
                             break;
                         }
                     }
-                    pstr--;            // outer for loop will increment again
+                    pstr.s--;           // outer for loop will increment again
 
-                    for( ; pp <= phrasend; pp++ ) {
+                    for( ; pp <= phrase.e; pp++ ) {
                         if( *pp != ' ' ) {
                             break;
                         }
@@ -389,19 +371,19 @@ condcode    scr_wordpos( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * r
                 }
             }
         } else {                        // not equal
-            pp = phrase;                // start new compare
-            for( ; pstr <= pstrend; pstr++ ) {  // with next word
-                if( *pstr == ' ' ) {    // word end found
+            pp = phrase.s;              // start new compare
+            for( ; pstr.s <= pstr.e; pstr.s++ ) {  // with next word
+                if( *pstr.s == ' ' ) {  // word end found
                     break;
                 }
             }
             inword = false;
-            for( ; pstr <= pstrend; pstr++ ) {  // find next word
-                if( *pstr != ' ' ) {
+            for( ; pstr.s <= pstr.e; pstr.s++ ) {  // find next word
+                if( *pstr.s != ' ' ) {
                     break;
                 }
             }
-            pstr--;                    // outer for loop will increment again
+            pstr.s--;                   // outer for loop will increment again
         }
     }
     if( found ) {

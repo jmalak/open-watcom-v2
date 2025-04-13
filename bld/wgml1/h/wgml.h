@@ -69,14 +69,14 @@ extern  condcode    getarg( void );
 extern  condcode    getqst( void );
 extern  bool        is_quote_char( char c );
 extern  bool        is_function_char( char c );
-extern  bool        is_lay_att_char( char c );
+extern  bool        is_att_char( char c );
 extern  bool        is_id_char( char c );
 extern  bool        is_macro_char( char c );
 extern  bool        is_space_tab_char( char c );
 extern  bool        is_stop_char( char c );
 extern  bool        is_symbol_char( char c );
 extern  char        parse_char( const char *pa, size_t len );
-extern  void        unquote_if_quoted( char **a, char **z );
+extern  void        unquote_if_quoted( tok_type *tok );
 
 /* gbanner.c                            */
 extern  void        out_ban_bot( void );
@@ -422,6 +422,8 @@ extern  void            free_fwd_refs( fwd_ref * fwd_refs );
 extern  void            g_keep_nest( const char * cw_tag );
 extern  char        *   get_att_start( char * p );
 extern  char        *   get_att_value( char * p );
+extern  char        *   get_attribute( char * p );
+extern  char        *   get_value( char * p );
 extern  font_number     get_font_number( char * p, size_t len );
 extern  char        *   get_tag_value( char * p );
 extern  ffh_entry   *   init_ffh_entry( ffh_entry * ffh_list );
@@ -433,6 +435,7 @@ extern  char        *   skip_to_quote( char * p, char quote );
 extern  int             ulongtohex( unsigned long value, char *buffer );
 extern  int             ulongtodec( unsigned long value, char *buffer );
 extern  int             slongtodec( long value, char *buffer );
+extern  bool            value_to_su( su * spaceunit, bool pos );
 
 
 /* messages.c                           */
