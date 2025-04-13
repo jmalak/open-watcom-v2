@@ -441,8 +441,9 @@ void    scr_dm( void )
     *p   = '\0';
     macro_line_count = 0;
 
-    compend   = ( stricmp( g_tok_start, "end" ) == 0 );
-    compbegin = ( stricmp( g_tok_start, "begin" ) == 0 );
+    get_macro_name( g_tok_start, macname2 );
+    compend   = ( strcmp( macname2, "end" ) == 0 );
+    compbegin = ( strcmp( macname2, "begin" ) == 0 );
     if( !(compbegin | compend) ) { // only .dm macname /line1/line2/ possible
         char    sepchar;
 
@@ -535,7 +536,7 @@ void    scr_dm( void )
                         if( strcmp( macname1, macname2 ) ) {
                             // macroname from begin different from end
                             // SC--005 Macro '%s' is not being defined
-                            xx_source_err_c( err_mac_def_not, macname2 );
+                            xx_source_err_c( err_mac_def_not, g_tok_start );
                         }
 
                         cc = getarg();
@@ -544,9 +545,9 @@ void    scr_dm( void )
                             xx_source_err( err_mac_def_miss );
                         }
                         get_macro_name( g_tok_start, macname2 );
-                        if( stricmp( g_tok_start, "end") ) {
+                        if( strcmp( macname2, "end") ) {
                             // SC--002 The control word parameter '%s' is invalid
-                            xx_source_err_c( err_mac_def_inv, macname2 );
+                            xx_source_err_c( err_mac_def_inv, g_tok_start );
                         }
                         compend = 1;
                         break;              // out of read loop
