@@ -103,22 +103,21 @@ static  condcode    scr_veclp( parm parms[MAX_FUN_PARMS], size_t parmcount,
     scan_err = false;
     index = 0;
 
-    if( (hay_len > 0) ||                // not null string
-        (needle_len > 0) ) {            // needle not null
+    if( (hay_len > 0)               // not null string
+      || (needle_len > 0) ) {       // needle not null
 
         suppress_msg = ProcFlags.suppress_msg;
         ProcFlags.suppress_msg = true;
         scan_err = false;
+
         c = *(phay.e + 1);
         *(phay.e + 1) = '\0';
-
         scan_sym( phay.s, &symvar_entry, &var_ind, NULL, false );
-
         *(phay.e + 1) = c;
+
         ProcFlags.suppress_msg = suppress_msg;;
 
         if( !scan_err ) {
-
             if( symvar_entry.flags & local_var ) {  // lookup var in dict
                 rc = find_symvar_l( input_cbs->local_dict, symvar_entry.name,
                                     var_ind, &symsubval );

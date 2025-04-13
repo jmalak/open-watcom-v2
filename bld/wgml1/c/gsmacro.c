@@ -32,7 +32,7 @@ bool    get_macro_name( const char *p, char *macname )
         if( IS_MACRO_END( p ) ) {
             break;
         }
-        *macname++ = my_tolower( *p++ );     // copy lowercase macroname
+        *macname++ = my_tolower( *p++ );     // copy lowercase macro name
     }
     *macname = '\0';
     return( !IS_MACRO_END( p ) );
@@ -534,7 +534,7 @@ void    scr_dm( void )
                         }
                         get_macro_name( g_tok_start, macname2 );
                         if( strcmp( macname1, macname2 ) ) {
-                            // macroname from begin different from end
+                            // macro name from begin different from end
                             // SC--005 Macro '%s' is not being defined
                             xx_source_err_c( err_mac_def_not, g_tok_start );
                         }

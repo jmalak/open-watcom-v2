@@ -63,14 +63,19 @@ char *get_filename_full_path( char *buff, char const * name, size_t max )
     }
 
 #ifdef __UNIX__
-    if( (p[0] == '/' && p[1] == '/') && (name[0] != '/' || name[1] != '/') ) {
+    if( (p[0] == '/'
+      && p[1] == '/')
+      && (name[0] != '/'
+      || name[1] != '/') ) {
         //
         // if the _fullpath result has a node number and
         // the user didn't specify one, strip the node number
         // off before returning
         //
         p += 2;
-        while( *(p++) != '/' ) ;
+        while( *(p++) != '/' ) {
+        	;
+        }
     }
 #endif
     return( p );
@@ -291,12 +296,15 @@ static void remove_indentation( void )
         }
         SkipSpaces( p );                            // skip blanks
         if( *p == CW_sep_char ) {
-            if( ProcFlags.CW_force_sep && (CW_sep_char != '\0') ) { // only if valid
+            if( ProcFlags.CW_force_sep
+              && (CW_sep_char != '\0') ) { // only if valid
                 p++;                                // skip CW_sep_char
             }
-        } else if( (*p == SCR_char) && (*(p + 1) == GML_char) ) {
+        } else if( (*p == SCR_char)
+          && (*(p + 1) == GML_char) ) {
             p++;                                    // skip SCR_char
-        } else if( !ProcFlags.CW_force_sep && (*p != GML_char) ) {
+        } else if( !ProcFlags.CW_force_sep
+          && (*p != GML_char) ) {
             ProcFlags.indented_text = true;         // .  text
         }
         if( p != buff2 ) {                          // skipped indent now copy buffer
@@ -339,7 +347,8 @@ static bool test_macro_xxxx( char const * beginend )
     if( *buff2 == SCR_char ) {// only test script control words
 
         p = buff2 + 1;
-        if( (*p == SCR_char)  || (*p == '\'') ) {
+        if( (*p == SCR_char)
+          || (*p == '\'') ) {
             p++;
         }
         cw[0] = my_tolower( *p++ );
@@ -347,9 +356,10 @@ static bool test_macro_xxxx( char const * beginend )
         c = *p++;
 
         cw[2] = '\0';
-        if( c == '\0' || c == ' ' ) {
+        if( c == '\0'
+          || c == ' ' ) {
             if( strcmp( cw, "dm" ) == 0 ) {
-                SkipSpaces( p );            // find macroname
+                SkipSpaces( p );            // find macro name
                 SkipNonSpaces( p );
                 SkipSpaces( p );            // find begin end
                 return( strnicmp( p, beginend, strlen( beginend ) ) == 0 );
@@ -374,7 +384,8 @@ static  bool    test_comment( void )
            return( true );
         }
     } else {                                // test for :cmt[ .]
-        if( IS_CMT_TAG( buff2 ) && IS_TAG_END( buff2 + 4 ) ) {
+        if( IS_CMT_TAG( buff2 )
+          && IS_TAG_END( buff2 + 4 ) ) {
             if( ProcFlags.literal ) {       // special
                 if( li_cnt < LONG_MAX ) {   // we decrement, do not wait for .li OFF
                     if( li_cnt-- <= 0 ) {
@@ -473,7 +484,8 @@ static  void    proc_input( char * filename )
 
             ic = input_cbs->if_cb;      // .if .th .el controlblock
 
-            if( WgmlFlags.firstpass && (input_cbs->fmflags & II_research) ) {
+            if( WgmlFlags.firstpass
+              && (input_cbs->fmflags & II_research) ) {
                 show_ifcb( "procin 1", ic );
             }
 
@@ -499,12 +511,12 @@ static  void    proc_input( char * filename )
             if( !ProcFlags.keep_ifstate ) {
                 if( ic->if_level > 0 ) {// if .if active
                     if( ic->if_flags[ic->if_level].ifelse // after else
-                        && !ic->if_flags[ic->if_level].ifdo ) {// no do group
+                      && !ic->if_flags[ic->if_level].ifdo ) {// no do group
 
                         ic->if_level--; // pop .if stack one level
 
-                        if( WgmlFlags.firstpass &&
-                            (input_cbs->fmflags & II_research) ) {
+                        if( WgmlFlags.firstpass
+                          && (input_cbs->fmflags & II_research) ) {
                             show_ifcb( "procin -1", ic );
                         }
                     }
@@ -514,8 +526,8 @@ static  void    proc_input( char * filename )
                     ic->if_flags[ic->if_level].ifthen = false;// not in then
                     ic->if_flags[ic->if_level].ifelse = false;// not in else
 
-                    if( WgmlFlags.firstpass &&
-                        (input_cbs->fmflags & II_research) ) {
+                    if( WgmlFlags.firstpass
+                      && (input_cbs->fmflags & II_research) ) {
                         show_ifcb( "procin 2", ic );
                     }
                 }
@@ -539,7 +551,8 @@ static  void    proc_input( char * filename )
                     }
                 }
                 if( ProcFlags.in_macro_define ) {
-                    if( (input_cbs->fmflags & II_research) && WgmlFlags.firstpass ) {
+                    if( (input_cbs->fmflags & II_research)
+                      && WgmlFlags.firstpass ) {
                         g_info_lm( inf_skip_line );
                     }
                     continue;           // skip processing
@@ -551,8 +564,8 @@ static  void    proc_input( char * filename )
                     if( test_macro_xxxx( "begin" ) ) {
                         ProcFlags.in_macro_define = true;
                     }
-                    if( (input_cbs->fmflags & II_research) &&
-                        WgmlFlags.firstpass ) {
+                    if( (input_cbs->fmflags & II_research)
+                      && WgmlFlags.firstpass ) {
                         g_info_lm( inf_skip_line );
                     }
                     set_if_then_do( ic );
@@ -581,7 +594,8 @@ static  void    proc_input( char * filename )
             /*  Test for missing eXXX tag                                  */
             /***************************************************************/
 
-            if( (nest_cb != NULL) && (nest_cb->c_tag != t_NONE) ) {
+            if( (nest_cb != NULL)
+              && (nest_cb->c_tag != t_NONE) ) {
                 g_err_tag_nest( str_tags[nest_cb->c_tag + 1] );// eXXX expected
             }
         }
@@ -598,12 +612,14 @@ static  void    proc_input( char * filename )
             continue;                   // with cmdline layout option file
         }
         if( input_cbs->fmflags & II_file ) {
-            if( WgmlFlags.inclist && (save_cb != input_cbs) ) {
+            if( WgmlFlags.inclist
+              && (save_cb != input_cbs) ) {
                 g_info_lm( inf_curr_file, input_cbs->s.f->filename );
                 save_cb = input_cbs;
             }
         } else {
-            if( WgmlFlags.inclist && WgmlFlags.research ) {     // only when -r specified
+            if( WgmlFlags.inclist
+              && WgmlFlags.research ) {     // only when -r specified
                 g_info_lm( inf_curr_macro, input_cbs->s.m->mac->macname,
                                            input_cbs->s.m->mac->mac_file_name  );
             }
@@ -670,7 +686,8 @@ static  void    init_pass( void )
 
     init_pass_data();                   // (re)set processing flags + vars
 
-    if( WgmlFlags.research && (research_to > 0) ) {
+    if( WgmlFlags.research
+      && (research_to > 0) ) {
         if( research_file_name[0] == '\0' ) {
             strcpy_s( research_file_name, sizeof( research_file_name ),
                       master_fname );
@@ -789,15 +806,15 @@ int main( int argc, char * argv[] )
 
         fb_start();                     // START :PAUSE & :INIT processing.
 
-        if( (WgmlFlags.inclist || WgmlFlags.statistics ||
-             WgmlFlags.research ) && (lay_files != NULL) ) {
-
-            laystack *lwk = lay_files;
+        if( (WgmlFlags.inclist
+          || WgmlFlags.statistics
+          || WgmlFlags.research )
+          && (lay_files != NULL) ) {
+            laystack *lwk;
 
             out_msg_research( "\nLAYOUT file(s) specified on cmdline:\n" );
-            while( lwk != NULL ) {
+            for( lwk = lay_files; lwk != NULL; lwk = lwk->next ) {
                 out_msg_research( "\t%s\n", lwk->layfn );
-                lwk = lwk->next;
             }
         }
 
@@ -822,7 +839,8 @@ int main( int argc, char * argv[] )
                 add_tag_cb_to_pool( nest_cb );
                 nest_cb = cb;
             }
-            if( WgmlFlags.research && (pass < passes) ) {
+            if( WgmlFlags.research
+              && (pass < passes) ) {
                 print_sym_dict( global_dict );
             }
             msg_indent = 0;
@@ -835,7 +853,8 @@ int main( int argc, char * argv[] )
 //              mem_prt_curr_usage();
 //          }
             passcount = pass;
-            if( !WgmlFlags.lastpass && (err_count > 0) ) {
+            if( !WgmlFlags.lastpass
+              && (err_count > 0) ) {
                 g_info_lm( inf_error_stop, passes - pass > 1 ? "es" : "" );
                 break;                  // errors found stop now
             }
