@@ -189,12 +189,12 @@ extern void         banner_defaults( void );
 
 
 /* gmacdict.c                           */
-extern  void        add_macro_entry( mac_dict *dict, mac_entry *me );
-extern  void        init_macro_dict( mac_dict **dict );
-extern  void        free_macro_dict( mac_dict **dict );
-extern  void        free_macro_entry( mac_dict *dict, mac_entry *me );
-extern  void        print_macro_dict( mac_dict *dict, bool with_mac_lines );
-extern  mac_entry * find_macro( mac_dict *dict, const char *macname );
+extern  void            add_macro_entry( mac_dict_hdl dict, mac_entry *me );
+extern  mac_dict_hdl    init_macro_dict( void );
+extern  void            free_macro_dict( mac_dict_hdl dict );
+extern  void            free_macro_entry( mac_dict_hdl dict, mac_entry *me );
+extern  void            print_macro_dict( mac_dict_hdl dict, bool with_mac_lines );
+extern  mac_entry       *find_macro( mac_dict_hdl dict, const char *macname );
 
 
 /* gmemory.c                            */
@@ -295,7 +295,7 @@ extern  const   gmltag  *   find_lay_tag( char * token, size_t toklen );
 extern  const   gmltag  *   find_sys_tag( char * token, size_t toklen );
 extern          char    *   get_text_line( char * p );
 extern          bool        is_ip_tag( e_tags offset );
-extern          void        set_overload( gtentry * in_gt );
+extern          void        set_overload( struct gtentry *in_gt );
 extern          void        scan_line( void );
 extern          void        set_if_then_do( ifcb * cb );
 extern          condcode    test_process( ifcb * cb );
@@ -333,7 +333,7 @@ extern char *   scan_sym( char * p, symvar * sym, sub_index * subscript, char * 
 
 
 /* gsmacro.c                            */
-extern  void    add_macro_cb_entry( mac_entry * me, gtentry * ge );
+extern  void    add_macro_cb_entry( mac_entry * me, struct gtentry *ge );
 extern  void    add_macro_parms( char * p );
 extern  void    free_lines( inp_line * line );
 extern  bool    get_macro_name( const char *p, char *macname );
@@ -349,32 +349,32 @@ extern  void    close_all_pu_files( void );
 
 
 /* gsymvar.c                            */
-extern dict_hdl init_dict( bool global );
-extern void     free_dict( dict_hdl dict );
-extern int      find_symvar( dict_hdl dict, char * name, sub_index subscript, symsub * * symsubval );
-extern int      find_symvar_l( dict_hdl dict, char * name, sub_index subscript, symsub * * symsubval );
-extern int      add_symvar( dict_hdl dict, char * name, char * val, sub_index subscript, symbol_flags f );
-extern int      add_symvar_addr( dict_hdl dict, char * name, char * val, sub_index subscript, symbol_flags f, symsub * * sub );
-extern void     print_sym_dict( dict_hdl dict );
-extern void     reset_auto_inc_dict( dict_hdl dict );
+extern sym_dict_hdl init_dict( bool global );
+extern void         free_dict( sym_dict_hdl dict );
+extern int          find_symvar( sym_dict_hdl dict, char * name, sub_index subscript, symsub * * symsubval );
+extern int          find_symvar_l( sym_dict_hdl dict, char * name, sub_index subscript, symsub * * symsubval );
+extern int          add_symvar( sym_dict_hdl dict, char * name, char * val, sub_index subscript, symbol_flags f );
+extern int          add_symvar_addr( sym_dict_hdl dict, char * name, char * val, sub_index subscript, symbol_flags f, symsub * * sub );
+extern void         print_sym_dict( sym_dict_hdl dict );
+extern void         reset_auto_inc_dict( sym_dict_hdl dict );
 
 
 /* gsyssym.c                            */
-extern void     add_to_sysdir( char * var_name, char char_val );
-extern dict_hdl init_sys_dict( void );
-extern void     init_sysparm( char * cmdline, char * banner );
-extern void     link_sym( dict_hdl dict, symvar * sym );
+extern void         add_to_sysdir( char * var_name, char char_val );
+extern sym_dict_hdl init_sys_dict( void );
+extern void         init_sysparm( char * cmdline, char * banner );
+extern void         link_sym( sym_dict_hdl dict, symvar * sym );
 
 
 /* gtagdict.c                           */
-extern  gtentry *   add_tag( gtentry **dict, const char *tagname, const char *macname, const int flags );
-extern  gtentry *   change_tag( gtentry **dict, const char *tagname, const char *macname );
-extern  void        init_tag_dict( gtentry **dict );
-extern  void        free_tag_dict( gtentry **dict );
-extern  gtentry *   free_tag( gtentry **dict, gtentry *ge );
-extern  void        print_tag_dict( gtentry *dict );
-extern  void        print_tag_entry( gtentry *entry );
-extern  gtentry *   find_tag( gtentry **dict, const char *tagname );
+extern  struct gtentry  *add_tag( tag_dict_hdl *dict, const char *tagname, const char *macname, const int flags );
+extern  struct gtentry  *change_tag( tag_dict_hdl dict, const char *tagname, const char *macname );
+extern  tag_dict_hdl    init_tag_dict( void );
+extern  void            free_tag_dict( tag_dict_hdl dict );
+extern  struct gtentry  *free_tag( tag_dict_hdl *dict, struct gtentry *ge );
+extern  void            print_tag_dict( tag_dict_hdl dict );
+extern  void            print_tag_entry( struct gtentry *entry );
+extern  struct gtentry  *find_tag( tag_dict_hdl dict, const char *tagname );
 
 /* gtxtpool.c                           */
 extern  void                add_single_text_chars_to_pool( text_chars * a_chars );
@@ -406,7 +406,7 @@ extern  void        titlep_output( void );
 
 
 /* gusertag.c                           */
-extern  bool        process_tag( gtentry * ge, mac_entry * me );
+extern  bool        process_tag( struct gtentry *ge, mac_entry *me );
 
 
 /* gutil.c                              */
@@ -454,7 +454,7 @@ extern  void    val_parse_err( const char * pa, bool tag );
 extern  void    dup_id_err( const char * id, const char * context );
 extern  void    g_err_if_int( void );
 extern  void    g_err_tag( const char *tagname );
-extern  void    g_err_tag_mac( gtentry * ge );
+extern  void    g_err_tag_mac( struct gtentry * ge );
 extern  void    g_err_tag_nest( const char *tagname );
 extern  void    g_err_tag_no( const char *tagname );
 extern  void    g_err_tag_prec( const char *tagname );

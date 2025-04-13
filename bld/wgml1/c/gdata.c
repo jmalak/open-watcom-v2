@@ -190,8 +190,8 @@ void init_global_vars( void )
     global_dict         = init_dict( true );
     sys_dict            = init_sys_dict();
 
-    init_macro_dict( &macro_dict );
-    init_tag_dict( &tag_dict );
+    macro_dict          = init_macro_dict();
+    tag_dict            = init_tag_dict();
 
     init_ref_dict( &fig_ref_dict );
     init_ref_dict( &fn_ref_dict );
@@ -217,9 +217,9 @@ void init_global_vars( void )
     pgnum_style[4]      = h_style;
 
     g_tagname[0]        = '*';          // last defined GML tag name none
-    tag_entry           = NULL;         // ... entry in tag_dict
+    g_tag_entry         = NULL;         // ... entry in tag_dict
     g_attname[0]        = '*';          // last defined GML attribute none
-    att_entry           = NULL;         // ... entry in tag_dict
+    g_att_entry         = NULL;         // ... entry in tag_dict
 
     research_file_name[0] = '\0';
     research_from         = 0;

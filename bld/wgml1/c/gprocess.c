@@ -210,7 +210,7 @@ static void split_at_GML_tag( void )
             /***************************************************************/
             /* Verify valid user or system tag                             */
             /***************************************************************/
-            if( ( (gue = find_tag( &tag_dict, pchar + 1 )) != NULL )
+            if( ( (gue = find_tag( tag_dict, pchar + 1 )) != NULL )
               || ( (gse = (gmltag *) find_sys_tag( pchar + 1, toklen )) != NULL )
               || ( (gle = (gmltag *) find_lay_tag( pchar + 1, toklen )) != NULL ) ) {
                 *p2 = c;

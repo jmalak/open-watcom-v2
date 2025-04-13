@@ -217,7 +217,7 @@ typedef struct symvar {
 /*  Symbolic variable dictionary                                           */
 /***************************************************************************/
 
-typedef struct symdict *dict_hdl;
+typedef struct symdict *sym_dict_hdl;
 
 
 /***************************************************************************/
@@ -296,7 +296,7 @@ typedef struct inp_line {
 /***************************************************************************/
 
 typedef struct labelcb {
-    struct labelcb  *   prev;
+    struct labelcb      *prev;
     fpos_t              pos;            // file position for label if file
     line_number         lineno;         // lineno of label
     char                label_name[LABEL_NAME_LENGTH + 1];
@@ -306,19 +306,19 @@ typedef struct labelcb {
 /*  Macro  dictionary                                                      */
 /***************************************************************************/
 
-typedef void    mac_dict;
+typedef struct macdict  *mac_dict_hdl;
 
 /***************************************************************************/
 /*  macro definition entry  for macro dictionary                           */
 /***************************************************************************/
 
 typedef struct mac_entry {
-    struct mac_entry    *   next;
-    inp_line            *   macline;    // macro definition lines
-    line_number             lineno;     // lineno start of macro definition
-    labelcb             *   label_cb;   // controlling label definitions
-    char                *   mac_file_name;  // file name macro definition
-    char                    macname[MAC_NAME_LENGTH + 1];  // macro name
+    struct mac_entry    *next;
+    inp_line            *macline;       // macro definition lines
+    line_number         lineno;         // lineno start of macro definition
+    labelcb             *label_cb;      // controlling label definitions
+    char                *mac_file_name; // file name macro definition
+    char                macname[MAC_NAME_LENGTH + 1];   // macro name
 } mac_entry;
 
 /***************************************************************************/
@@ -326,16 +326,16 @@ typedef struct mac_entry {
 /***************************************************************************/
 
 typedef struct filecb {
-    FILE        *   fp;                 // FILE ptr
+    FILE            *fp;                // FILE ptr
     line_number     lineno;             // current line number
     line_number     linemin;            // first line number to process
     line_number     linemax;            // last line number to process
     size_t          usedlen;            // used data of filebuf
     fpos_t          pos;                // position for reopen
-    labelcb     *   label_cb;           // controlling label definitions
-    char        *   filename;           // full filename
+    labelcb         *label_cb;          // controlling label definitions
+    char            *filename;          // full filename
     fflags          flags;
-    char            fileattr[MAX_FILE_ATTR + 1];// T:xxxx
+    char            fileattr[MAX_FILE_ATTR + 1];    // T:xxxx
 } filecb;
 
 /***************************************************************************/
@@ -343,23 +343,10 @@ typedef struct filecb {
 /***************************************************************************/
 
 typedef struct mac_parms {
-    char        *   star;               // &*  complete parmline
+    char            *star;              // &*  complete parmline
     int             star0;              // &*0 parmcount
-    inp_line    *   starx;              // &*1 - &*x parms
+    inp_line        *starx;             // &*1 - &*x parms
 } mac_parms;
-
-/***************************************************************************/
-/*  Entry for an included macro                                            */
-/***************************************************************************/
-
-typedef struct  macrocb {
-    line_number         lineno;         // current macro line number
-    inp_line        *   macline;        // list of macro lines
-    mac_entry       *   mac;            // macro definition entry
-    struct gtentry  *   tag;            // tag entry if macro called via tag
-    fflags              flags;
-    bool                ix_seen;        // set when index tag/cw seen (even if indexing is off)
-} macrocb;
 
 /***************************************************************************/
 /*  Stack for .if .th .el .do processing                                   */
@@ -398,28 +385,6 @@ typedef struct pecb {                   // for .pe control
     int     ll;                         // length of line
     int     count;                      // value of .pe n  active if > 0
 } pecb;
-
-/***************************************************************************/
-/*  input stack for files and macros                                       */
-/***************************************************************************/
-
-typedef struct  inputcb {
-    struct inputcb  *   prev;
-    inp_line        *   hidden_head;    // manage lines split at ; or :
-    inp_line        *   hidden_tail;    // manage lines split at ; or :
-    dict_hdl            local_dict;     // local symbol dictionary
-    ifcb            *   if_cb;          // for controlling .if .th .el
-    pecb                pe_cb;          // for controlling .pe perform
-    union  {
-        filecb      *   f;              // used if input is from file
-        macrocb     *   m;              // used if input is from macro/tag
-    } s;
-    i_flags             fmflags;
-    bool                fm_hh;          // logical input record is from a hidden_head
-    bool                fm_symbol;      // logical input record is from a symbol substition
-    bool                hh_tag;         // hidden_head is indeed from a tag
-    bool                sym_space;      // symbol substitution was preceeded by a space
-} inputcb;
 
 /***************************************************************************/
 /*  script keywords                                                           */
@@ -484,12 +449,12 @@ typedef enum {
 } classflags;
 
 typedef struct gmltag {
-   char             tagname[TAG_NAME_LENGTH + 1];
-   size_t           taglen;
-   void             (*gmlproc)( const struct gmltag * entry );
-   gmlflags         tagflags;
-   locflags         taglocs;
-   classflags       tagclass;
+    char            tagname[TAG_NAME_LENGTH + 1];
+    size_t          taglen;
+    void            (*gmlproc)( const struct gmltag * entry );
+    gmlflags        tagflags;
+    locflags        taglocs;
+    classflags      tagclass;
 } gmltag;
 
 /***************************************************************************/
@@ -590,6 +555,45 @@ typedef struct gtentry {
     gtflags             tagflags;
     bool                overload;       // user tag has same name as predefined tag
 } gtentry;
+
+/***************************************************************************/
+/*  Entry for an included macro                                            */
+/***************************************************************************/
+
+#define tagdict     gtentry
+
+typedef struct tagdict  *tag_dict_hdl;
+
+typedef struct  macrocb {
+    line_number     lineno;         // current macro line number
+    inp_line        *macline;       // list of macro lines
+    mac_entry       *mac;           // macro definition entry
+    gtentry         *tag;           // tag entry if macro called via tag
+    fflags          flags;
+    bool            ix_seen;        // set when index tag/cw seen (even if indexing is off)
+} macrocb;
+
+/***************************************************************************/
+/*  input stack for files and macros                                       */
+/***************************************************************************/
+
+typedef struct  inputcb {
+    struct inputcb  *   prev;
+    inp_line        *   hidden_head;    // manage lines split at ; or :
+    inp_line        *   hidden_tail;    // manage lines split at ; or :
+    sym_dict_hdl        local_dict;     // local symbol dictionary
+    ifcb            *   if_cb;          // for controlling .if .th .el
+    pecb                pe_cb;          // for controlling .pe perform
+    union  {
+        filecb      *   f;              // used if input is from file
+        macrocb     *   m;              // used if input is from macro/tag
+    } s;
+    i_flags             fmflags;
+    bool                fm_hh;          // logical input record is from a hidden_head
+    bool                fm_symbol;      // logical input record is from a symbol substition
+    bool                hh_tag;         // hidden_head is indeed from a tag
+    bool                sym_space;      // symbol substitution was preceeded by a space
+} inputcb;
 
 /***************************************************************************/
 /*  condcode  returncode for several conditions during parameterchecking   */
@@ -869,10 +873,10 @@ typedef struct nest_stack {
 
     line_number         lineno;         // lineno of :xl, :HPx :SF call
     union {
-        char        *   filename;       // file name of :xl, :HPx :SF call
+        char            *filename;      // file name of :xl, :HPx :SF call
         struct mt {
-            gtentry     *   tag_m;      // for usertag / macro
-            mac_entry   *   m;          // macro entry of :xl, :HPx :SF call
+            gtentry  	*tag_m;         // for usertag / macro
+            mac_entry   *m;             // macro entry of :xl, :HPx :SF call
         } mt;
     } s;
     i_flags             nest_flag;      // for selecting the union

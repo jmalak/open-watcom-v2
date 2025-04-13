@@ -39,8 +39,8 @@ bool    get_tag_name( const char *p, char *tagname )
 
 void    init_tag_att( void )
 {
-    tag_entry = NULL;
-    att_entry = NULL;
+    g_tag_entry = NULL;
+    g_att_entry = NULL;
     g_tagname[0] = '*';
     g_attname[0] = '*';
 }
@@ -49,14 +49,14 @@ void    init_tag_att( void )
 /***************************************************************************/
 /* GML TAG defines a GML tag.                                              */
 /*                                                                         */
-/*      здддддддддддддддддддддддддддддддддддддддддддддддддддддддддд©       */
+/*      О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫д©       */
 /*      |       |                                                  |       */
 /*      |  .GT  |    tagname ADD macro <tagopts>                   |       */
 /*      |       |    tagname CHAnge macro                          |       */
 /*      |       |    tagname OFF|ON                                |       */
 /*      |       |    tagname|* DELete|PRint                        |       */
 /*      |       |                                                  |       */
-/*      юдддддддддддддддддддддддддддддддддддддддддддддддддддддддддды       */
+/*      О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫       */
 /*                                                                         */
 /* The first  form of this  control word defines the  name of a  GML tag,  */
 /* identifies the macro that is to be invoked when the tag is encountered  */
@@ -366,8 +366,8 @@ void    scr_gt( void )
         }
         savetag = '*';         // remember for possible global delete / print
         if( WgmlFlags.firstpass && (input_cbs->fmflags & II_research) ) {
-            if( tag_entry != NULL ) {
-                out_msg("  using tagname %s %s\n", g_tagname, tag_entry->tagname );
+            if( g_tag_entry != NULL ) {
+                out_msg("  using tagname %s %s\n", g_tagname, g_tag_entry->tagname );
             }
         }
     } else {
@@ -457,14 +457,14 @@ void    scr_gt( void )
             if( cc != omit ) {          // not all processed error
                xx_err( err_tag_opt_inv );
             }
-            tag_entry = add_tag( &tag_dict, g_tagname, macname, tag_flags );  // add to dictionary
-            // if tag_entry is now NULL, error (+ msg) was output in add_tag
+            g_tag_entry = add_tag( &tag_dict, g_tagname, macname, tag_flags );  // add to dictionary
+            // if g_tag_entry is now NULL, error (+ msg) was output in add_tag
 
-            if( tag_entry != NULL ) {
-                set_overload( tag_entry );
+            if( g_tag_entry != NULL ) {
+                set_overload( g_tag_entry );
             }
         } else {                        // is function change
-            tag_entry = change_tag( &tag_dict, g_tagname, macname );
+            g_tag_entry = change_tag( tag_dict, g_tagname, macname );
         }
     } else {
 
@@ -481,31 +481,32 @@ void    scr_gt( void )
             if( savetag == '*' ) {
                 print_tag_dict( tag_dict );
             } else {
-                print_tag_entry( find_tag( &tag_dict, g_tagname ) );
+                print_tag_entry( find_tag( tag_dict, g_tagname ) );
             }
             break;
         case f_delete :
             if( savetag == '*' ) {
-                free_tag_dict( &tag_dict );
+                free_tag_dict( tag_dict );
+                tag_dict = NULL;
             } else {
-                free_tag( &tag_dict, find_tag( &tag_dict, g_tagname ) );
+                free_tag( &tag_dict, find_tag( tag_dict, g_tagname ) );
             }
             break;
         case f_off :
-            if( savetag == '*' && tag_entry != NULL ) {// off for last defined
-                tag_entry->tagflags |= tag_off;
+            if( savetag == '*' && g_tag_entry != NULL ) {// off for last defined
+                g_tag_entry->tagflags |= tag_off;
             } else {
-                wk = find_tag( &tag_dict, g_tagname );
+                wk = find_tag( tag_dict, g_tagname );
                 if( wk != NULL ) {
                     wk->tagflags |= tag_off;
                 }
             }
             break;
         case f_on :
-            if( savetag == '*' && tag_entry != NULL ) {// on for last defined
-                tag_entry->tagflags |= tag_off;
+            if( savetag == '*' && g_tag_entry != NULL ) {// on for last defined
+                g_tag_entry->tagflags |= tag_off;
             } else {
-                wk = find_tag( &tag_dict, g_tagname );
+                wk = find_tag( tag_dict, g_tagname );
                 if( wk != NULL ) {
                     wk->tagflags &= ~tag_off;
                 }

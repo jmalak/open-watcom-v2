@@ -32,7 +32,6 @@
 
 #define CRLF            "\n"
 
-
 /***************************************************************************/
 /*  Output Banner if wanted and not yet done                               */
 /***************************************************************************/
@@ -205,7 +204,8 @@ void free_some_mem( void )
         sys_dict = NULL;
     }
     if( macro_dict != NULL ) {
-        free_macro_dict( &macro_dict );
+        free_macro_dict( macro_dict );
+        macro_dict = NULL;
     }
     if( line_buff.text != NULL ) {
         mem_free( line_buff.text );
@@ -241,7 +241,8 @@ void free_some_mem( void )
         free_ref_dict( &ix_ref_dict );
     }
     if( tag_dict != NULL ) {
-        free_tag_dict( &tag_dict );
+        free_tag_dict( tag_dict );
+        tag_dict = NULL;
     }
     if( index_dict != NULL ) {
         free_index_dict( &index_dict );
@@ -594,7 +595,7 @@ void show_include_stack( void )
             break;
         case    II_tag :
             g_info( err_inf_tag, ip->s.m->tag->tagname );
-            // fallthrough
+            /* fall through */
         case    II_macro :
             ulongtodec( ip->s.m->lineno, linestr );
             ulongtodec( ip->s.m->mac->lineno, linemac );
