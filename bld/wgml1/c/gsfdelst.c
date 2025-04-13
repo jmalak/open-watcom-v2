@@ -60,7 +60,7 @@ condcode    scr_delstr( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * re
     n   = 0;                            // default start pos
     gn.ignore_blanks = false;
 
-    if( parms[1].e >= parms[1].a ) {// start pos
+    if( parms[1].a <= parms[1].e ) {// start pos
         gn.argstart = parms[1].a;
         gn.argstop  = parms[1].e;
         cc = getnum( &gn );
@@ -74,7 +74,7 @@ condcode    scr_delstr( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * re
     }
 
     if( parmcount > 2 ) {               // evalute length
-        if( parms[2].e >= parms[2].a ) {// length specified
+        if( parms[2].a <= parms[2].e ) {// length specified
             gn.argstart = parms[2].a;
             gn.argstop  = parms[2].e;
             cc = getnum( &gn );

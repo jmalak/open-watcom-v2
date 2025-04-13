@@ -69,7 +69,7 @@ condcode    scr_width( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * res
     }
 
     if( parmcount > 1 ) {               // evalute type
-        if( parms[1].e >= parms[1].a ) {// type
+        if( parms[1].a <= parms[1].e ) {// type
             pa  = parms[1].a;
             pe  = parms[1].e;
 

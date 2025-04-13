@@ -110,7 +110,7 @@ condcode    scr_index( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * res
     gn.ignore_blanks = false;
 
     if( parmcount > 2 ) {               // evalute start pos
-        if( parms[2].e >= parms[2].a ) {// start pos specified
+        if( parms[2].a <= parms[2].e ) {// start pos specified
             gn.argstart = parms[2].a;
             gn.argstop  = parms[2].e;
             cc = getnum( &gn );
@@ -223,7 +223,7 @@ condcode    scr_lpos( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * resu
     gn.ignore_blanks = false;
 
     if( parmcount > 2 ) {               // evalute start pos
-        if( parms[2].e >= parms[2].a ) {// start pos specified
+        if( parms[2].a <= parms[2].e ) {// start pos specified
             gn.argstart = parms[2].a;
             gn.argstop  = parms[2].e;
             cc = getnum( &gn );

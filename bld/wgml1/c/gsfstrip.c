@@ -65,7 +65,7 @@ condcode    scr_strip( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * res
     type      = 'b';                    // default strip both ends
 
     if( parmcount > 1 ) {               // evalute type
-        if( parms[1].e >= parms[1].a ) {// type
+        if( parms[1].a <= parms[1].e ) {// type
             pa  = parms[1].a;
             pe  = parms[1].e;
 
@@ -89,7 +89,7 @@ condcode    scr_strip( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * res
     }
 
     if( parmcount > 2 ) {               // stripchar
-        if( parms[2].e >= parms[2].a ) {
+        if( parms[2].a <= parms[2].e ) {
             pa  = parms[2].a;
             pe  = parms[2].e;
 

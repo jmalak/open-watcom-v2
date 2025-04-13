@@ -71,7 +71,7 @@ condcode    scr_right( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * res
         if( n > len ) {                 // padding needed
             padchar = ' ';              // default padchar
             if( parmcount > 2 ) {       // pad character specified
-                if( parms[2].e >= parms[2].a ) {
+                if( parms[2].a <= parms[2].e ) {
                     char * pa = parms[2].a;
                     char * pe = parms[2].e;
 
