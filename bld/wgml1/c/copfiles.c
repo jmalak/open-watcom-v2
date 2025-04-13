@@ -1310,7 +1310,7 @@ void cop_ti_table( const char *p )
     if( len > 0 ) {
         if( len > 2 ) { // check for ".ti set"
             if( len == 3 ) {
-                if( strnicmp( pa, "SET", len ) == 0 ) {
+                if( strnicmp( pa, "set", len ) == 0 ) {
                     SkipSpaces( p );        // set char start
                     pa = p;
                     SkipNonSpaces( p );     // set char start
