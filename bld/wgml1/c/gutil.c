@@ -304,12 +304,11 @@ static const bool internal_to_su( su *in_su, bool tag, const char *base )
 static bool su_expression( su * in_su )
 {
     bool                retval  = true;
-    char            *   p       = in_su->su_txt;
     condcode            cc;
     getnum_block        gn;
 
     gn.ignore_blanks = false;
-    gn.arg.e = gn.arg.s = p;
+    gn.arg.e = gn.arg.s = in_su->su_txt;
     while( *gn.arg.e != '\0' )
         gn.arg.e++;
     gn.arg.e--;
