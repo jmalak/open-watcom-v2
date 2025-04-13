@@ -306,20 +306,20 @@ static bool su_expression( su * in_su )
     bool                retval  = true;
     char            *   p       = in_su->su_txt;
     condcode            cc;
-    getnum_block        value;
+    getnum_block        gn;
 
-    value.ignore_blanks = false;
-    value.arg.e = value.arg.s = p;
-    while( *value.arg.e != '\0' )
-        value.arg.e++;
-    value.arg.e--;
-    cc = getnum( &value );
+    gn.ignore_blanks = false;
+    gn.arg.e = gn.arg.s = p;
+    while( *gn.arg.e != '\0' )
+        gn.arg.e++;
+    gn.arg.e--;
+    cc = getnum( &gn );
 
     if( cc == notnum ) {
         retval = false;
     } else {
         in_su->su_u = SU_chars_lines;
-        in_su->su_whole = value.result;
+        in_su->su_whole = gn.result;
         in_su->su_dec = 0;
         in_su->su_inch = 0;
         in_su->su_mm = 0;

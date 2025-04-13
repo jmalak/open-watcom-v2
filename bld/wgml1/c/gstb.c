@@ -113,7 +113,7 @@ void    scr_tb( void )
     char        *   pb;
     char            quote;
     condcode        cc;
-    getnum_block    t_pos;
+    getnum_block    gn;
     int             i;
     int             len;
 
@@ -209,8 +209,8 @@ void    scr_tb( void )
             SkipSpaces( p );
             pa = p;                             // tab position start
 
-            t_pos.ignore_blanks = false;
-            t_pos.arg.s = p;
+            gn.ignore_blanks = false;
+            gn.arg.s = p;
             SkipNonSpaces( p );                 // tab position end plus 1
             if( *p != '\0' && (p > pa) ) {      // as needed by getnum
                 p--;                            // *p is last character of tab stop
@@ -219,13 +219,13 @@ void    scr_tb( void )
                 p--;
             }
             pb = p + 1;
-            t_pos.arg.e = p;
-            cc = getnum( &t_pos );
+            gn.arg.e = p;
+            cc = getnum( &gn );
             p = pb;                             // alignment start
-            if( t_pos.num_sign == ' ' ) {
+            if( gn.num_sign == ' ' ) {
                 relative = false;
             } else {
-                if( t_pos.num_sign == '+' ) {
+                if( gn.num_sign == '+' ) {
                     relative = true;
                 } else {
                     xx_line_err_c( err_inv_tab_stop, pa );
@@ -234,7 +234,7 @@ void    scr_tb( void )
             if( cc == notnum ) {
                 xx_line_err_c( err_inv_text_before_tab, pa );
             } else {
-                if( t_pos.result <= 0 ) {
+                if( gn.result <= 0 ) {
                     if( relative ) {
                         xx_line_err_c( err_tab_stop_order, pa );
                     } else {
@@ -242,13 +242,13 @@ void    scr_tb( void )
                     }
                 } else {
                     if( relative && ( i > 0) ) {
-                        t_pos.result *= tab_col;
+                        gn.result *= tab_col;
                         user_tabs.tabs[i].column = user_tabs.tabs[i-1].column +
-                                                   t_pos.result;
+                                                   gn.result;
                     } else {
-                        t_pos.result --;
-                        t_pos.result *= tab_col;
-                        user_tabs.tabs[i].column = t_pos.result;
+                        gn.result --;
+                        gn.result *= tab_col;
+                        user_tabs.tabs[i].column = gn.result;
                     }
                 }
                 if( !relative && (i > 0) ) {
