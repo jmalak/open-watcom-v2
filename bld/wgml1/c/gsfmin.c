@@ -33,7 +33,7 @@
 /***************************************************************************/
 
 
-condcode    scr_min( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * result, int32_t ressize )
+condcode    scr_min( parm parms[MAX_FUN_PARMS], int parmcount, char **result, int32_t ressize )
 {
     tok_type        parmx;
     condcode        cc;

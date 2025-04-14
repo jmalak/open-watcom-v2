@@ -626,12 +626,12 @@ typedef struct parm {
 } parm;
 
 typedef struct scrfunc {
-    const   char    fname[FUN_NAME_LENGTH + 1];   // function name
-    const   size_t  length;             // actual length of fname
-    const   size_t  parm_cnt;           // mandatory parms
-    const   size_t  opt_parm_cnt;       // optional parms
-    condcode        (*fun)( parm parms[MAX_FUN_PARMS], size_t parm_count,
-                            char **ppval, int32_t valsize );
+    const   char        fname[FUN_NAME_LENGTH + 1]; // function name
+    const   unsigned    length;                     // actual length of fname
+    const   int         parm_cnt;                   // mandatory parms
+    const   int         opt_parm_cnt;               // optional parms
+    condcode            (*fun)( parm parms[MAX_FUN_PARMS], int parm_count,
+                                    char **ppval, int32_t valsize );
 } scrfunc;
 
 /***************************************************************************/

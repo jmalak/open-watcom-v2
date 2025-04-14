@@ -35,7 +35,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-condcode    scr_translate( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * result, int32_t ressize )
+condcode    scr_translate( parm parms[MAX_FUN_PARMS], int parmcount, char **result, int32_t ressize )
 {
     tok_type        parm1;
     tok_type        ptabo;
@@ -93,8 +93,8 @@ condcode    scr_translate( parm parms[MAX_FUN_PARMS], size_t parmcount, char * *
             *result += 1;
             ressize--;
         }
-    } else {                   // translate as specified in tablei and tableo
-        for( ; parm1.s <= parm1.e; parm1.s++ ) {
+    } else {    // translate as specified in tablei and tableo
+        for( ; parm1.s <= parm1.e && ressize > 0; parm1.s++ ) {
             c = *parm1.s;
             ifound = false;
             if( ptabi.s == NULL ) {
@@ -119,9 +119,6 @@ condcode    scr_translate( parm parms[MAX_FUN_PARMS], size_t parmcount, char * *
             }
             *result += 1;
             ressize--;
-            if( ressize <= 0 ) {
-                break;
-            }
         }
     }
 

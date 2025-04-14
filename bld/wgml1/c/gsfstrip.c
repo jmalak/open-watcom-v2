@@ -35,7 +35,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-condcode    scr_strip( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * result, int32_t ressize )
+condcode    scr_strip( parm parms[MAX_FUN_PARMS], int parmcount, char **result, int32_t ressize )
 {
     tok_type        parm1;
     int             len;
@@ -62,7 +62,9 @@ condcode    scr_strip( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * res
         if( parms[1].arg.s <= parms[1].arg.e ) {// type
             tok_type parm = parms[1].arg;
             unquote_if_quoted( &parm );
-            type = my_tolower( *parm.s );
+            if( parm.s <= parm.e ) {
+                type = my_tolower( *parm.s );
+            }
 
             switch( type ) {
             case   'b':
@@ -84,7 +86,9 @@ condcode    scr_strip( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * res
         if( parms[2].arg.s <= parms[2].arg.e ) {
             tok_type parm = parms[2].arg;
             unquote_if_quoted( &parm );
-            stripchar = *parm.s;
+            if( parm.s <= parm.e ) {
+                stripchar = *parm.s;
+            }
         }
     }
 
@@ -96,10 +100,7 @@ condcode    scr_strip( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * res
         }
     }
 
-    while( parm1.s <= parm1.e ) {
-        if( ressize <= 0 ) {
-            break;
-        }
+    while( parm1.s <= parm1.e && ressize > 0 ) {
         **result = *parm1.s++;
         *result += 1;
         ressize--;

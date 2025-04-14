@@ -40,7 +40,7 @@ static unsigned char hex( unsigned char c )
 /*                                                                         */
 /***************************************************************************/
 
-condcode    scr_c2x( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * result, int32_t ressize )
+condcode    scr_c2x( parm parms[MAX_FUN_PARMS], int parmcount, char **result, int32_t ressize )
 {
     tok_type        parm1;
 
@@ -49,7 +49,6 @@ condcode    scr_c2x( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * resul
     }
 
     parm1 = parms[0].arg;
-
     unquote_if_quoted( &parm1 );
 
     while( (parm1.s <= parm1.e) && (ressize > 1) ) {
@@ -61,5 +60,6 @@ condcode    scr_c2x( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * resul
         **result = 0;
         ressize -= 2;
     }
+    **result = '\0';
     return( pos );
 }

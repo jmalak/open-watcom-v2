@@ -51,8 +51,8 @@ static  bool    is_word;          // true if word call, false if subword call
 /*      &'word('',1) ==> ""                                                */
 /***************************************************************************/
 
-static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], size_t parmcount,
-                                 char * * result, int32_t ressize )
+static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], int parmcount,
+                                 char **result, int32_t ressize )
 {
     tok_type        parm1;
     char            *ptok;
@@ -125,10 +125,7 @@ static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], size_t parmcount,
 
     if( len == 0 ) {                    // default word count = to end of string
         ptok = parm1.e;
-        for( ; parm1.s <= ptok; parm1.s++ ) { // copy rest of words
-            if( ressize <= 0 ) {
-                break;
-            }
+        for( ; parm1.s <= ptok && ressize > 0; parm1.s++ ) { // copy rest of words
             **result = *parm1.s;
             *result += 1;
             ressize--;
@@ -143,17 +140,14 @@ static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], size_t parmcount,
                 break;
             }
         }
-        for( ; parm1.s <= ptok; parm1.s++ ) { // copy rest of words
-            if( ressize <= 0 ) {
-                break;
-            }
+        for( ; parm1.s <= ptok && ressize > 0; parm1.s++ ) { // copy rest of words
             **result = *parm1.s;
             *result += 1;
             ressize--;
         }
         if( parm1.s < g_tok_start && ( *parm1.s != ' ' ) ) {    // copy last word
-            for( ; parm1.s < g_tok_start; parm1.s++ ) {
-                if( ( *parm1.s == ' ' ) || ( ressize <= 0 ) ) {
+            for( ; parm1.s < g_tok_start && ressize > 0; parm1.s++ ) {
+                if( *parm1.s == ' ' ) {
                     break;
                 }
                 **result = *parm1.s;
@@ -174,7 +168,7 @@ static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], size_t parmcount,
  *
  */
 
-condcode    scr_word( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * result, int32_t ressize )
+condcode    scr_word( parm parms[MAX_FUN_PARMS], int parmcount, char * * result, int32_t ressize )
 {
     is_word = true;
     return( scr_xx_word( parms, parmcount, result, ressize ) );
@@ -186,7 +180,7 @@ condcode    scr_word( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * resu
  *
  */
 
-condcode    scr_subword( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * result, int32_t ressize )
+condcode    scr_subword( parm parms[MAX_FUN_PARMS], int parmcount, char * * result, int32_t ressize )
 {
     is_word = false;
     return( scr_xx_word( parms, parmcount, result, ressize ) );
@@ -202,7 +196,7 @@ condcode    scr_subword( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * r
 /*      &'words('cat dot',1) ==> too many operands                         */
 /***************************************************************************/
 
-condcode    scr_words( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * result, int32_t ressize )
+condcode    scr_words( parm parms[MAX_FUN_PARMS], int parmcount, char * * result, int32_t ressize )
 {
     tok_type        parm1;
     int             wc;
@@ -246,7 +240,7 @@ condcode    scr_words( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * res
     }
 
     *result += sprintf( *result, "%d", wc );
-    **result = '\0';
+
     return( pos );
 }
 
@@ -264,7 +258,7 @@ condcode    scr_words( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * res
 /*      &'wordpos('The quick brown fox') ==> error, missing string         */
 /***************************************************************************/
 
-condcode    scr_wordpos( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * result, int32_t ressize )
+condcode    scr_wordpos( parm parms[MAX_FUN_PARMS], int parmcount, char * * result, int32_t ressize )
 {
     tok_type        phrase;
     tok_type        pstr;
@@ -390,7 +384,6 @@ condcode    scr_wordpos( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * r
         index = n + 1;  // n is current word - 1, need current word
     }
     *result += sprintf( *result, "%d", index );
-    **result = '\0';
 
     return( pos );
 }

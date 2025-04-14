@@ -38,7 +38,7 @@
 /*     &'width(AAA,X) ==> invalid 'type' operand                           */
 /***************************************************************************/
 
-condcode    scr_width( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * result, int32_t ressize )
+condcode    scr_width( parm parms[MAX_FUN_PARMS], int parmcount, char **result, int32_t ressize )
 {
     tok_type        parm1;
     tok_type        parm2;
@@ -88,10 +88,7 @@ condcode    scr_width( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * res
         width = (width * CPI + g_resh / 2) / g_resh;
     }
 
-    sprintf( *result, "%d", width );
-
-    *result  += strlen( *result );
-    **result = '\0';
+    *result  += sprintf( *result, "%d", width );
 
     return( pos );
 }
