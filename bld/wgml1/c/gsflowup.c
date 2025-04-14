@@ -55,8 +55,8 @@
 /*                                                                         */
 /***************************************************************************/
 
-static condcode scr_lowup( parm parms[MAX_FUN_PARMS], size_t parmcount,
-                           char * * result, int32_t ressize, bool upper )
+static condcode scr_lowup( parm parms[MAX_FUN_PARMS], int parmcount,
+                           char **result, int32_t ressize, bool upper )
 {
     tok_type        parm1;
     condcode        cc;
@@ -110,19 +110,13 @@ static condcode scr_lowup( parm parms[MAX_FUN_PARMS], size_t parmcount,
         }
     }
 
-    for( k = 0; k < n; k++ ) {          // copy unchanged before startpos
-        if( (parm1.s > parm1.e) || (ressize <= 0) ) {
-            break;
-        }
+    for( k = 0; k < n && (parm1.s <= parm1.e) && (ressize > 0); k++ ) {          // copy unchanged before startpos
         **result = *parm1.s++;
         *result += 1;
         ressize--;
     }
 
-    for( k = 0; k < len; k++ ) {        // translate
-        if( (parm1.s > parm1.e) || (ressize <= 0) ) {
-            break;
-        }
+    for( k = 0; k < len && (parm1.s <= parm1.e) && (ressize > 0); k++ ) {        // translate
         if( upper ) {
            **result = my_toupper( *parm1.s++ );
         } else {
@@ -132,10 +126,7 @@ static condcode scr_lowup( parm parms[MAX_FUN_PARMS], size_t parmcount,
         ressize--;
     }
 
-    for( ; parm1.s <= parm1.e; parm1.s++ ) {     // copy unchanged
-        if( ressize <= 0 ) {
-            break;
-        }
+    for( ; parm1.s <= parm1.e && (ressize > 0); parm1.s++ ) {     // copy unchanged
         **result = *parm1.s;
         *result += 1;
         ressize--;
@@ -147,12 +138,12 @@ static condcode scr_lowup( parm parms[MAX_FUN_PARMS], size_t parmcount,
 }
 
 
-condcode    scr_lower( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * result, int32_t ressize )
+condcode    scr_lower( parm parms[MAX_FUN_PARMS], int parmcount, char * * result, int32_t ressize )
 {
     return( scr_lowup( parms, parmcount, result, ressize, 0 ) );
 }
 
-condcode    scr_upper( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * result, int32_t ressize )
+condcode    scr_upper( parm parms[MAX_FUN_PARMS], int parmcount, char * * result, int32_t ressize )
 {
     return( scr_lowup( parms, parmcount, result, ressize, 1 ) );
 }

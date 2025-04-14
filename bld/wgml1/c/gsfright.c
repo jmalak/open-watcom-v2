@@ -31,7 +31,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-condcode    scr_right( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * result, int32_t ressize )
+condcode    scr_right( parm parms[MAX_FUN_PARMS], int parmcount, char **result, int32_t ressize )
 {
     tok_type        parm1;
     condcode        cc;
@@ -73,29 +73,19 @@ condcode    scr_right( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * res
                     }
                 }
             }
-            for( k = n - len; k > 0; k-- ) {
-                if( ressize <= 0 ) {
-                    break;
-                }
+            for( k = n - len; k > 0 && ressize > 0; k-- ) {
                 **result = padchar;
                 *result += 1;
                 ressize--;
             }
-            while( parm1.s <= parm1.e ) {
-                if( ressize <= 0 ) {
-                    break;
-                }
+            while( parm1.s <= parm1.e && ressize > 0 ) {
                 **result = *parm1.s++;
                 *result += 1;
                 ressize--;
             }
         } else {                        // no padding
-
             parm1.s += len - n;
-            while( parm1.s <= parm1.e ) {
-                if( ressize <= 0 ) {
-                    break;
-                }
+            while( parm1.s <= parm1.e && ressize > 0 ) {
                 **result = *parm1.s++;
                 *result += 1;
                 ressize--;

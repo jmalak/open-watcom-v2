@@ -67,8 +67,8 @@ static  bool    vec_pos;           // true if &'vecpos, false if &'veclastpos
 /*                                                                         */
 /***************************************************************************/
 
-static  condcode    scr_veclp( parm parms[MAX_FUN_PARMS], size_t parmcount,
-                               char * * result, int32_t ressize )
+static  condcode    scr_veclp( parm parms[MAX_FUN_PARMS], int parmcount,
+                               char **result, int32_t ressize )
 {
     tok_type        pneedle;
     tok_type        phay;
@@ -158,7 +158,7 @@ static  condcode    scr_veclp( parm parms[MAX_FUN_PARMS], size_t parmcount,
  *
  */
 
-condcode    scr_vecpos( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * result, int32_t ressize )
+condcode    scr_vecpos( parm parms[MAX_FUN_PARMS], int parmcount, char **result, int32_t ressize )
 {
     vec_pos = true;
     return( scr_veclp( parms, parmcount, result, ressize ) );
@@ -170,7 +170,7 @@ condcode    scr_vecpos( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * re
  *
  */
 
-condcode    scr_veclastpos( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * result, int32_t ressize )
+condcode    scr_veclastpos( parm parms[MAX_FUN_PARMS], int parmcount, char **result, int32_t ressize )
 {
     vec_pos = false;
     return( scr_veclp( parms, parmcount, result, ressize ) );

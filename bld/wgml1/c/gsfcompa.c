@@ -35,7 +35,7 @@
  *
  ***************************************************************************/
 
-condcode    scr_compare( parm parms[MAX_FUN_PARMS], size_t parmcount, char ** result, int32_t ressize )
+condcode    scr_compare( parm parms[MAX_FUN_PARMS], int parmcount, char **result, int32_t ressize )
 {
     tok_type        parm1;
     tok_type        parm2;
@@ -70,8 +70,8 @@ condcode    scr_compare( parm parms[MAX_FUN_PARMS], size_t parmcount, char ** re
     if( len > 0 ) {
         padchar = ' ';
         if( parmcount > 2 ) {
-            tok_type param = parms[2].arg;
-            unquote_if_quoted( &param );
+            tok_type parm = parms[2].arg;
+            unquote_if_quoted( &parm );
             if( parm.s <= parm.e ) {
                 padchar = *parm.s;
             }

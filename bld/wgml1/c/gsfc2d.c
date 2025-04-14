@@ -37,7 +37,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-condcode    scr_c2d( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * result, int32_t ressize )
+condcode    scr_c2d( parm parms[MAX_FUN_PARMS], int parmcount, char **result, int32_t ressize )
 {
     tok_type        parm1;
     condcode        cc;
@@ -64,5 +64,6 @@ condcode    scr_c2d( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * resul
         *result += 1;
         ressize--;
     }
+    **result = '\0';
     return( pos );
 }
