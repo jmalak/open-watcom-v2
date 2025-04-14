@@ -99,7 +99,9 @@ condcode    scr_substr( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * re
         if( parms[3].arg.s <= parms[3].arg.e ) {
             tok_type parm = parms[3].arg;
             unquote_if_quoted( &parm );
-            padchar = *parm.s;
+            if( parm.s <= parm.e ) {
+                padchar = *parm.s;
+            }
         }
     }
 

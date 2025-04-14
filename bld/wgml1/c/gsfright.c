@@ -68,7 +68,9 @@ condcode    scr_right( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * res
                 if( parms[2].arg.s <= parms[2].arg.e ) {
                     tok_type parm = parms[2].arg;
                     unquote_if_quoted( &parm);
-                    padchar = *parm.s;
+                    if( parm.s <= parm.e ) {
+                        padchar = *parm.s;
+                    }
                 }
             }
             for( k = n - len; k > 0; k-- ) {

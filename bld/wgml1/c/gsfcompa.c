@@ -72,8 +72,8 @@ condcode    scr_compare( parm parms[MAX_FUN_PARMS], size_t parmcount, char ** re
         if( parmcount > 2 ) {
             tok_type param = parms[2].arg;
             unquote_if_quoted( &param );
-            if( param.s[0] != '\0' ) {
-                padchar = param.s[0];
+            if( parm.s <= parm.e ) {
+                padchar = *parm.s;
             }
         }
         for( i = 0; i < len; i++ ) {
