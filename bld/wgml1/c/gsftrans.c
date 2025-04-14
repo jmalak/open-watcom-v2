@@ -76,14 +76,15 @@ condcode    scr_translate( parm parms[MAX_FUN_PARMS], size_t parmcount, char * *
         ptabi.e = NULL;
     }
 
+    padchar_set = false;
+    padchar = ' ';                      // padchar default is blank
     if( parmcount > 3 ) {               // padchar specified
         tok_type parm = parms[3].arg;
         unquote_if_quoted( &parm );
-        padchar = *parm.s;
-        padchar_set = true;
-    } else {
-        padchar = ' ';                  // padchar default is blank
-        padchar_set = false;
+        if( parm.s <= parm.e ) {
+            padchar = *parm.s;
+            padchar_set = true;
+        }
     }
 
     if( (ptabi.s == NULL) && (ptabo.s == NULL) && !padchar_set ) {
