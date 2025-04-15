@@ -21,6 +21,25 @@
 #include "copdir.h"
 #include "cophdr.h"
 
+#include "clibext.h"
+
+
+#define DEFINED_NAME_MAX 78 // Per documentation, max length of a defined name.
+
+/* _MAX_PATH is used for the member_name because gendev will embed member
+ * names which exceed the space allowed by NAME_MAX or _MAX_FNAME in DOS if
+ * such a member name is present in the source file.
+ */
+
+/* To hold the data from either the CompactDirEntry struct or the
+ * ExtendedDirEntry struct, since, in either case, only these two fields are used.
+ */
+
+typedef struct {
+    char    defined_name[DEFINED_NAME_MAX + 1];
+    char    member_name[_MAX_PATH];
+} directory_entry;
+
 /* Global function definitions. */
 
 /* Function get_compact_entry().
