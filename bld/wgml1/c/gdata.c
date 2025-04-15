@@ -226,8 +226,8 @@ void init_global_vars( void )
     research_to           = 0;
 
     buf_size            = BUF_SIZE;
-    buff2               = mem_alloc( buf_size );
-    workbuf             = mem_alloc( buf_size );
+    buff2               = mem_alloc( buf_size + 1 ); /* add space for additional terminator */
+    workbuf             = mem_alloc( buf_size + 1 ); /* add space for additional terminator */
 
     post_space          = 0;
 

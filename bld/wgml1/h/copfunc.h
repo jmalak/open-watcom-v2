@@ -27,6 +27,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#define SEEK_POSBACK(x)     (-(long)(x))
+
 /* Struct declarations. */
 
 /* This holds the raw contents of one or more contiguous P-buffers. The
