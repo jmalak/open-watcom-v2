@@ -29,33 +29,12 @@
 
 
 #if defined( USE_WRESLIB )
-HANDLE_INFO      Instance = { 0 };
+HANDLE_INFO         Instance = { 0 };
 #else
-HINSTANCE        Instance;
+HINSTANCE           Instance;
 #endif
 
-static unsigned MsgShift;               // 0 = english, 1000 for japanese
-
-
-/***************************************************************************/
-/*  Special seek routine, because resource file does not start at offset 0 */
-/*  of wgml.exe                                                            */
-/***************************************************************************/
-
-#if 0
-static off_t WGMLResSeek( int handle, off_t position, int where )
-/***************************************************************/
-/* Workaround wres bug */
-{
-    if( ( where == SEEK_SET ) && ( handle == WGMLItself ) ) {
-        return( lseek( handle, position + WResFileShift, where ) - WResFileShift );
-    } else {
-        return( lseek( handle, position, where ) );
-    }
-}
-
-WResSetRtns( open, close, read, write, WGMLResSeek, tell, mem_alloc, mem_free );
-#endif
+static unsigned     MsgShift;
 
 /***************************************************************************/
 /*  initialize messages from resource file                                 */

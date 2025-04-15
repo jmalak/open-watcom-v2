@@ -60,7 +60,7 @@ static void add_defaults_to_dict( gtentry * ge, sym_dict_hdl dict )
                         }
                     }
                     if( gaval->valflags & val_range ) { // range default
-                        sprintf( token_buf, "%ld", gaval->a.range[2] );
+                        sprintf( token_buf, "%d", gaval->a.range[2] );
                         valp = token_buf;
                     }
                     if( valp != NULL ) {
@@ -83,7 +83,7 @@ static bool check_att_value( gaentry * ga, gtentry * ge, sym_dict_hdl loc_dict )
 {
     gavalentry  *   gaval;
     char        *   valp;
-    long            attval;
+    int             attval;
     bool            msg_done;
     int             rc;
 
@@ -272,8 +272,7 @@ bool process_tag( gtentry * ge, mac_entry * me )
                                      }
                                 }
                                 if( gaval != NULL ) {
-                                     sprintf( token_buf, "%ld",
-                                              gaval->a.range[3] );
+                                     sprintf( token_buf, "%d", gaval->a.range[3] );
                                      rc = add_symvar( loc_dict, ga->attname,
                                                       token_buf, no_subscript,
                                                       local_var );
@@ -419,7 +418,7 @@ bool process_tag( gtentry * ge, mac_entry * me )
 
     rc = add_symvar( loc_dict, "_tag", ge->tagname, no_subscript, local_var );
     ge->usecount++;
-    sprintf( longwork, "%lu", ge->usecount );
+    sprintf( longwork, "%u", ge->usecount );
     rc = add_symvar( loc_dict, "_n", longwork, no_subscript, local_var );
 
     add_macro_cb_entry( me, ge );   // prepare GML macro as input

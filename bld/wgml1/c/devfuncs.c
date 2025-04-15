@@ -1892,7 +1892,7 @@ static void *df_decimal( void )
     /* Convert and return the value. */
 
     value = mem_alloc( 12 );
-    slongtodec( (long)first, value );
+    sinttodec( (int)first, value );
     return( value );
 }
 
@@ -2000,7 +2000,7 @@ static void *df_hex( void )
 {
     void            *value;
     parameters      my_parameters;
-    unsigned long   first;
+    pointer_uint    first;
 
     /* Extract parameter offset. */
 
@@ -2008,12 +2008,12 @@ static void *df_hex( void )
 
     /* Now get the parameter. */
 
-    first = (unsigned long)(pointer_uint)process_parameter( my_parameters.first );
+    first = (pointer_uint)process_parameter( my_parameters.first );
 
     /* Convert and return a pointer to the parameter */
 
     value = mem_alloc( 9 );
-    ulongtohex( first, value );
+    uinttohex( (unsigned)first, value );
     return( value );
 }
 

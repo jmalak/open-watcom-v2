@@ -179,7 +179,7 @@ static void sysapagefun( symvar * e )   // absolute page
 {
     (void)e;
 
-    ulongtodec( apage + 1, sysapagestr );   // to match wgml 4.0
+    uinttodec( apage + 1, sysapagestr );   // to match wgml 4.0
     return;
 }
 
@@ -199,7 +199,7 @@ static void sysbmfun( symvar * e )
 {
     (void)e;
 
-    ulongtodec( g_bm, sysbmstr );
+    uinttodec( g_bm, sysbmstr );
     return;
 }
 
@@ -237,7 +237,7 @@ static void syscdfun( symvar * e )      // column count
 {
     (void)e;
 
-    ulongtodec( g_cd, syscdstr );
+    uinttodec( g_cd, syscdstr );
     return;
 }
 
@@ -257,7 +257,7 @@ static void sysclfun( symvar * e )      // column length
 {
     (void)e;
 
-    ulongtodec( g_cl, sysclstr );
+    uinttodec( g_cl, sysclstr );
     return;
 }
 
@@ -301,7 +301,7 @@ static void syscpifun( symvar * e )     // cpi chars per inch
 {
     (void)e;
 
-    ulongtodec( CPI, syscpistr );
+    uinttodec( CPI, syscpistr );
     return;
 }
 
@@ -387,7 +387,7 @@ static void sysflnestfun( symvar * e )  // include level file/macro
 {
     (void)e;
 
-    ulongtodec( inc_level, sysflneststr );
+    uinttodec( inc_level, sysflneststr );
     return;
 }
 
@@ -395,7 +395,7 @@ static void sysfmfun( symvar * e )
 {
     (void)e;
 
-    ulongtodec( g_fm, sysfmstr );
+    uinttodec( g_fm, sysfmstr );
     return;
 }
 
@@ -447,7 +447,7 @@ static void sysfnumfun( symvar * e )// lineno of current input file not macro
             l = wk->s.f->lineno;
         }
     }
-    ulongtodec( l, e->sub_0->value );
+    uinttodec( l, e->sub_0->value );
     return;
 }
 
@@ -467,7 +467,7 @@ static void sysgutterfun( symvar * e )  // gutter
 {
     (void)e;
 
-    ulongtodec( g_gutter, sysgutterstr );
+    uinttodec( g_gutter, sysgutterstr );
     return;
 }
 
@@ -481,7 +481,7 @@ static void syshmfun( symvar * e )
 {
     (void)e;
 
-    ulongtodec( g_hm, syshmstr );
+    uinttodec( g_hm, syshmstr );
     return;
 }
 
@@ -534,7 +534,7 @@ static void sysinfun( symvar * e )      // .in indent value
         t_indent++;
     }
 
-    slongtodec( t_indent, sysinstr );   // in chars
+    sinttodec( t_indent, sysinstr );   // in chars
     return;
 }
 
@@ -549,7 +549,7 @@ static void sysinrfun( symvar * e )     // .in indentr indent right value
         t_indent++;
     }
 
-    slongtodec( t_indent, sysinrstr ); // in chars
+    sinttodec( t_indent, sysinrstr ); // in chars
     return;
 }
 
@@ -607,7 +607,7 @@ static void syslcfun( symvar * e )      // remaining lines in column
         net_depth -= t_line->line_height;
     }
     column_lines = (net_depth * LPI) / g_resv;
-    ulongtodec( column_lines, syslcstr );
+    uinttodec( column_lines, syslcstr );
     return;
 }
 
@@ -629,7 +629,7 @@ static void syslinefun( symvar * e )    // current lineno on page
 {
     (void)e;
 
-    ulongtodec( g_line, syslinestr );
+    uinttodec( g_line, syslinestr );
     return;
 }
 
@@ -637,7 +637,7 @@ static void sysllfun( symvar * e )
 {
     (void)e;
 
-    ulongtodec( g_ll, sysllstr );
+    uinttodec( g_ll, sysllstr );
     return;
 }
 
@@ -654,7 +654,7 @@ static void syslnumfun( symvar * e )  // lineno of current input file / macro
             l = input_cbs->s.m->lineno;
         }
     }
-    ulongtodec( l, e->sub_0->value );
+    uinttodec( l, e->sub_0->value );
     return;
 }
 
@@ -722,7 +722,7 @@ static void syspagefun( symvar * e )    // pageno in body
 {
     (void)e;
 
-    ulongtodec( page, syspagestr );
+    uinttodec( page, syspagestr );
     return;
 }
 
@@ -730,7 +730,7 @@ static void syspagedfun( symvar * e )   // page depth
 {
     (void)e;
 
-    ulongtodec( g_page_depth, syspagedstr );
+    uinttodec( g_page_depth, syspagedstr );
     return;
 }
 
@@ -738,7 +738,7 @@ static void syspagelmfun( symvar * e )  // page left margin
 {
     (void)e;
 
-    ulongtodec( g_lm, syspagelmstr );
+    uinttodec( g_lm, syspagelmstr );
     return;
 }
 
@@ -746,7 +746,7 @@ static void syspagermfun( symvar * e )  // page right margin
 {
     (void)e;
 
-    ulongtodec( g_rm, syspagermstr );
+    uinttodec( g_rm, syspagermstr );
     return;
 }
 
@@ -754,7 +754,7 @@ static void syspgnumafun( symvar * e )  // pagenumber
 {
     (void)e;
 
-    ulongtodec( page, syspgnumastr );
+    uinttodec( page, syspgnumastr );
     return;
 }
 
@@ -762,7 +762,7 @@ static void syspgnumadfun( symvar * e ) // pagenumber.
 {
     (void)e;
 
-    ulongtodec( page, syspgnumadstr );
+    uinttodec( page, syspgnumadstr );
     strcat( syspgnumadstr, "." );
     return;
 }
@@ -822,7 +822,7 @@ static void sysplfun( symvar * e )
     (void)e;
 
     column_lines = (t_page.max_depth * LPI) / g_resv;
-    ulongtodec( column_lines, sysplstr );
+    uinttodec( column_lines, sysplstr );
     return;
 }
 
@@ -836,7 +836,7 @@ static void syspnfun( symvar * e )      // page no
 {
     (void)e;
 
-    ulongtodec( page, syspnstr );
+    uinttodec( page, syspnstr );
     return;
 }
 
@@ -844,7 +844,7 @@ static void sysppagefun( symvar * e )   // page no
 {
     (void)e;
 
-    ulongtodec( page, sysppagestr );
+    uinttodec( page, sysppagestr );
     return;
 }
 
@@ -894,7 +894,7 @@ static void sysreshfun( symvar * e )    // horiz base units
 {
     (void)e;
 
-    ulongtodec( g_resh, sysreshstr );
+    uinttodec( g_resh, sysreshstr );
     return;
 }
 
@@ -902,7 +902,7 @@ static void sysresvfun( symvar * e )    // vert base units
 {
     (void)e;
 
-    ulongtodec( g_resv, sysresvstr );
+    uinttodec( g_resv, sysresvstr );
     return;
 }
 
@@ -1003,7 +1003,7 @@ static void systmfun( symvar * e )
 {
     (void)e;
 
-    ulongtodec( g_tm, systmstr );
+    uinttodec( g_tm, systmstr );
     return;
 }
 

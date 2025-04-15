@@ -57,7 +57,7 @@ condcode    scr_c2d( parm parms[MAX_FUN_PARMS], int parmcount, char **result, in
         n *= 256;                      // ignore overflow, let it wrap around
         n += (unsigned char)*parm1.s++;
     }
-    ulongtodec( n, linestr );
+    uinttodec( n, linestr );
     p = linestr;
     while( *p != '\0' && ressize > 0) {
         **result = *p++;

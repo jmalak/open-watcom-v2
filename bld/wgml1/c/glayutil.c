@@ -488,16 +488,16 @@ void    o_default_frame( FILE * f, lay_att curr, const def_frame * tm )
 {
 
     switch( tm->type ) {
-    case   none:
+    case none:
         fprintf_s( f, "        %s = none\n", att_names[curr] );
         break;
-    case   rule_frame:
+    case rule_frame:
         fprintf_s( f, "        %s = rule\n", att_names[curr] );
         break;
-    case   box_frame:
+    case box_frame:
         fprintf_s( f, "        %s = box\n", att_names[curr] );
         break;
-    case   char_frame:
+    case char_frame:
         fprintf_s( f, "        %s = '%s'\n", att_names[curr], tm->string );
         break;
     default:
@@ -594,13 +594,13 @@ bool    i_int32( char * p, lay_att curr, int32_t * tm )
 
 void    o_int32( FILE * f, lay_att curr, const int32_t * tm )
 {
-    fprintf_s( f, "        %s = %ld\n", att_names[curr], (long)*tm );
+    fprintf_s( f, "        %s = %d\n", att_names[curr], *tm );
     return;
 }
 
 bool    i_int8( char * p, lay_att curr, int8_t * tm )
 {
-    long    wk;
+    int     wk;
 
     (void)curr;
 
@@ -622,7 +622,7 @@ void    o_int8( FILE * f, lay_att curr, const int8_t * tm )
 
 bool    i_uint8( char * p, lay_att curr, uint8_t * tm )
 {
-    long    wk;
+    int     wk;
 
     (void)curr;
 
@@ -723,19 +723,19 @@ bool    i_number_style( char * p, lay_att curr, num_style * tm )
     cvterr = false;
     c = my_tolower( *p );
     switch( c ) {                       // first letter
-    case   'a':
+    case 'a':
         wk |= a_style;
         break;
-    case   'b':
+    case 'b':
         wk |= b_style;
         break;
-    case   'c':
+    case 'c':
         wk |= c_style;
         break;
-    case   'r':
+    case 'r':
         wk |= r_style;
         break;
-    case   'h':
+    case 'h':
         wk |= h_style;
         break;
     default:
@@ -747,18 +747,18 @@ bool    i_number_style( char * p, lay_att curr, num_style * tm )
     if( !cvterr && *p != '\0' && (*p != ' ') ) {    // second letter
         c = my_tolower( *p );
         switch( c ) {
-        case   'd':
+        case 'd':
             wk |= xd_style;
             break;
-        case   'p':
+        case 'p':
             p++;
             if( *p != '\0' && (*p != ' ') ) {   // third letter
                 c = my_tolower( *p );
                 switch( c ) {
-                case   'a':
+                case 'a':
                     wk |= xpa_style;    // only left parenthesis
                     break;
-                case   'b':
+                case 'b':
                     wk |= xpb_style;    // only right parenthesis
                     break;
                 default:
@@ -1046,7 +1046,7 @@ void    o_space_unit( FILE * f, lay_att curr, const su * tm )
 /***************************************************************************/
 bool    i_spacing( char *p, lay_att curr, text_space *tm )
 {
-    long wk;
+    int     wk;
 
     curr = curr;
     wk = strtol( p, NULL, 10 );
@@ -1071,8 +1071,8 @@ void    o_spacing( FILE * f, lay_att curr, const text_space *tm )
 /***************************************************************************/
 bool    i_threshold( char * p, lay_att curr, uint16_t * tm )
 {
-    char    *   pa;
-    long        wk;
+    char        *pa;
+    int         wk;
 
     curr = curr;
     wk = strtol( p, NULL, 10 );

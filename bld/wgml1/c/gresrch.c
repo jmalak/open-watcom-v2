@@ -17,7 +17,7 @@
 
 typedef struct taglist {
     struct  taglist *   nxt;
-    long                count;
+    int                 count;
     char                tagname[16];
 } taglist;
 
@@ -40,7 +40,7 @@ void printf_research( char * msg, ... )
 
 static  void    print_total( int32_t cnt, int32_t ptags )
 {
-    printf_research( "%6ld  --- Total calls for %ld items\n", (long)cnt, (long)ptags );
+    printf_research( "%6d  --- Total calls for %d items\n", cnt, ptags );
 }
 
 

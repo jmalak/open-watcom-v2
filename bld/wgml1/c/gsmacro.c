@@ -595,7 +595,7 @@ void    scr_dm( void )
 
         if( (cb->fmflags & II_research)
           && WgmlFlags.firstpass ) {
-            ulongtodec( macro_line_count, linestr );
+            uinttodec( macro_line_count, linestr );
             g_info( inf_mac_defined, macname1, linestr );
         }
     } else {

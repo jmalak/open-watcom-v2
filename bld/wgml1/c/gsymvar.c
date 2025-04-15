@@ -434,7 +434,7 @@ static bool check_subscript( sub_index sub )
             // SC--076 Subscript index must be between -1000000 and 1000000
             char    linestr[MAX_L_AS_STR];
 
-            slongtodec( sub, linestr );
+            sinttodec( sub, linestr );
             xx_line_err_c( err_sub_out_of_range, linestr );
         }
     }
@@ -463,14 +463,14 @@ static bool add_symvar_sub( symvar * var, char * val, sub_index sub, symsub * * 
             var->subscript_used++;
                                              /* update special sub 0 entry */
 #if 0
-            sprintf( sub_cnt, "%ld", var->subscript_used );
+            sprintf( sub_cnt, "%d", var->subscript_used );
             if( strlen( var->sub_0->value ) < strlen( sub_cnt ) ) {// need more room
                 var->sub_0->value = mem_realloc( var->sub_0->value,
                                                  strlen( sub_cnt ) + 1 );
             }
             strcpy_s( var->sub_0->value, strlen( sub_cnt ) + 1, sub_cnt );
 #else
-            sprintf( var->sub_0->value, "%ld", var->subscript_used );  // TBD
+            sprintf( var->sub_0->value, "%d", var->subscript_used );  // TBD
 #endif
 
             var->flags |= subscripted;

@@ -20,8 +20,8 @@
 /***************************************************************************/
 
 typedef struct termcb {
-    long        term_number;            // value only if numeric
-    char    *   term_string;            // value as string
+    int         term_number;            // value only if numeric
+    char        *term_string;           // value as string
     size_t      term_length;            // length of string
     bool        numeric;                // term  is numeric
 } termcb;
@@ -243,8 +243,8 @@ static condcode gargterm( termcb * t )
 static bool ifcompare( termcb * t1, relop r, termcb * t2 )
 {
     bool        result;
-    long        term1;
-    long        term2;
+    int         term1;
+    int         term2;
 
     term1 = t1->term_number;            // assume integers
     term2 = t2->term_number;
