@@ -220,9 +220,9 @@ void    scr_label( void )
                             xx_source_err_c( err_label_dup, token_buf );
                         } else {        // new label
                             lb              = mem_alloc( sizeof( labelcb ) );
+                            memset( lb, 0, sizeof( labelcb ) );
                             lb->prev        = input_cbs->s.m->mac->label_cb;
                             input_cbs->s.m->mac->label_cb = lb;
-                            lb->pos         = 0;
                             lb->lineno      = input_cbs->s.m->lineno;
                             strcpy_s( lb->label_name, sizeof( lb->label_name ), token_buf );
                         }

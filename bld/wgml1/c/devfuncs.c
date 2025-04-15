@@ -156,7 +156,6 @@
 ****************************************************************************/
 
 
-#include <conio.h>
 #include "wgml.h"
 #include "devfuncs.h"
 #include "outbuff.h"
@@ -901,7 +900,7 @@ static void *df_wait( void )
         internal_err( __FILE__, __LINE__ );
     }
 
-    getch();
+    getchar();
     return( df_recordbreak_device() );
 }
 
@@ -940,7 +939,7 @@ static void *df_font_height( void )
 
 static void *df_font_number( void )
 {
-    return( (void *)df_font );
+    return( (void *)(pointer_uint)df_font );
 }
 
 /* Function df_font_outname1().
@@ -1376,7 +1375,7 @@ static void *numeric_literal( void )
     /* Get and return the value. */
 
     memcpy( &value, current_df_data.current, sizeof( value ) );
-    return( (void *)value );
+    return( (void *)(pointer_uint)value );
 }
 
 /* These functions take parameters in parameter blocks only. */

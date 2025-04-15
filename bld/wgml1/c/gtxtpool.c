@@ -85,9 +85,9 @@ text_chars * alloc_text_chars( const char * text, size_t cnt, font_number font )
         curr->count = cnt;              // set current size
     } else {
         curr->count = 0;                // init current size
-        curr->text[0] = 0;
+        curr->text[0] = '\0';
     }
-    curr->text[cnt] = 0;
+    curr->text[cnt] = '\0';
 
     return( curr );
 }

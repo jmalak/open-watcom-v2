@@ -1060,11 +1060,7 @@ void gml_efig( const gmltag * entry )
     if( *p != '\0' ) {
         if( !input_cbs->hidden_head->ip_start
           && IS_CONT_CHAR( p ) ) { // text is continuation character only
-            if( &layout_work.fig.post_skip != NULL ) {
-                g_post_skip = conv_vert_unit( &layout_work.fig.post_skip, g_text_spacing, layout_work.fig.font );
-            } else {
-                g_post_skip = 0;
-            }
+            g_post_skip = conv_vert_unit( &layout_work.fig.post_skip, g_text_spacing, layout_work.fig.font );
         } else {
             do_force_pc( p );
         }
