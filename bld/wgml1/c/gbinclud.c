@@ -20,17 +20,18 @@
 
 void    gml_binclude( const gmltag * entry )
 {
-    bool            has_rec_type            = false;
+    bool            has_rec_type = false;
     bool            reposition;
     char            file[_MAX_PATH];
     char            rt_buff[MAX_FILE_ATTR];
-    char        *   p;
-    char        *   pa;
-    doc_element *   cur_el;
-    inputcb     *   cb                      = input_cbs;
+    char            *p;
+    char            *pa;
+    doc_element     *cur_el;
+    inputcb         *cb = input_cbs;
     su              depth_su;
     uint32_t        depth;
-    size_t			len;
+    size_t          len;
+    FILE            *fp;
 
     memset( &AttrFlags, 0, sizeof( AttrFlags ) );   // clear all attribute flags
     if( (ProcFlags.doc_sect < doc_sect_gdoc) ) {
@@ -67,7 +68,7 @@ void    gml_binclude( const gmltag * entry )
                 }
                 len = g_att_val.val_len;
                 if( len > _MAX_PATH - 1 )
-                	len = _MAX_PATH - 1;
+                        len = _MAX_PATH - 1;
                 strncpy( file, g_att_val.val_name, len );
                 file[len] = '\0';
                 split_attr_file( file, rt_buff, MAX_FILE_ATTR );
@@ -136,7 +137,8 @@ void    gml_binclude( const gmltag * entry )
     }
 
     // only set up the doc_element if the file exists
-    if( search_file_in_dirs( file, "", "", ds_doc_spec ) ) {
+    fp = search_file_in_dirs( file, "", "", ds_doc_spec );
+    if( fp != NULL ) {
         if( depth == 0 ) {
             cur_el = alloc_doc_el(  el_binc );
         } else {
@@ -151,12 +153,11 @@ void    gml_binclude( const gmltag * entry )
         cur_el->element.binc.cur_left = t_page.cur_width;
         cur_el->element.binc.force_FONT0 = false;
         cur_el->element.binc.has_rec_type = has_rec_type;
-        cur_el->element.binc.fp = try_fp;
-        try_fp = NULL;
-        strncpy_s( cur_el->element.binc.file, _MAX_PATH, try_file_name, _MAX_PATH );
+        cur_el->element.binc.fp = fp;
+        cur_el->element.binc.filename = mem_strdup( try_file_name );
 
         if( WgmlFlags.inclist ) {
-            g_info_lm( inf_curr_file, cur_el->element.binc.file );
+            g_info_lm( inf_curr_file, cur_el->element.binc.filename );
             while( cb->fmflags & II_macro ) {                 // find prior file
                  cb = cb->prev;
             }

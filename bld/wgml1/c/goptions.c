@@ -1043,8 +1043,9 @@ static void set_warning( option * opt )
 static void set_OPTFile( option * opt )
 {
     char        attrwork[MAX_FILE_ATTR];
-    char    *   str;
+    char        *str;
     size_t      len;
+    FILE        *fp;
 
     if( tokennext == NULL
       || tokennext->bol
@@ -1056,7 +1057,6 @@ static void set_OPTFile( option * opt )
         str = tokennext->token;
         g_info_research( inf_recognized_xxx, "option file", str );
         strcpy( token_buf, str );
-        try_file_name[0] = '\0';
         split_attr_file( token_buf, attrwork, sizeof( attrwork ) );
         if( attrwork[0] != '\0' ) {
             xx_warn_cc( wng_fileattr_ignored, attrwork, token_buf );
@@ -1065,45 +1065,40 @@ static void set_OPTFile( option * opt )
             sav_tokens[level] = tokennext->nxt;
             buffers[level + 1] = NULL;
             file_names[level + 1] = NULL;
-            if( search_file_in_dirs( token_buf, OPT_EXT, "", ds_opt_file ) ) {
+            fp = search_file_in_dirs( token_buf, OPT_EXT, "", ds_opt_file );
+            if( fp != NULL ) {
                 if( level > 0 ) {
                     int     k;
 
                     for( k = level; k > 0; k-- ) {
                         if( stricmp( try_file_name, file_names[k]) == 0 ) {
                             xx_simple_err_c( err_recursive_option, try_file_name );
-                            try_file_name[0] = '\0';
-                            fclose( try_fp );
-                            try_fp = NULL;
+                            fclose( fp );
                             return;
                         }
                     }
                 }
                 file_names[++level] = mem_strdup( try_file_name );
-                str = read_indirect_file( try_fp );
+                str = read_indirect_file( fp );
                 split_tokens( str );
                 mem_free( str );
-                try_file_name[0] = '\0';
-                fclose( try_fp );
-                try_fp = NULL;
+                fclose( fp );
                 tokennext = cmd_tokens[level];
             } else {
                 xx_simple_err_c( err_file_not_found, token_buf );
             }
             if( str == NULL )  {
-                try_file_name[0] = '\0';
                 if( file_names[level] != NULL )
                     mem_free( file_names[level] );
                 str = save[--level];
                 tokennext = sav_tokens[level];
             }
         } else {                        // max nesting level exceeded
-            try_file_name[0] = '\0';
             xx_simple_err_c( err_max_nesting_opt, token_buf );
         }
         tokennext = tokennext->nxt;
     }
-};
+}
 
 /***************************************************************************/
 /*  Processing routines for 'new format' options                           */
@@ -1181,7 +1176,7 @@ static void set_quiet( option * opt )
     add_symvar( global_dict, "$quiet", opt->value ? "ON" : "OFF", no_subscript,
                 predefined );
 
-};
+}
 
 
 /***************************************************************************/
@@ -1272,7 +1267,7 @@ static void set_research( option * opt )
 static void set_wscript( option * opt )
 {
     WgmlFlags.wscript = opt->value;
-};
+}
 #endif
 
 

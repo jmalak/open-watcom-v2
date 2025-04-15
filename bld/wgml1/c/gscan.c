@@ -1051,7 +1051,7 @@ char * get_text_line( char * p )
         SkipDot( p );                   // possible tag end
         if( *p == '\0' ) {              // get new line
             while( *p == '\0' ) {
-                if( !(input_cbs->fmflags & II_eof) ) {
+                if( (input_cbs->fmflags & II_eof) == 0 ) {
                     if( get_line( true ) ) {    // next line for text
                         process_line();
                         scan_start = buff2;

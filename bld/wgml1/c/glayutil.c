@@ -161,7 +161,7 @@ condcode    get_attr_and_value( void )
             p++;
         }
         if( *p == '\0' ) {                  // end of line: get new line
-            if( !(input_cbs->fmflags & II_eof) ) {
+            if( (input_cbs->fmflags & II_eof) == 0 ) {
                 if( get_line( true ) ) {    // next line for missing attribute
 
                     process_line();

@@ -484,7 +484,7 @@ void    scr_dm( void )
     }                                   // BEGIN or END not found
 
     if( compend
-      && !(ProcFlags.in_macro_define) ) {
+      && (ProcFlags.in_macro_define == 0 ) ) {
         // SC--003: A macro is not being defined
         xx_source_err_c( err_mac_def_end, macname1 );
     }
@@ -499,7 +499,7 @@ void    scr_dm( void )
         ProcFlags.in_macro_define = 1;
         lineno_start = cb->s.f->lineno;
 
-        while( !(cb->s.f->flags & FF_eof) ) {  // process all macro lines
+        while( (cb->s.f->flags & FF_eof) == 0 ) {  // process all macro lines
 
             get_line( true );
 

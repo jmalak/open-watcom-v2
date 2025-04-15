@@ -34,9 +34,8 @@ global  jmp_buf     *   environment;    // var for GSuicide()
 
 global  char        *   scan_start;
 global  char        *   scan_stop;
-global  char        *   new_file_parms; // command tail for IM/AP
-global  char        *   scan_char_ptr;  // used by character scanning routines
 global  char        *   scan_restart;   // used by character scanning routines
+global  char        *   new_file_parms; // command tail for IM/AP
 global  bool            scan_err;       // used by character scanning routines
 global  char        *   g_tok_start;    // start of scanned token
 global  size_t          arg_flen;       // arg length

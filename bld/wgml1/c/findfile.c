@@ -97,7 +97,7 @@ static directory_list initialize_directory_list( const char *items_list )
  *      0 if the file is not found.
  *
  * Note:
- *      If the file is found, try_file_name and try_fp will be set to the name
+ *      If the file is found, try_file_name will be set to the name
  *      as found and FILE * of the file.
  */
 
@@ -106,6 +106,10 @@ static FILE *try_open( char * prefix, char * filename )
     FILE    *   fp;
     char        buff[_MAX_PATH];
     size_t      filename_length;
+
+    /* Clear searched file name. */
+
+    try_file_name[0] = '\0';
 
     /* Prevent buffer overflow. */
 
@@ -120,15 +124,6 @@ static FILE *try_open( char * prefix, char * filename )
 
     strcpy_s( buff, _MAX_PATH, prefix );
     strcat_s( buff, _MAX_PATH, filename );
-
-    /* Clear the global variables used to contain the results. */
-
-    try_file_name[0] = '\0';
-
-    if( try_fp != NULL ) {
-        fclose( try_fp );
-        try_fp = NULL;
-    }
 
     /* Try to open the file. Return NULL on failure. */
 
@@ -155,7 +150,6 @@ static FILE *try_open( char * prefix, char * filename )
     /* Set the globals on success. */
 
     strcpy( try_file_name, buff );
-    try_fp = fp;
 
     return( fp );
 }
@@ -212,11 +206,6 @@ void ff_set_libpath( const char *path )
 void ff_teardown( void )
 {
     try_file_name[0] = '\0';
-
-    if( try_fp != NULL) {
-        fclose( try_fp );
-        try_fp = NULL;
-    }
 
     /* directories points to a single block of allocated memory. */
 
@@ -287,7 +276,7 @@ static char *search_member_name( const char *dir, const char *filename )
  *
  * Note:
  *      if the file is found, then try_file() will have set try_file_name
- *      and try_fp to the name as found and FILE * of the file.
+ *      to the name as found and FILE * of the file.
  */
 
 FILE *search_file_in_dirs( const char *filename, const char *defext, const char *altext, dirseq sequence )
