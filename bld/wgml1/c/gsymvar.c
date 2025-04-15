@@ -328,7 +328,7 @@ int find_symvar_l( sym_dict_hdl dict, char * name, sub_index sub, symsub * * sym
 
     // see if symbol name consists entirely of digits
     for( p = name; my_isdigit( *p ); p++ )
-        {}
+        {;/* empty */}
 
     if( *p != '\0'
       && (dict == input_cbs->local_dict) ) {   // not auto symbol and current dict is local dict

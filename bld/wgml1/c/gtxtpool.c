@@ -126,7 +126,8 @@ void add_text_chars_to_pool( text_line * a_line )
 
     // free text_chars in pool only have a valid next ptr
 
-    for( tw = a_line->first; tw->next != NULL; tw = tw->next ); //empty
+    for( tw = a_line->first; tw->next != NULL; tw = tw->next )
+        {;/* empty */}
     tw->next = text_pool;
     text_pool = a_line->first;
 
@@ -232,7 +233,8 @@ void add_box_col_set_to_pool( box_col_set * a_set )
         return;
     }
 
-    for( tw = a_set; tw->next != NULL; tw = tw->next ); //empty
+    for( tw = a_set; tw->next != NULL; tw = tw->next )
+        {;/* empty */}
     tw->next = box_col_set_pool;
     box_col_set_pool = a_set;
 }
@@ -281,7 +283,8 @@ void add_box_col_stack_to_pool( box_col_stack * a_stack )
         return;
     }
 
-    for( tw = a_stack; tw->next != NULL; tw = tw->next ); //empty
+    for( tw = a_stack; tw->next != NULL; tw = tw->next )
+        {;/* empty */}
     tw->next = box_col_stack_pool;
     box_col_stack_pool = a_stack;
 }

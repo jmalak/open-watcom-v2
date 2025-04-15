@@ -188,7 +188,7 @@ static void split_at_GML_tag( void )
             pchar++;                    // handle repeated GML_chars
         }
         for( p2 = pchar + 1; is_id_char( *p2 ); p2++ )
-            {} /* empty loop */
+            {;/* empty */}
 
         if( IS_CMT_TAG( pchar ) && IS_TAG_END( pchar + 4 ) ) {
             // is comment
@@ -496,7 +496,8 @@ static bool parse_r2l( sym_list_entry * stack, char * buf, bool subscript )
                     input_cbs->hidden_head->fm_symbol = true;   // new logical input record
                 }
                 cw_lg = 0;
-                for( p = buf; *p != ' '; p++ ) cw_lg++;     // length of . plus CW
+                for( p = buf; *p != ' '; p++ )
+                    cw_lg++;                                // length of . plus CW
                 cw_lg++;                                    // plus space after CW
                 if( input_cbs->hidden_head ) {
                     if( ProcFlags.script_cw
