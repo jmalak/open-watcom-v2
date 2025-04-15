@@ -590,7 +590,7 @@ void g_err_tag_no( const char *tagname )
 {
     char    tagn[TAG_NAME_LENGTH + 1];
 
-    sprintf( tagn, TAG_NAME_LENGTH + 1, "%c%s", GML_char, tagname );
+    sprintf( tagn, "%c%s", GML_char, tagname );
     g_err( err_tag_not_expected, tagn );
     file_mac_info_nest();
     err_count++;
@@ -601,7 +601,7 @@ void g_err_tag_prec( const char *tagname )
 {
     char    tagn[TAG_NAME_LENGTH + 1];
 
-    sprintf( tagn, TAG_NAME_LENGTH + 1, "%c%s", GML_char, tagname );
+    sprintf( tagn, "%c%s", GML_char, tagname );
     g_err( err_tag_preceding, tagn );
     file_mac_info();
     err_count++;
