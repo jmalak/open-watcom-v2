@@ -1695,7 +1695,7 @@ cop_driver * parse_driver( FILE * in_file )
         /* The number of false P-buffers must be added to the span. */
 
         span = (p_buffer_set->count - (factor * 80));
-        fseek( in_file, -1 * (span + span / 80), SEEK_CUR );
+        fseek( in_file, SEEK_POSBACK( span + span / 80 ), SEEK_CUR );
         if( ferror( in_file ) || feof( in_file ) ) {
             mem_free( p_buffer_set );
             p_buffer_set = NULL;
@@ -1789,7 +1789,7 @@ cop_driver * parse_driver( FILE * in_file )
             /* The number of false P-buffers must be added to the span. */
 
             span = (p_buffer_set->count - (factor * 80));
-            fseek( in_file, -1 * (span + span / 80), SEEK_CUR );
+            fseek( in_file, SEEK_POSBACK( span + span / 80 ), SEEK_CUR );
             if( ferror( in_file ) || feof( in_file ) ) {
                 mem_free( p_buffer_set );
                 p_buffer_set = NULL;
