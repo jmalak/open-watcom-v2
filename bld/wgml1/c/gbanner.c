@@ -1074,7 +1074,8 @@ static void out_ban_common( banner_lay_tag * ban, bool top )
             t_page.top_ban = ban_doc_el;
         } else {
             for( last_doc_el = t_page.top_ban; last_doc_el->next != NULL;
-                last_doc_el = last_doc_el->next ) {}     // empty loop to find end of list
+                                    last_doc_el = last_doc_el->next )
+                {;/* empty */}  // empty loop to find end of list
             last_doc_el->next = ban_doc_el;
         }
     } else {
@@ -1082,7 +1083,8 @@ static void out_ban_common( banner_lay_tag * ban, bool top )
             t_page.bot_ban = ban_doc_el;
         } else {
             for( last_doc_el = t_page.top_ban; last_doc_el->next != NULL;
-                last_doc_el = last_doc_el->next ) {}     // empty loop to find end of list
+                                    last_doc_el = last_doc_el->next )
+                {;/* empty */}  // empty loop to find end of list
             last_doc_el->next = ban_doc_el;
         }
     }

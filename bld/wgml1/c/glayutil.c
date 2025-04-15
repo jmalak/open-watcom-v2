@@ -1077,7 +1077,8 @@ bool    i_threshold( char * p, lay_att curr, uint16_t * tm )
     curr = curr;
     wk = strtol( p, NULL, 10 );
 
-    for( pa = p; isdigit( *pa ); pa++ );
+    for( pa = p; isdigit( *pa ); pa++ )
+        {;/* empty */}
     if( *pa ) {
         xx_line_err_c( err_num_too_large, p );
     }

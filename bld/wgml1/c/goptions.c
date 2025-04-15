@@ -639,8 +639,9 @@ static void set_font( option * opt )
     case 0:
         break;
     case 1:
-        for( i = 0; i < 4; i++ ) pts[i] = '0';
-        pts[4] = '\0';
+        for( i = 0; i < 4; i++ )
+            pts[i] = '0';
+        pts[i] = '\0';
         len = opts[0]->toklen;
         p = opts[0]->token;
         if( font_points( opts[0], pts ) ) {
@@ -658,13 +659,15 @@ static void set_font( option * opt )
 
         break;
     case 2:
-        for( i = 0; i < 4; i++ ) pts[i] = '0';
-        pts[4] = '\0';
+        for( i = 0; i < 4; i++ )
+            pts[i] = '0';
+        pts[i] = '\0';
         len = opts[0]->toklen;
         p = opts[0]->token;
         if( strcmp( p, "''" ) == 0 ) {
-            for( i = 0; i < 4; i++ ) pts[i] = '0';
-            pts[4] = '\0';
+            for( i = 0; i < 4; i++ )
+                pts[i] = '0';
+            pts[i] = '\0';
             len = opts[1]->toklen;
             p = opts[1]->token;
             if( !font_points( opts[1], pts ) ) {
@@ -688,8 +691,9 @@ static void set_font( option * opt )
                     new_font->space = (uint32_t) fn;
                 }
 
-                for( i = 0; i < 4; i++ ) pts[i] = '0';
-                pts[4] = '\0';
+                for( i = 0; i < 4; i++ )
+                    pts[i] = '0';
+                pts[i] = '\0';
                 len = opts[1]->toklen;
                 p = opts[1]->token;
                 if( !font_points( opts[1], pts ) ) {
@@ -707,8 +711,9 @@ static void set_font( option * opt )
                 g_info_research( inf_recognized_xxx, "font style", p );
                 new_font->style = mem_strdup( p );
 
-                for( i = 0; i < 4; i++ ) pts[i] = '0';
-                pts[4] = '\0';
+                for( i = 0; i < 4; i++ )
+                    pts[i] = '0';
+                pts[i] = '\0';
                 len = opts[1]->toklen;
                 p = opts[1]->token;
                 if( font_points( opts[1], pts ) ) {
@@ -731,8 +736,9 @@ static void set_font( option * opt )
         new_font->style = mem_strdup( p );
 
         if( strcmp( opts[1]->token, "''" ) == 0 ) {
-            for( i = 0; i < 4; i++ ) pts[i] = '0';
-            pts[4] = '\0';
+            for( i = 0; i < 4; i++ )
+                pts[i] = '0';
+            pts[i] = '\0';
             len = opts[2]->toklen;
             p = opts[2]->token;
             if( !font_points( opts[2], pts ) ) {
@@ -747,8 +753,9 @@ static void set_font( option * opt )
                 }
             }
         } else {
-            for( i = 0; i < 4; i++ ) pts[i] = '0';
-            pts[4] = '\0';
+            for( i = 0; i < 4; i++ )
+                pts[i] = '0';
+            pts[i] = '\0';
             len = opts[1]->toklen;
             p = opts[1]->token;
             if( !font_points( opts[1], pts ) ) {
@@ -763,8 +770,9 @@ static void set_font( option * opt )
                 }
             }
 
-            for( i = 0; i < 4; i++ ) pts[i] = '0';
-            pts[4] = '\0';
+            for( i = 0; i < 4; i++ )
+                pts[i] = '0';
+            pts[i] = '\0';
             len = opts[2]->toklen;
             p = opts[2]->token;
             if( !font_points( opts[2], pts ) ) {
@@ -1733,7 +1741,7 @@ int proc_options( char * string )
     s_after_dq = string;                // assume no starting quote
     if( *string == d_q ) {              // take care of possible quotes
         for( p = string + 1; *p != '\0'; p++ )
-            /* empty */ ;
+            {;/* empty */}
         p--;
         while( *p == ' ' ) {            // ignore trailing spaces
             p--;
