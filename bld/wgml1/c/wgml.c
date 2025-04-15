@@ -112,7 +112,7 @@ static  void    free_filenames( void )
 {
     fnstack * wk;
     fnstack * wk1;
-    long cnt;
+    int cnt;
 
     wk = fn_stack;
     if( WgmlFlags.statistics ) {
@@ -129,7 +129,7 @@ static  void    free_filenames( void )
         wk = wk1;
     }
     if( WgmlFlags.statistics ) {
-        out_msg( "Total files: %ld\n\n", cnt );
+        out_msg( "Total files: %d\n\n", cnt );
     }
     fn_stack = NULL;
     return;
@@ -387,7 +387,7 @@ static  bool    test_comment( void )
         if( IS_CMT_TAG( buff2 )
           && IS_TAG_END( buff2 + 4 ) ) {
             if( ProcFlags.literal ) {       // special
-                if( li_cnt < LONG_MAX ) {   // we decrement, do not wait for .li OFF
+                if( li_cnt < INT_MAX ) {    // we decrement, do not wait for .li OFF
                     if( li_cnt-- <= 0 ) {
                         ProcFlags.literal = false;
                     }
@@ -665,15 +665,16 @@ static  void    print_stats( clock_t duration_ticks )
 
     peak = mem_get_peak_usage();
     if( peak ) {
-        uinttodec( peak, linestr );
+        sprintf( linestr, "%lu", peak );
         g_info_lm( inf_stat_6, linestr );
     }
 
     // convert duration from clock ticks to HH:MM:SS.hh
     hour_min = ldiv( duration_ticks / CLOCKS_PER_SEC / 60L, 60L );
     sec_frac  = ldiv( duration_ticks, CLOCKS_PER_SEC );
-    sprintf_s( linestr, sizeof( linestr ), "%02lu:%02lu:%02lu.%02lu\0",
-        hour_min.quot, hour_min.rem, sec_frac.quot % 60, sec_frac.rem / 10 );
+    sprintf_s( linestr, sizeof( linestr ), "%02u:%02u:%02u.%02u\0",
+        (unsigned)hour_min.quot, (unsigned)hour_min.rem,
+        (unsigned)( sec_frac.quot % 60 ), (unsigned)( sec_frac.rem / 10 ) );
     g_info_lm( inf_stat_7, linestr );
 }
 
@@ -722,7 +723,7 @@ static  void    init_pass( void )
     }
 
     line_from   = 1;                  // processing line range Masterdocument
-    line_to     = ULONG_MAX - 1;
+    line_to     = UINT_MAX - 1;
 
     apage               = 0;            // absolute pageno 1 - n
     page                = 0;            // current pageno (in body 1 - n)

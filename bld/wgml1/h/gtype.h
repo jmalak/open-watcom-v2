@@ -31,8 +31,6 @@
 
 #define IS_MACRO_END(p)     (*(p) == ' ' || *(p) == '\t' || *(p) == '\0')
 
-#define ulong           unsigned long
-
 //================= Some global defines ========================
 #define MAX_NESTING         32          // max nesting of option files
 #define MAX_PASSES          10          // max no of document passes

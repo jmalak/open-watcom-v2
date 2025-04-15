@@ -54,8 +54,8 @@ global  char            ampchar;        // symbol substitution/attribute/functio
 
 global  char        *   master_fname;   // Primary input file name
 global  char        *   master_fname_attr;// Primary input file name attributes
-global  ulong           print_from;     // first page to print
-global  ulong           print_to;       // last page to print
+global  unsigned        print_from;     // first page to print
+global  unsigned        print_to;       // last page to print
 global  char        *   dev_name;       // device defined_name
 global  opt_font    *   opt_fonts;      // option FONT parameters (linked list)
 
@@ -132,9 +132,9 @@ global struct gtentry   *g_tag_entry;   // ... entry in tag_dict
 global char         g_attname[ATT_NAME_LENGTH + 1];// last defined GML attribute
 global struct gaentry   *g_att_entry;   // ... entry in tag_dict
 
-global  long        li_cnt;             // remaining count for .li processing
+global int          li_cnt;             // remaining count for .li processing
 
-global  uint8_t     in_esc;             // input escape char from .ti
+global uint8_t      in_esc;             // input escape char from .ti
 
 
 // file block support

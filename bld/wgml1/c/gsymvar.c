@@ -44,9 +44,9 @@
 typedef struct symdict {
     symvar      *first;         // first symbol in chain
     symvar      **htbl;         // hash table
-    long        lookups;        // lookup counter
-    long        symbols;        // symbol counter
-    long        compares;       // strcmp counter
+    int         lookups;        // lookup counter
+    int         symbols;        // symbol counter
+    int         compares;       // strcmp counter
     bool        local;          // local/global flag
 } symdict;
 
@@ -152,7 +152,7 @@ void    free_dict( sym_dict_hdl dict )
     if( dict->compares > 1000
       || dict->symbols > 25
       || dict->lookups > 200 ) {
-        printf( "dict %p, symbols:%6ld, lookups:%8ld, compares: %12ld\n",
+        printf( "dict %p, symbols:%6d, lookups:%8d, compares: %12d\n",
                 dict, dict->symbols, dict->lookups, dict->compares );
     }
 #endif
