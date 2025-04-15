@@ -37,11 +37,11 @@ static bool     get_att_name( const char *p, char *attname )
 /* control word are needed to define the  list of values that this attri-  */
 /* bute accepts.                                                           */
 /*                                                                         */
-/*      ����������������������������������������������������������Ŀ       */
+/*      +-------+--------------------------------------------------+       */
 /*      |       |                                                  |       */
 /*      |  .GA  |    tagname|*  attname|*  <opA>  <opV>            |       */
 /*      |       |                                                  |       */
-/*      ������������������������������������������������������������       */
+/*      +-------+--------------------------------------------------+       */
 /*                                                                         */
 /* This control word defines an attribute of  a GML tagname that has been  */
 /* previously  defined by  the GML  Tag  (GT)  control  word.   (See  the  */
