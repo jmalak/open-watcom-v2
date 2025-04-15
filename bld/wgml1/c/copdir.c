@@ -40,6 +40,11 @@ typedef struct {
     char    member_name[_MAX_PATH];
 } directory_entry;
 
+typedef enum {
+    valid_entry,        // Both defined_name and member_name were found.
+    not_valid_entry     // The entry was not valid.
+} entry_found;
+
 /* Global function definitions. */
 
 /* Function get_compact_entry().
@@ -63,7 +68,7 @@ typedef struct {
  *      A file error may have occurred if not_valid_entry is returned.
  */
 
-entry_found get_compact_entry( FILE *fp, directory_entry *entry )
+static entry_found get_compact_entry( FILE *fp, directory_entry *entry )
 {
     int     count;
 
@@ -140,7 +145,7 @@ entry_found get_compact_entry( FILE *fp, directory_entry *entry )
  *      A file error may have occurred even if valid_entry is returned.
  */
 
-entry_found get_extended_entry( FILE *fp, directory_entry *entry )
+static entry_found get_extended_entry( FILE *fp, directory_entry *entry )
 {
     int     count;
 
