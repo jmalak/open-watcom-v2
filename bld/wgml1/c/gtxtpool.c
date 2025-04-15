@@ -603,8 +603,8 @@ sym_list_entry * alloc_sym_list_entry( void )
 
     curr->prev = NULL;
     curr->value[0] = '\0';
-    curr->start = 0;
-    curr->end = 0;
+    curr->item.s = NULL;
+    curr->item.e = NULL;
     curr->type = sl_none;
 
     return( curr );

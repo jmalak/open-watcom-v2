@@ -365,10 +365,10 @@ static void set_space_flags( sym_list_entry * c_entry, char * buf )
         SkipSpaces( p );
         if( *p == '\0' ) {
             if( (!input_cbs->fm_hh)
-              && (c_entry->start == buf) ) {
+              && (c_entry->item.s == buf) ) {
                 ProcFlags.co_on_indent = true;
             }
-            p = c_entry->end;           // this the byte after the symbol value
+            p = c_entry->item.e;           // this the byte after the symbol value
             SkipDot( p );
             if( (*p == '\0')
               && (input_cbs->hidden_head == NULL) ) {
@@ -416,8 +416,8 @@ static bool parse_r2l( sym_list_entry * stack, char * buf, bool subscript )
         case sl_attrib:
             set_space_flags( curr, buf );
             ProcFlags.substituted = true;
-            strcpy_s( tail, buf_size, curr->end );      // copy tail
-            p = curr->start;
+            strcpy_s( tail, buf_size, curr->item.e );      // copy tail
+            p = curr->item.s;
             strcpy_s( p, buf_size, curr->value );       // copy value
             if( tail[0] == '.' ) {
                 strcat_s( buf, buf_size, tail + 1);     // append tail to buf, skipping initial "."
@@ -428,10 +428,10 @@ static bool parse_r2l( sym_list_entry * stack, char * buf, bool subscript )
         case sl_funct:
             set_space_flags( curr, buf );
             ProcFlags.substituted = true;
-            p = curr->start;
+            p = curr->item.s;
 
-            strcpy_s( tail, buf_size, curr->end );      // copy tail
-            p = curr->start;
+            strcpy_s( tail, buf_size, curr->item.e );      // copy tail
+            p = curr->item.s;
             strcpy_s( p, buf_size, curr->value );       // copy value
             if( tail[0] == '.' ) {
                 strcat_s( buf, buf_size, tail + 1);     // append tail to buf, skipping initial "."
@@ -447,8 +447,8 @@ static bool parse_r2l( sym_list_entry * stack, char * buf, bool subscript )
               && !curr->value[0] ) {
                 ProcFlags.null_value = true;
             }
-            strcpy_s( tail, buf_size, curr->end );      // copy tail
-            p = curr->start;
+            strcpy_s( tail, buf_size, curr->item.e );      // copy tail
+            p = curr->item.s;
             /* If we're replacing &* with &*, we have a real problem. */
             if( ((p[0] == ampchar)
               && (p[1] == '*'))
@@ -469,11 +469,11 @@ static bool parse_r2l( sym_list_entry * stack, char * buf, bool subscript )
                 sym_space = input_cbs->sym_space;
             } else {
                 sym_space = false;
-                if( curr->start == buf ) {              // symbol at start of input line
+                if( curr->item.s == buf ) {              // symbol at start of input line
                     sym_space = true;
                 } else {                                // symbol not at start of input line
                     if( *curr->value == !SCR_char ) {   // not an scw or macro
-                        sym_space = (*(curr->start - 1) == ' ');
+                        sym_space = (*(curr->item.s - 1) == ' ');
                     }
                 }
             }
@@ -491,7 +491,7 @@ static bool parse_r2l( sym_list_entry * stack, char * buf, bool subscript )
                     ProcFlags.null_value = true;
                 }
                 /* NB: In some cases there may be no hidden_head after splitting. */
-                split_input_var( buf, curr->end, &curr->value[1], input_cbs->fmflags );
+                split_input_var( buf, curr->item.e, &curr->value[1], input_cbs->fmflags );
                 if( input_cbs->hidden_head != NULL ) {
                     input_cbs->hidden_head->fm_symbol = true;   // new logical input record
                 }
@@ -500,17 +500,17 @@ static bool parse_r2l( sym_list_entry * stack, char * buf, bool subscript )
                 cw_lg++;                                    // plus space after CW
                 if( input_cbs->hidden_head ) {
                     if( ProcFlags.script_cw
-                      && (buf + cw_lg == curr->start) ) {
+                      && (buf + cw_lg == curr->item.s) ) {
                         input_cbs->hidden_head->sym_space = false;  // space is space after cw
                     } else {
-                        if( curr->start == buf ) {          // symbol at start of input line
+                        if( curr->item.s == buf ) {          // symbol at start of input line
                             input_cbs->hidden_head->sym_space = true;
                         } else {
-                            input_cbs->hidden_head->sym_space = (*(curr->start - 1) == ' ');
+                            input_cbs->hidden_head->sym_space = (*(curr->item.s - 1) == ' ');
                         }
                     }
                 }
-                *curr->start = '\0';
+                *curr->item.s = '\0';
             }
             break;
         default:
@@ -617,25 +617,25 @@ static sym_list_entry * parse_l2r( char * buf, bool splittable )
             curr = temp;
         }
         if( *(p + 1) == ' ' ) {  // not a symbol substition, attribute, or function
-            curr->start = p;
-            curr->end = p + 2;
+            curr->item.s = p;
+            curr->item.e = p + 2;
             curr->type = sl_text;               // text
         } else if( my_isalpha( p[1] )
           && (p[2] == '\'') ) {   // attribute or text
-            curr->start = p;
+            curr->item.s = p;
             if( (p[3] > ' ') ) {
-                curr->end = curr->start;
-                while( !is_space_tab_char( *curr->end ) && (*curr->end != '\0') && (*curr->end != '.') )
-                    curr->end++;
+                curr->item.e = curr->item.s;
+                while( !is_space_tab_char( *curr->item.e ) && (*curr->item.e != '\0') && (*curr->item.e != '.') )
+                    curr->item.e++;
                 pa = valbuf;
                 ppval = &pa;
 
                 if( WgmlFlags.firstpass
                   && (input_cbs->fmflags & II_research) ) {
-                    add_single_func_research( curr->start + 1 );
+                    add_single_func_research( curr->item.s + 1 );
                 }
 
-                curr->end = scr_single_funcs( curr->start, curr->end, ppval );
+                curr->item.e = scr_single_funcs( curr->item.s, curr->item.e, ppval );
                 if( ProcFlags.unresolved ) {
                     curr->type = sl_text;
                 } else {
@@ -644,20 +644,20 @@ static sym_list_entry * parse_l2r( char * buf, bool splittable )
                 }
             } else {
                 curr->type = sl_text;
-                curr->end = curr->start + 3;
+                curr->item.e = curr->item.s + 3;
             }
         } else if( *(p + 1) == '\'' ) {          // function or text
-            curr->start = p;
+            curr->item.s = p;
             p += 2;                             // over "&'"
             while( is_function_char(*p) ) p++;  // find end of function name
             if( *p == '(' ) {                   // &'xyz( is start of multi char function
-                curr->end = curr->start;
-                while( !is_space_tab_char( *curr->end ) && (*curr->end != '\0') && (*curr->end != '.') )
-                    curr->end++;
+                curr->item.e = curr->item.s;
+                while( !is_space_tab_char( *curr->item.e ) && (*curr->item.e != '\0') && (*curr->item.e != '.') )
+                    curr->item.e++;
                 pa = valbuf;
                 ppval = &pa;
-                valsize = buf_size - (curr->end - curr->start);
-                curr->end = scr_multi_funcs( curr->start, p, ppval, valsize );
+                valsize = buf_size - (curr->item.e - curr->item.s);
+                curr->item.e = scr_multi_funcs( curr->item.s, p, ppval, valsize );
                 if( ProcFlags.unresolved ) {
                     curr->type = sl_text;
                 } else {
@@ -665,18 +665,18 @@ static sym_list_entry * parse_l2r( char * buf, bool splittable )
                     curr->type = sl_funct;
                 }
             } else {
-                curr->end = p;
+                curr->item.e = p;
                 curr->type = sl_text;           // text
             }
         } else {                                // symbol
             if( (*(p+1) == '*')
               && (*(p+2) == ampchar) ) {  // special for &*&<var>
-                curr->start = p;
-                curr->end = p + 2;
+                curr->item.s = p;
+                curr->item.e = p + 2;
                 curr->type = sl_text;
                 p = p + 2;
             } else {
-                curr->start = p;
+                curr->item.s = p;
                 p++;                                // over '&'
                 symstart = p;                       // remember start of symbol name
                 scan_err = false;
@@ -684,14 +684,14 @@ static sym_list_entry * parse_l2r( char * buf, bool splittable )
                 pa = valbuf;
                 ppval = &pa;
                 p = scan_sym( symstart, &symvar_entry, &var_ind, ppval, splittable );
-                curr->end = p;
+                curr->item.e = p;
                 if( scan_err ) {                        // problem with subscript
                     if( ProcFlags.unresolved ) {
                         curr->type = sl_text;
-                        if( *curr->end == '\0' ) {
+                        if( *curr->item.e == '\0' ) {
                             break;                      // end of text terminates processing
                         }
-                        p = curr->end;                  // skip argument
+                        p = curr->item.e;                  // skip argument
                         p = strchr( p, ampchar );       // look for next & in buffer
                     } else {
                         if( !ProcFlags.CW_sep_ignore
@@ -700,7 +700,7 @@ static sym_list_entry * parse_l2r( char * buf, bool splittable )
                           && (valbuf[0] == CW_sep_char)
                           && (valbuf[1] != CW_sep_char) ) {
                             strcpy_s( curr->value, buf_size, valbuf );  // repurpose curr
-                            curr->start = p + 1;                        // & of symbol causing split
+                            curr->item.s = p + 1;                        // & of symbol causing split
                             curr->type = sl_split;
                             break;              // line split terminates processing
                         } else {
@@ -744,7 +744,7 @@ static sym_list_entry * parse_l2r( char * buf, bool splittable )
                           && symsubval->value[1] != CW_sep_char ) {
                             curr->type = sl_split;
                             strcpy_s( curr->value, buf_size, symsubval->value );  // save value in current stack entry
-                            SkipDot( curr->end );
+                            SkipDot( curr->item.e );
                             break;              // line split terminates processing
                         } else if( symsubval->base->flags & is_AMP ) {
                             curr->type = sl_text;   // save for late substitution
@@ -777,15 +777,15 @@ static sym_list_entry * parse_l2r( char * buf, bool splittable )
                         curr->value[0] = '\0';
                     } else {                                        // undefined global
                         curr->type = sl_text;
-                        curr->end  = symstart;                      // rescan for CW separator past the &
+                        curr->item.e  = symstart;                      // rescan for CW separator past the &
                     }
                 }
             }
         }
-        if( *curr->end == '\0' ) {
+        if( *curr->item.e == '\0' ) {
             break;                      // end of text terminates processing
         }
-        p = curr->end;                  // skip argument
+        p = curr->item.e;                  // skip argument
         p = scan_sym_or_sep( p, splittable );
     }
     return( curr );

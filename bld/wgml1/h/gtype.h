@@ -244,8 +244,7 @@ typedef enum {
 typedef struct sym_list_entry {
     struct sym_list_entry   *   prev;                   // next entry
     char                        value[BUF_SIZE];        // value of attribute, function, or symbol
-    char                    *   start;                  // position of "&" in original buffer
-    char                    *   end;                    // position of byte after item in original buffer
+    tok_type                    item;
     slflags                     type;
 } sym_list_entry;
 
