@@ -214,7 +214,7 @@ static void compute_metrics( wgml_font * in_font )
 
         height = (shift_height * 3 ) / 10;
         uinttodec( height, in_font->shift_height );
-        in_font->shift_count = strnlen_s( in_font->shift_height, 4 );
+        in_font->shift_count = strlen( in_font->shift_height );
     }
 
     return;

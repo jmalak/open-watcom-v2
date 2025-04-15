@@ -2592,7 +2592,7 @@ static void fb_fs_marker( text_chars *in_chars )
 
     fs_font = &wgml_fonts[in_chars->font];
     switch( in_chars->f_switch ) {
-    case fs_full :
+    case fs_full:
         if( (fs_font->font_style != NULL) && (fs_font->font_style->lineprocs != NULL) ) {
             if( fs_font->font_style->lineprocs->startvalue != NULL ) {
                 df_interpret_driver_functions( fs_font->font_style->lineprocs->startvalue->text );
@@ -2603,8 +2603,8 @@ static void fb_fs_marker( text_chars *in_chars )
         }
         break;
 
-    case fs_from :
-    case fs_from2 :
+    case fs_from:
+    case fs_from2:
         if( (fs_font->font_style != NULL) && (fs_font->font_style->lineprocs != NULL)
                 && (fs_font->font_style->lineprocs->endvalue != NULL) ) {
             df_interpret_driver_functions( fs_font->font_style->lineprocs->endvalue->text );
@@ -2614,8 +2614,8 @@ static void fb_fs_marker( text_chars *in_chars )
         }
         break;
 
-    case fs_to :
-    case fs_to2 :
+    case fs_to:
+    case fs_to2:
         if( (fs_font->font_style != NULL) && (fs_font->font_style->lineprocs != NULL)
                 && (fs_font->font_style->lineprocs->endvalue != NULL) ) {
             df_interpret_driver_functions( fs_font->font_style->lineprocs->startvalue->text );
@@ -2625,7 +2625,7 @@ static void fb_fs_marker( text_chars *in_chars )
         }
         break;
 
-    default :
+    default:
         internal_err( __FILE__, __LINE__ );
     }
 

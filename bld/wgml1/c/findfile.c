@@ -115,8 +115,7 @@ static FILE *try_open( char * prefix, char * filename )
 
     /* Prevent buffer overflow. */
 
-    filename_length = strnlen_s( prefix, _MAX_PATH ) +
-                      strnlen_s( filename, _MAX_PATH ) + 1;
+    filename_length = strlen( prefix ) + strlen( filename ) + 1;
     if( filename_length > _MAX_PATH ) {
         xx_simple_err_cc( err_file_max, prefix, filename );
         return( NULL );

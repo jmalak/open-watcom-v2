@@ -655,27 +655,27 @@ static void     gml_exl_common( const gmltag * entry )
     t_page.max_width = nest_cb->rm;
 
     switch( nest_cb->c_tag ) {
-    case t_DL :
+    case t_DL:
         l_post_skip = nest_cb->u.dl_layout->post_skip;
         l_font = layout_work.dd.font;
         break;
-    case t_GL :
+    case t_GL:
         l_post_skip = nest_cb->u.gl_layout->post_skip;
         l_font = layout_work.gt.font;
         break;
-    case t_OL :
+    case t_OL:
         l_post_skip = nest_cb->u.ol_layout->post_skip;
         l_font = nest_cb->u.ol_layout->font;
         break;
-    case t_SL :
+    case t_SL:
         l_post_skip = nest_cb->u.sl_layout->post_skip;
         l_font = nest_cb->u.sl_layout->font;
         break;
-    case t_UL :
+    case t_UL:
         l_post_skip = nest_cb->u.ul_layout->post_skip;
         l_font = nest_cb->u.ul_layout->font;
         break;
-    default :
+    default:
         internal_err( __FILE__, __LINE__ ); // not an inline phrase end tag
     }
 
@@ -1079,17 +1079,17 @@ void    gml_li( const gmltag * entry )
     }
 
     switch( nest_cb->c_tag ) {
-    case t_OL :
+    case t_OL:
         gml_li_ol( entry );
         break;
-    case t_SL :
+    case t_SL:
         gml_li_sl( entry );
         break;
-    case t_UL :
+    case t_UL:
         gml_li_ul( entry );
         break;
-    case t_DL :
-    case t_GL :
+    case t_DL:
+    case t_GL:
         g_err_tag_nest( str_tags[nest_cb->c_tag + 1] ); // end tag expected
         break;
     default:

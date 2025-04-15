@@ -524,7 +524,7 @@ bool get_line( bool display_line )
         }
     }
 
-    buff2_lg = strnlen_s( buff2, buf_size );
+    buff2_lg = strlen( buff2 );
     *(buff2 + buff2_lg) = '\0';
     *(buff2 + buff2_lg + 1) = '\0';
     if( input_cbs->fmflags & II_file ) {
@@ -591,10 +591,10 @@ void show_include_stack( void )
             uinttodec( ip->s.f->lineno, linestr );
             g_info( err_inf_line_file, linestr, ip->s.f->filename );
             break;
-        case    II_tag :
+        case    II_tag:
             g_info( err_inf_tag, ip->s.m->tag->tagname );
             /* fall through */
-        case    II_macro :
+        case    II_macro:
             uinttodec( ip->s.m->lineno, linestr );
             uinttodec( ip->s.m->mac->lineno, linemac );
             g_info( err_inf_mac_def, linestr, ip->s.m->mac->macname,
