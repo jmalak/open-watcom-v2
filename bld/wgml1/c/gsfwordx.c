@@ -109,7 +109,8 @@ static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], int parmcount,
     int                 len;
     getnum_block        gn;
 
-    if( (parmcount < 2) || (parmcount > 3) ) {
+    if( parmcount < 2
+      || parmcount > 3 ) {
         return( neg );
     }
 
@@ -128,7 +129,8 @@ static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], int parmcount,
     if( parms[1].arg.s <= parms[1].arg.e ) {// start pos specified
         gn.arg = parms[1].arg;
         cc = getnum( &gn );
-        if( (cc != pos) || (gn.result > len) ) {
+        if( cc != pos
+          || gn.result > len ) {
             if( !ProcFlags.suppress_msg ) {
                 xx_source_err_c( err_func_parm, "2 (startword)" );
             }
@@ -144,7 +146,8 @@ static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], int parmcount,
             if( parms[2].arg.s <= parms[2].arg.e ) {
                 gn.arg = parms[2].arg;
                 cc = getnum( &gn );
-                if( (cc != pos) || (gn.result == 0) ) {
+                if( cc != pos
+                  || gn.result == 0 ) {
                     if( !ProcFlags.suppress_msg ) {
                         xx_source_err_c( err_func_parm, "3 (length)" );
                     }
@@ -159,7 +162,7 @@ static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], int parmcount,
     scan_stop  = parm1.e;
     k = 0;
     cc = pos;
-    while( (k < n) && (cc != omit) ) {  // find start word
+    while( k < n && cc != omit ) {      // find start word
         cc = getarg();
         k++;
     }
@@ -192,7 +195,8 @@ static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], int parmcount,
             *result += 1;
             ressize--;
         }
-        if( parm1.s < g_tok_start && ( *parm1.s != ' ' ) ) {    // copy last word
+        if( parm1.s < g_tok_start
+          && *parm1.s != ' ' ) {        // copy last word
             for( ; parm1.s < g_tok_start && ressize > 0; parm1.s++ ) {
                 if( *parm1.s == ' ' ) {
                     break;
@@ -322,7 +326,8 @@ condcode    scr_wordpos( parm parms[MAX_FUN_PARMS], int parmcount, char * * resu
 
     (void)ressize;
 
-    if( (parmcount < 2) || (parmcount > 3) ) {
+    if( parmcount < 2
+      || parmcount > 3 ) {
         return( neg );
     }
 
@@ -333,8 +338,8 @@ condcode    scr_wordpos( parm parms[MAX_FUN_PARMS], int parmcount, char * * resu
     pstr = parms[1].arg;
     unquote_if_quoted( &pstr );
 
-    if( (len <= 0) ||                   // null phrase nothing to do
-        (pstr.e - pstr.s + 1 <= 0) ) {   // null string nothing to do
+    if( len <= 0                      // null phrase nothing to do
+      || pstr.e - pstr.s + 1 <= 0 ) { // null string nothing to do
 
         **result = '0';
         *result += 1;
@@ -350,7 +355,8 @@ condcode    scr_wordpos( parm parms[MAX_FUN_PARMS], int parmcount, char * * resu
             gn.arg = parms[2].arg;
             gn.ignore_blanks = false;
             cc = getnum( &gn );
-            if( (cc != pos) || (gn.result == 0) ) {
+            if( cc != pos
+              || gn.result == 0 ) {
                 if( !ProcFlags.suppress_msg ) {
                     xx_source_err_c( err_func_parm, "3 (startword)" );
                 }
@@ -364,7 +370,7 @@ condcode    scr_wordpos( parm parms[MAX_FUN_PARMS], int parmcount, char * * resu
     k = 0;
     cc = pos;
     g_tok_start = pstr.s;
-    while( ( k <= n ) && ( cc != omit ) ) { // find start word
+    while( k <= n && cc != omit ) {     // find start word
         cc = getarg();
         k++;
     }
@@ -389,7 +395,9 @@ condcode    scr_wordpos( parm parms[MAX_FUN_PARMS], int parmcount, char * * resu
 
             /* at end of phrase, but must also be at end of token */
 
-            if( (pp == phrase.e) && ((*(pstr.s + 1) == ' ') || (*(pstr.s + 1) == '\0')) ) {
+            if( pp == phrase.e
+              && ( *(pstr.s + 1) == ' '
+              || *(pstr.s + 1) == '\0' ) ) {
                 found = true;
                 break;
             } else {

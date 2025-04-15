@@ -37,8 +37,8 @@
 
 condcode    scr_compare( parm parms[MAX_FUN_PARMS], int parmcount, char **result, int32_t ressize )
 {
-    tok_type        parm1;
-    tok_type        parm2;
+    tok_type        string1;
+    tok_type        string2;
     condcode        cc;
     int             i;
     int             index;
@@ -49,18 +49,19 @@ condcode    scr_compare( parm parms[MAX_FUN_PARMS], int parmcount, char **result
 
     (void)ressize;
 
-    if( parmcount < 2 || parmcount > 3 ) {
+    if( parmcount < 2
+      || parmcount > 3 ) {
         cc = neg;
         return( cc );
     }
 
-    parm1 = parms[0].arg;
-    unquote_if_quoted( &parm1 );
-    len1 = parm1.e - parm1.s + 1;   // parm1 length
+    string1 = parms[0].arg;
+    unquote_if_quoted( &string1 );
+    len1 = string1.e - string1.s + 1;   // string1 length
 
-    parm2 = parms[1].arg;
-    unquote_if_quoted( &parm2 );
-    len2 = parm2.e - parm2.s + 1;   // parm2 length
+    string2 = parms[1].arg;
+    unquote_if_quoted( &string2 );
+    len2 = string2.e - string2.s + 1;   // string2 length
 
     len = len1;
     if( len < len2 )
@@ -68,7 +69,7 @@ condcode    scr_compare( parm parms[MAX_FUN_PARMS], int parmcount, char **result
 
     index = 0;
     if( len > 0 ) {
-        padchar = ' ';
+        padchar = ' ';	/* default padding character ' ' */
         if( parmcount > 2 ) {
             tok_type parm = parms[2].arg;
             unquote_if_quoted( &parm );
@@ -81,12 +82,12 @@ condcode    scr_compare( parm parms[MAX_FUN_PARMS], int parmcount, char **result
             char    c2;
 
             if( i < len1 ) {
-                c1 = parm1.s[i];
+                c1 = string1.s[i];
             } else {
                 c1 = padchar;
             }
             if( i < len2 ) {
-                c2 = parm2.s[i];
+                c2 = string2.s[i];
             } else {
                 c2 = padchar;
             }
@@ -99,4 +100,3 @@ condcode    scr_compare( parm parms[MAX_FUN_PARMS], int parmcount, char **result
     *result += sprintf( *result, "%d", index );
     return( pos );
 }
-
