@@ -18,6 +18,53 @@
 
 static  bool    is_word;          // true if word call, false if subword call
 
+static tok_type *skipSpaces( tok_type *p )
+{
+    while( p->s <= p->e && *(p->s) == ' ' ) {
+        p->s++;
+    }
+    return( p );
+}
+
+static tok_type *skipWord( tok_type *p )
+{
+    while( p->s <= p->e && *(p->s) != ' ' ) {
+        p->s++;
+    }
+    return( p );
+}
+
+static tok_type *trimSpaces( tok_type *p )
+{
+    while( p->s <= p->e && *(p->s) == ' ' ) {
+        p->s++;
+    }
+    while( p->s <= p->e && *(p->e) == ' ' ) {
+        p->e--;
+    }
+    return( p );
+}
+
+static bool cmpWord( tok_type *p1, tok_type *p2 )
+{
+    bool ok1 = ( p1->s <= p1->e );
+    bool ok2 = ( p2->s <= p2->e );
+    while( ok1 && ok2 ) {
+        char c1 = *(p1->s);
+        char c2 = *(p2->s);
+        if( c1 != c2 )
+            return( false );
+        if( c2 == ' ' ) {
+            return( cmpWord( skipSpaces( p1 ), skipSpaces( p2 ) ) );
+        }
+        p1->s++;
+        p2->s++;
+    }
+    if( ok1 )
+        return( true );
+    return( false );
+}
+
 /***************************************************************************/
 /*  script string function &'subword(                                      */
 /*                         &'word(                                         */
@@ -385,5 +432,72 @@ condcode    scr_wordpos( parm parms[MAX_FUN_PARMS], int parmcount, char * * resu
     }
     *result += sprintf( *result, "%d", index );
 
+    return( pos );
+}
+
+/***************************************************************************
+ *
+ * &'find(string,phrase):  The Find function returns the word position of
+ *    the words in 'phrase' within the words of 'string'.   All interword
+ *    blanks are treated  as a single blank.   If the  'phrase' cannot be
+ *    found the result is zero.
+ *      &'find('The quick brown fox','quick brown fox') ==> 2
+ *      &'find('The quick  brown fox','quick    brown') ==> 2
+ *      &'find('The quick  brown fox','quick  fox ') ==> 0
+ *      &'find('The quick  brown fox','xyz') ==> 0
+ *      &'find('The quick brown fox') ==> error, missing phrase
+ *
+ ***************************************************************************/
+
+condcode    scr_find( parm parms[MAX_FUN_PARMS], int parmcount, char **result, int32_t ressize )
+{
+    condcode        cc;
+    int             index;
+    int             index1;
+    tok_type        phrase;
+    tok_type        string;
+    char            *phrase_start;
+    char            *string_start;
+
+    (void)ressize;
+
+    if( parmcount != 2 ) {
+        cc = neg;
+        return( cc );
+    }
+
+    index = 0;
+
+    phrase = parms[1].arg;
+    unquote_if_quoted( &phrase );
+    trimSpaces( &phrase );
+
+    if( phrase.s <= phrase.e ) {
+
+        string = parms[0].arg;
+        unquote_if_quoted( &string );
+        trimSpaces( &string );
+
+        string_start = string.s;
+        phrase_start = phrase.s;
+        index1 = 1;
+        while( string_start <= string.e ) {
+            string.s = string_start;
+            phrase.s = phrase_start;
+            if( cmpWord( &string, &phrase ) ) {
+                index = index1;
+                break;
+            } else {
+                /*
+                 * skip single word in "string"
+                 */
+                string.s = string_start;
+                skipSpaces( skipWord( &string ) );
+                string_start = string.s;
+                index1++;
+            }
+        }
+    }
+    *result += sprintf( *result, "%d", index );
     return( pos );
 }
