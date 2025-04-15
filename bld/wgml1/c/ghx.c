@@ -44,7 +44,7 @@ static void update_headnumx( hdsrc hn_lvl, hdsrc hds_lvl )
     pos = 0;
 
     if( (hn_lvl > 0)
-      && (layout_work.hx.hx_head[hds_lvl - 1].number_form != none) ) {
+      && (layout_work.hx.hx_head[hds_lvl - 1].number_form != num_none) ) {
 
         /* reuse formatted number from previous lvl */
 
@@ -122,7 +122,7 @@ static void hx_header( char * h_num, char * h_text, hdsrc hn_lvl, hdsrc hds_lvl 
         t_page.cur_left = 0;
         ProcFlags.keep_left_margin = true;  // keep left margin
         if( (hds_lvl < hds_abstract)
-          && (layout_work.hx.hx_head[hds_lvl].number_form != none) ) {
+          && (layout_work.hx.hx_head[hds_lvl].number_form != num_none) ) {
             ProcFlags.as_text_line = true;      // treat as <text_line>
             process_text( h_num, layout_work.hx.hx_head[hds_lvl].number_font );
             post_space /= wgml_fonts[layout_work.hx.hx_head[hds_lvl].number_font].spc_width;     // rescale post_space to correct font

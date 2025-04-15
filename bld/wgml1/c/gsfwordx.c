@@ -103,11 +103,11 @@ static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], int parmcount,
 {
     tok_type        parm1;
     char            *ptok;
-    condcode            cc;
-    int                 k;
-    int                 n;
-    int                 len;
-    getnum_block        gn;
+    condcode        cc;
+    int             k;
+    int             n;
+    int             len;
+    getnum_block    gn;
 
     if( parmcount < 2
       || parmcount > 3 ) {
@@ -181,9 +181,8 @@ static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], int parmcount,
             ressize--;
         }
     } else {
-        k = 0;
+        ptok = g_tok_start;
         for( k = 0; k < len; k++ ) {
-            ptok = g_tok_start;
             cc = getarg();
             if( cc == omit ) {
                 ptok = parm1.e;

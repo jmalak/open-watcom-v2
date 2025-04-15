@@ -277,19 +277,17 @@ void free_some_mem( void )
             add_doc_el_to_pool( t_page.panes->page_width );
         }
         for( i = 0; i < MAX_COL; i++ ) {
-            if( t_page.panes->cols != NULL ) {
-                if( t_page.panes->cols[i].col_width != NULL ) {
-                    add_doc_el_to_pool( t_page.panes->cols[i].col_width );
-                }
-                if( t_page.panes->cols[i].main != NULL ) {
-                    add_doc_el_to_pool( t_page.panes->cols[i].main );
-                }
-                if( t_page.panes->cols[i].bot_fig != NULL ) {
-                    add_doc_el_to_pool( t_page.panes->cols[i].bot_fig );
-                }
-                if( t_page.panes->cols[i].footnote != NULL ) {
-                    add_doc_el_to_pool( t_page.panes->cols[i].footnote );
-                }
+            if( t_page.panes->cols[i].col_width != NULL ) {
+                add_doc_el_to_pool( t_page.panes->cols[i].col_width );
+            }
+            if( t_page.panes->cols[i].main != NULL ) {
+                add_doc_el_to_pool( t_page.panes->cols[i].main );
+            }
+            if( t_page.panes->cols[i].bot_fig != NULL ) {
+                add_doc_el_to_pool( t_page.panes->cols[i].bot_fig );
+            }
+            if( t_page.panes->cols[i].footnote != NULL ) {
+                add_doc_el_to_pool( t_page.panes->cols[i].footnote );
             }
         }
         sav_pane = t_page.panes->next;
@@ -516,8 +514,7 @@ bool get_line( bool display_line )
                             *buff2 = '\0';
                             break;
                         } else {
-                            strerror_s( buff2, buf_size, errno );
-                            xx_simple_err_cc( err_file_io, buff2, cb->filename );
+                            xx_simple_err_cc( err_file_io, strerror( errno ), cb->filename );
                         }
                     }
                 }

@@ -464,14 +464,14 @@ FILE *search_file_in_dirs( const char *filename, const char *defext, const char 
                 return( NULL );
             }
 
-            if( alternate_file != NULL ) {
+            if( *alternate_file != '\0' ) {
                 fp = try_open( dir_name, alternate_file );
                 if( fp != NULL ) {
                     return( fp );
                 }
             }
 
-            if( default_file != NULL ) {
+            if( *default_file != '\0' ) {
                 fp = try_open( dir_name, default_file );
                 if( fp != NULL ) {
                     return( fp );

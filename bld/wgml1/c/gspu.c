@@ -15,6 +15,7 @@
 
 
 #include "wgml.h"
+#include <errno.h>
 
 
 static FILE * workfile[9] =           // support for 9 workfiles SYSUSR0x.GML
