@@ -14,7 +14,6 @@
 *                   ff_teardown()
 *                   search_file_in_dirs()
 *                   try_file_name
-*                   try_fp
 *
 ****************************************************************************/
 
@@ -33,7 +32,6 @@
 #endif
 
 global char    try_file_name[_MAX_PATH];
-global FILE    *try_fp;
 
 /* Reset so can be reused with other headers. */
 

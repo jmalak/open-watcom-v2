@@ -38,7 +38,7 @@
 
 void g_banner( void )
 {
-    if( !(WgmlFlags.bannerprinted | WgmlFlags.quiet) ) {
+    if( (WgmlFlags.bannerprinted | WgmlFlags.quiet) == 0 ) {
         out_msg( "WATCOM Script/GML V4.0 Copyright by WATCOM International Corp. 1985, 1993." CRLF );
         out_msg( banner1( "Special Edition for Open Watcom", _WGML_VERSION_ ) CRLF );
         out_msg( banner2 CRLF );
@@ -137,7 +137,7 @@ static void reopen_inc_fp( filecb *cb )
 {
     int         rc;
 
-    if( !(cb->flags & FF_open) ) {
+    if( (cb->flags & FF_open) == 0 ) {
         cb->fp = fopen_rb( cb->filename );
         if( cb->fp != NULL ) {
             rc = fsetpos( cb->fp, &cb->pos );
@@ -437,7 +437,7 @@ bool get_line( bool display_line )
 
     if( ProcFlags.reprocess_line ) {    // there was an unget
         ProcFlags.reprocess_line = false;   // only used for :LAYOUT
-        return( !(input_cbs->fmflags & II_eof) );
+        return( (input_cbs->fmflags & II_eof) == 0 );
     }
     if( input_cbs->hidden_head != NULL ) {  // line was previously split,
         strcpy( buff2, input_cbs->hidden_head->value ); // take next part
@@ -468,7 +468,7 @@ bool get_line( bool display_line )
             } else {
                 ProcFlags.utc = false;  // to catch end of user-defined tag
                 cb = input_cbs->s.f;    // input from file
-                if( !(cb->flags & FF_open) ) {
+                if( (cb->flags & FF_open) == 0 ) {
                     g_info( err_inf_reopen );
                     show_include_stack();
                     reopen_inc_fp( cb );
@@ -551,14 +551,14 @@ bool get_line( bool display_line )
         }
     }
 
-    if( !(input_cbs->fmflags & II_eof) ) {
+    if( (input_cbs->fmflags & II_eof) == 0 ) {
         if( display_line
           && WgmlFlags.firstpass
           && (input_cbs->fmflags & II_research) ) {
             printf( "%s\n", buff2 );
         }
     }
-    return( !(input_cbs->fmflags & II_eof) );
+    return( (input_cbs->fmflags & II_eof) == 0 );
 }
 
 

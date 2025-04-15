@@ -243,7 +243,7 @@ char *get_member_name( FILE *fp, char const *in_name )
     entry_found     entry_status;
     uint16_t        entry_type;
 
-    /* See if in_name is found in try_file_name. */
+    /* See if in_name is found in directory file. */
 
     file_type = parse_header( fp );
     switch( file_type ) {

@@ -1060,10 +1060,11 @@ void ob_binclude( binclude_element * in_el )
         }
     }
     if( rc == 1 ) {
-        xx_simple_err_cc( err_in_file, "BINCLUDE", in_el->file );
+        xx_simple_err_cc( err_in_file, "BINCLUDE", in_el->filename );
     } else if( rc == 2 ) {
         xx_simple_err_c( err_write_out_file, out_file );
     }
+//    fclose( in_el->fp );
 }
 
 
@@ -1168,10 +1169,11 @@ void ob_graphic( graphic_element * in_el )
         }
     }
     if( rc == 1 ) {
-        xx_simple_err_cc( err_in_file, "GRAPHIC", in_el->file );
+        xx_simple_err_cc( err_in_file, "GRAPHIC", in_el->filename );
     } else if( rc == 2 ) {
         xx_simple_err_c( err_write_out_file, out_file );
     }
+//    fclose( in_el->fp );
 }
 
 /* Function ob_insert_block().

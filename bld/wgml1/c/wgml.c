@@ -163,14 +163,13 @@ static  char    * reuse_filename( const char * fn )
 /*  add info about file  to LIFO list                                      */
 /***************************************************************************/
 
-static  void    add_file_cb_entry( void )
+static  void    add_file_cb_entry( FILE *fp )
 {
     filecb  *   new;
     inputcb *   nip;
 
     new = mem_alloc( sizeof( filecb ) );
     new->filename = reuse_filename( try_file_name );
-    try_file_name[0] = '\0';
 
     nip = mem_alloc( sizeof( inputcb ) );
     nip->hidden_head = NULL;
@@ -191,13 +190,11 @@ static  void    add_file_cb_entry( void )
     new->linemax  = line_to;
     new->label_cb = NULL;
 
-    if( try_fp ) {
+    new->fp = fp;
+    if( fp != NULL ) {
         new->flags = FF_open;
-        new->fp    = try_fp;
-        try_fp     = NULL;
     } else {
         new->flags = FF_clear;
-        new->fp    = NULL;
     }
 
     nip->prev = input_cbs;
@@ -237,10 +234,10 @@ static  void    del_input_cb_entry( void )
     }
 
     if( wk->fmflags & II_tag_mac ) {
-/*
- *  The macrolines in s.m don't need to be freed, as these point to
- *  mac_entry, and freeing is done with macro_dict
- */
+        /*
+         *  The macrolines in s.m don't need to be freed, as these point to
+         *  mac_entry, and freeing is done with macro_dict
+         */
         mem_free( wk->s.m );
     } else {
         if( wk->s.f->flags & FF_open ) {// close file if neccessary
@@ -407,13 +404,14 @@ static  void    proc_input( char * filename )
 {
     char            attrwork[32];
     condcode        cc;
-    filecb      *   cb;
+    filecb          *cb;
     ifcb            ic_work;
-    ifcb        *   ic;
-    laystack    *   cur_lay_file;
-    laystack    *   tmp_lay_file;
+    ifcb            *ic;
+    laystack        *cur_lay_file;
+    laystack        *tmp_lay_file;
+    FILE            *fp;
 
-    static  inputcb *   save_cb;        // former input_cbs top entry
+    static inputcb  *save_cb;        // former input_cbs top entry
 
     ProcFlags.newLevelFile = 1;
     strcpy_s( token_buf, buf_size, filename );
@@ -431,7 +429,8 @@ static  void    proc_input( char * filename )
             if( attrwork[0] ) {
                 xx_warn_cc( wng_fileattr_ignored, attrwork, token_buf );
             }
-            if( search_file_in_dirs( token_buf, def_ext, alt_ext, ds_doc_spec ) ) {
+            fp = search_file_in_dirs( token_buf, def_ext, alt_ext, ds_doc_spec );
+            if( fp != NULL ) {
                 if( inc_level >= MAX_INC_DEPTH ) {
                     xx_err_c( err_max_input_nesting, token_buf );
                 }
@@ -439,7 +438,7 @@ static  void    proc_input( char * filename )
                 main_file_err( token_buf );
             }
             inc_inc_level();            // record max include level
-            add_file_cb_entry();
+            add_file_cb_entry( fp );
             if( new_file_parms != NULL ) {
                add_macro_parms( new_file_parms );
             }
@@ -480,7 +479,7 @@ static  void    proc_input( char * filename )
         /*  process an input file / macro                                  */
         /*******************************************************************/
 
-        while( !(input_cbs->fmflags & II_eof) ) {
+        while( (input_cbs->fmflags & II_eof) == 0 ) {
 
             ic = input_cbs->if_cb;      // .if .th .el controlblock
 
