@@ -477,6 +477,7 @@ bool get_line( bool display_line )
                     fgetpos( cb->fp, &cb->pos );// remember position for label
                     p = fgets( buff2, buf_size, cb->fp );
                     if( p != NULL ) {
+                        buff2[buf_size] = '\0'; /* ensure buff2 is always terminated */
                         if( cb->lineno >= cb->linemax ) {
                             input_cbs->fmflags |= II_eof;
                             cb->flags |= FF_eof;
