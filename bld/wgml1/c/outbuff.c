@@ -1334,7 +1334,7 @@ void ob_setup( void )
     buffout.current = 0;
     buffout.length = strtoul( &out_file_attr[2], NULL, 0 );
     if( errno == ERANGE ) {
-        xx_simple_err_i( err_out_rec_size2, ULONG_MAX );
+        xx_simple_err_i( err_out_rec_size2, UINT_MAX );
     }
     buffout.text = mem_alloc( buffout.length );
 

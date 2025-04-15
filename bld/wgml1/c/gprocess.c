@@ -254,7 +254,7 @@ static void split_at_GML_tag( void )
                     input_cbs->hidden_head->ip_start = true;
                 }
                 if( ProcFlags.literal ) {       // if literal active
-                    if( li_cnt < LONG_MAX ) {   // we decrement, adjust for split line
+                    if( li_cnt < INT_MAX ) {    // we decrement, adjust for split line
                         li_cnt++;
                     }
                 }

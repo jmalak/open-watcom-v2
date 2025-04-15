@@ -66,9 +66,9 @@ static const bool internal_to_su( su *in_su, bool tag, const char *base )
     char        unit[4];
     int         i;
     ldiv_t      div;
-    long        k;
-    long        wh;
-    long        wd;
+    int         k;
+    int         wh;
+    int         wd;
     su      *   s;
 
     unit[3] = '\0';
@@ -447,8 +447,8 @@ static bool su_layout_special( su * in_su )
     bool        retval = true;
     char    *   ps;
     su      *   s;
-    long        wh;
-    long        wd;
+    int         wh;
+    int         wd;
     char        quote;
 
     s = in_su;

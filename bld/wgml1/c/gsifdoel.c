@@ -276,9 +276,9 @@ static bool ifcompare( termcb * t1, relop r, termcb * t2 )
                 term1 = term2;              // make compare equal true
             } else {
                 if( t1->term_length < t2->term_length ) {
-                    term1 = LONG_MIN;       // shorter is smaller
+                    term1 = INT_MIN;       // shorter is smaller
                 } else {
-                    term2 = LONG_MIN;
+                    term2 = INT_MIN;
                 }
             }
         }
