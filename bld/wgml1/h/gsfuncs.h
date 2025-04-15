@@ -56,3 +56,5 @@
   pick( word,        4,   2,      0,    scr_word       )
   pick( wordpos,     7,   2,      1,    scr_wordpos    )
   pick( words,       5,   1,      0,    scr_words      )
+
+  pick( find,        4,   2,      0,    scr_find       )
