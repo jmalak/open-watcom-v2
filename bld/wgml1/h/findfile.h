@@ -17,30 +17,14 @@
 *
 ****************************************************************************/
 
-#if !defined( FINDFILE_H_INCLUDED ) || defined( global )
+#ifndef FINDFILE_H_INCLUDED
+#define FINDFILE_H_INCLUDED
 
 #include <stdio.h>
 
 /* Extern variable declaration. */
 
-/* This allows the same declarations to function as definitions.
- * Just #define global before including this file.
- */
-
-#ifndef global
-    #define global  extern
-#endif
-
-global char    try_file_name[_MAX_PATH];
-
-/* Reset so can be reused with other headers. */
-
-#undef global
-
-#endif
-
-#ifndef FINDFILE_H_INCLUDED
-#define FINDFILE_H_INCLUDED
+extern char         try_file_name[];
 
 /* Extern enum declaration. */
 
