@@ -18,7 +18,7 @@ typedef struct option {
     char            *option;            // the option
     unsigned short  optionLen;          // length of option
     unsigned short  minLength;          // minimum abbreviation
-    long            value;              // sometimes value to set option to
+    int             value;              // sometimes value to set option to
     void            (*function)( struct option *optentry );
     int             parmcount;          // expected number of parms
 } option;
@@ -39,7 +39,7 @@ static char     *   opt_scan_ptr;
 static cmd_tok  *   cmd_tokens[MAX_NESTING];
 static cmd_tok  *   sav_tokens[MAX_NESTING];
 static cmd_tok  *   tokennext;
-static long         opt_value;
+static int          opt_value;
 static unsigned     level;              // include level 0 = cmdline
 
 
@@ -213,9 +213,9 @@ static char * read_indirect_file( FILE *fp )
 /***************************************************************************/
 /*  convert string to integer                                              */
 /***************************************************************************/
-static long get_num_value( const char * p )
+static int get_num_value( const char * p )
 {
-    long    value;
+    int     value;
 
     value = 0;
     for( ; my_isdigit( *p ); p++ ) {
@@ -389,7 +389,7 @@ static void set_cpinch( option * opt )
         } else {
             CPI = opt_value;
         }
-        slongtodec( CPI, wkstring );
+        sinttodec( CPI, wkstring );
         add_symvar( global_dict, "$cpi", wkstring, no_subscript, 0 );
         tokennext = tokennext->nxt;
     }
@@ -417,7 +417,7 @@ static void set_lpinch( option * opt )
             LPI = opt_value;
         }
     /*    LPI (in contrast to CPI) is not stored as global symbol
-     *  slongtodec( LPI, wkstring );
+     *  sinttodec( LPI, wkstring );
      *  add_symvar( global_dict, "$lpi", wkstring, no_subscript, 0 );
      */
         tokennext = tokennext->nxt;
@@ -894,8 +894,8 @@ static void set_passes( option * opt )
         opt_value = get_num_value( p );
         if( opt_value < 1
           || opt_value > MAX_PASSES ) {
-            ulongtodec( MAX_PASSES, linestr );
-            ulongtodec( opt_value, linestr2 );
+            uinttodec( MAX_PASSES, linestr );
+            uinttodec( opt_value, linestr2 );
             xx_simple_err_cc( err_passes_value, linestr, linestr2 );
         } else {
             passes = opt_value;
@@ -921,7 +921,7 @@ static void set_from( option * opt )
         p = tokennext->token;
         opt_value = get_num_value( p );
         if( opt_value < 1
-          || opt_value >= LONG_MAX ) {
+          || opt_value >= INT_MAX ) {
             xx_simple_err_c( err_out_range, "from" );
         } else {
             print_from = opt_value;
@@ -982,7 +982,7 @@ static void set_to( option * opt )
         p = tokennext->token;
         opt_value = get_num_value( p );
         if( opt_value < 1
-          || opt_value >= LONG_MAX ) {
+          || opt_value >= INT_MAX ) {
             xx_simple_err_c( err_out_range, "to" );
         } else {
             print_to = opt_value;
@@ -1203,7 +1203,7 @@ static void set_research( option * opt )
         }
         ProcFlags.researchfile = true;  // only one file
         research_from = 1;
-        research_to = ULONG_MAX - 1;
+        research_to = UINT_MAX - 1;
 
         research_file_name[0] = '\0';   // no filename
         if( my_isalpha( *str ) ) {      // filename ?
@@ -1744,7 +1744,7 @@ int proc_options( char * string )
         }
     }
     tokcount = split_tokens( s_after_dq );
-    ulongtodec( tokcount, linestr );
+    uinttodec( tokcount, linestr );
     g_info_research( inf_cmdline_tok_cnt, linestr );
 
     tok = cmd_tokens[level];
@@ -1803,8 +1803,8 @@ int proc_options( char * string )
     }
     if( print_to < print_from  ) {
         g_banner();
-        ulongtodec( print_from, linestr );
-        ulongtodec( print_to, linestr2 );
+        uinttodec( print_from, linestr );
+        uinttodec( print_to, linestr2 );
         xx_simple_err_cc( err_inv_page_range, linestr, linestr2 );
     }
     return( tokcount );

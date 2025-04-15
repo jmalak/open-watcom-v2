@@ -22,9 +22,9 @@
 
 typedef struct macdict {
     mac_entry   *htbl[MAC_HASH_SIZE];   // hash table
-    long        lookups;                // lookup counter
-    long        macros;                 // macro counter
-    long        compares;               // strcmp counter
+    int         lookups;                // lookup counter
+    int         macros;                 // macro counter
+    int         compares;               // strcmp counter
 } macdict;
 
 
@@ -214,8 +214,8 @@ void    free_macro_dict( mac_dict_hdl dict )
         }
     }
 #if 0
-    printf( "macro lookups   : %ld\n", dict->lookups );
-    printf( "macro compares  : %ld\n", dict->compares );
+    printf( "macro lookups   : %d\n", dict->lookups );
+    printf( "macro compares  : %d\n", dict->compares );
 #endif
     mem_free( dict );
 }

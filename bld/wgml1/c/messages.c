@@ -304,12 +304,12 @@ void file_mac_info( void )
 
     if( input_cbs != NULL ) {
         if( input_cbs->fmflags & II_tag_mac ) {
-            ulongtodec( input_cbs->s.m->lineno, linestr );
-            ulongtodec( input_cbs->s.m->mac->lineno, linemac );
+            uinttodec( input_cbs->s.m->lineno, linestr );
+            uinttodec( input_cbs->s.m->mac->lineno, linemac );
             g_info( err_inf_mac_def, linestr, input_cbs->s.m->mac->macname,
                     linemac, input_cbs->s.m->mac->mac_file_name);
         } else {
-            ulongtodec( input_cbs->s.f->lineno, linestr );
+            uinttodec( input_cbs->s.f->lineno, linestr );
             g_info( inf_file_line, linestr, input_cbs->s.f->filename );
         }
     }
@@ -331,12 +331,12 @@ void file_mac_info_nest( void )
 
     if( input_cbs != NULL ) {
         if( input_cbs->fmflags & II_tag_mac ) {
-            ulongtodec( input_cbs->s.m->lineno, linestr );
-            ulongtodec( input_cbs->s.m->mac->lineno, linemac );
+            uinttodec( input_cbs->s.m->lineno, linestr );
+            uinttodec( input_cbs->s.m->mac->lineno, linemac );
             g_info( err_inf_mac_def, linestr, input_cbs->s.m->mac->macname,
                     linemac, input_cbs->s.m->mac->mac_file_name);
         } else {
-            ulongtodec( input_cbs->s.f->lineno, linestr );
+            uinttodec( input_cbs->s.f->lineno, linestr );
             g_info( inf_file_line, linestr, input_cbs->s.f->filename );
         }
 
@@ -346,15 +346,15 @@ void file_mac_info_nest( void )
         while( nw != NULL ) {
             switch( nw->nest_flag & II_input ) {
             case    II_file:
-                ulongtodec( nw->lineno, linestr );
+                uinttodec( nw->lineno, linestr );
                 g_info( inf_file_line, linestr, nw->s.filename );
                 break;
             case    II_tag :
                 g_info( err_inf_tag, nw->s.mt.tag_m->tagname );
                 /* fall through */
             case    II_macro :
-                ulongtodec( nw->lineno, linestr );
-                ulongtodec( nw->s.mt.m->lineno, linemac );
+                uinttodec( nw->lineno, linestr );
+                uinttodec( nw->s.mt.m->lineno, linemac );
                 g_info( err_inf_mac_def, linestr, nw->s.mt.m->macname,
                         linemac, nw->s.mt.m->mac_file_name);
                 break;
@@ -464,10 +464,10 @@ void numb_err( void )                                           // for scr_pu()
 
     err_count++;
     if( input_cbs->fmflags & II_tag_mac ) {
-        ulongtodec( input_cbs->s.m->lineno, linestr );
+        uinttodec( input_cbs->s.m->lineno, linestr );
         g_err( err_pu_num, linestr, "macro", input_cbs->s.m->mac->macname );
     } else {
-        ulongtodec( input_cbs->s.f->lineno, linestr );
+        uinttodec( input_cbs->s.f->lineno, linestr );
         g_err( err_pu_num, linestr, "file", input_cbs->s.f->filename );
     }
     show_include_stack();
@@ -482,10 +482,10 @@ void symbol_name_length_err( const char * symname )
     g_err( err_sym_long, symname );
     g_info( inf_sym_10 );
     if( input_cbs->fmflags & II_tag_mac ) {
-        ulongtodec( input_cbs->s.m->lineno, linestr );
+        uinttodec( input_cbs->s.m->lineno, linestr );
         g_info( inf_mac_line, linestr, input_cbs->s.m->mac->macname );
     } else {
-        ulongtodec( input_cbs->s.f->lineno, linestr );
+        uinttodec( input_cbs->s.f->lineno, linestr );
         g_info( inf_file_line, linestr, input_cbs->s.f->filename );
     }
     file_mac_info();
@@ -553,10 +553,10 @@ void g_err_if_int( void )
     char    linestr[MAX_L_AS_STR];
 
     if( input_cbs->fmflags & II_tag_mac ) {
-        ulongtodec( input_cbs->s.m->lineno, linestr );
+        uinttodec( input_cbs->s.m->lineno, linestr );
         g_err( err_if_intern, linestr, "macro", input_cbs->s.m->mac->macname );
     } else {
-        ulongtodec( input_cbs->s.f->lineno, linestr );
+        uinttodec( input_cbs->s.f->lineno, linestr );
         g_err( err_if_intern, linestr, "file", input_cbs->s.f->filename );
     }
     if( inc_level > 1 ) {
@@ -573,10 +573,10 @@ void g_err_tag_mac( gtentry *ge )
     char    linestr[MAX_L_AS_STR];
 
     if( input_cbs->fmflags & II_tag_mac ) {
-        ulongtodec( input_cbs->s.m->lineno, linestr );
+        uinttodec( input_cbs->s.m->lineno, linestr );
         g_err( err_tag_macro, ge->macname, ge->tagname, linestr, "macro", input_cbs->s.m->mac->macname );
     } else {
-        ulongtodec( input_cbs->s.f->lineno, linestr );
+        uinttodec( input_cbs->s.f->lineno, linestr );
         g_err( err_tag_macro, ge->macname, ge->tagname, linestr, "file", input_cbs->s.f->filename );
     }
     if( inc_level > 0 ) {
@@ -761,10 +761,10 @@ void xx_source_err( const msg_ids errid )
 
     g_err( errid );
     if( input_cbs->fmflags & II_tag_mac ) {
-        ulongtodec( input_cbs->s.m->lineno, linestr );
+        uinttodec( input_cbs->s.m->lineno, linestr );
         g_info( inf_mac_line, linestr, input_cbs->s.m->mac->macname );
     } else {
-        ulongtodec( input_cbs->s.f->lineno, linestr );
+        uinttodec( input_cbs->s.f->lineno, linestr );
         g_info( inf_file_line, linestr, input_cbs->s.f->filename );
     }
     show_include_stack();
@@ -778,10 +778,10 @@ void xx_source_err_c( const msg_ids errid, const char * arg )
 
     g_err( errid, arg );
     if( input_cbs->fmflags & II_tag_mac ) {
-        ulongtodec( input_cbs->s.m->lineno, linestr );
+        uinttodec( input_cbs->s.m->lineno, linestr );
         g_info( inf_mac_line, linestr, input_cbs->s.m->mac->macname );
     } else {
-        ulongtodec( input_cbs->s.f->lineno, linestr );
+        uinttodec( input_cbs->s.f->lineno, linestr );
         g_info( inf_file_line, linestr, input_cbs->s.f->filename );
     }
     show_include_stack();

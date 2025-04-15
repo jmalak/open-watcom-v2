@@ -209,8 +209,8 @@ typedef struct symsub {
 typedef struct symvar {
     struct symvar   *   next;           // next base entry
     char                name[SYM_NAME_LENGTH + 2];
-    long                last_auto_inc;// last autoincremented subscript value
-    long                subscript_used; // count of used subscripts
+    sub_index           last_auto_inc;// last autoincremented subscript value
+    int                 subscript_used; // count of used subscripts
     symsub          *   subscripts;     // subscript entries
     symsub          *   sub_0;          // special subscript 0 entry
     void                (*varfunc)( struct symvar * e );// access function
@@ -487,7 +487,7 @@ typedef struct gavalentry {
     struct gavalentry   *   next;
     union a {
        size_t   length;           // possible max length of (character) value
-       long     range[4]; // min, max, default omitted, default without value
+       int      range[4]; // min, max, default omitted, default without value
        char     value[VAL_LENGTH + 1];  // string value if short enough
        char *   valptr;                 // ... else allocated
     } a;
@@ -553,8 +553,8 @@ typedef enum {
 typedef struct gtentry {
     struct gtentry  *   next;
     gaentry         *   attribs;        // list of attributes
-    ulong               usecount;
-    size_t              tagnamelen;     // actual length of name
+    unsigned            usecount;
+    int                 tagnamelen;     // actual length of name
     char                tagname[TAG_NAME_LENGTH + 1];
     char                macname[MAC_NAME_LENGTH + 2];   // macro to call
     gtflags             tagflags;
@@ -653,12 +653,12 @@ typedef struct getnum_block {
     tok_type    arg;
     char    *   errstart;
     char    *   first;
-    long        length;
-    long        result;                 // result as long
-    char        resultstr[12];          // result in char format
+    int         length;
+    int         result;                     // result as int
+    char        resultstr[MAX_L_AS_STR];    // result in char format
     getnumrc    error;
-    char        num_sign;               // remember absolute or relative value
-    bool        ignore_blanks;          // true if blanks are ignored
+    char        num_sign;                   // remember absolute or relative value
+    bool        ignore_blanks;              // true if blanks are ignored
     condcode    cc;
 } getnum_block;
 

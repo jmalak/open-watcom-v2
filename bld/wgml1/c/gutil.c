@@ -895,7 +895,7 @@ char * format_num( uint32_t n, char * r, size_t rsize, num_style ns )
         }
         break;
     case h_style:                      // arabic
-        ulongtodec( n, p );
+        uinttodec( n, p );
         pos1 = strlen( p );
         pos += pos1;
         if( pos >= rsize ) {
@@ -1543,17 +1543,17 @@ void free_fwd_refs( fwd_ref * fwd_refs )
 /*  functions converting number to string                                  */
 /***************************************************************************/
 
-int ulongtohex( unsigned long value, char *buffer )
+int uinttohex( unsigned value, char *buffer )
 {
-    return( sprintf( buffer, "%lx", value ) );
+    return( sprintf( buffer, "%x", value ) );
 }
 
-int ulongtodec( unsigned long value, char *buffer )
+int uinttodec( unsigned value, char *buffer )
 {
-    return( sprintf( buffer, "%lu", value ) );
+    return( sprintf( buffer, "%u", value ) );
 }
 
-int slongtodec( long value, char *buffer )
+int sinttodec( int value, char *buffer )
 {
-    return( sprintf( buffer, "%ld", value ) );
+    return( sprintf( buffer, "%d", value ) );
 }

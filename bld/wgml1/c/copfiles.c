@@ -213,7 +213,7 @@ static void compute_metrics( wgml_font * in_font )
         if( (height % 7200) > 0 ) shift_height++;
 
         height = (shift_height * 3 ) / 10;
-        ulongtodec( height, in_font->shift_height );
+        uinttodec( height, in_font->shift_height );
         in_font->shift_count = strnlen_s( in_font->shift_height, 4 );
     }
 

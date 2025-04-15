@@ -44,7 +44,7 @@ static  int     cvalue;                 // current argument stack ptr
 static  int     nparens;                // nesting level
 
 static  char    oper_stack[MAXOPER];    // operator stack
-static  long    value_stack[MAXTERM];   // argument stack
+static  int     value_stack[MAXTERM];   // argument stack
 static  bool    ignore_blanks;
 
 
@@ -81,7 +81,7 @@ static  int get_prio_m1( void )
  * stack functions
  */
 
-static  int pop_val( long *arg )
+static  int pop_val( int *arg )
 {
     if( --cvalue < 0 ) {
         return( not_ok );
@@ -90,7 +90,7 @@ static  int pop_val( long *arg )
     return( ok );
 }
 
-static  void push_val( long arg )
+static  void push_val( int arg )
 {
     value_stack[cvalue++] = arg;
 }
@@ -119,8 +119,8 @@ static  void push_op( char op )
 
 static  int do_expr( void )
 {
-    long arg1;
-    long arg2;
+    int arg1;
+    int arg2;
     int op;
 
     if( not_ok == pop_op( &op ) ) {
@@ -255,9 +255,9 @@ static char *get_exp( const char *str )
     return tokbuf;
 }
 
-static  int evaluate( char **line, long *val )
+static  int evaluate( char **line, int *val )
 {
-    long        arg;
+    int         arg;
     char    *   ptr;
     char    *   str;
     char    *   endptr;
@@ -304,7 +304,7 @@ static  int evaluate( char **line, long *val )
             }
 
             arg = strtol( str, &endptr, 10 );
-            if( (((arg == LONG_MIN) || (arg == LONG_MAX)) && errno == ERANGE)
+            if( (((arg == INT_MIN) || (arg == INT_MAX)) && errno == ERANGE)
                  || (str == endptr) ) {
                  return( not_ok );
             }
@@ -378,40 +378,39 @@ static  int evaluate( char **line, long *val )
 
 condcode getnum( getnum_block *gn )
 {
-    char    *   a;                      // arg start  (X2)
-    char    *   z;                      // arg stop   (R1)
+    char        *p;
+    char        *pend;
     char        c;
     int         rc;
 
-    a = gn->arg.s;
-    z = gn->arg.e;
-
-    while( a < z && *a == ' ' ) {
-        a++;                            // skip leading blanks
+    p = gn->arg.s;
+    pend = gn->arg.e;
+    while( p < pend && *p == ' ' ) {
+        p++;                    // skip leading blanks
     }
-    gn->errstart = a;
-    gn->first    = a;
-    if( a > z ) {
+    gn->errstart = p;
+    gn->first    = p;
+    if( p > pend ) {
         gn->cc = omit;
-        return( omit );                 // nothing there
+        return( omit );         // nothing there
     }
-    c = *a;
+    c = *p;
     if( c == '+' || c == '-' ) {
-        gn->num_sign = c;               // unary sign
+        gn->num_sign = c;       // unary sign
     } else {
-        gn->num_sign = ' ';             // no unary sign
+        gn->num_sign = ' ';     // no unary sign
     }
     ignore_blanks = gn->ignore_blanks;
-    c = *(z + 1);
-    *(z + 1) = '\0';                // make null terminated string
-    rc = evaluate( &a, &gn->result );
-    *(z + 1) = c;
+    pend++;
+    c = *pend;
+    *pend = '\0';                 // make null terminated string
+    rc = evaluate( &p, &gn->result );
+    *pend = c;
     if( rc != 0 ) {
         gn->cc = notnum;
     } else {
-        gn->arg.s = a + 1;       // start for next scan
-        gn->length = sprintf_s( gn->resultstr, sizeof( gn->resultstr ), "%ld",
-                                gn->result );
+        gn->arg.s = p + 1;      // start for next scan
+        gn->length = sprintf( gn->resultstr, "%d", gn->result );
         if( gn->result >= 0 ) {
             gn->cc = pos;
         } else {

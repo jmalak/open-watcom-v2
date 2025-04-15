@@ -51,7 +51,7 @@ void    gotarget_err( void )
 
     if( input_cbs->fmflags & II_tag_mac ) {
         if( gotargetno > 0 ) {
-            ulongtodec( gotargetno, linestr );
+            uinttodec( gotargetno, linestr );
             xx_err_cc( err_goto, linestr, input_cbs->s.m->mac->macname );
         } else {
             xx_err_cc( err_goto, gotarget, input_cbs->s.m->mac->macname );
@@ -187,7 +187,7 @@ void    scr_label( void )
             if( input_cbs->fmflags & II_tag_mac ) {
                   // numeric macro label no need to store
             } else {
-                ulongtodec( input_cbs->s.f->lineno, linestr );
+                uinttodec( input_cbs->s.f->lineno, linestr );
                 xx_warn_info_cc( wng_label_num, inf_file_line, linestr, input_cbs->s.f->filename );
             }
 

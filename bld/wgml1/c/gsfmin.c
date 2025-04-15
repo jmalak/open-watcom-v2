@@ -40,7 +40,7 @@ condcode    scr_min( parm parms[MAX_FUN_PARMS], int parmcount, char **result, in
     int             k;
     int             len;
     getnum_block    gn;
-    long            minimum;
+    int             minimum;
 
     (void)ressize;
 
@@ -49,7 +49,7 @@ condcode    scr_min( parm parms[MAX_FUN_PARMS], int parmcount, char **result, in
         return( cc );
     }
 
-    minimum = LONG_MAX;
+    minimum = INT_MAX;
 
     gn.ignore_blanks = false;
 
@@ -74,7 +74,7 @@ condcode    scr_min( parm parms[MAX_FUN_PARMS], int parmcount, char **result, in
         }
     }
 
-    *result += sprintf( *result, "%ld", minimum );
+    *result += sprintf( *result, "%d", minimum );
 
     return( pos );
 }

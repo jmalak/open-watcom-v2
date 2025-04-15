@@ -207,18 +207,18 @@ static  void    print_val_entry( gavalentry *wk )
 
     if( flags & val_range ) {
         if( flags & val_def ) {
-            sprintf( opt, "default=%ld %ld min=%ld max=%ld",
+            sprintf( opt, "default=%d %d min=%d max=%d",
                      wk->a.range[2], wk->a.range[3],
                      wk->a.range[0], wk->a.range[1] );
         } else {
-            sprintf( opt, "min=%ld max=%ld", wk->a.range[0],
+            sprintf( opt, "min=%d max=%d", wk->a.range[0],
                      wk->a.range[1] );
         }
         out_msg( "val:        %-10.10s %s\n", " ", opt );
 
     } else if( flags & val_length ) {
 
-        sprintf( opt, "length=%ld\n", wk->a.range[0] );
+        sprintf( opt, "length=%d\n", wk->a.range[0] );
         out_msg( "val:        %-10.10s %s\n", " ", opt );
 
     } else if( flags & val_any ) {
@@ -342,7 +342,7 @@ void    print_tag_entry( gtentry * wk )
         find++;
         flags >>= 1;
     }
-    out_msg( "tag:  %-16.16s tagcount=%d macro=%s %s\n", wk->tagname,
+    out_msg( "tag:  %-16.16s tagcount=%u macro=%s %s\n", wk->tagname,
              wk->usecount, wk->macname, opt );
     for( gawk = wk->attribs; gawk != NULL; gawk = gawk->next ) {
         print_att_entry( gawk );
