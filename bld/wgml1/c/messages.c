@@ -41,7 +41,7 @@ void out_msg( const char *msg, ... )
     va_list args;
 
     va_start( args, msg );
-    vprintf_s( msg, args );
+    vprintf( msg, args );
     va_end( args );
 }
 
@@ -217,7 +217,7 @@ void out_msg_research( const char *msg, ... )
 
     if( WgmlFlags.research ) {
         va_start( args, msg );
-        vprintf_s( msg, args );
+        vprintf( msg, args );
         va_end( args );
     }
     return;
@@ -349,10 +349,10 @@ void file_mac_info_nest( void )
                 uinttodec( nw->lineno, linestr );
                 g_info( inf_file_line, linestr, nw->s.filename );
                 break;
-            case    II_tag :
+            case    II_tag:
                 g_info( err_inf_tag, nw->s.mt.tag_m->tagname );
                 /* fall through */
-            case    II_macro :
+            case    II_macro:
                 uinttodec( nw->lineno, linestr );
                 uinttodec( nw->s.mt.m->lineno, linemac );
                 g_info( err_inf_mac_def, linestr, nw->s.mt.m->macname,
@@ -590,7 +590,7 @@ void g_err_tag_no( const char *tagname )
 {
     char    tagn[TAG_NAME_LENGTH + 1];
 
-    sprintf_s( tagn, TAG_NAME_LENGTH + 1, "%c%s", GML_char, tagname );
+    sprintf( tagn, TAG_NAME_LENGTH + 1, "%c%s", GML_char, tagname );
     g_err( err_tag_not_expected, tagn );
     file_mac_info_nest();
     err_count++;
@@ -601,7 +601,7 @@ void g_err_tag_prec( const char *tagname )
 {
     char    tagn[TAG_NAME_LENGTH + 1];
 
-    sprintf_s( tagn, TAG_NAME_LENGTH + 1, "%c%s", GML_char, tagname );
+    sprintf( tagn, TAG_NAME_LENGTH + 1, "%c%s", GML_char, tagname );
     g_err( err_tag_preceding, tagn );
     file_mac_info();
     err_count++;

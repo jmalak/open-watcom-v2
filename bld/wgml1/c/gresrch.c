@@ -33,7 +33,7 @@ void printf_research( char * msg, ... )
     va_list args;
 
     va_start( args, msg );
-    vfprintf_s( stdout, msg, args );
+    vfprintf( stdout, msg, args );
     va_end( args );
 }
 

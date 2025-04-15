@@ -49,7 +49,7 @@ static  void    put_lay_abspref( FILE * layfile, abspref_lay_tag * ap,
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":%s\n", name );
+    fprintf( layfile, ":%s\n", name );
 
     for( k = 0, curr = abspref_att[k]; curr > 0; k++, curr = abspref_att[k] ) {
 
@@ -114,7 +114,7 @@ static  void    put_lay_address( FILE * layfile, layout_data * lay )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":ADDRESS\n" );
+    fprintf( layfile, ":ADDRESS\n" );
 
     for( k = 0, curr = address_att[k]; curr > 0; k++, curr = address_att[k] ) {
 
@@ -150,7 +150,7 @@ static  void    put_lay_aline( FILE * layfile, layout_data * lay )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":ALINE\n" );
+    fprintf( layfile, ":ALINE\n" );
 
     for( k = 0, curr = aline_att[k]; curr > 0; k++, curr = aline_att[k] ) {
 
@@ -174,7 +174,7 @@ static  void    put_lay_appendix( FILE * layfile, layout_data * lay )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":APPENDIX\n" );
+    fprintf( layfile, ":APPENDIX\n" );
 
     for( k = 0, curr = appendix_att[k]; curr > 0; k++, curr = appendix_att[k] ) {
 
@@ -258,7 +258,7 @@ static  void    put_lay_author( FILE * layfile, layout_data * lay )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":AUTHOR\n" );
+    fprintf( layfile, ":AUTHOR\n" );
 
     for( k = 0, curr = author_att[k]; curr > 0; k++, curr = author_att[k] ) {
 
@@ -298,7 +298,7 @@ static  void    put_lay_backbod( FILE * layfile, backbod_lay_tag * bb,
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":%s\n", name );
+    fprintf( layfile, ":%s\n", name );
 
     for( k = 0, curr = backbod_att[k]; curr > 0; k++, curr = backbod_att[k] ) {
 
@@ -362,7 +362,7 @@ static  void    put_lay_region( FILE * layfile, region_lay_tag * reg )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":BANREGION\n" );
+    fprintf( layfile, ":BANREGION\n" );
 
     for( k = 0, curr = banregion_att[k]; curr > 0;
          k++, curr = banregion_att[k] ) {
@@ -406,7 +406,7 @@ static  void    put_lay_region( FILE * layfile, region_lay_tag * reg )
             break;
         }
     }
-    fprintf_s( layfile, ":eBANREGION\n" );
+    fprintf( layfile, ":eBANREGION\n" );
 }
 
 
@@ -419,7 +419,7 @@ static  void    put_lay_single_ban( FILE * layfile, banner_lay_tag * ban )
     lay_att             curr;
     region_lay_tag  *   reg;
 
-    fprintf_s( layfile, ":BANNER\n" );
+    fprintf( layfile, ":BANNER\n" );
 
     for( k = 0, curr = banner_att[k]; curr > 0; k++, curr = banner_att[k] ) {
 
@@ -454,7 +454,7 @@ static  void    put_lay_single_ban( FILE * layfile, banner_lay_tag * ban )
         reg = reg->next;
     }
 
-    fprintf_s( layfile, ":eBANNER\n" );
+    fprintf( layfile, ":eBANNER\n" );
 }
 
 
@@ -481,7 +481,7 @@ static  void    put_lay_date( FILE * layfile, layout_data * lay )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":DATE\n" );
+    fprintf( layfile, ":DATE\n" );
 
     for( k = 0, curr = date_att[k]; curr > 0; k++, curr = date_att[k] ) {
 
@@ -520,7 +520,7 @@ static  void    put_lay_dd( FILE * layfile, layout_data * lay )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":DD\n" );
+    fprintf( layfile, ":DD\n" );
 
     for( k = 0, curr = dd_att[k]; curr > 0; k++, curr = dd_att[k] ) {
 
@@ -547,7 +547,7 @@ static  void    put_lay_default( FILE * layfile, layout_data * lay )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":DEFAULT\n" );
+    fprintf( layfile, ":DEFAULT\n" );
 
     for( k = 0, curr = default_att[k]; curr > 0; k++, curr = default_att[k] ) {
 
@@ -593,7 +593,7 @@ static  void    put_lay_dl( FILE * layfile, layout_data * lay )
     dl_layout = lay->dl.first;
 
     while( dl_layout != NULL ) {
-        fprintf_s( layfile, ":DL\n" );
+        fprintf( layfile, ":DL\n" );
 
         for( k = 0, curr = dl_att[k]; curr > 0; k++, curr = dl_att[k] ) {
 
@@ -643,7 +643,7 @@ static  void    put_lay_docnum( FILE * layfile, layout_data * lay )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":DOCNUM\n" );
+    fprintf( layfile, ":DOCNUM\n" );
 
     for( k = 0, curr = docnum_att[k]; curr > 0; k++, curr = docnum_att[k] ) {
 
@@ -682,7 +682,7 @@ static  void    put_lay_fig( FILE * layfile, layout_data * lay )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":FIG\n" );
+    fprintf( layfile, ":FIG\n" );
 
     for( k = 0, curr = fig_att[k]; curr > 0; k++, curr = fig_att[k] ) {
 
@@ -727,7 +727,7 @@ static  void    put_lay_figcap( FILE * layfile, layout_data * lay )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":FIGCAP\n" );
+    fprintf( layfile, ":FIGCAP\n" );
 
     for( k = 0, curr = figcap_att[k]; curr > 0; k++, curr = figcap_att[k] ) {
 
@@ -763,7 +763,7 @@ static  void    put_lay_figdesc( FILE * layfile, layout_data * lay )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":FIGDESC\n" );
+    fprintf( layfile, ":FIGDESC\n" );
 
     for( k = 0, curr = figdesc_att[k]; curr > 0; k++, curr = figdesc_att[k] ) {
 
@@ -790,7 +790,7 @@ static  void    put_lay_figlist( FILE * layfile, layout_data * lay )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":FIGLIST\n" );
+    fprintf( layfile, ":FIGLIST\n" );
 
     for( k = 0, curr = figlist_att[k]; curr > 0; k++, curr = figlist_att[k] ) {
 
@@ -829,7 +829,7 @@ static  void    put_lay_flpgnum( FILE * layfile, layout_data * lay )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":FLPGNUM\n" );
+    fprintf( layfile, ":FLPGNUM\n" );
 
     for( k = 0, curr = flpgnum_att[k]; curr > 0; k++, curr = flpgnum_att[k] ) {
 
@@ -856,7 +856,7 @@ static  void    put_lay_fn( FILE * layfile, layout_data * lay )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":FN\n" );
+    fprintf( layfile, ":FN\n" );
 
     for( k = 0, curr = fn_att[k]; curr > 0; k++, curr = fn_att[k] ) {
 
@@ -904,7 +904,7 @@ static  void    put_lay_fnref( FILE * layfile, layout_data * lay )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":FNREF\n" );
+    fprintf( layfile, ":FNREF\n" );
 
     for( k = 0, curr = fnref_att[k]; curr > 0; k++, curr = fnref_att[k] ) {
 
@@ -935,7 +935,7 @@ static  void    put_lay_gl( FILE * layfile, layout_data * lay )
     gl_layout = lay->gl.first;
 
     while( gl_layout != NULL ) {
-        fprintf_s( layfile, ":GL\n" );
+        fprintf( layfile, ":GL\n" );
 
         for( k = 0, curr = gl_att[k]; curr > 0; k++, curr = gl_att[k] ) {
 
@@ -988,7 +988,7 @@ static  void    put_lay_hx( FILE * layfile, layout_data * lay )
 
     for( lvl = 0; lvl < 7; ++lvl ) {
 
-        fprintf_s( layfile, ":H%c\n", '0' + lvl );
+        fprintf( layfile, ":H%c\n", '0' + lvl );
 
         for( k = 0, curr = hx_att[k]; curr > 0; k++, curr = hx_att[k] ) {
 
@@ -1061,7 +1061,7 @@ static  void    put_lay_heading( FILE * layfile, layout_data * lay )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":HEADING\n" );
+    fprintf( layfile, ":HEADING\n" );
 
     for( k = 0, curr = heading_att[k]; curr > 0; k++, curr = heading_att[k] ) {
         switch( curr ) {
@@ -1099,7 +1099,7 @@ static  void    put_lay_ix( FILE * layfile, layout_data * lay )
 
     for( lvl = 0; lvl < 3; ++lvl ) {
 
-        fprintf_s( layfile, ":I%c\n", '1' + lvl );
+        fprintf( layfile, ":I%c\n", '1' + lvl );
 
         for( k = 0, curr = ix_att[k]; curr > 0; k++, curr = ix_att[k] ) {
             switch( curr ) {
@@ -1146,7 +1146,7 @@ static  void    put_lay_index( FILE * layfile, layout_data * lay )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":INDEX\n" );
+    fprintf( layfile, ":INDEX\n" );
 
     for( k = 0, curr = index_att[k]; curr > 0; k++, curr = index_att[k] ) {
 
@@ -1206,7 +1206,7 @@ static  void    put_lay_ixhead( FILE * layfile, layout_data * lay )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":IXHEAD\n" );
+    fprintf( layfile, ":IXHEAD\n" );
 
     for( k = 0, curr = ixhead_att[k]; curr > 0; k++, curr = ixhead_att[k] ) {
 
@@ -1246,7 +1246,7 @@ static  void    put_lay_lp( FILE * layfile, layout_data * lay )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":LP\n" );
+    fprintf( layfile, ":LP\n" );
 
     for( k = 0, curr = lp_att[k]; curr > 0; k++, curr = lp_att[k] ) {
 
@@ -1285,7 +1285,7 @@ static  void    put_lay_lq( FILE * layfile, layout_data * lay )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":LQ\n" );
+    fprintf( layfile, ":LQ\n" );
 
     for( k = 0, curr = lq_att[k]; curr > 0; k++, curr = lq_att[k] ) {
 
@@ -1324,7 +1324,7 @@ static  void    put_lay_note( FILE * layfile, layout_data * lay )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":NOTE\n" );
+    fprintf( layfile, ":NOTE\n" );
 
     for( k = 0, curr = note_att[k]; curr > 0; k++, curr = note_att[k] ) {
 
@@ -1370,7 +1370,7 @@ static  void    put_lay_ol( FILE * layfile, layout_data * lay )
     ol_layout = lay->ol.first;
 
     while( ol_layout != NULL ) {
-        fprintf_s( layfile, ":OL\n" );
+        fprintf( layfile, ":OL\n" );
 
         for( k = 0, curr = ol_att[k]; curr > 0; k++, curr = ol_att[k] ) {
 
@@ -1427,7 +1427,7 @@ static  void    put_lay_page( FILE * layfile, layout_data * lay )
     lay_att         curr;
     su          *   units;
 
-    fprintf_s( layfile, ":PAGE\n" );
+    fprintf( layfile, ":PAGE\n" );
 
     for( k = 0, curr = page_att[k]; curr > 0; k++, curr = page_att[k] ) {
 
@@ -1462,7 +1462,7 @@ static  void    put_lay_p_pc( FILE * layfile, p_lay_tag * ap, char * name )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":%s\n", name );
+    fprintf( layfile, ":%s\n", name );
 
     for( k = 0, curr = p_att[k]; curr > 0; k++, curr = p_att[k] ) {
 
@@ -1505,7 +1505,7 @@ static  void    put_lay_sl( FILE * layfile, layout_data * lay )
     sl_layout = lay->sl.first;
 
     while( sl_layout != NULL ) {
-        fprintf_s( layfile, ":SL\n" );
+        fprintf( layfile, ":SL\n" );
 
         for( k = 0, curr = sl_att[k]; curr > 0; k++, curr = sl_att[k] ) {
 
@@ -1552,7 +1552,7 @@ static  void    put_lay_title( FILE * layfile, layout_data * lay )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":TITLE\n" );
+    fprintf( layfile, ":TITLE\n" );
 
     for( k = 0, curr = title_att[k]; curr > 0; k++, curr = title_att[k] ) {
 
@@ -1591,7 +1591,7 @@ static  void    put_lay_titlep( FILE * layfile, layout_data * lay )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":TITLEP\n" );
+    fprintf( layfile, ":TITLEP\n" );
 
     for( k = 0, curr = titlep_att[k]; curr > 0; k++, curr = titlep_att[k] ) {
 
@@ -1618,7 +1618,7 @@ static  void    put_lay_toc( FILE * layfile, layout_data * lay )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":TOC\n" );
+    fprintf( layfile, ":TOC\n" );
 
     for( k = 0, curr = toc_att[k]; curr > 0; k++, curr = toc_att[k] ) {
 
@@ -1657,7 +1657,7 @@ static  void    put_lay_tocpgnum( FILE * layfile, layout_data * lay )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":TOCPGNUM\n" );
+    fprintf( layfile, ":TOCPGNUM\n" );
 
     for( k = 0, curr = tocpgnum_att[k]; curr > 0; k++, curr = tocpgnum_att[k] ) {
 
@@ -1688,7 +1688,7 @@ static  void    put_lay_tochx( FILE * layfile, layout_data * lay )
     for( lvl = 0; lvl < 7; ++lvl ) {
 
 
-        fprintf_s( layfile, ":TOCH%c\n", '0' + lvl );
+        fprintf( layfile, ":TOCH%c\n", '0' + lvl );
 
         for( k = 0, curr = tochx_att[k]; curr > 0; k++, curr = tochx_att[k] ) {
 
@@ -1739,7 +1739,7 @@ static  void    put_lay_ul( FILE * layfile, layout_data * lay )
     ul_layout = lay->ul.first;
 
     while( ul_layout != NULL ) {
-        fprintf_s( layfile, ":UL\n" );
+        fprintf( layfile, ":UL\n" );
 
         for( k = 0, curr = ul_att[k]; curr > 0; k++, curr = ul_att[k] ) {
 
@@ -1798,7 +1798,7 @@ static  void    put_lay_widow( FILE * layfile, layout_data * lay )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":WIDOW\n" );
+    fprintf( layfile, ":WIDOW\n" );
 
     for( k = 0, curr = widow_att[k]; curr > 0; k++, curr = widow_att[k] ) {
 
@@ -1822,7 +1822,7 @@ static  void    put_lay_xmp( FILE * layfile, layout_data * lay )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":XMP\n" );
+    fprintf( layfile, ":XMP\n" );
 
     for( k = 0, curr = xmp_att[k]; curr > 0; k++, curr = xmp_att[k] ) {
 
@@ -1861,7 +1861,7 @@ static  void    put_lay_xx( FILE * layfile, font_number *font, char * name )
     int                 k;
     lay_att             curr;
 
-    fprintf_s( layfile, ":%s\n", name );
+    fprintf( layfile, ":%s\n", name );
 
     for( k = 0, curr = xx_att[k]; curr > 0; k++, curr = xx_att[k] ) {
 
@@ -1924,61 +1924,61 @@ static  void    put_lay_ixmajor( FILE * layfile, layout_data * lay )
 static  void    put_lay_letter_unsupported( FILE * layfile )
 {
 
-    fprintf_s( layfile, ":FROM\n");
-    fprintf_s( layfile, "        left_adjust = 0\n");
-    fprintf_s( layfile, "        page_position = right\n");
-    fprintf_s( layfile, "        pre_top_skip = 6\n");
-    fprintf_s( layfile, "        font = 0\n");
+    fprintf( layfile, ":FROM\n");
+    fprintf( layfile, "        left_adjust = 0\n");
+    fprintf( layfile, "        page_position = right\n");
+    fprintf( layfile, "        pre_top_skip = 6\n");
+    fprintf( layfile, "        font = 0\n");
 
-    fprintf_s( layfile, ":TO\n");
-    fprintf_s( layfile, "        left_adjust = 0\n");
-    fprintf_s( layfile, "        page_position = left\n");
-    fprintf_s( layfile, "        pre_top_skip = 1\n");
-    fprintf_s( layfile, "        font = 0\n");
+    fprintf( layfile, ":TO\n");
+    fprintf( layfile, "        left_adjust = 0\n");
+    fprintf( layfile, "        page_position = left\n");
+    fprintf( layfile, "        pre_top_skip = 1\n");
+    fprintf( layfile, "        font = 0\n");
 
-    fprintf_s( layfile, ":ATTN\n");
-    fprintf_s( layfile, "        left_adjust = 0\n");
-    fprintf_s( layfile, "        page_position = left\n");
-    fprintf_s( layfile, "        pre_top_skip = 1\n");
-    fprintf_s( layfile, "        font = 1\n");
-    fprintf_s( layfile, "        attn_string = \"Attention: \"\n");
-    fprintf_s( layfile, "        string_font = 1\n");
+    fprintf( layfile, ":ATTN\n");
+    fprintf( layfile, "        left_adjust = 0\n");
+    fprintf( layfile, "        page_position = left\n");
+    fprintf( layfile, "        pre_top_skip = 1\n");
+    fprintf( layfile, "        font = 1\n");
+    fprintf( layfile, "        attn_string = \"Attention: \"\n");
+    fprintf( layfile, "        string_font = 1\n");
 
-    fprintf_s( layfile, ":SUBJECT\n");
-    fprintf_s( layfile, "        left_adjust = 0\n");
-    fprintf_s( layfile, "        page_position = centre\n");
-    fprintf_s( layfile, "        pre_top_skip = 2\n");
-    fprintf_s( layfile, "        font = 1\n");
+    fprintf( layfile, ":SUBJECT\n");
+    fprintf( layfile, "        left_adjust = 0\n");
+    fprintf( layfile, "        page_position = centre\n");
+    fprintf( layfile, "        pre_top_skip = 2\n");
+    fprintf( layfile, "        font = 1\n");
 
-    fprintf_s( layfile, ":LETDATE\n");
-    fprintf_s( layfile, "        date_form = \"$ml $dsn, $yl\"\n");
-    fprintf_s( layfile, "        depth = 15\n");
-    fprintf_s( layfile, "        font = 0\n");
-    fprintf_s( layfile, "        page_position = right\n");
+    fprintf( layfile, ":LETDATE\n");
+    fprintf( layfile, "        date_form = \"$ml $dsn, $yl\"\n");
+    fprintf( layfile, "        depth = 15\n");
+    fprintf( layfile, "        font = 0\n");
+    fprintf( layfile, "        page_position = right\n");
 
-    fprintf_s( layfile, ":OPEN\n");
-    fprintf_s( layfile, "        pre_top_skip = 2\n");
-    fprintf_s( layfile, "        font = 0\n");
-    fprintf_s( layfile, "        delim = ':'\n");
+    fprintf( layfile, ":OPEN\n");
+    fprintf( layfile, "        pre_top_skip = 2\n");
+    fprintf( layfile, "        font = 0\n");
+    fprintf( layfile, "        delim = ':'\n");
 
-    fprintf_s( layfile, ":CLOSE\n");
-    fprintf_s( layfile, "        pre_skip = 2\n");
-    fprintf_s( layfile, "        depth = 6\n");
-    fprintf_s( layfile, "        font = 0\n");
-    fprintf_s( layfile, "        page_position = centre\n");
-    fprintf_s( layfile, "        delim = ','\n");
-    fprintf_s( layfile, "        extract_threshold = 2\n");
+    fprintf( layfile, ":CLOSE\n");
+    fprintf( layfile, "        pre_skip = 2\n");
+    fprintf( layfile, "        depth = 6\n");
+    fprintf( layfile, "        font = 0\n");
+    fprintf( layfile, "        page_position = centre\n");
+    fprintf( layfile, "        delim = ','\n");
+    fprintf( layfile, "        extract_threshold = 2\n");
 
-    fprintf_s( layfile, ":ECLOSE\n");
-    fprintf_s( layfile, "        pre_skip = 1\n");
-    fprintf_s( layfile, "        font = 0\n");
+    fprintf( layfile, ":ECLOSE\n");
+    fprintf( layfile, "        pre_skip = 1\n");
+    fprintf( layfile, "        font = 0\n");
 
-    fprintf_s( layfile, ":DISTRIB\n");
-    fprintf_s( layfile, "        pre_top_skip = 3\n");
-    fprintf_s( layfile, "        skip = 1\n");
-    fprintf_s( layfile, "        font = 0\n");
-    fprintf_s( layfile, "        indent = '0.5i'\n");
-    fprintf_s( layfile, "        page_eject = no\n");
+    fprintf( layfile, ":DISTRIB\n");
+    fprintf( layfile, "        pre_top_skip = 3\n");
+    fprintf( layfile, "        skip = 1\n");
+    fprintf( layfile, "        font = 0\n");
+    fprintf( layfile, "        indent = '0.5i'\n");
+    fprintf( layfile, "        page_eject = no\n");
 }
 
 
@@ -1996,10 +1996,10 @@ static  void    put_layout( char * name, layout_data * lay )
         return;
     }
 
-    fprintf_s( layfile, ":LAYOUT\n" );
+    fprintf( layfile, ":LAYOUT\n" );
 //  if( WgmlFlags.research ) {
         find_symvar( global_dict, "$version", no_subscript, &sversion );
-        fprintf_s( layfile, ":cmt. Created with %s\n", sversion->value );
+        fprintf( layfile, ":cmt. Created with %s\n", sversion->value );
 //  }
 
     put_lay_page( layfile, lay );
@@ -2057,7 +2057,7 @@ static  void    put_layout( char * name, layout_data * lay )
     put_lay_gl( layfile, lay );
     put_lay_banner( layfile, lay );
 
-    fprintf_s( layfile, ":eLAYOUT\n" );
+    fprintf( layfile, ":eLAYOUT\n" );
 
     fclose( layfile );
 }

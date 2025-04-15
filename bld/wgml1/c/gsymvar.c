@@ -597,7 +597,7 @@ int add_symvar_addr( sym_dict_hdl dict, char * name, char * val,
     } else {
         rc = find_symvar_del( dict, name, subscript, &newsub, &new );
         switch ( rc ) {
-        case -1 :                       // deleted symbol found
+        case -1:                       // deleted symbol found
             new->flags &= ~deleted;     // reset deleted switch
             ok = add_symvar_sub( new, val, subscript, sub );
             if( !ok ) {
@@ -611,7 +611,7 @@ int add_symvar_addr( sym_dict_hdl dict, char * name, char * val,
                 }
             }
             break;
-        case 0 :                        // nothing found
+        case 0:                        // nothing found
             add_symsym( dict, name, f, &new );
             ok = add_symvar_sub( new, val, subscript, sub );
             if( !ok ) {
@@ -625,7 +625,7 @@ int add_symvar_addr( sym_dict_hdl dict, char * name, char * val,
                 }
             }
             break;
-        case 1 :                        // symbol found, but not subscript
+        case 1:                        // symbol found, but not subscript
             newsub->base->flags &= ~deleted;// reset deleted switch
             newsub->base->flags |= f;   // use flags given
             ok = add_symvar_sub( newsub->base, val, subscript, sub );
@@ -640,7 +640,7 @@ int add_symvar_addr( sym_dict_hdl dict, char * name, char * val,
                 }
             }
             break;
-        case 2 :              // symbol + subscript found, or not subscripted
+        case 2:              // symbol + subscript found, or not subscripted
             newsub->base->flags &= ~deleted;// reset deleted switch
             newsub->base->flags |= f;   // use flags given
             if( (newsub->base->flags & ro)

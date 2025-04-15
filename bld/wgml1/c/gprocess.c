@@ -229,7 +229,7 @@ static void split_at_GML_tag( void )
                         SkipSpacesTabs( p );
                         if( p == pchar ) {  // only leading blanks
                             memmove_s( buff2, buf_size, pchar, buf_size - (p - buff2) );
-                            buff2_lg = strnlen_s( buff2, buf_size );// new length
+                            buff2_lg = strlen( buff2 );             // new length
                             pchar = strchr( buff2 + 1, GML_char );  // try next GMLchar
                             continue;       // dummy split done try again
                         }
@@ -976,7 +976,7 @@ void process_line( void )
 
     reclassify_record( *buff2 );    // reclassify SCRIPT/text after symbol substitution etc
 
-    buff2_lg = strnlen_s( buff2, buf_size );
+    buff2_lg = strlen( buff2 );
 
     if( (input_cbs->fmflags & II_research)
       && WgmlFlags.firstpass

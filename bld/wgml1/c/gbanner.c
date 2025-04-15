@@ -104,26 +104,26 @@ void set_banners( void )
             for( k = 0; k < max_ban; k++ ) {
                 if( ban->docsect == ban_2_tag[k].ban_tag ) {// tag found
                     switch( ban->place ) {
-                    case   top_place :
+                    case   top_place:
                         ban_top[k][0] = ban;
                         ban_top[k][1] = ban;
                         break;
-                    case   bottom_place :
+                    case   bottom_place:
                         ban_bot[k][0] = ban;
                         ban_bot[k][1] = ban;
                         break;
 
-                    case   topodd_place :
+                    case   topodd_place:
                         ban_top[k][1] = ban;
                         break;
-                    case   topeven_place :
+                    case   topeven_place:
                         ban_top[k][0] = ban;
                         break;
 
-                    case   botodd_place :
+                    case   botodd_place:
                         ban_bot[k][1] = ban;
                         break;
-                    case   boteven_place :
+                    case   boteven_place:
                         ban_bot[k][0] = ban;
                         break;
                     default:
@@ -181,16 +181,16 @@ void set_pgnum_style( void )
 
     for( i = 0; i < pns_max; i++ ) {
         switch( i ) {
-        case pns_abstract :
+        case pns_abstract:
             ban_offset = abstract_ban;
             break;
-        case pns_appendix :
+        case pns_appendix:
             ban_offset = appendix_ban;
             break;
-        case pns_backm :
+        case pns_backm:
             ban_offset = backm_ban;
             break;
-        case pns_body :
+        case pns_body:
             ban_offset = body_ban;
             break;
         }
@@ -281,7 +281,7 @@ static void content_reg( region_lay_tag * region )
                 process_late_subst( buf );
             }
             break;
-        case author_content :
+        case author_content:
             rc = find_symvar( global_dict, "$author", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -290,7 +290,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "author" );
             }
             break;
-        case bothead_content :
+        case bothead_content:
             rc = find_symvar( global_dict, "$bothead", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -299,7 +299,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$bothead" );
             }
             break;
-        case date_content :
+        case date_content:
             /* This matches what wgml 4.0 actually does */
             rc = find_symvar( global_dict, "date", no_subscript, &symsubval );
             if( rc == 2 ){  // tag DATE used
@@ -315,7 +315,7 @@ static void content_reg( region_lay_tag * region )
                 }
             }
             break;
-        case docnum_content :
+        case docnum_content:
             rc = find_symvar( global_dict, "$docnum", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -324,7 +324,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$docnum" );
             }
             break;
-        case head0_content :
+        case head0_content:
             rc = find_symvar( global_dict, "$head0", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -333,7 +333,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$head0" );
             }
             break;
-        case head1_content :
+        case head1_content:
             rc = find_symvar( global_dict, "$head1", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -342,7 +342,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$head1" );
             }
             break;
-        case head2_content :
+        case head2_content:
             rc = find_symvar( global_dict, "$head2", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -351,7 +351,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$head2" );
             }
             break;
-        case head3_content :
+        case head3_content:
             rc = find_symvar( global_dict, "$head3", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -360,7 +360,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$head3" );
             }
             break;
-        case head4_content :
+        case head4_content:
             rc = find_symvar( global_dict, "$head4", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -369,7 +369,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$head4" );
             }
             break;
-        case head5_content :
+        case head5_content:
             rc = find_symvar( global_dict, "$head5", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -378,7 +378,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$head5" );
             }
             break;
-        case head6_content :
+        case head6_content:
             rc = find_symvar( global_dict, "$head6", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -387,7 +387,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$head6" );
             }
             break;
-        case headnum0_content :
+        case headnum0_content:
             rc = find_symvar( global_dict, "$hnum0", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -396,7 +396,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$hnum0" );
             }
             break;
-        case headnum1_content :
+        case headnum1_content:
             rc = find_symvar( global_dict, "$hnum1", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -405,7 +405,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$hnum1" );
             }
             break;
-        case headnum2_content :
+        case headnum2_content:
             rc = find_symvar( global_dict, "$hnum2", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -414,7 +414,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$hnum2" );
             }
             break;
-        case headnum3_content :
+        case headnum3_content:
             rc = find_symvar( global_dict, "$hnum3", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -423,7 +423,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$hnum3" );
             }
             break;
-        case headnum4_content :
+        case headnum4_content:
             rc = find_symvar( global_dict, "$hnum4", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -432,7 +432,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$hnum4" );
             }
             break;
-        case headnum5_content :
+        case headnum5_content:
             rc = find_symvar( global_dict, "$hnum5", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -441,7 +441,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$hnum5" );
             }
             break;
-        case headnum6_content :
+        case headnum6_content:
             rc = find_symvar( global_dict, "$hnum6", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -450,7 +450,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$hnum6" );
             }
             break;
-        case headtext0_content :
+        case headtext0_content:
             rc = find_symvar( global_dict, "$htext0", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -459,7 +459,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$htext0" );
             }
             break;
-        case headtext1_content :
+        case headtext1_content:
             rc = find_symvar( global_dict, "$htext1", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -468,7 +468,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$htext1" );
             }
             break;
-        case headtext2_content :
+        case headtext2_content:
             rc = find_symvar( global_dict, "$htext2", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -477,7 +477,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$htext2" );
             }
             break;
-        case headtext3_content :
+        case headtext3_content:
             rc = find_symvar( global_dict, "$htext3", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -486,7 +486,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$htext3" );
             }
             break;
-        case headtext4_content :
+        case headtext4_content:
             rc = find_symvar( global_dict, "$htext4", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -495,7 +495,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$htext4" );
             }
             break;
-        case headtext5_content :
+        case headtext5_content:
             rc = find_symvar( global_dict, "$htext5", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -504,7 +504,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$htext5" );
             }
             break;
-        case headtext6_content :
+        case headtext6_content:
             rc = find_symvar( global_dict, "$htext6", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -513,7 +513,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$htext6" );
             }
             break;
-        case pgnuma_content :
+        case pgnuma_content:
             rc = find_symvar( global_dict, "$pgnuma", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -522,7 +522,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$pgnuma" );
             }
             break;
-        case pgnumad_content :
+        case pgnumad_content:
             rc = find_symvar( global_dict, "$pgnumad", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -531,7 +531,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$pgnumad" );
             }
             break;
-        case pgnumc_content :
+        case pgnumc_content:
             rc = find_symvar( global_dict, "$pgnumc", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -540,7 +540,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$pgnumc" );
             }
             break;
-        case pgnumcd_content :
+        case pgnumcd_content:
             rc = find_symvar( global_dict, "$pgnumcd", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -549,7 +549,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$pgnumcd" );
             }
             break;
-        case pgnumr_content :
+        case pgnumr_content:
             rc = find_symvar( global_dict, "$pgnumr", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -558,7 +558,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$pgnumr" );
             }
             break;
-        case pgnumrd_content :
+        case pgnumrd_content:
             rc = find_symvar( global_dict, "$pgnumrd", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -567,7 +567,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$pgnumrd" );
             }
             break;
-        case sec_content :
+        case sec_content:
             rc = find_symvar( global_dict, "$sec", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -576,7 +576,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$sec" );
             }
             break;
-        case stitle_content :
+        case stitle_content:
             rc = find_symvar( global_dict, "$stitle", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -585,7 +585,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$stitle" );
             }
             break;
-        case title_content :
+        case title_content:
             rc = find_symvar( global_dict, "$title", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -594,7 +594,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$title" );
             }
             break;
-        case time_content :
+        case time_content:
             rc = find_symvar( global_dict, "$time", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -603,7 +603,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$time" );
             }
             break;
-        case tophead_content :
+        case tophead_content:
             rc = find_symvar( global_dict, "$tophead", no_subscript, &symsubval );
             if( rc == 2 ) {
                 strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
@@ -612,7 +612,7 @@ static void content_reg( region_lay_tag * region )
                 strcpy( buf, "$tophead" );
             }
             break;
-        case no_content :                   // empty region
+        case no_content:                   // empty region
             break;
         default:
             internal_err( __FILE__, __LINE__ );
