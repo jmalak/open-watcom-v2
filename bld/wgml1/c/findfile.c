@@ -37,6 +37,8 @@
 #include "clibext.h"
 
 
+char    try_file_name[_MAX_PATH];
+
 /* Local struct. */
 
 /* The count contains the number of entries in directories. */
@@ -246,7 +248,7 @@ static char *search_member_name( const char *dir, const char *filename )
     if( fp == NULL ) {
         return( NULL );
     }
-    member_name = get_member_name( fp, filename );
+    member_name = get_member_name( fp, buff, filename );
     fclose( fp );
     return( member_name );
 

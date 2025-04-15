@@ -235,7 +235,7 @@ static entry_found get_extended_entry( FILE *fp, directory_entry *entry )
  *      the comparison is not case-sensitive for compatability with wgml 4.0.
  */
 
-char *get_member_name( FILE *fp, char const *in_name )
+char *get_member_name( FILE *fp, const char *fname, const char *in_name )
 {
     char            *member_name = NULL;
     cop_file_type   file_type;
@@ -251,7 +251,7 @@ char *get_member_name( FILE *fp, char const *in_name )
 
         /* File error, including premature eof. */
 
-        xx_simple_err_c( err_dev_lib_file, try_file_name );
+        xx_simple_err_c( err_dev_lib_file, fname );
         break;
 
     case not_se_v4_1:
@@ -266,7 +266,7 @@ char *get_member_name( FILE *fp, char const *in_name )
 
         /* Wrong type of file: something is wrong with the device library. */
 
-        xx_simple_err_c( err_dev_lib_data, try_file_name );
+        xx_simple_err_c( err_dev_lib_data, fname );
         break;
 
     case dir_v4_1_se:
