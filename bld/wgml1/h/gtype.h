@@ -853,14 +853,13 @@ typedef enum functs {
 
 typedef enum e_tags {
     t_NONE,
-    #define pickg( name, length, routine, gmlflags, locflags, classname )  t_##name,
+    #define pickc( name, length, gmlfunc, gmlflags, gmllocflags, clsflags, layfunc, layflags, laylocflags ) t_##name,
+    #define pickg( name, length, gmlfunc, gmlflags, gmllocflags, clsflags ) t_##name,
+    #define pickl( name, length, layfunc, layflags, laylocflags ) // t_##name,
     #include "gtags.h"
+    #undef pickl
     #undef pickg
-//    #define picklab( name, routine, flags )  t_label,
-//    #define picks( name, routine, flags )  t_##name,
-//    #include "gscrcws.h" TBD
-//    #undef picks
-//    #undef picklab
+    #undef pickc
     t_MAX                               // the last one for range check
 } e_tags;
 
@@ -1116,8 +1115,8 @@ typedef struct {
             int32_t         xoff;
             int32_t         yoff;
             bool            at_top;
-    struct  eol_ix      *   eol_index;
-            FILE        *   fp;
+    struct  eol_ix          *eol_index;
+            FILE            *fp;
             font_number     next_font;
             char            *short_name;
             char            *filename;

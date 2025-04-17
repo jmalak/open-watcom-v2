@@ -18,6 +18,19 @@
 #define MAX_ERR_LEN     1020
 #define MAX_LINE_LEN    75
 
+
+const char    *str_tags[] = {
+    { "NONE" },
+    #define pickc( name, length, gmlfunc, gmlflags, gmllocflags, clsflags, layfunc, layflags, laylocflags ) { #name },
+    #define pickg( name, length, gmlfunc, gmlflags, gmllocflags, clsflags ) { #name },
+    #define pickl( name, length, layfunc, layflags, laylocflags ) // { #name },
+    #include "gtags.h"
+    #undef pickl
+    #undef pickg
+    #undef pickc
+    { "MAX" }
+};
+
 static  char    err_buf[MAX_ERR_LEN + 2];   // +2 for \n and \0
 static  char    str_buf[MAX_ERR_LEN + 2];
 

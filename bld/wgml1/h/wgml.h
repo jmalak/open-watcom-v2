@@ -522,20 +522,19 @@ extern  void    show_include_stack( void );
 
 
 /*
- * prototypes for the gml tag processing routines
+ * prototypes for the gml + layout tag processing routines
  */
-
-#define pickg( name, length, routine, gmlflags, locflags, classflags )  extern void routine( const gmltag * entry );
+#define pickc( name, length, gmlfunc, gmlflags, gmllocflags, clsflags, layfunc, layflags, laylocflags ) \
+    extern void gmlfunc( const gmltag *entry ); \
+    extern void layfunc( const gmltag *entry );
+#define pickg( name, length, gmlfunc, gmlflags, gmllocflags, clsflags ) \
+    extern void gmlfunc( const gmltag *entry );
+#define pickl( name, length, layfunc, layflags, laylocflags ) \
+    extern void layfunc( const gmltag *entry );
 #include "gtags.h"
+#undef pickl
 #undef pickg
-
-/*
- * prototypes for the layout tag processing routines
- */
-
-#define pick( name, length, routine, gmlflags, locflags )  extern void routine( const gmltag * entry );
-#include "gtagslay.h"
-#undef pick
+#undef pickc
 
 /*
  * prototypes for the layout tag attribute processing routines

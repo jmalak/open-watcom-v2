@@ -282,26 +282,6 @@ global  uint32_t    msg_indent;         // indent for message output (to screen,
 global script_style_info    script_style;   // BD/US etc scope control
 
 /***************************************************************************/
-/*  tagnames as strings for msg display                                    */
-/***************************************************************************/
-global char str_tags[t_MAX + 1][10]
-#if defined(tag_strings)
-  = {
-    { "NONE" },
-    #define pickg( name, length, routine, gmlflags, locflags, classflags )  { #name },
-    #include "gtags.h"
-    #undef pickg
-//    #define picklab( name, routine, flags )  extern void routine( void );
-//    #define picks( name, routine, flags )  extern void routine( void );
-//    #include "gscrcws.h" TBD
-//    #undef picks
-//    #undef picklab
-    { "MAX" }
-}
-#endif
-;
-
-/***************************************************************************/
 /* The tab lists.                                                          */
 /***************************************************************************/
 
@@ -315,6 +295,12 @@ global  tab_list        user_tabs;  // for tabs defined by control word TB
 global  int32_t         lay_ind;        // index into lay_tab for attribute processing
 global  layout_data     layout_work;    // layout used for formatting
 global  laystack    *   lay_files;      // layout file(s) specified on cmdline
+
+/***************************************************************************/
+/*  tagnames as strings for msg display                                    */
+/***************************************************************************/
+
+extern const char       *str_tags[];
 
 /***************************************************************************/
 /*  document sections for banner definition                                */
