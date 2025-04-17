@@ -19,10 +19,14 @@
 /***************************************************************************/
 
 static  const   gmltag  gml_tags[] = {
-    #define pickg( name, length, routine, gmlflags, locflags, classflags ) { #name, length, routine, gmlflags, locflags, classflags },
+    #define pickc( name, length, gmlfunc, gmlflags, gmllocflags, clsflags, layfunc, layflags, laylocflags ) { #name, length, gmlfunc, gmlflags, gmllocflags, clsflags },
+    #define pickg( name, length, gmlfunc, gmlflags, gmllocflags, clsflags ) { #name, length, gmlfunc, gmlflags, gmllocflags, clsflags },
+    #define pickl( name, length, layfunc, layflags, laylocflags )
     #include "gtags.h"
+    #undef pickl
     #undef pickg
-    { "   ", 0, NULL, 0, 0 }            // end
+    #undef pickc
+    { "   ", 0, NULL, 0, 0, 0 }     // end
 };
 
 #define GML_TAGMAX  (sizeof( gml_tags ) / sizeof( gml_tags[0] ) - 1)
@@ -32,9 +36,13 @@ static  const   gmltag  gml_tags[] = {
 /***************************************************************************/
 
 static  const   gmltag  lay_tags[] = {
-    #define pick( name, length, routine, gmlflags, locflags ) { #name, length, routine, gmlflags, locflags },
-    #include "gtagslay.h"
-    #undef pick
+    #define pickc( name, length, gmlfunc, gmlflags, gmllocflags, clsflags, layfunc, layflags, laylocflags ) { #name, length, layfunc, layflags, laylocflags },
+    #define pickg( name, length, gmlfunc, gmlflags, gmllocflags, clsflags )
+    #define pickl( name, length, layfunc, layflags, laylocflags ) { #name, length, layfunc, layflags, laylocflags },
+    #include "gtags.h"
+    #undef pickl
+    #undef pickg
+    #undef pickc
     { "   ", 0, NULL, 0, 0 }            // end
 
 };
