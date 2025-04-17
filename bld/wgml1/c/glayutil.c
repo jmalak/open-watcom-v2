@@ -167,8 +167,8 @@ condcode    get_attr_and_value( void )
                     process_line();
                     scan_start = buff2;
                     scan_stop  = buff2 + buff2_lg;
-                    if( (*scan_start == SCR_char) ||    // cw found: end-of-tag
-                        (*scan_start == GML_char) ) {   // tag found: end-of-tag
+                    if( (*scan_start == SCR_char)       // cw found: end-of-tag
+                      || (*scan_start == GML_char) ) {  // tag found: end-of-tag
                         ProcFlags.reprocess_line = true;
                         break;
                     } else {
@@ -215,7 +215,8 @@ condcode    get_attr_and_value( void )
             ++p;
         }
 
-        if( g_att_val.val_quoted && is_quote_char( *p ) ) {
+        if( g_att_val.val_quoted
+          && is_quote_char( *p ) ) {
             p++;                            // over terminating quote
         }
 
@@ -375,9 +376,11 @@ bool    i_char( char * p, lay_att curr, char * tm )
 {
     (void)curr;
 
-    if( is_quote_char( *p ) && (*p == *(p + 2)) ) {
+    if( is_quote_char( *p )
+      && (*p == *(p + 2)) ) {
         *tm = *(p + 1);                 // 2nd char if quoted
-    } else if( is_quote_char( *p ) && (*p == *(p + 1)) ) {
+    } else if( is_quote_char( *p )
+      && (*p == *(p + 1)) ) {
         *tm = ' ';                      // space if '' or ""
     } else {
         *tm = *p;                       // else 1st char
@@ -430,7 +433,8 @@ void    o_content( FILE * f, lay_att curr, const content * tm )
     const   char    * p;
     char              c;
 
-    if( tm->content_type >= no_content && tm->content_type < max_content) {
+    if( tm->content_type >= no_content
+      && tm->content_type < max_content) {
         p = tm->string;
         if( tm->content_type == string_content ) { // user string with quotes
             fprintf( f, "        %s = '", att_names[curr] );
@@ -536,7 +540,8 @@ void    o_docsect( FILE * f, lay_att curr, const ban_docsect * tm )
 {
     const   char    * p;
 
-    if( *tm >= no_ban && *tm < max_ban) {
+    if( *tm >= no_ban
+      && *tm < max_ban) {
         p = doc_sections[*tm].name;
     } else {
         p = "???";
@@ -744,7 +749,9 @@ bool    i_number_style( char * p, lay_att curr, num_style * tm )
     }
 
     p++;
-    if( !cvterr && *p != '\0' && (*p != ' ') ) {    // second letter
+    if( !cvterr
+      && *p != '\0'
+      && (*p != ' ') ) {    // second letter
         c = my_tolower( *p );
         switch( c ) {
         case 'd':
@@ -752,7 +759,8 @@ bool    i_number_style( char * p, lay_att curr, num_style * tm )
             break;
         case 'p':
             p++;
-            if( *p != '\0' && (*p != ' ') ) {   // third letter
+            if( *p != '\0'
+              && (*p != ' ') ) {   // third letter
                 c = my_tolower( *p );
                 switch( c ) {
                 case 'a':
@@ -887,7 +895,8 @@ bool    i_page_position( char * p, lay_att curr, page_pos * tm )
         *tm = pos_left;
     } else if( strnicmp( "right", p, 5 ) == 0 ) {
         *tm = pos_right;
-    } else if( strnicmp( "centre", p, 6 ) == 0 || strnicmp( "center", p, 6 ) == 0 ) {
+    } else if( strnicmp( "centre", p, 6 ) == 0
+      || strnicmp( "center", p, 6 ) == 0 ) {
         *tm = pos_center;
     } else {
         xx_line_err_c( err_inv_att_val, p );
@@ -1113,7 +1122,8 @@ bool    i_xx_string( char * p, lay_att curr, xx_str * tm )
     (void)curr;
 
     cvterr = false;
-    if( (val_start != NULL) && (val_len < str_size) ) {
+    if( (val_start != NULL)
+      && (val_len < str_size) ) {
         memcpy_s( tm, str_size, val_start, val_len );
         *(tm + val_len) = '\0';
     } else {

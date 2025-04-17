@@ -37,7 +37,7 @@ static gtentry  *add_tag_dict( tag_dict_hdl *dict )
 
 /***************************************************************************/
 /*  add_tag     add tag entry to dictionary                                */
-/*              if tag already defined error                               */
+/*              if tag already defined then error                          */
 /***************************************************************************/
 
 gtentry *add_tag( tag_dict_hdl *dict, const char *tagname, const char *macname, const int flags )
