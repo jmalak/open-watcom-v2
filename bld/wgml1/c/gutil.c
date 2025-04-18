@@ -952,9 +952,9 @@ char * format_num( uint32_t n, char * r, size_t rsize, num_style ns )
 /*       unless, of course, it is                                          */
 /***************************************************************************/
 
-char * get_att_start( char * p )
+char *get_att_start( char *p )
 {
-    char    * pa;
+    char    *pa;
 
     static  char      buf[BUF_SIZE];
 
@@ -1007,7 +1007,7 @@ char * get_att_start( char * p )
 /*     [<white space>]=[<white space>]<value>                              */
 /***************************************************************************/
 
-char * get_att_value( char * p )
+char *get_att_value( char *p )
 {
     char        quote;
 
@@ -1083,7 +1083,7 @@ char * get_att_value( char * p )
 /*       unless, of course, it is                                          */
 /***************************************************************************/
 
-char * get_attribute( char * p )
+char *get_attribute( char *p )
 {
     char    *   pa;
     int         i;

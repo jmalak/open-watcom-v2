@@ -126,10 +126,10 @@ static  void    free_macro_entry_short( mac_entry * me )
     labelcb     *   cb;
 
     if( me != NULL ) {
-        cb = me->label_cb;
         if( WgmlFlags.research ) {
-            print_labels( cb, me->macname );   // print label info
+            print_labels( me->label_cb, me->macname );   // print label info
         }
+        cb = me->label_cb;
         while( cb != NULL ) {
             me->label_cb = cb->prev;
             mem_free( cb );
@@ -159,10 +159,10 @@ void    free_macro_entry( mac_dict_hdl dict, mac_entry * me )
     int             hash;
 
     if( me != NULL ) {
-        cb = me->label_cb;
         if( WgmlFlags.research ) {
-            print_labels( cb, me->macname );// print label info
+            print_labels( me->label_cb, me->macname );// print label info
         }
+        cb = me->label_cb;
         while( cb != NULL ) {
             me->label_cb = cb->prev;
             mem_free( cb );
