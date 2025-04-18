@@ -633,8 +633,8 @@ static  void    proc_input( char * filename )
 
 static  void    print_stats( clock_t duration_ticks )
 {
-    char            linestr[30];
-    char            linestr2[30];
+    char            linestr[MAX_L_AS_STR];
+    char            linestr2[MAX_L_AS_STR + 3];
     ldiv_t          hour_min;
     ldiv_t          sec_frac;
     unsigned long   peak;

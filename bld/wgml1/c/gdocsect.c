@@ -528,8 +528,8 @@ static void set_cols( doc_pane * a_pane )
 
 static void gen_figlist( void )
 {
-    char            buffer[11];
-    char            postfix[12];
+    char            buffer[MAX_L_AS_STR];
+    char            postfix[MAX_L_AS_STR + 1];
     ffh_entry   *   curr;
     uint32_t        size;
 
@@ -607,8 +607,8 @@ static void gen_figlist( void )
             figlist_toc_tabs( layout_work.figlist.fill_string, size, true );
             process_text( "$", g_curr_font );
             format_num( curr->pageno, buffer, sizeof( buffer ), curr->style );
-            strcpy_s( postfix, 12, "$" );           // insert tab characters
-            strcat_s( postfix, 12, buffer );        // append page number
+            strcpy( postfix, "$" );           // insert tab characters
+            strcat( postfix, buffer );        // append page number
             g_curr_font = layout_work.flpgnum.font;
             process_text( postfix, g_curr_font );
             figlist_toc_tabs( layout_work.figlist.fill_string, size, false );
@@ -953,8 +953,8 @@ static void gen_index( void )
 static void gen_toc( void )
 {
     bool            levels[7];              // track levels
-    char            buffer[11];
-    char            postfix[12];
+    char            buffer[MAX_L_AS_STR];
+    char            postfix[MAX_L_AS_STR + 1];
     ffh_entry   *   curr;
     int             i;
     int             j;
@@ -1067,8 +1067,8 @@ static void gen_toc( void )
             figlist_toc_tabs( layout_work.toc.fill_string, size, true );
             process_text( "$", g_curr_font );
             format_num( curr->pageno, buffer, sizeof( buffer ), curr->style );
-            strcpy_s( postfix, 12, "$" );           // insert tab characters
-            strcat_s( postfix, 12, buffer );        // append page number
+            strcpy( postfix, "$" );           // insert tab characters
+            strcat( postfix, buffer );        // append page number
             g_curr_font = layout_work.tocpgnum.font;
             process_text( postfix, g_curr_font );
             figlist_toc_tabs( layout_work.toc.fill_string, size, false );
