@@ -390,11 +390,14 @@ static void output_spaces( size_t count )
     size_t  i;
 
     if( space_chars.length < count ) {
-        space_chars.text = mem_realloc( space_chars.text, count );
+        /*
+         * add space for null terminator, but don't count it in length
+         */
+        space_chars.text = mem_realloc( space_chars.text, count + 1 );
         space_chars.length = count;
-        for( i = 0; i < space_chars.length; i++ ) {
+        for( i = 0; i < space_chars.length; i++ )
             space_chars.text[i] = ' ';
-        }
+        space_chars.text[i] = '\0';
     }
 
     if( !text_out_open && ProcFlags.ps_device ) {
@@ -442,11 +445,14 @@ static void output_uscores( text_chars *in_chars )
     count /= uscore_width;
 
     if( uscore_chars.length < count ) {
-        uscore_chars.text = mem_realloc( uscore_chars.text, count );
+        /*
+         * add space for null terminator, but don't count it in length
+         */
+        uscore_chars.text = mem_realloc( uscore_chars.text, count + 1 );
         uscore_chars.length = count;
-        for( i = 0; i < uscore_chars.length; i++ ) {
+        for( i = 0; i < uscore_chars.length; i++ )
             uscore_chars.text[i] = uscore_char;
-        }
+        uscore_chars.text[i] = '\0';
     }
 
     ob_insert_block( uscore_chars.text, count, true, true, active_font );
@@ -3554,21 +3560,28 @@ void df_setup( void )
 
     /* Initialize space_chars to hold 80 space characters. */
 
-    space_chars.text = mem_alloc( 80 );
+    /*
+     * add space for null terminator, but don't count it in length
+     */
+    space_chars.text = mem_alloc( 80 + 1 );
     space_chars.length = 80;
     space_chars.current = 0;
     for( i = 0; i < space_chars.length; i++ )
         space_chars.text[i] = ' ';
+    space_chars.text[i] = '\0';
 
     /* Initialize uscore_chars to hold 80 :UNDERSCORE characters. */
 
     uscore_char = bin_device->underscore.underscore_char;
-    uscore_chars.text = mem_alloc( 80 );
+    /*
+     * add space for null terminator, but don't count it in length
+     */
+    uscore_chars.text = mem_alloc( 80 + 1 );
     uscore_chars.length = 80;
     uscore_chars.current = 0;
-    for( i = 0; i < uscore_chars.length; i++ ) {
+    for( i = 0; i < uscore_chars.length; i++ )
         uscore_chars.text[i] = uscore_char;
-    }
+    uscore_chars.text[i] = '\0';
 
     return;
 }

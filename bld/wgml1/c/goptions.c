@@ -844,7 +844,7 @@ static void set_layout( option * opt )
         laywk->next = NULL;
 
         split_attr_file( laywk->layfn, attrwork, sizeof( attrwork ) );
-        if( attrwork[0] ) {
+        if( attrwork[0] != '\0' ) {
             xx_warn_cc( wng_fileattr_ignored, attrwork, laywk->layfn );
         }
         if( lay_files == NULL ) {       // first file

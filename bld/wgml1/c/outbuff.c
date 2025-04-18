@@ -176,8 +176,7 @@ static void ob_insert_ps_text( const char *in_block, size_t count, font_number f
 
                             /* At this point, it is known that it will fit. */
 
-                            memcpy_s( &buffout.text[buffout.current],
-                                cur_trans->count, cur_trans->data, cur_trans->count );
+                            memcpy( &buffout.text[buffout.current], cur_trans->data, cur_trans->count );
                             buffout.current += cur_trans->count;
                         }
                     }
@@ -273,8 +272,7 @@ static void ob_insert_ps_cmd( const char *in_block, size_t count )
 
             /* Copy up the token and any initial space characters. */
 
-            memcpy_s( &buffout.text[buffout.current], tkn_end - spc_start,
-                      &in_block[spc_start], tkn_end - spc_start );
+            memcpy( &buffout.text[buffout.current], &in_block[spc_start], tkn_end - spc_start );
             buffout.current += tkn_end - spc_start;
             text_count -= tkn_end - spc_start;
             current = tkn_end;
@@ -295,8 +293,7 @@ static void ob_insert_ps_cmd( const char *in_block, size_t count )
     /* Insert any remaining text. */
 
     if( text_count > 0 ) {
-        memcpy_s( &buffout.text[buffout.current], text_count,
-                  &in_block[current], text_count );
+        memcpy( &buffout.text[buffout.current], &in_block[current], text_count );
         buffout.current += text_count;
     }
 
@@ -408,8 +405,7 @@ static void ob_insert_ps_cmd_ot( const char *in_block, size_t count, font_number
 
                             /* At this point, it is known that it will fit. */
 
-                            memcpy_s( &buffout.text[buffout.current],
-                                cur_trans->count, cur_trans->data, cur_trans->count );
+                            memcpy( &buffout.text[buffout.current], cur_trans->data, cur_trans->count );
                             buffout.current += cur_trans->count;
                         }
                     }
@@ -442,7 +438,10 @@ static void ob_insert_ps_cmd_ot( const char *in_block, size_t count, font_number
 
             if( k >= translated.length ) {
                 translated.length *= 2;
-                translated.text = mem_realloc( translated.text, translated.length );
+                /*
+                 * add space for null terminator, but don't count it in length
+                 */
+                translated.text = mem_realloc( translated.text, translated.length + 1 );
             }
 
             /* Add the non-space character to translated. */
@@ -489,11 +488,13 @@ static void ob_insert_ps_cmd_ot( const char *in_block, size_t count, font_number
 
                             if( (k + cur_trans->count) >= translated.length ) {
                                 translated.length *= 2;
-                                translated.text = mem_realloc( translated.text, translated.length );
+                                /*
+                                 * add space for null terminator, but don't count it in length
+                                 */
+                                translated.text = mem_realloc( translated.text, translated.length + 1 );
                             }
 
-                            memcpy_s( &translated.text[k], cur_trans->count,
-                                      cur_trans->data, cur_trans->count );
+                            memcpy( &translated.text[k], cur_trans->data, cur_trans->count );
                             k += cur_trans->count;
                         }
                     }
@@ -531,8 +532,7 @@ static void ob_insert_ps_cmd_ot( const char *in_block, size_t count, font_number
 
         /* Now insert the translated token into the buffer. */
 
-        memcpy_s( &buffout.text[buffout.current], translated.current,
-                  translated.text, translated.current );
+        memcpy( &buffout.text[buffout.current], translated.text, translated.current );
         buffout.current += translated.current;
         text_count -= translated.current;
     }
@@ -574,8 +574,7 @@ static void ob_insert_def( const char *in_block, size_t count )
         if( text_count <= difference )
             break;
 
-        memcpy_s( &buffout.text[buffout.current], difference,
-                  &in_block[current], difference );
+        memcpy( &buffout.text[buffout.current], &in_block[current], difference );
         buffout.current += difference;
         current += difference;
         text_count -= difference;
@@ -585,8 +584,7 @@ static void ob_insert_def( const char *in_block, size_t count )
     /* Insert any remaining text. */
 
     if( text_count > 0 ) {
-        memcpy_s( &buffout.text[buffout.current], text_count,
-                  &in_block[current], text_count );
+        memcpy( &buffout.text[buffout.current], &in_block[current], text_count );
         buffout.current += text_count;
     }
 
@@ -688,8 +686,7 @@ static void ob_insert_def_ot( const char *in_block, size_t count, font_number fo
 
                         /* At this point, it is known that it will fit. */
 
-                        memcpy_s( &buffout.text[buffout.current],
-                        cur_trans->count, cur_trans->data, cur_trans->count );
+                        memcpy( &buffout.text[buffout.current], cur_trans->data, cur_trans->count );
                         buffout.current += cur_trans->count;
                     }
                 }
@@ -911,7 +908,7 @@ static void set_out_file_attr( void )
 
                 len -= 1;
                 out_file_attr = mem_alloc( len );
-                memcpy_s( out_file_attr, len, &bin_driver->rec_spec[1], len - 1 );
+                strncpy( out_file_attr, &bin_driver->rec_spec[1], len - 1 );
                 out_file_attr[len - 1] = '\0';
             }
         } else {
@@ -1119,53 +1116,49 @@ void ob_flush( void )
 
 void ob_graphic( graphic_element * in_el )
 {
-    char        begindoc[] = "%%BeginDocument: ";
-    char        enddoc[] = "%%EndDocument";
-    char        graphobj[] = "/graphobj save def /showpage { } def";
-    char        restore[] = "graphobj restore";
-    size_t      ps_size;
+#define GR_BEGIN_DOC    "%%BeginDocument: "
+#define GR_END_DOC      "%%EndDocument"
+#define GR_GRAPH_OBJ    "/graphobj save def /showpage { } def"
+#define GR_RESTORE      "graphobj restore"
+#define GR_FONT0        "@fs0 "
+
     int         rc;
 
     fb_graphic_support( in_el );
     ob_flush();
 
-    ps_size = strlen( graphobj );
-    strcpy_s( buffout.text, buffout.length, graphobj );
-    buffout.current = ps_size;
+    strcpy( buffout.text, GR_GRAPH_OBJ );
+    buffout.current = sizeof( GR_GRAPH_OBJ ) - 1;
     ob_flush();
 
     memset( buffout.text, '\0', buffout.length );
-    ps_size = sprintf( buffout.text, "%d %d %d %d %d %d %d graphhead",
+    sprintf( buffout.text, "%d %d %d %d %d %d %d graphhead",
                          in_el->cur_left, in_el->y_address, in_el->width, in_el->depth,
                          in_el->xoff, -1 * (in_el->depth + in_el->yoff), in_el->scale );
     buffout.current = strlen( buffout.text );
     ob_flush();
 
-    ps_size = strlen( begindoc );
-    strcpy_s( buffout.text, buffout.length, begindoc );
-    buffout.current = ps_size;
-    strcpy_s( buffout.text + ps_size, buffout.length - ps_size, in_el->short_name );
+    strcpy( buffout.text, GR_BEGIN_DOC );
+    strcat( buffout.text, in_el->short_name );
     buffout.current = strlen( buffout.text );
     ob_flush();
 
     rc = copy_file_out( &buffout, in_el->fp, true );
     if( rc == 0 ) {
-        ps_size = strlen( enddoc );
-        strcpy_s( buffout.text, buffout.length, enddoc );
-        buffout.current = ps_size;
+        strcpy( buffout.text, GR_END_DOC );
+        buffout.current = sizeof( GR_END_DOC ) - 1;
         ob_flush();
 
-        ps_size = strlen( restore );
-        strcpy_s( buffout.text, buffout.length, restore );
-        buffout.current = ps_size;
+        strcpy( buffout.text, GR_RESTORE );
+        buffout.current = sizeof( GR_RESTORE ) - 1;
         ob_flush();
 
         /* Only if font in use after the GRAPHIC was not font 0 */
 
         if( in_el->next_font > FONT0 ) {
             ob_flush();
-            strcpy( buffout.text, "@fs0 " );
-            buffout.current = sizeof( "@fs0 " ) - 1;
+            strcpy( buffout.text, GR_FONT0 );
+            buffout.current = sizeof( GR_FONT0 ) - 1;
         }
     }
     if( rc == 1 ) {
@@ -1174,6 +1167,11 @@ void ob_graphic( graphic_element * in_el )
         xx_simple_err_c( err_write_out_file, out_file );
     }
 //    fclose( in_el->fp );
+#undef GR_BEGIN_DOC
+#undef GR_END_DOC
+#undef GR_GRAPH_OBJ
+#undef GR_RESTORE
+#undef GR_FONT0
 }
 
 /* Function ob_insert_block().
@@ -1331,18 +1329,27 @@ void ob_setup( void )
 
     binc_buff.current = 0;
     binc_buff.length = 80;
-    binc_buff.text = mem_alloc( binc_buff.length );
+    /*
+     * add space for null terminator, but don't count it in length
+     */
+    binc_buff.text = mem_alloc( binc_buff.length + 1 );
 
     buffout.current = 0;
     buffout.length = strtoul( &out_file_attr[2], NULL, 0 );
     if( errno == ERANGE ) {
         xx_simple_err_i( err_out_rec_size2, UINT_MAX );
     }
-    buffout.text = mem_alloc( buffout.length );
+    /*
+     * add space for null terminator, but don't count it in length
+     */
+    buffout.text = mem_alloc( buffout.length + 1 );
 
     translated.current = 0;
     translated.length = 80;
-    translated.text = mem_alloc( translated.length );
+    /*
+     * add space for null terminator, but don't count it in length
+     */
+    translated.text = mem_alloc( translated.length + 1 );
 
     /* Create (truncate) the output file. */
 
