@@ -76,11 +76,11 @@ static cop_font * resize_cop_font( cop_font * in_font, size_t in_size )
 /* Extern function definitions */
 
 /* Function is_fon_file().
- * Determines whether or not in_file points to the start of a .COP font
+ * Determines whether or not fp points to the start of a .COP font
  * file (the first byte after the header).
  *
  * Parameter:
- *      in_file points to the presumed start of a .COP font file.
+ *      fp points to the presumed start of a .COP font file.
  *
  * Returns:
  *      true if this has the correct descriminator.
@@ -88,14 +88,14 @@ static cop_font * resize_cop_font( cop_font * in_font, size_t in_size )
  *
  */
 
-bool is_fon_file( FILE * in_file)
+bool is_fon_file( FILE * fp)
 {
     char descriminator[3];
 
     /* Get the descriminator. */
 
-    fread( &descriminator, 1, 3, in_file );
-    if( ferror( in_file ) || feof( in_file ) ) {
+    fread_buff( &descriminator, 3, fp );
+    if( ferror( fp ) || feof( fp ) ) {
         return( false );
     }
 
@@ -110,7 +110,7 @@ bool is_fon_file( FILE * in_file)
  * Constructs a cop_font instance from the given input stream.
  *
  * Parameters:
- *      in_file points to the first byte of a .COP file encoding a :FONT
+ *      fp points to the first byte of a .COP file encoding a :FONT
  *          block after the "FON" descriminator.
  *      in_name points to the defined name of the :FONT block. It must be
  *          provided this way because the .COP itself does not contain it
@@ -118,7 +118,7 @@ bool is_fon_file( FILE * in_file)
  *          cop_font instance.
  *
  * Returns:
- *      A pointer to a cop_font struct containing the data from in_file
+ *      A pointer to a cop_font struct containing the data from fp
  *          on success.
  *      A NULL pointer on failure.
  *
@@ -131,7 +131,7 @@ bool is_fon_file( FILE * in_file)
  *          the format must be entirely present for there to be no error.
  */
 
-cop_font * parse_font( FILE * in_file, char const * in_name )
+cop_font * parse_font( FILE * fp, char const * in_name )
 {
 
     /* The cop_font instance. */
@@ -200,13 +200,13 @@ cop_font * parse_font( FILE * in_file, char const * in_name )
     out_font->defined_name = OUT_FONT_CUR_OFF();
 
     string_ptr = OUT_FONT_CUR_PTR();
-    strcpy_s( string_ptr, length, in_name );
+    strcpy( string_ptr, in_name );
     OUT_FONT_ADD_OFF( length );
 
     /* Get the font_out_name1. */
 
-    fread( &length, 1, sizeof( length ), in_file );
-    if( ferror( in_file ) || feof( in_file ) ) {
+    length = fread_u8( fp );
+    if( ferror( fp ) || feof( fp ) ) {
         mem_free( out_font );
         out_font = NULL;
         return( out_font );
@@ -219,8 +219,8 @@ cop_font * parse_font( FILE * in_file, char const * in_name )
         out_font->font_out_name1 = OUT_FONT_CUR_OFF();
 
         string_ptr = OUT_FONT_CUR_PTR();
-        fread( string_ptr, 1, length, in_file );
-        if( ferror( in_file ) || feof( in_file ) ) {
+        fread_buff( string_ptr, length, fp );
+        if( ferror( fp ) || feof( fp ) ) {
             mem_free( out_font );
             out_font = NULL;
             return( out_font );
@@ -233,8 +233,8 @@ cop_font * parse_font( FILE * in_file, char const * in_name )
 
     /* Get the font_out_name2. */
 
-    fread( &length, 1, sizeof( length ), in_file );
-    if( ferror( in_file ) || feof( in_file ) ) {
+    length = fread_u8( fp );
+    if( ferror( fp ) || feof( fp ) ) {
         mem_free( out_font );
         out_font = NULL;
         return( out_font );
@@ -247,8 +247,8 @@ cop_font * parse_font( FILE * in_file, char const * in_name )
         out_font->font_out_name2 = OUT_FONT_CUR_OFF();
 
         string_ptr = OUT_FONT_CUR_PTR();
-        fread( string_ptr, 1, length, in_file );
-        if( ferror( in_file ) || feof( in_file ) ) {
+        fread_buff( string_ptr, length, fp );
+        if( ferror( fp ) || feof( fp ) ) {
             mem_free( out_font );
             out_font = NULL;
             return( out_font );
@@ -261,8 +261,8 @@ cop_font * parse_font( FILE * in_file, char const * in_name )
 
     /* Get the designator and ensure it is 0x1D00. */
 
-    fread( &designator, 1, sizeof( designator ), in_file );
-    if( ferror( in_file ) || feof( in_file ) ) {
+    designator = fread_u16( fp );
+    if( ferror( fp ) || feof( fp ) ) {
         mem_free( out_font );
         out_font = NULL;
         return( out_font );
@@ -276,8 +276,8 @@ cop_font * parse_font( FILE * in_file, char const * in_name )
 
     /* Get the line_height. */
 
-    fread( &out_font->line_height, 1, sizeof( out_font->line_height ), in_file );
-    if( ferror( in_file ) || feof( in_file ) ) {
+    out_font->line_height = fread_u32( fp );
+    if( ferror( fp ) || feof( fp ) ) {
         mem_free( out_font );
         out_font = NULL;
         return( out_font );
@@ -285,8 +285,8 @@ cop_font * parse_font( FILE * in_file, char const * in_name )
 
     /* Get the line_space. */
 
-    fread( &out_font->line_space, 1, sizeof( out_font->line_space ), in_file );
-    if( ferror( in_file ) || feof( in_file ) ) {
+    out_font->line_space = fread_u32( fp );
+    if( ferror( fp ) || feof( fp ) ) {
         mem_free( out_font );
         out_font = NULL;
         return( out_font );
@@ -294,8 +294,8 @@ cop_font * parse_font( FILE * in_file, char const * in_name )
 
     /* Get the scale_basis. */
 
-    fread( &out_font->scale_basis, 1, sizeof( out_font->scale_basis ), in_file );
-    if( ferror( in_file ) || feof( in_file ) ) {
+    out_font->scale_basis = fread_u32( fp );
+    if( ferror( fp ) || feof( fp ) ) {
         mem_free( out_font );
         out_font = NULL;
         return( out_font );
@@ -303,8 +303,8 @@ cop_font * parse_font( FILE * in_file, char const * in_name )
 
     /* Get the scale_min. */
 
-    fread( &out_font->scale_min, 1, sizeof( out_font->scale_min ), in_file );
-    if( ferror( in_file ) || feof( in_file ) ) {
+    out_font->scale_min = fread_u32( fp );
+    if( ferror( fp ) || feof( fp ) ) {
         mem_free( out_font );
         out_font = NULL;
         return( out_font );
@@ -312,8 +312,8 @@ cop_font * parse_font( FILE * in_file, char const * in_name )
 
     /* Get the scale_max. */
 
-    fread( &out_font->scale_max, 1, sizeof( out_font->scale_max ), in_file );
-    if( ferror( in_file ) || feof( in_file ) ) {
+    out_font->scale_max = fread_u32( fp );
+    if( ferror( fp ) || feof( fp ) ) {
         mem_free( out_font );
         out_font = NULL;
         return( out_font );
@@ -321,8 +321,8 @@ cop_font * parse_font( FILE * in_file, char const * in_name )
 
     /* Get the char_width. */
 
-    fread( &out_font->char_width, 1, sizeof( out_font->char_width ), in_file );
-    if( ferror( in_file ) || feof( in_file ) ) {
+    out_font->char_width = fread_u32( fp );
+    if( ferror( fp ) || feof( fp ) ) {
         mem_free( out_font );
         out_font = NULL;
         return( out_font );
@@ -332,8 +332,8 @@ cop_font * parse_font( FILE * in_file, char const * in_name )
 
     /* Get the size_flag, which is not needed. */
 
-    fread( &count8, 1, sizeof( count8 ), in_file );
-    if( ferror( in_file ) || feof( in_file ) ) {
+    count8 = fread_u8( fp );
+    if( ferror( fp ) || feof( fp ) ) {
         mem_free( out_font );
         out_font = NULL;
         return( out_font );
@@ -341,29 +341,29 @@ cop_font * parse_font( FILE * in_file, char const * in_name )
 
     /* Get the data_count and the flags. */
 
-    fread( &width_flag, 1, sizeof( width_flag ), in_file );
-    if( ferror( in_file ) || feof( in_file ) ) {
+    width_flag = fread_u8( fp );
+    if( ferror( fp ) || feof( fp ) ) {
         mem_free( out_font );
         out_font = NULL;
         return( out_font );
     }
 
-    fread( &data_count, 1, sizeof( data_count ), in_file );
-    if( ferror( in_file ) || feof( in_file ) ) {
+    data_count = fread_u8( fp );
+    if( ferror( fp ) || feof( fp ) ) {
         mem_free( out_font );
         out_font = NULL;
         return( out_font );
     }
 
-    fread( &outtrans_flag, 1, sizeof( outtrans_flag ), in_file );
-    if( ferror( in_file ) || feof( in_file ) ) {
+    outtrans_flag = fread_u8( fp );
+    if( ferror( fp ) || feof( fp ) ) {
         mem_free( out_font );
         out_font = NULL;
         return( out_font );
     }
 
-    fread( &intrans_flag, 1, sizeof( intrans_flag ), in_file );
-    if( ferror( in_file ) || feof( in_file ) ) {
+    intrans_flag = fread_u8( fp );
+    if( ferror( fp ) || feof( fp ) ) {
         mem_free( out_font );
         out_font = NULL;
         return( out_font );
@@ -377,8 +377,8 @@ cop_font * parse_font( FILE * in_file, char const * in_name )
 
         /* Get the designator and verify it contains 0x81. */
 
-        fread( &count8, 1, sizeof( count8 ), in_file );
-        if( ferror( in_file ) || feof( in_file ) ) {
+        count8 = fread_u8( fp );
+        if( ferror( fp ) || feof( fp ) ) {
            mem_free( out_font );
            out_font = NULL;
            return( out_font );
@@ -392,8 +392,8 @@ cop_font * parse_font( FILE * in_file, char const * in_name )
 
         /* Get the count and verify that it contains 0x00. */
 
-        fread( &count8, 1, sizeof( count8 ), in_file );
-        if( ferror( in_file ) || feof( in_file ) ) {
+        count8 = fread_u8( fp );
+        if( ferror( fp ) || feof( fp ) ) {
            mem_free( out_font );
            out_font = NULL;
            return( out_font );
@@ -413,8 +413,8 @@ cop_font * parse_font( FILE * in_file, char const * in_name )
         out_font->intrans = OUT_FONT_CUR_OFF();
 
         byte_ptr = OUT_FONT_CUR_PTR();
-        fread( byte_ptr, 1, sizeof( out_font->intrans->table ), in_file );
-        if( ferror( in_file ) || feof( in_file ) ) {
+        fread_buff( byte_ptr, sizeof( out_font->intrans->table ), fp );
+        if( ferror( fp ) || feof( fp ) ) {
            mem_free( out_font );
            out_font = NULL;
            return( out_font );
@@ -431,8 +431,8 @@ cop_font * parse_font( FILE * in_file, char const * in_name )
         /* Get the next byte, which indicates the OuttransBlock data size. */
         /* The name of the variable does not match the Wiki. */
 
-        fread( &outtrans_data_size, 1, sizeof( outtrans_data_size ), in_file );
-        if( ferror( in_file ) || feof( in_file ) ) {
+        outtrans_data_size = fread_u8( fp );
+        if( ferror( fp ) || feof( fp ) ) {
            mem_free( out_font );
            out_font = NULL;
            return( out_font );
@@ -440,8 +440,8 @@ cop_font * parse_font( FILE * in_file, char const * in_name )
 
         /* Read the count. */
 
-        fread( &count8, 1, sizeof( count8 ), in_file );
-        if( ferror( in_file ) || feof( in_file ) ) {
+        count8 = fread_u8( fp );
+        if( ferror( fp ) || feof( fp ) ) {
             mem_free( out_font );
             out_font = NULL;
             return( out_font );
@@ -466,8 +466,8 @@ cop_font * parse_font( FILE * in_file, char const * in_name )
 
             /* Get the data into the local buffer. */
 
-            fread( &uint8_array, 1, sizeof( uint8_array ), in_file );
-            if( ferror( in_file ) || feof( in_file ) ) {
+            fread_buff( &uint8_array, 0x100, fp );
+            if( ferror( fp ) || feof( fp ) ) {
                 mem_free( out_font );
                 out_font = NULL;
                 return( out_font );
@@ -548,19 +548,21 @@ cop_font * parse_font( FILE * in_file, char const * in_name )
 
             /* Get the outtrans array into the local array. */
 
-            fread( &uint16_array, 1, sizeof( uint16_array ), in_file );
-            if( ferror( in_file ) || feof( in_file ) ) {
-                mem_free( out_font );
-                out_font = NULL;
-                return( out_font );
+            for( i = 0; i < 0x100; i++ ) {
+                uint16_array[i] = fread_u16( fp );
+                if( ferror( fp ) || feof( fp ) ) {
+                    mem_free( out_font );
+                    out_font = NULL;
+                    return( out_font );
+                }
             }
 
             /* Allocate a buffer and read the translation characters into it. */
 
             outtrans_data = mem_alloc( data_count );
 
-            fread( outtrans_data, 1, data_count, in_file );
-            if( ferror( in_file ) || feof( in_file ) ) {
+            fread_buff( outtrans_data, data_count, fp );
+            if( ferror( fp ) || feof( fp ) ) {
                 mem_free( outtrans_data );
                 outtrans_data = NULL;
                 mem_free( out_font );
@@ -643,7 +645,7 @@ cop_font * parse_font( FILE * in_file, char const * in_name )
                         *byte_ptr = (uint16_array[i] & 0x00ff);
                     } else {
                         ++translation_start;
-                        memcpy_s( byte_ptr, size, translation_start, size );
+                        memcpy( byte_ptr, translation_start, size );
                     }
                 }
             }
@@ -677,8 +679,8 @@ cop_font * parse_font( FILE * in_file, char const * in_name )
         /* Get the designator, which indicates the WidthBlock data size. */
         /* The variable name does not match the field name in the Wiki. */
 
-        fread( &width_data_size, 1, sizeof( width_data_size ), in_file );
-        if( ferror( in_file ) || feof( in_file ) ) {
+        width_data_size = fread_u8( fp );
+        if( ferror( fp ) || feof( fp ) ) {
             mem_free( out_font );
             out_font = NULL;
             return( out_font );
@@ -686,8 +688,8 @@ cop_font * parse_font( FILE * in_file, char const * in_name )
 
         /* This byte's value is checked below. */
 
-        fread( &count8, 1, sizeof( count8 ), in_file );
-        if( ferror( in_file ) || feof( in_file ) ) {
+        count8 = fread_u8( fp );
+        if( ferror( fp ) || feof( fp ) ) {
             mem_free( out_font );
             out_font = NULL;
             return( out_font );
@@ -713,8 +715,8 @@ cop_font * parse_font( FILE * in_file, char const * in_name )
              * an array of uint32_t entries.
              */
 
-            fread( &uint8_array, 1, sizeof( uint8_array ), in_file );
-            if( ferror( in_file ) || feof( in_file ) ) {
+            fread_buff( &uint8_array, 0x100, fp );
+            if( ferror( fp ) || feof( fp ) ) {
                 mem_free( out_font );
                 out_font = NULL;
                 return( out_font );
@@ -742,11 +744,13 @@ cop_font * parse_font( FILE * in_file, char const * in_name )
 
             /* Get the width data array directly into the cop_font instance. */
 
-            fread( width_ptr, 1, sizeof( out_font->width->table ), in_file );
-            if( ferror( in_file ) || feof( in_file ) ) {
-                mem_free( out_font );
-                out_font = NULL;
-                return( out_font );
+            for( i = 0; i < 0x100; i++ ) {
+                width_ptr[i] = fread_u32( fp );
+                if( ferror( fp ) || feof( fp ) ) {
+                    mem_free( out_font );
+                    out_font = NULL;
+                    return( out_font );
+                }
             }
             break;
 

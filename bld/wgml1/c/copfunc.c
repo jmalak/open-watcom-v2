@@ -68,8 +68,7 @@ code_block *get_code_blocks( const char **current, uint16_t count, const char *b
             *current += 1;
         }
 
-        memcpy_s( &out_block[i].designator, 1, *current, 1 );
-        *current += 1;
+        out_block[i].designator = get_u8( current );
 
         /* Skip the cb05_flag and the lp_flag. */
 
@@ -81,8 +80,7 @@ code_block *get_code_blocks( const char **current, uint16_t count, const char *b
             *current += 1;
         }
 
-        memcpy_s( &out_block[i].line_pass, 2, *current, 2 );
-        *current += 2;
+        out_block[i].line_pass = get_u16( current );
 
         /* Get the count, shifting it if necessary */
 
@@ -90,8 +88,7 @@ code_block *get_code_blocks( const char **current, uint16_t count, const char *b
             *current += 1;
         }
 
-        memcpy_s( &out_block[i].count, 2, *current, 2 );
-        *current += 2;
+        out_block[i].count = get_u16( current );
 
         /* Set function, which is the pointer to the actual compiled code. */
 
@@ -107,14 +104,14 @@ code_block *get_code_blocks( const char **current, uint16_t count, const char *b
 }
 
 /* Function get_p_buffer().
- * Extract one or more contiguous P-buffers from in_file.
+ * Extract one or more contiguous P-buffers from fp.
  *
  * Parameter:
- *     in_file points to the start of a P-buffer.
+ *     fp points to the start of a P-buffer.
  *
  * Modified parameter:
- *     in_file will point to the first non-P-buffer byte in the file on success.
- *     the status of in_file is unpredictable on failure.
+ *     fp will point to the first non-P-buffer byte in the file on success.
+ *     the status of fp is unpredictable on failure.
  *
  * Returns:
  *     a pointer to a p_buffer containing the raw data on success.
@@ -127,7 +124,7 @@ code_block *get_code_blocks( const char **current, uint16_t count, const char *b
  *      NULL is returned for file errors.
  */
 
-p_buffer * get_p_buffer( FILE * in_file )
+p_buffer * get_p_buffer( FILE * fp )
 {
     char        *current     = NULL;
     uint8_t     i;
@@ -138,18 +135,18 @@ p_buffer * get_p_buffer( FILE * in_file )
     /* Determine the number of contiguous P-buffers in the file. */
 
     p_count = 0;
-    test_char = fgetc( in_file );
-    if( ferror( in_file ) || feof( in_file ) ) {
+    test_char = fread_u8( fp );
+    if( ferror( fp ) || feof( fp ) ) {
         return( out_buffer );
     }
     while( test_char == 80 ) {
         ++p_count;
-        fseek( in_file, 80, SEEK_CUR );
-        if( ferror( in_file ) || feof( in_file ) ) {
+        fseek( fp, 80, SEEK_CUR );
+        if( ferror( fp ) || feof( fp ) ) {
             return( out_buffer );
         }
-        test_char = fgetc( in_file );
-        if( ferror( in_file ) || feof( in_file ) ) {
+        test_char = fread_u8( fp );
+        if( ferror( fp ) || feof( fp ) ) {
             return( out_buffer );
         }
     }
@@ -161,8 +158,8 @@ p_buffer * get_p_buffer( FILE * in_file )
 
     /* Rewind the file by 81 bytes per P-buffer plus 1. */
 
-    fseek( in_file, SEEK_POSBACK( 81 * p_count + 1 ), SEEK_CUR );
-    if( ferror( in_file ) || feof( in_file ) )
+    fseek( fp, SEEK_POSBACK( 81 * p_count + 1 ), SEEK_CUR );
+    if( ferror( fp ) || feof( fp ) )
         return( out_buffer );
 
     /* Allocate the out_buffer. */
@@ -176,8 +173,8 @@ p_buffer * get_p_buffer( FILE * in_file )
     /* Now get the data into the out_buffer. */
 
     for( i = 0; i < p_count; i++ ) {
-        test_char = fgetc( in_file );
-        if( ferror( in_file ) || feof( in_file ) ) {
+        test_char = fread_u8( fp );
+        if( ferror( fp ) || feof( fp ) ) {
             mem_free( out_buffer );
             out_buffer = NULL;
             return( out_buffer );
@@ -189,8 +186,8 @@ p_buffer * get_p_buffer( FILE * in_file )
             return( out_buffer );
         }
 
-        fread( current, 1, 80, in_file );
-        if( ferror( in_file ) || feof( in_file ) ) {
+        fread_buff( current, 80, fp );
+        if( ferror( fp ) || feof( fp ) ) {
             mem_free( out_buffer );
             out_buffer = NULL;
             return( out_buffer );
@@ -235,8 +232,7 @@ functions_block *parse_functions_block( const char **current, const char *base )
 
     /* Get the number of CodeBlocks. */
 
-    memcpy_s( &code_count, 2, *current, 2 );
-    *current += 2;
+    code_count = get_u16( current );
 
     /* Allocate the out_block. */
 
@@ -254,3 +250,59 @@ functions_block *parse_functions_block( const char **current, const char *base )
     return( out_block );
 }
 
+
+unsigned char fread_u8( FILE *fp )
+{
+    unsigned char   u8;
+    fread( &u8, 1, sizeof( u8 ), fp );
+    return( u8 );
+}
+
+unsigned short fread_u16( FILE *fp )
+{
+    uint16_t        u16;
+    fread( &u16, 1, sizeof( u16 ), fp );
+    return( u16 );
+}
+
+unsigned long fread_u32( FILE *fp )
+{
+    uint32_t        u32;
+    fread( &u32, 1, sizeof( u32 ), fp );
+    return( u32 );
+}
+
+size_t fread_buff( void *buff, size_t len, FILE *fp )
+{
+    return( fread( buff, 1, len, fp ) );
+}
+
+unsigned char get_u8( const char **buff )
+{
+    unsigned char   u8;
+    memcpy( &u8, *buff, sizeof( u8 ) );
+    *buff += sizeof( u8 );
+    return( u8 );
+}
+
+unsigned short get_u16( const char **buff )
+{
+    uint16_t        u16;
+    memcpy( &u16, *buff, sizeof( u16 ) );
+    *buff += sizeof( u16 );
+    return( u16 );
+}
+
+unsigned long get_u32( const char **buff )
+{
+    uint32_t        u32;
+    memcpy( &u32, *buff, sizeof( u32 ) );
+    *buff += sizeof( u32 );
+    return( u32 );
+}
+
+void get_buff( void *obuff, size_t len, const char **buff )
+{
+    memcpy( obuff, *buff, len );
+    *buff += len;
+}
