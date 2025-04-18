@@ -7,7 +7,6 @@
 *  ========================================================================
 *
 * Description:  Implements the functions declared in cfdev.h:
-*                   is_dev_file()
 *                   parse_device()
 *               and contains these local functions:
 *                   find_cumulative_index()
@@ -136,37 +135,6 @@ static void set_cumulative_index( functions_block * in_block )
 }
 
 /* Extern function definitions. */
-
-/* Function is_dev_file().
- * Determines whether or not fp points to the start of a .COP device
- * file (the first byte after the header).
- *
- * Parameter:
- *      fp points to the presumed start of a .COP device file.
- *
- * Returns:
- *      true if this has the correct descriminator.
- *      false otherwise.
- */
-
-bool is_dev_file( FILE *fp )
-{
-    char descriminator[3];
-
-    /* Get the descriminator. */
-
-    fread_buff( &descriminator, 3, fp );
-    if( ferror( fp ) || feof( fp ) ) {
-        return( false );
-    }
-
-    /* Verify that the descriminator is for a .COP device file. */
-
-    if( memcmp( descriminator, "DEV", 3 ) )
-        return( false );
-
-    return( true );
-}
 
 /* Function parse_device().
  * Constructs a cop_device instance from the given input stream.

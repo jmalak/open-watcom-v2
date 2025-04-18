@@ -25,11 +25,13 @@
 /* This enum is used for the return value of function parse_header(). */
 
 typedef enum {
-    dir_v4_1_se,        // The file is a same-endian version 4.1 directory file.
-    se_v4_1_not_dir,    // The file is a same-endian version 4.1 device, driver, or font file.
-    not_se_v4_1,        // The file is not same-endian and/or not version 4.1.
-    not_bin_dev,        // The file is not a binary device file at all.
-    file_error          // An error occurred while reading the file.
+    file_type_dir,          // The file is directory file.
+    file_type_dev,          // The file is device.
+    file_type_drv,          // The file is driver.
+    file_type_fon,          // The file is font.
+    file_type_unknown,      // The file is unknown type.
+    file_type_wrong_ver,    // The file is not same-endian and/or not version 4.1.
+    file_type_error,        // An error occurred while reading the file.
 } cop_file_type;
 
 /* Function declarations. */

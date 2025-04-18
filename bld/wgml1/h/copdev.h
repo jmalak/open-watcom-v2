@@ -7,7 +7,6 @@
 *  ========================================================================
 *
 * Description:  Declares functions used to manipulate .COP device files:
-*                   is_dev_file()
 *                   parse_device()
 *
 ****************************************************************************/
@@ -23,7 +22,6 @@
 extern "C" {    /* Use "C" linkage when in C++ mode. */
 #endif
 
-extern bool            is_dev_file( FILE * in_file );
 extern cop_device  *   parse_device( FILE * in_file );
 
 #ifdef  __cplusplus

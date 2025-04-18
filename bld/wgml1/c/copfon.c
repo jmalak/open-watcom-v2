@@ -7,7 +7,6 @@
 *  ========================================================================
 *
 * Description:  Implements the functions declared in cffon.h:
-*                   is_fon_file()
 *                   parse_font()
 *               and this local function:
 *                   resize_cop_font()
@@ -74,37 +73,6 @@ static cop_font * resize_cop_font( cop_font * in_font, size_t in_size )
 }
 
 /* Extern function definitions */
-
-/* Function is_fon_file().
- * Determines whether or not fp points to the start of a .COP font
- * file (the first byte after the header).
- *
- * Parameter:
- *      fp points to the presumed start of a .COP font file.
- *
- * Returns:
- *      true if this has the correct descriminator.
- *      false otherwise.
- *
- */
-
-bool is_fon_file( FILE * fp)
-{
-    char descriminator[3];
-
-    /* Get the descriminator. */
-
-    fread_buff( &descriminator, 3, fp );
-    if( ferror( fp ) || feof( fp ) ) {
-        return( false );
-    }
-
-    /* Verify that the descriminator is for a .COP font file. */
-
-    if( memcmp( descriminator, "FON", 3 ) ) return( false );
-
-    return( true );
-}
 
 /* Function parse_font().
  * Constructs a cop_font instance from the given input stream.
