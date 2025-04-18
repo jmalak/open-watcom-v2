@@ -47,8 +47,8 @@ void    gml_docnum( const gmltag * entry )
     if( layout_work.docnum.string != NULL ) {
         buff_len = strlen( layout_work.docnum.string ) + strlen ( p ) + 1;
         buff = mem_alloc( buff_len );
-        strcpy_s( buff, buff_len, layout_work.docnum.string );
-        strcat_s( buff, buff_len    , p );
+        strcpy( buff, layout_work.docnum.string );
+        strcat( buff, p );
         p = buff;
     }
 

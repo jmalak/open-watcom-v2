@@ -68,7 +68,7 @@ void    gml_binclude( const gmltag * entry )
                 }
                 len = g_att_val.val_len;
                 if( len > _MAX_PATH - 1 )
-                        len = _MAX_PATH - 1;
+                	len = _MAX_PATH - 1;
                 strncpy( file, g_att_val.val_name, len );
                 file[len] = '\0';
                 split_attr_file( file, rt_buff, MAX_FILE_ATTR );

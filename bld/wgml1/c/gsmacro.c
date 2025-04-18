@@ -752,6 +752,5 @@ void    scr_em( void )
         split_input( buff2, g_tok_start, input_cbs->fmflags );    // stack line operand
     }
     scan_restart = scan_stop + 1;
-    return;
 }
 

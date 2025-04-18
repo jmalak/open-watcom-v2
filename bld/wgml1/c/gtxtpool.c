@@ -355,6 +355,7 @@ doc_element * alloc_doc_el( element_type type )
         curr->element.graph.yoff = 0;
         curr->element.graph.at_top = false;
         curr->element.graph.next_font = 0;
+        curr->element.graph.short_name = NULL;
         curr->element.graph.filename = NULL;
         curr->element.graph.eol_index = g_eol_ix;
         g_eol_ix = NULL;

@@ -123,8 +123,8 @@ static FILE *try_open( char * prefix, char * filename )
 
     /* Create the full file name to search for. */
 
-    strcpy_s( buff, _MAX_PATH, prefix );
-    strcat_s( buff, _MAX_PATH, filename );
+    strcpy( buff, prefix );
+    strcat( buff, filename );
 
     /* Try to open the file. Return NULL on failure. */
 

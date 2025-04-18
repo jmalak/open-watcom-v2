@@ -1896,7 +1896,7 @@ static void *df_decimal( void )
 
     /* Convert and return the value. */
 
-    value = mem_alloc( 12 );
+    value = mem_alloc( MAX_L_AS_STR );
     sinttodec( (int)first, value );
     return( value );
 }
