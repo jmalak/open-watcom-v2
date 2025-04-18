@@ -7,7 +7,6 @@
 *  ========================================================================
 *
 * Description:  Implements the functions declared in copdrv.h:
-*                   is_drv_file()
 *                   parse_driver()
 *               and contains these local functions:
 *                   parse_finish_block()
@@ -940,37 +939,6 @@ static cop_driver *parse_init_block( cop_driver *in_driver, const char **current
 }
 
 /* Extern function definitions. */
-
-/* Function is_drv_file().
- * Determines whether or not fp points to the start of a .COP driver
- * file (the first byte after the header).
- *
- * Parameter:
- *      fp points to the presumed start of a .COP driver file.
- *
- * Returns:
- *      true if this has the correct descriminator.
- *      false otherwise.
- */
-
-bool is_drv_file( FILE * fp )
-{
-    char descriminator[3];
-
-    /* Get the descriminator. */
-
-    fread_buff( &descriminator, 3, fp );
-    if( ferror( fp ) || feof( fp ) ) {
-        return( false );
-    }
-
-    /* Verify that the descriminator is for a .COP driver file. */
-
-    if( memcmp( descriminator, "DRV", 3 ) )
-        return( false );
-
-    return( true );
-}
 
 /* Function parse_driver().
  * Constructs a cop_driver instance from the given input stream.

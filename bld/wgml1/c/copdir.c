@@ -248,29 +248,7 @@ char *get_member_name( FILE *fp, const char *fname, const char *in_name )
 
     file_type = parse_header( fp );
     switch( file_type ) {
-    case file_error:
-
-        /* File error, including premature eof. */
-
-        xx_simple_err_c( err_dev_lib_file, fname );
-        break;
-
-    case not_se_v4_1:
-
-        /* File was created by a different version of gendev. */
-
-        xx_simple_err( err_wrong_gendev );
-        break;
-
-    case not_bin_dev:
-    case se_v4_1_not_dir:
-
-        /* Wrong type of file: something is wrong with the device library. */
-
-        xx_simple_err_c( err_dev_lib_data, fname );
-        break;
-
-    case dir_v4_1_se:
+    case file_type_dir:
 
         /* fp was a same-endian version 4.1 directory file. */
 
@@ -309,7 +287,7 @@ char *get_member_name( FILE *fp, const char *fname, const char *in_name )
 
             case 0x0001:
 
-            /* This will be an ExtendedDirEntry. */
+                /* This will be an ExtendedDirEntry. */
 
                 for( ;; ) {
 
@@ -421,6 +399,30 @@ char *get_member_name( FILE *fp, const char *fname, const char *in_name )
             }
         }
 
+        break;
+
+    case file_type_error:
+
+        /* File error, including premature eof. */
+
+        xx_simple_err_c( err_dev_lib_file, fname );
+        break;
+
+    case file_type_wrong_ver:
+
+        /* File was created by a different version of gendev. */
+
+        xx_simple_err( err_wrong_gendev );
+        break;
+
+    case file_type_dev:
+    case file_type_drv:
+    case file_type_fon:
+    case file_type_unknown:
+
+        /* Wrong type of file: something is wrong with the device library. */
+
+        xx_simple_err_c( err_dev_lib_data, fname );
         break;
 
     default:

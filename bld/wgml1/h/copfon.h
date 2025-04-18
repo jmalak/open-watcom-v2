@@ -7,7 +7,6 @@
 *  ========================================================================
 *
 * Description:  Declares functions used to manipulate .COP font files:
-*                   is_fon_file()
 *                   parse_font()
 *
 ****************************************************************************/
@@ -21,7 +20,6 @@
 extern "C" {    /* Use "C" linkage when in C++ mode. */
 #endif
 
-extern bool            is_fon_file( FILE * in_file );
 extern cop_font    *   parse_font( FILE * in_file, char const * in_name );
 
 #ifdef  __cplusplus

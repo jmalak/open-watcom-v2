@@ -31,12 +31,7 @@
  *      fp points the input stream.
  *
  * Returns:
- *      dir_v4_1_se if the file is a same-endian version 4.1 directory file.
- *      se_v4_1_not_dir if the file is a same-endian version 4.1 device,
- *          driver, or font file.
- *      not_se_v4_1 if the file is not same-endian and/or not version 4.1.
- *      not_bin_dev if the file is not a binary device file at all.
- *      file_error if an error occurred while reading the file.
+ *      file type of file or error.
  */
 
 cop_file_type parse_header( FILE * fp )
@@ -49,18 +44,18 @@ cop_file_type parse_header( FILE * fp )
 
     count = fread_u8( fp );
     if( ferror( fp ) || feof( fp ) ) {
-        return( file_error );
+        return( file_type_error );
     }
 
     if( count != 0x02 ) {
-        return( not_bin_dev );
+        return( file_type_unknown );
     }
 
     /* Get the version. */
 
     fread_buff( &version, sizeof( version ), fp );
     if( ferror( fp ) || feof( fp ) ) {
-        return( file_error );
+        return( file_type_error );
     }
 
     /* Check for a same_endian version 4.1 header.
@@ -69,30 +64,30 @@ cop_file_type parse_header( FILE * fp )
     */
 
     if( version != 0x000c ) {
-        return( not_se_v4_1 );
+        return( file_type_wrong_ver );
     }
 
     /* Get the text_version_length and ensure it is correct value. */
 
     count = fread_u8( fp );
     if( ferror( fp ) || feof( fp ) ) {
-        return( file_error );
+        return( file_type_error );
     }
 
     if( count != sizeof( VERSION_TEXT ) - 1 ) {
-        return( not_bin_dev );
+        return( file_type_unknown );
     }
 
     /* Verify the text_version. */
 
     fread_buff( &text_version, sizeof( VERSION_TEXT ) - 1, fp );
     if( ferror( fp ) || feof( fp ) ) {
-        return( file_error );
+        return( file_type_error );
     }
 
     text_version[sizeof( VERSION_TEXT ) - 1] = '\0';
     if( strcmp( text_version, VERSION_TEXT ) ) {
-        return( not_bin_dev );
+        return( file_type_unknown );
     }
 
     /* Get the type. */
@@ -102,21 +97,44 @@ cop_file_type parse_header( FILE * fp )
     /* If there is no more data, this is not a valid .COP file. */
 
     if( ferror( fp ) || feof( fp ) ) {
-        return( file_error );
+        return( file_type_error );
     }
 
     /* Valid header, more data exists, determine the file type. */
 
     if( count == 0x03 ) {
-        return( se_v4_1_not_dir );
+        char    type_name[3];
+
+        /* Get the type_name. */
+
+        fread_buff( type_name, 3, fp );
+        if( ferror( fp ) || feof( fp ) ) {
+            return( file_type_error );
+        }
+
+        /* Verify that the type_name is for a .COP device file. */
+
+        if( strncmp( type_name, "DEV", 3 ) == 0 )
+            // The file is device.
+            return( file_type_dev );
+        if( strncmp( type_name, "DRV", 3 ) == 0 )
+            // The file is driver.
+            return( file_type_drv );
+        if( strncmp( type_name, "FON", 3 ) == 0 )
+            // The file is font.
+            return( file_type_fon );
+
+        fseek( fp, SEEK_POSBACK( 3 ), SEEK_CUR );
+
+        return( file_type_unknown );
     }
     if( count == 0x04 ) {
-        return( dir_v4_1_se );
+        return( file_type_dir );
     }
 
     /* Invalid file type: this cannot be a valid .COP file. */
 
-    return( not_bin_dev );
+    return( file_type_unknown );
 }
 
 

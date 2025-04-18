@@ -259,41 +259,35 @@ static cop_device * get_cop_device( char const * in_name )
     file_type = parse_header( fp );
 
     switch( file_type ) {
-    case file_error:
+    case file_type_error:
 
         /* File error, including premature eof. */
 
         xx_simple_err_c( err_dev_data_file, try_file_name );
         break;
 
-    case not_se_v4_1:
+    case file_type_wrong_ver:
 
         /* File was created by a different version of gendev. */
 
         xx_simple_err( err_wrong_gendev );
         break;
 
-    case not_bin_dev:
-    case dir_v4_1_se:
+    case file_type_dev:
+        out_device = parse_device( fp );
+        if( out_device != NULL )
+            break;
+        /* fall through */
+    case file_type_drv:
+    case file_type_fon:
+    case file_type_unknown:
+    case file_type_dir:
 
         /* Wrong type of file: something is wrong with the device library. */
 
         xx_simple_err_c( err_dev_lib_data, try_file_name );
         break;
 
-    case se_v4_1_not_dir:
-
-        /* fp was a same-endian version 4.1 file, but not a directory file. */
-
-        if( !is_dev_file( fp ) ) {
-            xx_simple_err_c( err_dev_lib_data, try_file_name );
-            break;
-        }
-
-        out_device = parse_device( fp );
-        if( out_device == NULL ) {
-            xx_simple_err_c( err_dev_lib_data, try_file_name );
-        }
         break;
 
     default:
@@ -337,41 +331,30 @@ static cop_driver * get_cop_driver( char const * in_name )
     file_type = parse_header( fp );
 
     switch( file_type ) {
-    case file_error:
+    case file_type_error:
 
         /* File error, including premature eof. */
 
         xx_simple_err_c( err_dev_lib_file, try_file_name );
         break;
 
-    case not_se_v4_1:
+    case file_type_wrong_ver:
 
         /* File was created by a different version of gendev. */
 
         xx_simple_err( err_wrong_gendev );
         break;
 
-    case not_bin_dev:
-    case dir_v4_1_se:
-
-        /* Wrong type of file: something is wrong with the device library. */
-
-        xx_simple_err_c( err_dev_lib_data, try_file_name );
-        break;
-
-    case se_v4_1_not_dir:
-
-        /* fp was a same-endian version 4.1 file, but not a directory file. */
-
-        if( !is_drv_file( fp ) ) {
-            xx_simple_err_c( err_dev_data_file, try_file_name );
-            break;
-        }
-
+    case file_type_drv:
         out_driver = parse_driver( fp );
-        if( out_driver == NULL ) {
-            xx_simple_err_c( err_dev_data_file, try_file_name );
-        }
+        if( out_driver != NULL )
+            break;
+        /* fall through */
+    case file_type_dev:
+    case file_type_fon:
+    case file_type_unknown:
+    case file_type_dir:
+        xx_simple_err_c( err_dev_lib_data, try_file_name );
         break;
 
     default:
@@ -415,41 +398,30 @@ static cop_font * get_cop_font( char const * in_name )
     file_type = parse_header( fp );
 
     switch( file_type ) {
-    case file_error:
+    case file_type_error:
 
         /* File error, including premature eof. */
 
         xx_simple_err_c( err_dev_lib_file, try_file_name );
         break;
 
-    case not_se_v4_1:
+    case file_type_wrong_ver:
 
         /* File was created by a different version of gendev. */
 
         xx_simple_err( err_wrong_gendev );
         break;
 
-    case not_bin_dev:
-    case dir_v4_1_se:
-
-        /* Wrong type of file: something is wrong with the device library. */
-
-        xx_simple_err_c( err_dev_lib_data, try_file_name );
-        break;
-
-    case se_v4_1_not_dir:
-
-        /* fp was a same-endian version 4.1 file, but not a directory file. */
-
-        if( !is_fon_file( fp ) ) {
-            xx_simple_err_c( err_dev_data_file, try_file_name );
-            break;
-        }
-
+    case file_type_fon:
         out_font = parse_font( fp, in_name );
-        if( out_font == NULL ) {
-            xx_simple_err_c( err_dev_data_file, try_file_name );
-        }
+        if( out_font != NULL )
+            break;
+        /* fall through */
+    case file_type_dev:
+    case file_type_drv:
+    case file_type_unknown:
+    case file_type_dir:
+        xx_simple_err_c( err_dev_data_file, try_file_name );
         break;
 
     default:
