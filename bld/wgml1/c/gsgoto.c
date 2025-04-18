@@ -19,11 +19,27 @@
 static char         gotarget[LABEL_NAME_LENGTH + 1] = { '\0' };
 static int32_t      gotargetno = 0;
 
+static bool get_label_name( const char *p, char *labelname )
+{
+    size_t  len;
+
+    for( len = 0; len < LABEL_NAME_LENGTH; len++ ) {
+        if( !my_isalnum( *p ) ) {
+            break;
+        }
+        *labelname++ = my_toupper( *p++ );     // copy uppercased tag name
+    }
+    *labelname = '\0';
+    if( len != 0 && ( *p == ' ' || *p == '\0' ) )
+        return( false );
+    return( true );
+}
+
 /***************************************************************************/
 /*  search for  label name in current input label control block            */
 /***************************************************************************/
 
-static  labelcb *   find_label( char    *   name )
+static  labelcb *   find_label( const char *labelname )
 {
     labelcb *   lb;
 
@@ -33,7 +49,7 @@ static  labelcb *   find_label( char    *   name )
         lb = input_cbs->s.f->label_cb;
     }
     for( ; lb != NULL; lb = lb->prev ) {
-        if( strncmp( name, lb->label_name, LABEL_NAME_LENGTH ) == 0 ) {
+        if( strcmp( labelname, lb->label_name ) == 0 ) {
             return( lb );
         }
     }
@@ -102,11 +118,11 @@ bool        gotarget_reached( void )
 /*  check whether new label is duplicate                                   */
 /***************************************************************************/
 
-static  condcode    test_duplicate( char *name, line_number lineno )
+static  condcode    test_duplicate( const char *labelname, line_number lineno )
 {
     labelcb     *   lb;
 
-    lb = find_label( name );
+    lb = find_label( labelname );
     if( lb == NULL ) {
         return( omit );                 // really new label
     }
@@ -194,37 +210,27 @@ void    scr_label( void )
         } else {                        // no numeric label
             cc = getarg();
             if( cc == pos ) {           // label name specefied
-                char    *   p;
-                char    *   pt;
-                int         len;
+                char    labelname[LABEL_NAME_LENGTH + 1];
 
-                p   = g_tok_start;
-                pt  = token_buf;
-                len = 0;
-                while( len < arg_flen ) {   // copy to buffer
-                    *pt++ = *p++;
-                    len++;
-                }
-                *pt = '\0';
-                if( len > LABEL_NAME_LENGTH ) {
-                    xx_source_err_c( err_sym_long, token_buf );
+                if( get_label_name( g_tok_start, labelname ) ) {
+                    xx_source_err_c( err_sym_long, labelname );
                 }
 
                 if( input_cbs->fmflags & II_tag_mac ) {
 
-                    cc = test_duplicate( token_buf, input_cbs->s.m->lineno );
+                    cc = test_duplicate( labelname, input_cbs->s.m->lineno );
                     if( cc == pos ) {   // ok name and lineno match
                         // nothing to do
                     } else {
                         if( cc == neg ) {   // name with different lineno
-                            xx_source_err_c( err_label_dup, token_buf );
+                            xx_source_err_c( err_label_dup, labelname );
                         } else {        // new label
                             lb              = mem_alloc( sizeof( labelcb ) );
                             memset( lb, 0, sizeof( labelcb ) );
                             lb->prev        = input_cbs->s.m->mac->label_cb;
                             input_cbs->s.m->mac->label_cb = lb;
                             lb->lineno      = input_cbs->s.m->lineno;
-                            strcpy_s( lb->label_name, sizeof( lb->label_name ), token_buf );
+                            strcpy( lb->label_name, labelname );
                         }
                     }
                 } else {
@@ -241,7 +247,7 @@ void    scr_label( void )
                             input_cbs->s.f->label_cb = lb;
                             lb->pos         = input_cbs->s.f->pos;
                             lb->lineno      = input_cbs->s.f->lineno;
-                            strcpy_s( lb->label_name, sizeof( lb->label_name ), token_buf );
+                            strcpy( lb->label_name, labelname );
                         }
                     }
                 }
@@ -312,7 +318,6 @@ void    scr_go( void )
     condcode        cc;
     getnum_block    gn;
     labelcb     *   golb;
-    int             k;
 
     input_cbs->if_cb->if_level = 0;     // .go terminates
     ProcFlags.keep_ifstate = false;     // ... all .if controls
@@ -354,12 +359,7 @@ void    scr_go( void )
         if( arg_flen > LABEL_NAME_LENGTH ) {
             xx_source_err_c( err_sym_long, g_tok_start );
         }
-
-        for( k = 0; k < LABEL_NAME_LENGTH; k++ ) {// copy to work
-            gotarget[k] = *g_tok_start++;
-        }
-        gotarget[k] = '\0';
-
+        get_label_name( g_tok_start, gotarget );
         golb = find_label( gotarget );
         if( golb != NULL ) {            // label already known
             gotargetno = golb->lineno;
@@ -390,7 +390,7 @@ void    scr_go( void )
 /*  print list of defined labels for macro or file                         */
 /***************************************************************************/
 
-void        print_labels( labelcb * lcb, char * name )
+void        print_labels( labelcb *lcb, const char *name )
 {
     char                fill[LABEL_NAME_LENGTH + 1];
     size_t              len;
@@ -398,12 +398,14 @@ void        print_labels( labelcb * lcb, char * name )
 
     lb = lcb;
     if( lb != NULL ) {
+        memset( fill, ' ', LABEL_NAME_LENGTH );
+        fill[LABEL_NAME_LENGTH] = '\0';
         out_msg( "\nList of defined labels for %s:\n\n", name );
         while( lb != NULL ) {
-            len = LABEL_NAME_LENGTH - strlen( lb->label_name );
-            memset( fill, ' ', len );
-            fill[len] = '\0';
-            out_msg( "Label='%s'%s at line %d\n", lb->label_name, fill, lb->lineno );
+            len = strlen( lb->label_name );
+            if( len > LABEL_NAME_LENGTH )
+                len = LABEL_NAME_LENGTH;
+            out_msg( "Label='%s'%s at line %d\n", lb->label_name, fill + len, lb->lineno );
             lb = lb->prev;
         }
     }
