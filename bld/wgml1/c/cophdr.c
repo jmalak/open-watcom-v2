@@ -17,6 +17,7 @@
 #include <string.h>
 
 #include "cophdr.h"
+#include "copfunc.h"
 
 
 #define VERSION_TEXT    "V4.1 PC/DOS"
@@ -27,7 +28,7 @@
  * it does, advance the stream to the first byte following the header.
  *
  * Parameter:
- *      in_file points the input stream.
+ *      fp points the input stream.
  *
  * Returns:
  *      dir_v4_1_se if the file is a same-endian version 4.1 directory file.
@@ -38,7 +39,7 @@
  *      file_error if an error occurred while reading the file.
  */
 
-cop_file_type parse_header( FILE * in_file )
+cop_file_type parse_header( FILE * fp )
 {
     char        count;
     char        text_version[sizeof( VERSION_TEXT )];
@@ -46,8 +47,8 @@ cop_file_type parse_header( FILE * in_file )
 
     /* Get the count and ensure it is 0x02. */
 
-    count = fgetc( in_file );
-    if( ferror( in_file ) || feof( in_file ) ) {
+    count = fread_u8( fp );
+    if( ferror( fp ) || feof( fp ) ) {
         return( file_error );
     }
 
@@ -57,8 +58,8 @@ cop_file_type parse_header( FILE * in_file )
 
     /* Get the version. */
 
-    fread( &version, 1, 2, in_file );
-    if( ferror( in_file ) || feof( in_file ) ) {
+    fread_buff( &version, sizeof( version ), fp );
+    if( ferror( fp ) || feof( fp ) ) {
         return( file_error );
     }
 
@@ -73,8 +74,8 @@ cop_file_type parse_header( FILE * in_file )
 
     /* Get the text_version_length and ensure it is correct value. */
 
-    count = fgetc( in_file );
-    if( ferror( in_file ) || feof( in_file ) ) {
+    count = fread_u8( fp );
+    if( ferror( fp ) || feof( fp ) ) {
         return( file_error );
     }
 
@@ -84,8 +85,8 @@ cop_file_type parse_header( FILE * in_file )
 
     /* Verify the text_version. */
 
-    fread( &text_version, 1, sizeof( VERSION_TEXT ) - 1, in_file );
-    if( ferror( in_file ) || feof( in_file ) ) {
+    fread_buff( &text_version, sizeof( VERSION_TEXT ) - 1, fp );
+    if( ferror( fp ) || feof( fp ) ) {
         return( file_error );
     }
 
@@ -96,11 +97,11 @@ cop_file_type parse_header( FILE * in_file )
 
     /* Get the type. */
 
-    count = fgetc( in_file );
+    count = fread_u8( fp );
 
     /* If there is no more data, this is not a valid .COP file. */
 
-    if( ferror( in_file ) || feof( in_file ) ) {
+    if( ferror( fp ) || feof( fp ) ) {
         return( file_error );
     }
 
