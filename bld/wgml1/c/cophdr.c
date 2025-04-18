@@ -104,9 +104,11 @@ cop_file_type parse_header( FILE * fp )
 
     if( count == 0x03 ) {
         char    type_name[3];
+        fpos_t  posx;
 
         /* Get the type_name. */
 
+        fgetpos( fp, &posx );
         fread_buff( type_name, 3, fp );
         if( ferror( fp ) || feof( fp ) ) {
             return( file_type_error );
@@ -124,7 +126,7 @@ cop_file_type parse_header( FILE * fp )
             // The file is font.
             return( file_type_fon );
 
-        fseek( fp, SEEK_POSBACK( 3 ), SEEK_CUR );
+        fsetpos( fp, &posx );
 
         return( file_type_unknown );
     }

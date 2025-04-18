@@ -380,9 +380,9 @@ void gml_fig( const gmltag * entry )
 {
     bool            id_seen     = false;
     bool            width_seen  = false;
-    char        *   p;
-    char        *   pa;
-    ref_entry   *   cur_ref     = NULL;
+    char            *p;
+    char            *pa;
+    ref_entry       *cur_ref     = NULL;
     su              cur_su;
     uint32_t        max_width;
 
