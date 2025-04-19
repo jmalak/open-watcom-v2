@@ -952,19 +952,17 @@ char * format_num( uint32_t n, char * r, size_t rsize, num_style ns )
 /*       unless, of course, it is                                          */
 /***************************************************************************/
 
-char *get_att_start( char *p )
+char *get_att_start( char *p, char **orig )
 {
-    char    *pa;
-
     static  char      buf[BUF_SIZE];
 
     ProcFlags.tag_end_found = false;
     for(;;) {                           // loop until potential attribute/rescan line found
-        pa = p;                         // save initial location
+        *orig = p;                      // save initial location
         SkipSpaces( p );                // over WS to attribute
-        if( *p == '.' ) {   // end-of-tag
+        if( *p == '.' ) {               // end-of-tag
             p++;
-            pa = p;         // return next char after end-of-tag
+            *orig = p;                  // return next char after end-of-tag
             ProcFlags.tag_end_found = true;
             break;
         }
@@ -998,8 +996,7 @@ char *get_att_start( char *p )
             break;      // potential next attribute found
         }
     }
-    g_att_start = p;    // only valid if !ProcFlags.reprocess_line && !ProcFlags.tag_end_found
-    return( pa );       // return initial location for current g_att_start
+    return( p );
 }
 
 /***************************************************************************/
@@ -1026,9 +1023,6 @@ char *get_att_value( char *p )
     }
     if( (*p == '\0')
       || (*p == '.') ) { // value is missing
-        if( *p == '.' ) {
-            ProcFlags.tag_end_found = true;
-        }
         xx_line_err_c( err_att_val_missing, p );
     }
     if( *p == '"'
@@ -1070,72 +1064,6 @@ char *get_att_value( char *p )
         ProcFlags.tag_end_found = true;
     }
     return( p );
-}
-
-/***************************************************************************/
-/* get the start and length of the next potential attribute                */
-/* returns the start of the part of the line on which that potential       */
-/*   attribute was found, thus preserving any preceding spaces in case it  */
-/*   turns out that it is not an attribute at all but rather text          */
-/* NOTE: ProcFlags.tag_end_found is cleared here rather than in            */
-/*       get_att_value() to accomodate attributes "compact" and "break"    */
-/*       which have no "value" but which must not return tag_end_found     */
-/*       unless, of course, it is                                          */
-/***************************************************************************/
-
-char *get_attribute( char *p )
-{
-    char    *   pa;
-    int         i;
-
-    static  char      buf[BUF_SIZE];
-
-    ProcFlags.tag_end_found = false;
-    for(;;) {                           // loop until potential attribute/rescan line found
-        pa = p;                         // save initial location
-        SkipSpaces( p );                // over WS to attribute
-        if( *p == '.' ) {   // end-of-tag
-            p++;
-            pa = p;         // return next char after end-of-tag
-            ProcFlags.tag_end_found = true;
-            break;
-        }
-        if( *p == '\0' ) {              // end of line: get new line
-            if( (input_cbs->fmflags & II_eof) == 0 ) {
-                if( get_line( true ) ) {// next line for missing attribute
-
-                    /*******************************************************/
-                    /* buff2 must be restored if it is to be reprocessed   */
-                    /* so that any symbol substitutions will reflect any   */
-                    /* changes made by the tag calling it                  */
-                    /*******************************************************/
-
-                    strcpy_s( buf, strlen( buff2 ) + 1, buff2 );
-                    scan_start = buff2;
-                    scan_stop  = buff2 + buff2_lg;
-                    if( (*scan_start == SCR_char)       // cw found: end-of-tag
-                      || (*scan_start == GML_char) ) {  // tag found: end-of-tag
-                        ProcFlags.reprocess_line = true;
-                        break;
-                    } else {
-                        process_line();
-                        p = scan_start; // new line is part of current tag
-                        continue;
-                    }
-                }
-            } else {
-                break;  // eof() found: return for further processing
-            }
-        } else {
-            break;      // potential next attribute found
-        }
-    }
-    g_att_val.att_name = p; // only valid if !ProcFlags.reprocess_line && !ProcFlags.tag_end_found
-    g_att_val.att_len = 0;
-    for( i = 0; is_att_char( *(p + i) ); i++ ) {
-        g_att_val.att_len++;
-    }
-    return( pa );           // return initial location for current g_att_start
 }
 
 /***************************************************************************/

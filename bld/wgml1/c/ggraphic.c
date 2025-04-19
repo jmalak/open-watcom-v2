@@ -55,8 +55,7 @@ void    gml_graphic( const gmltag * entry )
         /* already at tag end */
     } else {
         for( ;; ) {
-            pa = get_att_start( p );
-            p = g_att_start;
+            p = get_att_start( p, &pa );
             if( ProcFlags.reprocess_line ) {
                 break;
             }

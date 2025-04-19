@@ -59,8 +59,7 @@ void    gml_include( const gmltag *entry )
     if( *p == '.' ) {
         /* already at tag end */
     } else {
-        pa = get_att_start( p );
-        p = g_att_start;
+        p = get_att_start( p, &pa );
         if( !ProcFlags.reprocess_line ) {
             if( strnicmp( "file", p, 4 ) == 0 ) {
                 p += 4;
