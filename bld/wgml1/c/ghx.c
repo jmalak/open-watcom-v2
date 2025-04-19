@@ -632,7 +632,7 @@ static void gml_hx_common( const gmltag * entry, hdsrc hn_lvl )
     } else {
         for( ;; ) {
             pa = get_att_start( p );
-            p = att_start;
+            p = g_att_start;
             if( ProcFlags.reprocess_line ) {
                 break;
             }

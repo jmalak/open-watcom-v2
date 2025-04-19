@@ -104,7 +104,7 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
     } else {
         for( ;; ) {
             pa = get_att_start( p );
-            p = att_start;
+            p = g_att_start;
             pb = p;
             if( ProcFlags.reprocess_line ) {
                 break;

@@ -422,7 +422,7 @@ void gml_sf( const gmltag * entry )
         /* already at tag end */
     } else {
         pa = get_att_start( p );
-        p = att_start;
+        p = g_att_start;
         if( !ProcFlags.reprocess_line ) {
             if( strnicmp( "font", p, 4 ) == 0 ) {
                 p += 4;

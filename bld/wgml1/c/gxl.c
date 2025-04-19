@@ -189,7 +189,7 @@ void gml_dl( const gmltag * entry )
     } else {
         for( ;; ) {
             pa = get_att_start( p );
-            p = att_start;
+            p = g_att_start;
             if( ProcFlags.reprocess_line ) {
                 break;
             }
@@ -313,7 +313,7 @@ void gml_gl( const gmltag * entry )
     } else {
         for( ;; ) {
             pa = get_att_start( p );
-            p = att_start;
+            p = g_att_start;
             if( ProcFlags.reprocess_line ) {
                 break;
             }
@@ -409,7 +409,7 @@ void gml_ol( const gmltag * entry )
     } else {
         for( ;; ) {
             pa = get_att_start( p );
-            p = att_start;
+            p = g_att_start;
             if( ProcFlags.reprocess_line ) {
                 break;
             }
@@ -497,7 +497,7 @@ void gml_sl( const gmltag * entry )
     } else {
         for( ;; ) {
             pa = get_att_start( p );
-            p = att_start;
+            p = g_att_start;
             if( ProcFlags.reprocess_line ) {
                 break;
             }
@@ -584,7 +584,7 @@ void gml_ul( const gmltag * entry )
     } else {
         for( ;; ) {
             pa = get_att_start( p );
-            p = att_start;
+            p = g_att_start;
             if( ProcFlags.reprocess_line ) {
                 break;
             }
