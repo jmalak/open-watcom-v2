@@ -32,6 +32,7 @@ void    gml_binclude( const gmltag * entry )
     uint32_t        depth;
     size_t          len;
     FILE            *fp;
+    int				i;
 
     memset( &AttrFlags, 0, sizeof( AttrFlags ) );   // clear all attribute flags
     if( (ProcFlags.doc_sect < doc_sect_gdoc) ) {
@@ -50,8 +51,12 @@ void    gml_binclude( const gmltag * entry )
         /* already at tag end */
     } else {
         for( ;; ) {
-            pa = get_attribute( p );
-            p = g_att_val.att_name;
+            p = get_att_start( p, &pa );
+            g_att_val.att_name = p;
+            g_att_val.att_len = 0;
+            for( i = 0; is_att_char( *(p + i) ); i++ ) {
+                g_att_val.att_len++;
+            }
             if( ProcFlags.reprocess_line ) {
                 break;
             }
