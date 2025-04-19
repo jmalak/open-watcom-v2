@@ -40,7 +40,7 @@ global  bool            scan_err;       // used by character scanning routines
 global  char        *   g_tok_start;    // start of scanned token
 global  size_t          arg_flen;       // arg length
 global  tag_att_val     g_att_val;      // current attribute/value info
-global  char        *   att_start;      // (potential) attribute start
+global  char        *   g_att_start;    // (potential) attribute start
 global  size_t          val_len;        // attribute value length
 global  char        *   val_start;      // attribute value start
 global  char            quote_char;     // value is quoted by this char or \0

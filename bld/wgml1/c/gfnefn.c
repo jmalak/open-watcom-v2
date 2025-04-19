@@ -56,7 +56,7 @@ void gml_fn( const gmltag * entry )
     } else {
         for( ;; ) {
             pa = get_att_start( p );
-            p = att_start;
+            p = g_att_start;
             if( ProcFlags.reprocess_line ) {
                 break;
             }

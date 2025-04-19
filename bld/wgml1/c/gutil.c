@@ -998,8 +998,8 @@ char *get_att_start( char *p )
             break;      // potential next attribute found
         }
     }
-    att_start = p;      // only valid if !ProcFlags.reprocess_line && !ProcFlags.tag_end_found
-    return( pa );       // return initial location for current att_start
+    g_att_start = p;    // only valid if !ProcFlags.reprocess_line && !ProcFlags.tag_end_found
+    return( pa );       // return initial location for current g_att_start
 }
 
 /***************************************************************************/
@@ -1135,7 +1135,7 @@ char *get_attribute( char *p )
     for( i = 0; is_att_char( *(p + i) ); i++ ) {
         g_att_val.att_len++;
     }
-    return( pa );           // return initial location for current att_start
+    return( pa );           // return initial location for current g_att_start
 }
 
 /***************************************************************************/
