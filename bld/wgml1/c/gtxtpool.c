@@ -33,11 +33,15 @@
 /*  allocate / reuse and init a text_chars instance                        */
 /*      optionally fill in text                                            */
 /***************************************************************************/
-text_chars * alloc_text_chars( const char * text, size_t cnt, font_number font )
+text_chars *alloc_text_chars( const char *text, size_t cnt, font_number font )
 {
-    text_chars   *   curr;
-    text_chars   *   prev;
+    text_chars   	*curr;
+    text_chars   	*prev;
+    size_t			size;
 
+    if( text == NULL ) {
+        cnt = 0;
+    }
     curr = text_pool;
     while( (curr != NULL) && (curr->length <= cnt) ) {
         prev = curr;
@@ -50,8 +54,11 @@ text_chars * alloc_text_chars( const char * text, size_t cnt, font_number font )
             prev->next = curr->next;    // unchain curr
         }
     } else {                            // no one large enough found
-        curr = mem_alloc( sizeof( *curr ) + cnt );
-        curr->length = cnt;             // set max text size
+        size = cnt;
+        if( size < TEXT_CHARS_DEF )
+        	size = TEXT_CHARS_DEF;
+        curr = mem_alloc( sizeof( *curr ) + size );
+        curr->length = size;             // set max text size
 
         if( text_pool == NULL ) {       // alloc 10 text_chars if pool empty
             int k;
@@ -80,13 +87,10 @@ text_chars * alloc_text_chars( const char * text, size_t cnt, font_number font )
     curr->font = font;
     curr->f_switch = fs_norm;
     curr->width = 0;
-    if( text != NULL ) {                   // text supplied
-        memcpy_s( curr->text, cnt + 1, text, cnt ); // yes copy text
-        curr->count = cnt;              // set current size
-    } else {
-        curr->count = 0;                // init current size
-        curr->text[0] = '\0';
+    if( cnt > 0 ) {                         // text supplied
+        strncpy( curr->text, text, cnt );   // yes copy text
     }
+    curr->count = cnt;                      // set current size
     curr->text[cnt] = '\0';
 
     return( curr );
@@ -99,7 +103,7 @@ text_chars * alloc_text_chars( const char * text, size_t cnt, font_number font )
 /*  Note: very specialized, used to cancel a text_chars instance           */
 /***************************************************************************/
 
-void add_single_text_chars_to_pool( text_chars * a_chars )
+void add_single_text_chars_to_pool( text_chars *a_chars )
 {
     if( a_chars == NULL ) {
         return;
@@ -116,9 +120,9 @@ void add_single_text_chars_to_pool( text_chars * a_chars )
 /*  add text_chars instance(s) to free pool for reuse                      */
 /***************************************************************************/
 
-void add_text_chars_to_pool( text_line * a_line )
+void add_text_chars_to_pool( text_line *a_line )
 {
-    text_chars      *   tw;
+    text_chars      *tw;
 
     if( (a_line == NULL) || (a_line->first == NULL) ) {
         return;
