@@ -314,7 +314,7 @@ extern  char    *   scr_single_funcs( char * in, char * end, char * * result );
 
 
 /* gsgoto.c                             */
-extern  void    print_labels( labelcb * lb, char * name );
+extern  void    print_labels( labelcb * lb, const char * name );
 extern  bool    gotarget_reached( void );
 extern  void    gotarget_err( void );
 
