@@ -42,9 +42,11 @@
 #define MAX_PAREN           50          // max parenthesis nesting in &'functions
 
 #define TAG_NAME_LENGTH     15          // :tag name length
-#define ATT_NAME_LENGTH     9           // :tag attr name length
 #define VAL_LENGTH          10          // max length for attribute value
                                         // longer strings will be allocated
+
+#define TAG_ATT_NAME_LENGTH 10          // gml tag attribute name max. length
+#define LAY_ATT_NAME_LENGTH 17          // layout attribute name max. length
 
 #define ID_LEN              15          // length of refids wgml 4 gives a warning
                                         // for lengths > 7 but processes it
@@ -521,7 +523,7 @@ typedef enum {
 typedef struct gaentry {
     struct gaentry  *   next;
     gavalentry      *   vals;
-    char                attname[ATT_NAME_LENGTH + 1];
+    char                attname[TAG_ATT_NAME_LENGTH + 1];
     gaflags             attflags;
 } gaentry;
 
@@ -1815,6 +1817,14 @@ typedef struct attr_flags {
 /***************************************************************************/
 /*  structure for parsed tag attribute names and values                    */
 /***************************************************************************/
+
+typedef struct lay_att_val {
+    char        *   att_name;
+    uint32_t        att_len;
+    char        *   val_name;
+    uint32_t        val_len;
+    bool            val_quoted;
+} lay_att_val;
 
 typedef struct tag_att_val {
     char        *   att_name;

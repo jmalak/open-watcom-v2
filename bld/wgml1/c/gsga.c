@@ -22,7 +22,7 @@ static bool     get_att_name( const char *p, char *attname )
 {
     size_t  len;
 
-    for( len = 0; len < ATT_NAME_LENGTH; len++ ) {
+    for( len = 0; len < TAG_ATT_NAME_LENGTH; len++ ) {
         if( IS_ATTNAME_END( p ) ) {
             break;
         }

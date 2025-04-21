@@ -40,6 +40,7 @@ global  bool            scan_err;       // used by character scanning routines
 global  char        *   g_tok_start;    // start of scanned token
 global  size_t          arg_flen;       // arg length
 global  tag_att_val     g_att_val;      // current attribute/value info
+global  lay_att_val     lay_attr;       // current attribute/value info
 global  size_t          val_len;        // attribute value length
 global  char        *   val_start;      // attribute value start
 global  char            quote_char;     // value is quoted by this char or \0
@@ -127,7 +128,7 @@ global size_t           buff2_lg;       // input buffer used length
 // the following to manage .gt * and .ga * * syntax
 global char         g_tagname[TAG_NAME_LENGTH + 1];// last defined GML tag name
 global struct gtentry   *g_tag_entry;   // ... entry in tag_dict
-global char         g_attname[ATT_NAME_LENGTH + 1];// last defined GML attribute
+global char         g_attname[TAG_ATT_NAME_LENGTH + 1];// last defined GML attribute
 global struct gaentry   *g_att_entry;   // ... entry in tag_dict
 
 global int          li_cnt;             // remaining count for .li processing
