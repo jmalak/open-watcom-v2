@@ -64,11 +64,12 @@ const   lay_att     heading_att[6] =
 
 void    lay_heading( const gmltag * entry )
 {
-    char        *   p;
-    condcode        cc;
-    int             cvterr;
-    int             k;
-    lay_att         curr;
+    char                *p;
+    condcode            cc;
+    int                 cvterr;
+    int                 k;
+    lay_att             curr;
+    lay_att_val         lay_attr;
 
     (void)entry;
 
@@ -84,7 +85,7 @@ void    lay_heading( const gmltag * entry )
         ProcFlags.lay_xxx = el_heading;
     }
 
-    cc = lay_attr_and_value();            // get att with value
+    cc = lay_attr_and_value( &lay_attr );            // get att with value
     while( cc == pos ) {
         cvterr = -1;
         for( k = 0, curr = heading_att[k]; curr > 0; k++, curr = heading_att[k] ) {
@@ -98,7 +99,7 @@ void    lay_heading( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_char( p, curr, &layout_work.heading.delim );
+                    cvterr = i_char( p, &lay_attr, &layout_work.heading.delim );
                     AttrFlags.delim = true;
                     break;
                 case   e_stop_eject:
@@ -106,7 +107,7 @@ void    lay_heading( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_yes_no( p, curr,
+                    cvterr = i_yes_no( p, &lay_attr,
                                            &layout_work.heading.stop_eject );
                     AttrFlags.stop_eject = true;
                     break;
@@ -115,7 +116,7 @@ void    lay_heading( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_yes_no( p, curr,
+                    cvterr = i_yes_no( p, &lay_attr,
                                            &layout_work.heading.para_indent );
                     AttrFlags.para_indent = true;
                     break;
@@ -124,7 +125,7 @@ void    lay_heading( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_threshold( p, curr, &layout_work.heading.threshold );
+                    cvterr = i_threshold( p, &lay_attr, &layout_work.heading.threshold );
                     AttrFlags.threshold = true;
                     break;
                 case   e_max_group:
@@ -132,7 +133,7 @@ void    lay_heading( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_int8( p, curr, &layout_work.heading.max_group );
+                    cvterr = i_int8( p, &lay_attr, &layout_work.heading.max_group );
                     AttrFlags.max_group = true;
                     break;
                 default:
@@ -147,7 +148,7 @@ void    lay_heading( const gmltag * entry )
         if( cvterr < 0 ) {
             xx_err( err_att_name_inv );
         }
-        cc = lay_attr_and_value();            // get att with value
+        cc = lay_attr_and_value( &lay_attr );            // get att with value
     }
     scan_start = scan_stop + 1;
     return;

@@ -81,11 +81,12 @@ const   lay_att     lq_att[7] =
 
 void    lay_lq( const gmltag * entry )
 {
-    char        *   p;
-    condcode        cc;
-    int             cvterr;
-    int             k;
-    lay_att         curr;
+    char                *p;
+    condcode            cc;
+    int                 cvterr;
+    int                 k;
+    lay_att             curr;
+    lay_att_val         lay_attr;
 
     (void)entry;
 
@@ -101,7 +102,7 @@ void    lay_lq( const gmltag * entry )
     if( ProcFlags.lay_xxx != el_lq ) {
         ProcFlags.lay_xxx = el_lq;
     }
-    cc = lay_attr_and_value();            // get att with value
+    cc = lay_attr_and_value( &lay_attr );            // get att with value
     while( cc == pos ) {
         cvterr = -1;
         for( k = 0, curr = lq_att[k]; curr > 0; k++, curr =lq_att[k] ) {
@@ -115,7 +116,7 @@ void    lay_lq( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr,
+                    cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.lq.left_indent );
                     AttrFlags.left_indent = true;
                     break;
@@ -124,7 +125,7 @@ void    lay_lq( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr,
+                    cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.lq.right_indent );
                     AttrFlags.right_indent = true;
                     break;
@@ -133,7 +134,7 @@ void    lay_lq( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr, &layout_work.lq.pre_skip );
+                    cvterr = i_space_unit( p, &lay_attr, &layout_work.lq.pre_skip );
                     AttrFlags.pre_skip = true;
                     break;
                 case   e_post_skip:
@@ -141,7 +142,7 @@ void    lay_lq( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr, &layout_work.lq.post_skip );
+                    cvterr = i_space_unit( p, &lay_attr, &layout_work.lq.post_skip );
                     AttrFlags.post_skip = true;
                     break;
                 case   e_spacing:
@@ -149,7 +150,7 @@ void    lay_lq( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_spacing( p, curr, &layout_work.lq.spacing );
+                    cvterr = i_spacing( p, &lay_attr, &layout_work.lq.spacing );
                     AttrFlags.spacing = true;
                     break;
                 case   e_font:
@@ -157,7 +158,7 @@ void    lay_lq( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_font_number( p, curr, &layout_work.lq.font );
+                    cvterr = i_font_number( p, &lay_attr, &layout_work.lq.font );
                     if( layout_work.lq.font >= wgml_font_cnt ) {
                         layout_work.lq.font = 0;
                     }
@@ -175,7 +176,7 @@ void    lay_lq( const gmltag * entry )
         if( cvterr < 0 ) {
             xx_err( err_att_name_inv );
         }
-        cc = lay_attr_and_value();            // get att with value
+        cc = lay_attr_and_value( &lay_attr );            // get att with value
     }
     scan_start = scan_stop + 1;
     return;

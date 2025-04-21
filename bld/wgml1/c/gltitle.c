@@ -33,6 +33,7 @@ void    lay_title( const gmltag * entry )
     int                 cvterr;
     int                 k;
     lay_att             curr;
+    lay_att_val         lay_attr;
 
     (void)entry;
 
@@ -48,7 +49,7 @@ void    lay_title( const gmltag * entry )
     if( ProcFlags.lay_xxx != el_title ) {
         ProcFlags.lay_xxx = el_title;
     }
-    cc = lay_attr_and_value();            // get att with value
+    cc = lay_attr_and_value( &lay_attr );            // get att with value
     while( cc == pos ) {
         cvterr = -1;
         for( k = 0, curr = title_att[k]; curr > 0; k++, curr = title_att[k] ) {
@@ -62,7 +63,7 @@ void    lay_title( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr,
+                    cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.title.left_adjust );
                     AttrFlags.left_adjust = true;
                     break;
@@ -71,7 +72,7 @@ void    lay_title( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr,
+                    cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.title.right_adjust );
                     AttrFlags.right_adjust = true;
                     break;
@@ -80,7 +81,7 @@ void    lay_title( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_page_position( p, curr,
+                    cvterr = i_page_position( p, &lay_attr,
                                          &layout_work.title.page_position );
                     AttrFlags.page_position = true;
                     break;
@@ -89,7 +90,7 @@ void    lay_title( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_font_number( p, curr, &layout_work.title.font );
+                    cvterr = i_font_number( p, &lay_attr, &layout_work.title.font );
                     if( layout_work.title.font >= wgml_font_cnt ) {
                         layout_work.title.font = 0;
                     }
@@ -100,7 +101,7 @@ void    lay_title( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr,
+                    cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.title.pre_top_skip );
                     AttrFlags.pre_top_skip = true;
                     break;
@@ -109,7 +110,7 @@ void    lay_title( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr,
+                    cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.title.skip );
                     AttrFlags.skip = true;
                     break;
@@ -125,7 +126,7 @@ void    lay_title( const gmltag * entry )
         if( cvterr < 0 ) {
             xx_err( err_att_name_inv );
         }
-        cc = lay_attr_and_value();            // get att with value
+        cc = lay_attr_and_value( &lay_attr );            // get att with value
     }
     scan_start = scan_stop + 1;
     return;

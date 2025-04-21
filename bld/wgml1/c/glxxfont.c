@@ -27,13 +27,14 @@ const   lay_att     xx_att[2] =
 
 void    lay_xx( const gmltag * entry )
 {
-    char        *   p;
-    condcode        cc;
-    font_number *   fontptr;
-    int             cvterr;
-    int             k;
-    lay_att         curr;
-    lay_sub         x_tag;
+    char                *p;
+    condcode            cc;
+    font_number         *fontptr;
+    int                 cvterr;
+    int                 k;
+    lay_att             curr;
+    lay_sub             x_tag;
+    lay_att_val         lay_attr;
 
     p = scan_start;
     cvterr = false;
@@ -74,7 +75,7 @@ void    lay_xx( const gmltag * entry )
     if( ProcFlags.lay_xxx != x_tag ) {
         ProcFlags.lay_xxx = x_tag;
     }
-    cc = lay_attr_and_value();            // get att with value
+    cc = lay_attr_and_value( &lay_attr );            // get att with value
     while( cc == pos ) {
         cvterr = -1;
         for( k = 0, curr = xx_att[k]; curr > 0; k++, curr = xx_att[k] ) {
@@ -88,7 +89,7 @@ void    lay_xx( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_font_number( p, curr, fontptr );
+                    cvterr = i_font_number( p, &lay_attr, fontptr );
                     if( *fontptr >= wgml_font_cnt ) {
                         *fontptr = 0;
                     }
@@ -106,7 +107,7 @@ void    lay_xx( const gmltag * entry )
         if( cvterr < 0 ) {
             xx_err( err_att_name_inv );
         }
-        cc = lay_attr_and_value();            // get att with value
+        cc = lay_attr_and_value( &lay_attr );            // get att with value
     }
     scan_start = scan_stop + 1;
     return;

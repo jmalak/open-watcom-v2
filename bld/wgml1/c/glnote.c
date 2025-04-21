@@ -87,11 +87,12 @@ const   lay_att     note_att[8] =
 
 void    lay_note( const gmltag * entry )
 {
-    char        *   p;
-    condcode        cc;
-    int             cvterr;
-    int             k;
-    lay_att         curr;
+    char                *p;
+    condcode            cc;
+    int                 cvterr;
+    int                 k;
+    lay_att             curr;
+    lay_att_val         lay_attr;
 
     (void)entry;
 
@@ -107,7 +108,7 @@ void    lay_note( const gmltag * entry )
     if( ProcFlags.lay_xxx != el_note ) {
         ProcFlags.lay_xxx = el_note;
     }
-    cc = lay_attr_and_value();            // get att with value
+    cc = lay_attr_and_value( &lay_attr );            // get att with value
     while( cc == pos ) {
         cvterr = -1;
         for( k = 0, curr = note_att[k]; curr > 0; k++, curr = note_att[k] ) {
@@ -121,7 +122,7 @@ void    lay_note( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr,
+                    cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.note.left_indent );
                     AttrFlags.left_indent = true;
                     break;
@@ -130,7 +131,7 @@ void    lay_note( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr,
+                    cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.note.right_indent );
                     AttrFlags.right_indent = true;
                     break;
@@ -139,7 +140,7 @@ void    lay_note( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr,
+                    cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.note.pre_skip );
                     AttrFlags.pre_skip = true;
                     break;
@@ -148,7 +149,7 @@ void    lay_note( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr,
+                    cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.note.post_skip );
                     AttrFlags.post_skip = true;
                     break;
@@ -157,7 +158,7 @@ void    lay_note( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_font_number( p, curr, &layout_work.note.font );
+                    cvterr = i_font_number( p, &lay_attr, &layout_work.note.font );
                     if( layout_work.note.font >= wgml_font_cnt ) {
                         layout_work.note.font = 0;
                     }
@@ -168,7 +169,7 @@ void    lay_note( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_spacing( p, curr, &layout_work.note.spacing );
+                    cvterr = i_spacing( p, &lay_attr, &layout_work.note.spacing );
                     AttrFlags.spacing = true;
                     break;
                 case   e_note_string:
@@ -176,7 +177,7 @@ void    lay_note( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_xx_string( p, curr, layout_work.note.string );
+                    cvterr = i_xx_string( p, &lay_attr, layout_work.note.string );
                     AttrFlags.note_string = true;
                     break;
                 default:
@@ -191,7 +192,7 @@ void    lay_note( const gmltag * entry )
         if( cvterr < 0 ) {
             xx_err( err_att_name_inv );
         }
-        cc = lay_attr_and_value();            // get att with value
+        cc = lay_attr_and_value( &lay_attr );            // get att with value
     }
     scan_start = scan_stop + 1;
     return;

@@ -32,6 +32,7 @@ void    lay_titlep( const gmltag * entry )
     int                 cvterr;
     int                 k;
     lay_att             curr;
+    lay_att_val         lay_attr;
 
     (void)entry;
 
@@ -47,7 +48,7 @@ void    lay_titlep( const gmltag * entry )
     if( ProcFlags.lay_xxx != el_titlep ) {
         ProcFlags.lay_xxx = el_titlep;
     }
-    cc = lay_attr_and_value();            // get att with value
+    cc = lay_attr_and_value( &lay_attr );            // get att with value
     while( cc == pos ) {
         cvterr = -1;
         for( k = 0, curr = titlep_att[k]; curr > 0; k++, curr = titlep_att[k] ) {
@@ -61,7 +62,7 @@ void    lay_titlep( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_spacing( p, curr, &layout_work.titlep.spacing );
+                    cvterr = i_spacing( p, &lay_attr, &layout_work.titlep.spacing );
                     AttrFlags.spacing = true;
                     break;
                 case   e_columns:
@@ -69,7 +70,7 @@ void    lay_titlep( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_int8( p, curr, &layout_work.titlep.columns );
+                    cvterr = i_int8( p, &lay_attr, &layout_work.titlep.columns );
                     AttrFlags.columns = true;
                     break;
                 default:
@@ -84,7 +85,7 @@ void    lay_titlep( const gmltag * entry )
         if( cvterr < 0 ) {
             xx_err( err_att_name_inv );
         }
-        cc = lay_attr_and_value();            // get att with value
+        cc = lay_attr_and_value( &lay_attr );            // get att with value
     }
     scan_start = scan_stop + 1;
     return;

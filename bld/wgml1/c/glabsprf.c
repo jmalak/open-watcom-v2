@@ -117,6 +117,7 @@ void    lay_abspref( const gmltag * entry )
     int                 cvterr;
     lay_att             curr;
     lay_sub             x_tag;
+    lay_att_val         lay_attr;
 
     p = scan_start;
     cvterr = false;
@@ -142,7 +143,7 @@ void    lay_abspref( const gmltag * entry )
     if( ProcFlags.lay_xxx != x_tag ) {
         ProcFlags.lay_xxx = x_tag;
     }
-    cc = lay_attr_and_value();            // get att with value
+    cc = lay_attr_and_value( &lay_attr );            // get att with value
     while( cc == pos ) {
         cvterr = -1;
         for( k = 0, curr = abspref_att[k]; curr > 0; k++, curr = abspref_att[k] ) {
@@ -156,7 +157,7 @@ void    lay_abspref( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr, &(apsect->post_skip) );
+                    cvterr = i_space_unit( p, &lay_attr, &(apsect->post_skip) );
                     AttrFlags.post_skip = true;
                     break;
                 case   e_pre_top_skip:
@@ -164,7 +165,7 @@ void    lay_abspref( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr, &(apsect->pre_top_skip) );
+                    cvterr = i_space_unit( p, &lay_attr, &(apsect->pre_top_skip) );
                     AttrFlags.pre_top_skip = true;
                     break;
                 case   e_font:
@@ -172,7 +173,7 @@ void    lay_abspref( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_font_number( p, curr, &(apsect->text_font) );
+                    cvterr = i_font_number( p, &lay_attr, &(apsect->text_font) );
                     if( apsect->text_font >= wgml_font_cnt ) apsect->text_font = 0;
                     AttrFlags.font = true;
                     break;
@@ -181,7 +182,7 @@ void    lay_abspref( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_spacing( p, curr, &(apsect->spacing) );
+                    cvterr = i_spacing( p, &lay_attr, &(apsect->spacing) );
                     AttrFlags.spacing = true;
                     break;
                 case   e_header:
@@ -189,7 +190,7 @@ void    lay_abspref( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_yes_no( p, curr, &(apsect->header) );
+                    cvterr = i_yes_no( p, &lay_attr, &(apsect->header) );
                     AttrFlags.header = true;
                     break;
                 case   e_abstract_string:
@@ -198,7 +199,7 @@ void    lay_abspref( const gmltag * entry )
                             xx_line_err_ci( err_att_dup, lay_attr.att_name,
                                 lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                         }
-                        cvterr = i_xx_string( p, curr, ap->string );
+                        cvterr = i_xx_string( p, &lay_attr, ap->string );
                         AttrFlags.abstract_string = true;
                     }
                     break;
@@ -208,7 +209,7 @@ void    lay_abspref( const gmltag * entry )
                             xx_line_err_ci( err_att_dup, lay_attr.att_name,
                                 lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                         }
-                        cvterr = i_xx_string( p, curr, ap->string );
+                        cvterr = i_xx_string( p, &lay_attr, ap->string );
                         AttrFlags.preface_string = true;
                     }
                     break;
@@ -217,7 +218,7 @@ void    lay_abspref( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_page_eject( p, curr, &(ap->page_eject) );
+                    cvterr = i_page_eject( p, &lay_attr, &(ap->page_eject) );
                     AttrFlags.page_eject = true;
                     break;
                 case   e_page_reset:
@@ -225,7 +226,7 @@ void    lay_abspref( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_yes_no( p, curr, &(ap->page_reset) );
+                    cvterr = i_yes_no( p, &lay_attr, &(ap->page_reset) );
                     AttrFlags.page_reset = true;
                     break;
                 case   e_columns:
@@ -233,7 +234,7 @@ void    lay_abspref( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_int8( p, curr, &(ap->columns) );
+                    cvterr = i_int8( p, &lay_attr, &(ap->columns) );
                     AttrFlags.columns = true;
                     break;
                 default:
@@ -249,7 +250,7 @@ void    lay_abspref( const gmltag * entry )
         if( cvterr < 0 ) {
             xx_err( err_att_name_inv );
         }
-        cc = lay_attr_and_value();        // get one with value
+        cc = lay_attr_and_value( &lay_attr );        // get one with value
     }
     scan_start = scan_stop + 1;
     return;

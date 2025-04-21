@@ -94,12 +94,13 @@ const   lay_att     tochx_att[9] =
 
 void    lay_tochx( const gmltag * entry )
 {
-    char        *   p;
-    condcode        cc;
-    int             cvterr;
-    int             k;
-    int             hx_l;
-    lay_att         curr;
+    char                *p;
+    condcode            cc;
+    int                 cvterr;
+    int                 k;
+    int                 hx_l;
+    lay_att             curr;
+    lay_att_val         lay_attr;
 
     p = scan_start;
 
@@ -146,7 +147,7 @@ void    lay_tochx( const gmltag * entry )
         err_count++;
     }
 
-    cc = lay_attr_and_value();            // get att with value
+    cc = lay_attr_and_value( &lay_attr );            // get att with value
     while( cc == pos ) {
         cvterr = -1;
         for( k = 0, curr = tochx_att[k]; curr > 0; k++, curr = tochx_att[k] ) {
@@ -160,7 +161,7 @@ void    lay_tochx( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_int8( p, curr, &layout_work.tochx[hx_l].group );
+                    cvterr = i_int8( p, &lay_attr, &layout_work.tochx[hx_l].group );
                     AttrFlags.group = true;
                     break;
                 case   e_indent:
@@ -168,7 +169,7 @@ void    lay_tochx( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr,
+                    cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.tochx[hx_l].indent );
                     AttrFlags.indent = true;
                     break;
@@ -177,7 +178,7 @@ void    lay_tochx( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr,
+                    cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.tochx[hx_l].skip );
                     AttrFlags.skip = true;
                     break;
@@ -186,7 +187,7 @@ void    lay_tochx( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr,
+                    cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.tochx[hx_l].pre_skip );
                     AttrFlags.pre_skip = true;
                     break;
@@ -195,7 +196,7 @@ void    lay_tochx( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr,
+                    cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.tochx[hx_l].post_skip );
                     AttrFlags.post_skip = true;
                     break;
@@ -204,7 +205,7 @@ void    lay_tochx( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_font_number( p, curr, &layout_work.tochx[hx_l].font );
+                    cvterr = i_font_number( p, &lay_attr, &layout_work.tochx[hx_l].font );
                     if( layout_work.tochx[hx_l].font >= wgml_font_cnt ) {
                         layout_work.tochx[hx_l].font = 0;
                     }
@@ -215,7 +216,7 @@ void    lay_tochx( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr,
+                    cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.tochx[hx_l].align );
                     AttrFlags.align = true;
                     break;
@@ -224,7 +225,7 @@ void    lay_tochx( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_yes_no( p, curr,
+                    cvterr = i_yes_no( p, &lay_attr,
                                      &layout_work.tochx[hx_l].display_in_toc );
                     AttrFlags.display_in_toc = true;
                     break;
@@ -240,7 +241,7 @@ void    lay_tochx( const gmltag * entry )
         if( cvterr < 0 ) {
             xx_err( err_att_name_inv );
         }
-        cc = lay_attr_and_value();            // get att with value
+        cc = lay_attr_and_value( &lay_attr );            // get att with value
     }
     scan_start = scan_stop + 1;
     return;

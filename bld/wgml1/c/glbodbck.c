@@ -104,6 +104,7 @@ void    lay_backbod( const gmltag * entry )
     int                 cvterr;
     lay_att             curr;
     lay_sub             x_tag;
+    lay_att_val         lay_attr;
 
     p = scan_start;
     cvterr = false;
@@ -128,7 +129,7 @@ void    lay_backbod( const gmltag * entry )
     if( ProcFlags.lay_xxx != x_tag ) {
         ProcFlags.lay_xxx = x_tag;
     }
-    cc = lay_attr_and_value();            // get att with value
+    cc = lay_attr_and_value( &lay_attr );            // get att with value
     while( cc == pos ) {
         cvterr = -1;
         for( k = 0, curr = backbod_att[k]; curr > 0; k++, curr = backbod_att[k] ) {
@@ -142,7 +143,7 @@ void    lay_backbod( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr, &(bbsect->post_skip) );
+                    cvterr = i_space_unit( p, &lay_attr, &(bbsect->post_skip) );
                     AttrFlags.post_skip = true;
                     break;
                 case   e_pre_top_skip:
@@ -150,7 +151,7 @@ void    lay_backbod( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr, &(bbsect->pre_top_skip) );
+                    cvterr = i_space_unit( p, &lay_attr, &(bbsect->pre_top_skip) );
                     AttrFlags.pre_top_skip = true;
                     break;
                 case   e_header:
@@ -158,7 +159,7 @@ void    lay_backbod( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_yes_no( p, curr, &(bbsect->header) );
+                    cvterr = i_yes_no( p, &lay_attr, &(bbsect->header) );
                     AttrFlags.header = true;
                     break;
                 case   e_body_string:
@@ -167,7 +168,7 @@ void    lay_backbod( const gmltag * entry )
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     if( x_tag == el_body ) {
-                        cvterr = i_xx_string( p, curr, bb->string );
+                        cvterr = i_xx_string( p, &lay_attr, bb->string );
                     }
                     AttrFlags.body_string = true;
                     break;
@@ -177,7 +178,7 @@ void    lay_backbod( const gmltag * entry )
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     if( x_tag == el_backm ) {
-                        cvterr = i_xx_string( p, curr, bb->string );
+                        cvterr = i_xx_string( p, &lay_attr, bb->string );
                     }
                     AttrFlags.backm_string = true;
                     break;
@@ -186,7 +187,7 @@ void    lay_backbod( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_page_eject( p, curr, &(bb->page_eject) );
+                    cvterr = i_page_eject( p, &lay_attr, &(bb->page_eject) );
                     AttrFlags.page_eject = true;
                     break;
                 case   e_page_reset:
@@ -194,7 +195,7 @@ void    lay_backbod( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_yes_no( p, curr, &(bb->page_reset) );
+                    cvterr = i_yes_no( p, &lay_attr, &(bb->page_reset) );
                     AttrFlags.page_reset = true;
                     break;
                 case   e_font:
@@ -202,7 +203,7 @@ void    lay_backbod( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_font_number( p, curr, &(bbsect->text_font) );
+                    cvterr = i_font_number( p, &lay_attr, &(bbsect->text_font) );
                     if( bbsect->text_font >= wgml_font_cnt ) {
                         bbsect->text_font = 0;
                     }
@@ -214,7 +215,7 @@ void    lay_backbod( const gmltag * entry )
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     if( x_tag == el_backm ) {
-                        cvterr = i_int8( p, curr, &(bb->columns) );
+                        cvterr = i_int8( p, &lay_attr, &(bb->columns) );
                     }
                     AttrFlags.columns = true;
                     break;
@@ -230,7 +231,7 @@ void    lay_backbod( const gmltag * entry )
         if( cvterr < 0 ) {
             xx_err( err_att_name_inv );
         }
-        cc = lay_attr_and_value();            // get att with value
+        cc = lay_attr_and_value( &lay_attr );            // get att with value
     }
     scan_start = scan_stop + 1;
     return;

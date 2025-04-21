@@ -35,11 +35,12 @@ const   lay_att     widow_att[2] = { e_threshold, e_dummy_zero };
 
 void    lay_widow( const gmltag * entry )
 {
-    char        *   p;
-    condcode        cc;
-    int             cvterr;
-    int             k;
-    lay_att         curr;
+    char                *p;
+    condcode            cc;
+    int                 cvterr;
+    int                 k;
+    lay_att             curr;
+    lay_att_val         lay_attr;
 
     (void)entry;
 
@@ -54,7 +55,7 @@ void    lay_widow( const gmltag * entry )
     if( ProcFlags.lay_xxx != el_widow ) {
         ProcFlags.lay_xxx = el_widow;
     }
-    cc = lay_attr_and_value();            // get att with value
+    cc = lay_attr_and_value( &lay_attr );            // get att with value
     while( cc == pos ) {
         cvterr = -1;
         for( k = 0, curr = widow_att[k]; curr > 0; k++, curr = widow_att[k] ) {
@@ -68,7 +69,7 @@ void    lay_widow( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_threshold( p, curr, &layout_work.widow.threshold );
+                    cvterr = i_threshold( p, &lay_attr, &layout_work.widow.threshold );
                     AttrFlags.threshold = true;
                     break;
                 default:
@@ -83,7 +84,7 @@ void    lay_widow( const gmltag * entry )
         if( cvterr < 0 ) {
             xx_err( err_att_name_inv );
         }
-        cc = lay_attr_and_value();            // get att with value
+        cc = lay_attr_and_value( &lay_attr );            // get att with value
     }
     scan_start = scan_stop + 1;
     return;

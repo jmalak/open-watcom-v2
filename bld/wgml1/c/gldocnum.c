@@ -33,6 +33,7 @@ void    lay_docnum( const gmltag * entry )
     int                 cvterr;
     int                 k;
     lay_att             curr;
+    lay_att_val         lay_attr;
 
     (void)entry;
 
@@ -48,7 +49,7 @@ void    lay_docnum( const gmltag * entry )
     if( ProcFlags.lay_xxx != el_docnum ) {
         ProcFlags.lay_xxx = el_docnum;
     }
-    cc = lay_attr_and_value();            // get att with value
+    cc = lay_attr_and_value( &lay_attr );            // get att with value
     while( cc == pos ) {
         cvterr = -1;
         for( k = 0, curr = docnum_att[k]; curr > 0; k++, curr = docnum_att[k] ) {
@@ -62,7 +63,7 @@ void    lay_docnum( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr,
+                    cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.docnum.left_adjust );
                     AttrFlags.left_adjust = true;
                     break;
@@ -71,7 +72,7 @@ void    lay_docnum( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr,
+                    cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.docnum.right_adjust );
                     AttrFlags.right_adjust = true;
                     break;
@@ -80,7 +81,7 @@ void    lay_docnum( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_page_position( p, curr,
+                    cvterr = i_page_position( p, &lay_attr,
                                           &layout_work.docnum.page_position );
                     AttrFlags.page_position = true;
                     break;
@@ -89,7 +90,7 @@ void    lay_docnum( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_font_number( p, curr, &layout_work.docnum.font );
+                    cvterr = i_font_number( p, &lay_attr, &layout_work.docnum.font );
                     if( layout_work.docnum.font >= wgml_font_cnt ) {
                         layout_work.docnum.font = 0;
                     }
@@ -100,7 +101,7 @@ void    lay_docnum( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr,
+                    cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.docnum.pre_skip );
                     AttrFlags.pre_skip = true;
                     break;
@@ -109,7 +110,7 @@ void    lay_docnum( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_xx_string( p, curr, layout_work.docnum.string );
+                    cvterr = i_xx_string( p, &lay_attr, layout_work.docnum.string );
                     AttrFlags.docnum_string = true;
                     break;
                 default:
@@ -124,7 +125,7 @@ void    lay_docnum( const gmltag * entry )
         if( cvterr < 0 ) {
             xx_err( err_att_name_inv );
         }
-        cc = lay_attr_and_value();            // get att with value
+        cc = lay_attr_and_value( &lay_attr );            // get att with value
     }
     scan_start = scan_stop + 1;
     return;

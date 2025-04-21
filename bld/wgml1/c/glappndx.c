@@ -195,6 +195,7 @@ void    lay_appendix( const gmltag * entry )
     int                 k;
     int                 cvterr;
     lay_att             curr;
+    lay_att_val         lay_attr;
 
     (void)entry;
 
@@ -210,7 +211,7 @@ void    lay_appendix( const gmltag * entry )
     if( ProcFlags.lay_xxx != el_appendix ) {
         ProcFlags.lay_xxx = el_appendix;
     }
-    cc = lay_attr_and_value();            // get att with value
+    cc = lay_attr_and_value( &lay_attr );            // get att with value
     while( cc == pos ) {
         cvterr = -1;
         for( k = 0, curr = appendix_att[k]; curr > 0; k++, curr = appendix_att[k] ) {
@@ -224,7 +225,7 @@ void    lay_appendix( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr,
+                    cvterr = i_space_unit( p, &lay_attr,
                                     &layout_work.hx.hx_head[hds_appendix].indent );
                     AttrFlags.indent = true;
                     break;
@@ -233,7 +234,7 @@ void    lay_appendix( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr,
+                    cvterr = i_space_unit( p, &lay_attr,
                                 &layout_work.hx.hx_sect[hds_appendix].pre_top_skip );
                     AttrFlags.pre_top_skip = true;
                     break;
@@ -242,7 +243,7 @@ void    lay_appendix( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr,
+                    cvterr = i_space_unit( p, &lay_attr,
                                     &layout_work.hx.hx_head[hds_appendix].pre_skip );
                     AttrFlags.pre_skip = true;
                     break;
@@ -251,7 +252,7 @@ void    lay_appendix( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr,
+                    cvterr = i_space_unit( p, &lay_attr,
                                     &layout_work.hx.hx_sect[hds_appendix].post_skip );
                     AttrFlags.post_skip = true;
                     break;
@@ -260,7 +261,7 @@ void    lay_appendix( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_spacing( p, curr, &layout_work.hx.hx_sect[hds_appendix].spacing );
+                    cvterr = i_spacing( p, &lay_attr, &layout_work.hx.hx_sect[hds_appendix].spacing );
                     AttrFlags.spacing = true;
                     break;
                 case   e_font:
@@ -268,7 +269,7 @@ void    lay_appendix( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_font_number( p, curr,
+                    cvterr = i_font_number( p, &lay_attr,
                                         &layout_work.hx.hx_sect[hds_appendix].text_font );
                     if( layout_work.hx.hx_sect[hds_appendix].text_font >= wgml_font_cnt ) {
                         layout_work.hx.hx_sect[hds_appendix].text_font = 0;
@@ -280,7 +281,7 @@ void    lay_appendix( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_font_number( p, curr,
+                    cvterr = i_font_number( p, &lay_attr,
                                 &layout_work.hx.hx_head[hds_appendix].number_font );
                     if( layout_work.hx.hx_head[hds_appendix].number_font >= wgml_font_cnt ) {
                         layout_work.hx.hx_head[hds_appendix].number_font = 0;
@@ -292,7 +293,7 @@ void    lay_appendix( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_number_form( p, curr,
+                    cvterr = i_number_form( p, &lay_attr,
                                 &layout_work.hx.hx_head[hds_appendix].number_form );
                     AttrFlags.number_form = true;
                     break;
@@ -301,7 +302,7 @@ void    lay_appendix( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_page_position( p, curr,
+                    cvterr = i_page_position( p, &lay_attr,
                                 &layout_work.hx.hx_head[hds_appendix].line_position );
                     AttrFlags.page_position = true;
                     break;
@@ -310,7 +311,7 @@ void    lay_appendix( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_number_style( p, curr,
+                    cvterr = i_number_style( p, &lay_attr,
                                 &layout_work.hx.hx_head[hds_appendix].number_style );
                     AttrFlags.number_style = true;
                     break;
@@ -319,7 +320,7 @@ void    lay_appendix( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_page_eject( p, curr,
+                    cvterr = i_page_eject( p, &lay_attr,
                                 &layout_work.hx.hx_head[hds_appendix].page_eject );
                     AttrFlags.page_eject = true;
                     break;
@@ -328,7 +329,7 @@ void    lay_appendix( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_yes_no( p, curr,
+                    cvterr = i_yes_no( p, &lay_attr,
                                 &layout_work.hx.hx_head[hds_appendix].line_break );
                     AttrFlags.line_break = true;
                     break;
@@ -337,7 +338,7 @@ void    lay_appendix( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_yes_no( p, curr,
+                    cvterr = i_yes_no( p, &lay_attr,
                             &layout_work.hx.hx_head[hds_appendix].display_heading );
                     AttrFlags.display_heading = true;
                     break;
@@ -346,7 +347,7 @@ void    lay_appendix( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_yes_no( p, curr,
+                    cvterr = i_yes_no( p, &lay_attr,
                                 &layout_work.hx.hx_head[hds_appendix].number_reset );
                     AttrFlags.number_reset = true;
                     break;
@@ -355,7 +356,7 @@ void    lay_appendix( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_case( p, curr,
+                    cvterr = i_case( p, &lay_attr,
                                      &layout_work.hx.hx_head[hds_appendix].hd_case );
                     AttrFlags.case_a = true;
                     break;
@@ -364,7 +365,7 @@ void    lay_appendix( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr,
+                    cvterr = i_space_unit( p, &lay_attr,
                                         &layout_work.hx.hx_head[hds_appendix].align );
                     AttrFlags.align = true;
                     break;
@@ -373,7 +374,7 @@ void    lay_appendix( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_yes_no( p, curr,
+                    cvterr = i_yes_no( p, &lay_attr,
                                        &layout_work.hx.hx_sect[hds_appendix].header );
                     AttrFlags.header = true;
                     break;
@@ -382,7 +383,7 @@ void    lay_appendix( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_xx_string( p, curr, layout_work.appendix.string );
+                    cvterr = i_xx_string( p, &lay_attr, layout_work.appendix.string );
                     AttrFlags.appendix_string = true;
                     break;
                 case   e_page_reset:
@@ -390,7 +391,7 @@ void    lay_appendix( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_yes_no( p, curr, &layout_work.appendix.page_reset );
+                    cvterr = i_yes_no( p, &lay_attr, &layout_work.appendix.page_reset );
                     AttrFlags.page_reset = true;
                     break;
                 case   e_section_eject:
@@ -398,7 +399,7 @@ void    lay_appendix( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_page_eject( p, curr,
+                    cvterr = i_page_eject( p, &lay_attr,
                                                 &layout_work.appendix.section_eject );
                     AttrFlags.section_eject = true;
                     break;
@@ -407,7 +408,7 @@ void    lay_appendix( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_int8( p, curr, &layout_work.appendix.columns );
+                    cvterr = i_int8( p, &lay_attr, &layout_work.appendix.columns );
                     AttrFlags.columns = true;
                     break;
                 default:
@@ -422,7 +423,7 @@ void    lay_appendix( const gmltag * entry )
         if( cvterr < 0 ) {
             xx_err( err_att_name_inv );
         }
-        cc = lay_attr_and_value();            // get att with value
+        cc = lay_attr_and_value( &lay_attr );            // get att with value
     }
     scan_start = scan_stop + 1;
     return;

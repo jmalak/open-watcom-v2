@@ -32,6 +32,7 @@ void    lay_flpgnum( const gmltag * entry )
     int                 cvterr;
     int                 k;
     lay_att             curr;
+    lay_att_val         lay_attr;
 
     (void)entry;
 
@@ -47,7 +48,7 @@ void    lay_flpgnum( const gmltag * entry )
     if( ProcFlags.lay_xxx != el_flpgnum ) {
         ProcFlags.lay_xxx = el_flpgnum;
     }
-    cc = lay_attr_and_value();            // get att with value
+    cc = lay_attr_and_value( &lay_attr );            // get att with value
     while( cc == pos ) {
         cvterr = -1;
         for( k = 0, curr = flpgnum_att[k]; curr > 0; k++, curr = flpgnum_att[k] ) {
@@ -61,7 +62,7 @@ void    lay_flpgnum( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr,
+                    cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.flpgnum.size );
                     AttrFlags.size = true;
                     break;
@@ -70,7 +71,7 @@ void    lay_flpgnum( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_font_number( p, curr, &layout_work.flpgnum.font );
+                    cvterr = i_font_number( p, &lay_attr, &layout_work.flpgnum.font );
                     if( layout_work.flpgnum.font >= wgml_font_cnt ) {
                         layout_work.flpgnum.font = 0;
                     }
@@ -88,7 +89,7 @@ void    lay_flpgnum( const gmltag * entry )
         if( cvterr < 0 ) {
             xx_err( err_att_name_inv );
         }
-        cc = lay_attr_and_value();            // get att with value
+        cc = lay_attr_and_value( &lay_attr );            // get att with value
     }
     scan_start = scan_stop + 1;
     return;

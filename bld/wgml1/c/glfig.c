@@ -93,11 +93,12 @@ const   lay_att     fig_att[9] =
 
 void    lay_fig( const gmltag * entry )
 {
-    char        *   p;
-    condcode        cc;
-    int             cvterr;
-    int             k;
-    lay_att         curr;
+    char                *p;
+    condcode            cc;
+    int                 cvterr;
+    int                 k;
+    lay_att             curr;
+    lay_att_val         lay_attr;
 
     (void)entry;
 
@@ -113,7 +114,7 @@ void    lay_fig( const gmltag * entry )
     if( ProcFlags.lay_xxx != el_fig ) {
         ProcFlags.lay_xxx = el_fig;
     }
-    cc = lay_attr_and_value();            // get att with value
+    cc = lay_attr_and_value( &lay_attr );            // get att with value
     while( cc == pos ) {
         cvterr = -1;
         for( k = 0, curr = fig_att[k]; curr > 0; k++, curr = fig_att[k] ) {
@@ -127,7 +128,7 @@ void    lay_fig( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr,
+                    cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.fig.left_adjust );
                     AttrFlags.left_adjust = true;
                     break;
@@ -136,7 +137,7 @@ void    lay_fig( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr,
+                    cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.fig.right_adjust );
                     AttrFlags.right_adjust = true;
                     break;
@@ -145,7 +146,7 @@ void    lay_fig( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr, &layout_work.fig.pre_skip );
+                    cvterr = i_space_unit( p, &lay_attr, &layout_work.fig.pre_skip );
                     AttrFlags.pre_skip = true;
                     break;
                 case   e_post_skip:
@@ -153,7 +154,7 @@ void    lay_fig( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr, &layout_work.fig.post_skip );
+                    cvterr = i_space_unit( p, &lay_attr, &layout_work.fig.post_skip );
                     AttrFlags.post_skip = true;
                     break;
                 case   e_spacing:
@@ -161,7 +162,7 @@ void    lay_fig( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_spacing( p, curr, &layout_work.fig.spacing );
+                    cvterr = i_spacing( p, &lay_attr, &layout_work.fig.spacing );
                     AttrFlags.spacing = true;
                     break;
                 case   e_font:
@@ -169,7 +170,7 @@ void    lay_fig( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_font_number( p, curr, &layout_work.fig.font );
+                    cvterr = i_font_number( p, &lay_attr, &layout_work.fig.font );
                     if( layout_work.fig.font >= wgml_font_cnt ) {
                         layout_work.fig.font = 0;
                     }
@@ -180,7 +181,7 @@ void    lay_fig( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_place( p, curr,
+                    cvterr = i_place( p, &lay_attr,
                                       &layout_work.fig.default_place );
                     AttrFlags.default_place = true;
                     break;
@@ -189,7 +190,7 @@ void    lay_fig( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_default_frame( p, curr,
+                    cvterr = i_default_frame( p, &lay_attr,
                                               &layout_work.fig.default_frame );
                     AttrFlags.default_frame = true;
                     break;
@@ -205,7 +206,7 @@ void    lay_fig( const gmltag * entry )
         if( cvterr < 0 ) {
             xx_err( err_att_name_inv );
         }
-        cc = lay_attr_and_value();            // get att with value
+        cc = lay_attr_and_value( &lay_attr );            // get att with value
     }
     scan_start = scan_stop + 1;
     return;

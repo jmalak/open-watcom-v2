@@ -192,6 +192,7 @@ void    lay_banner( const gmltag * entry )
     region_lay_tag  *   regwknew;
     region_lay_tag  *   regwknew2;
     region_lay_tag  *   regwkold;
+    lay_att_val         lay_attr;
 
     (void)entry;
 
@@ -209,7 +210,7 @@ void    lay_banner( const gmltag * entry )
         ProcFlags.banner = true;
         init_banner_wk( &wk );
     }
-    cc = lay_attr_and_value();            // get att with value
+    cc = lay_attr_and_value( &lay_attr );            // get att with value
     while( cc == pos ) {
         for( k = 0; k < att_count; k++ ) {
             curr = banner_att[k];
@@ -232,7 +233,7 @@ void    lay_banner( const gmltag * entry )
                             xx_line_err_ci( err_att_dup, lay_attr.att_name,
                                 lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                         }
-                        i_space_unit( p, curr, &wk.left_adjust );
+                        i_space_unit( p, &lay_attr, &wk.left_adjust );
                         AttrFlags.left_adjust = true;
                         break;
                     case e_right_adjust:
@@ -240,7 +241,7 @@ void    lay_banner( const gmltag * entry )
                             xx_line_err_ci( err_att_dup, lay_attr.att_name,
                                 lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                         }
-                        i_space_unit( p, curr, &wk.right_adjust );
+                        i_space_unit( p, &lay_attr, &wk.right_adjust );
                         AttrFlags.right_adjust = true;
                         break;
                     case e_depth:
@@ -248,7 +249,7 @@ void    lay_banner( const gmltag * entry )
                             xx_line_err_ci( err_att_dup, lay_attr.att_name,
                                 lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                         }
-                        i_space_unit( p, curr, &wk.depth );
+                        i_space_unit( p, &lay_attr, &wk.depth );
                         AttrFlags.depth = true;
                         break;
                     case e_place:
@@ -256,7 +257,7 @@ void    lay_banner( const gmltag * entry )
                             xx_line_err_ci( err_att_dup, lay_attr.att_name,
                                 lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                         }
-                        i_place( p, curr, &wk.place );
+                        i_place( p, &lay_attr, &wk.place );
                         AttrFlags.place = true;
                         break;
                     case e_docsect:
@@ -264,7 +265,7 @@ void    lay_banner( const gmltag * entry )
                             xx_line_err_ci( err_att_dup, lay_attr.att_name,
                                 lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                         }
-                        i_docsect( p, curr, &wk.docsect );
+                        i_docsect( p, &lay_attr, &wk.docsect );
                         AttrFlags.docsect = true;
                         break;
                     case e_refplace:  // not stored in banner struct
@@ -272,7 +273,7 @@ void    lay_banner( const gmltag * entry )
                             xx_line_err_ci( err_att_dup, lay_attr.att_name,
                                 lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                         }
-                        i_place( p, curr, &refplace );
+                        i_place( p, &lay_attr, &refplace );
                         AttrFlags.refplace = true;
                         break;
                     case e_refdoc:    // not stored in banner struct
@@ -280,7 +281,7 @@ void    lay_banner( const gmltag * entry )
                             xx_line_err_ci( err_att_dup, lay_attr.att_name,
                                 lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                         }
-                        i_docsect( p, curr, &refdoc );
+                        i_docsect( p, &lay_attr, &refdoc );
                         AttrFlags.refdoc = true;
                         break;
                     default:
@@ -290,7 +291,7 @@ void    lay_banner( const gmltag * entry )
                 break;                  // break out of for loop
             }
         }
-        cc = lay_attr_and_value();            // get att with value
+        cc = lay_attr_and_value( &lay_attr );            // get att with value
     }
 
     /*******************************************************/

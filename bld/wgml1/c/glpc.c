@@ -81,7 +81,7 @@ const   lay_att     p_att[4] =
 /*over to the next output page.                                                 */
 /********************************************************************************/
 
-static  int     process_arg( p_lay_tag * p_or_pc )
+static  int     process_arg( p_lay_tag * p_or_pc, lay_att_val *lay_attr )
 {
     char        *   p;
     int             cvterr = -1;
@@ -90,32 +90,32 @@ static  int     process_arg( p_lay_tag * p_or_pc )
 
     for( k = 0, curr = p_att[k]; curr > 0; k++, curr = p_att[k] ) {
 
-        if( strnicmp( att_names[curr], lay_attr.att_name, lay_attr.att_len ) == 0 ) {
-            p = lay_attr.val_name;
+        if( strnicmp( att_names[curr], lay_attr->att_name, lay_attr->att_len ) == 0 ) {
+            p = lay_attr->val_name;
 
             switch( curr ) {
             case   e_line_indent:
                 if( AttrFlags.line_indent ) {
-                    xx_line_err_ci( err_att_dup, lay_attr.att_name,
-                        lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
+                    xx_line_err_ci( err_att_dup, lay_attr->att_name,
+                        lay_attr->val_name - lay_attr->att_name + lay_attr->val_len);
                 }
-                cvterr = i_space_unit( p, curr, &p_or_pc->line_indent );
+                cvterr = i_space_unit( p, lay_attr, &p_or_pc->line_indent );
                 AttrFlags.line_indent = true;
                 break;
             case   e_pre_skip:
                 if( AttrFlags.pre_skip ) {
-                    xx_line_err_ci( err_att_dup, lay_attr.att_name,
-                        lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
+                    xx_line_err_ci( err_att_dup, lay_attr->att_name,
+                        lay_attr->val_name - lay_attr->att_name + lay_attr->val_len);
                 }
-                cvterr = i_space_unit( p, curr, &p_or_pc->pre_skip );
+                cvterr = i_space_unit( p, lay_attr, &p_or_pc->pre_skip );
                 AttrFlags.pre_skip = true;
                 break;
             case   e_post_skip:
                 if( AttrFlags.post_skip ) {
-                    xx_line_err_ci( err_att_dup, lay_attr.att_name,
-                        lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
+                    xx_line_err_ci( err_att_dup, lay_attr->att_name,
+                        lay_attr->val_name - lay_attr->att_name + lay_attr->val_len);
                 }
-                cvterr = i_space_unit( p, curr, &p_or_pc->post_skip );
+                cvterr = i_space_unit( p, lay_attr, &p_or_pc->post_skip );
                 AttrFlags.post_skip = true;
                 break;
             default:
@@ -140,8 +140,9 @@ static  int     process_arg( p_lay_tag * p_or_pc )
 
 void    lay_p( const gmltag * entry )
 {
-    condcode        cc;
-    int             cvterr;
+    condcode            cc;
+    int                 cvterr;
+    lay_att_val         lay_attr;
 
     (void)entry;
 
@@ -154,10 +155,10 @@ void    lay_p( const gmltag * entry )
     if( ProcFlags.lay_xxx != el_p ) {
         ProcFlags.lay_xxx = el_p;
     }
-    cc = lay_attr_and_value();            // get att with value
+    cc = lay_attr_and_value( &lay_attr );            // get att with value
     while( cc == pos ) {
-        cvterr = process_arg( &layout_work.p );
-        cc = lay_attr_and_value();            // get att with value
+        cvterr = process_arg( &layout_work.p, &lay_attr );
+        cc = lay_attr_and_value( &lay_attr );            // get att with value
     }
     scan_start = scan_stop + 1;
     return;
@@ -170,8 +171,9 @@ void    lay_p( const gmltag * entry )
 
 void    lay_pc( const gmltag * entry )
 {
-    bool            cvterr;
-    condcode        cc;
+    bool                cvterr;
+    condcode            cc;
+    lay_att_val         lay_attr;
 
     (void)entry;
 
@@ -184,10 +186,10 @@ void    lay_pc( const gmltag * entry )
     if( ProcFlags.lay_xxx != el_pc ) {
         ProcFlags.lay_xxx = el_pc;
     }
-    cc = lay_attr_and_value();            // get att with value
+    cc = lay_attr_and_value( &lay_attr );            // get att with value
     while( cc == pos ) {
-        cvterr = process_arg( &layout_work.pc );
-        cc = lay_attr_and_value();            // get att with value
+        cvterr = process_arg( &layout_work.pc, &lay_attr );
+        cc = lay_attr_and_value( &lay_attr );            // get att with value
     }
     scan_start = scan_stop + 1;
     return;

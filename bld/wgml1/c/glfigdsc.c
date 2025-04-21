@@ -51,11 +51,12 @@ const   lay_att     figdesc_att[3] =
 
 void    lay_figdesc( const gmltag * entry )
 {
-    char        *   p;
-    condcode        cc;
-    int             cvterr;
-    int             k;
-    lay_att         curr;
+    char                *p;
+    condcode            cc;
+    int                 cvterr;
+    int                 k;
+    lay_att             curr;
+    lay_att_val         lay_attr;
 
     (void)entry;
 
@@ -71,7 +72,7 @@ void    lay_figdesc( const gmltag * entry )
     if( ProcFlags.lay_xxx != el_figdesc ) {
         ProcFlags.lay_xxx = el_figdesc;
     }
-    cc = lay_attr_and_value();            // get att with value
+    cc = lay_attr_and_value( &lay_attr );            // get att with value
     while( cc == pos ) {
         cvterr = -1;
         for( k = 0, curr = figdesc_att[k]; curr > 0; k++, curr = figdesc_att[k] ) {
@@ -85,7 +86,7 @@ void    lay_figdesc( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_space_unit( p, curr,
+                    cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.figdesc.pre_lines );
                     AttrFlags.pre_lines = true;
                     break;
@@ -94,7 +95,7 @@ void    lay_figdesc( const gmltag * entry )
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
-                    cvterr = i_font_number( p, curr, &layout_work.figdesc.font );
+                    cvterr = i_font_number( p, &lay_attr, &layout_work.figdesc.font );
                     if( layout_work.figdesc.font >= wgml_font_cnt ) {
                         layout_work.figdesc.font = 0;
                     }
@@ -112,7 +113,7 @@ void    lay_figdesc( const gmltag * entry )
         if( cvterr < 0 ) {
             xx_err( err_att_name_inv );
         }
-        cc = lay_attr_and_value();            // get att with value
+        cc = lay_attr_and_value( &lay_attr );            // get att with value
     }
     scan_start = scan_stop + 1;
     return;
