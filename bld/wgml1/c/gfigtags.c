@@ -440,7 +440,7 @@ void gml_fig( const gmltag * entry )
                     break;
                 }
                 if( strnicmp( "none", val_start, 4 ) == 0 ) {
-                    frame.type = none;
+                    frame.type = none_frame;
                 } else if( strnicmp( "box", val_start, 3 ) == 0 ) {
                     frame.type = box_frame;
                 } else if( strnicmp( "rule", val_start, 4 ) == 0 ) {
@@ -457,7 +457,7 @@ void gml_fig( const gmltag * entry )
                     strncpy( frame.string, val_start, len );
                     frame.string[len] = '\0';
                     if( len == 0 ) {
-                        frame.type = none;      // treat null string as "none"
+                        frame.type = none_frame;// treat null string as "none"
                     }
                 } else {                        // blank any existing frame.string value
                     frame.string[0] = '\0';
@@ -593,7 +593,7 @@ void gml_fig( const gmltag * entry )
         insert_frame_line();
     }
 
-    if( (frame.type == none)
+    if( (frame.type == none_frame)
       && (place != bottom_place) ) {
         if( depth > g_subs_skip ) {
             g_blank_units_lines = depth;
@@ -627,7 +627,7 @@ void gml_fig( const gmltag * entry )
 
     /* Initialize the insets */
 
-    if( frame.type == none ) {
+    if( frame.type == none_frame ) {
         left_inset = 0;
         right_inset = 0;
     } else {
@@ -656,7 +656,7 @@ void gml_fig( const gmltag * entry )
 
     if( (t_page.cur_left >= t_page.max_width)
       || (t_page.cur_left >= g_page_right_org) ) {
-        if( frame.type == none ) {
+        if( frame.type == none_frame ) {
             xx_line_err_c( err_inv_margins_1, val_start );
         } else {
             xx_line_err_c( err_inv_margins_2, val_start );
@@ -671,7 +671,7 @@ void gml_fig( const gmltag * entry )
 
 
     if( t_page.max_width < right_inset ) {
-        if( frame.type == none ) {
+        if( frame.type == none_frame ) {
             xx_line_err_c( err_inv_margins_1, val_start );
         } else {
             xx_line_err_c( err_inv_margins_2, val_start );
@@ -938,7 +938,7 @@ void gml_efig( const gmltag * entry )
             /*   and so must be reduced by them as well                  */
             /*************************************************************/
 
-            if( frame.type != none ) {
+            if( frame.type != none_frame ) {
                 g_blank_units_lines = cur_doc_el_group->first->blank_lines;
                 cur_doc_el_group->first->blank_lines = 0;
                 cur_doc_el_group->depth -= g_blank_units_lines;

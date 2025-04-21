@@ -472,7 +472,7 @@ bool    i_default_frame( char * p, lay_attr_i lay_attr, def_frame * tm )
 
     cvterr = false;
     if( strnicmp( "none", p, 4 ) == 0 ) {
-        tm->type = none;
+        tm->type = none_frame;
     } else if( strnicmp( "rule", p, 4 ) == 0 ) {
         tm->type = rule_frame;
     } else if( strnicmp( "box", p, 3 ) == 0 ) {
@@ -481,7 +481,7 @@ bool    i_default_frame( char * p, lay_attr_i lay_attr, def_frame * tm )
         cvterr = true;
     } else {
         if( val_len == 0 ) {        // empty string entered
-            tm->type = none;        // should work for both FIG and IXHEAD
+            tm->type = none_frame;  // should work for both FIG and IXHEAD
         } else {                    // string value entered
             i_xx_string( p, lay_attr, tm->string );
             tm->type = char_frame;
@@ -498,7 +498,7 @@ void    o_default_frame( FILE * f, lay_attr_o lay_attr, const def_frame * tm )
 {
 
     switch( tm->type ) {
-    case none:
+    case none_frame:
         fprintf( f, "        %s = none\n", lay_att_names[lay_attr] );
         break;
     case rule_frame:
