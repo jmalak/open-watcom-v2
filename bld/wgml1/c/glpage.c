@@ -84,14 +84,14 @@ void    lay_page( const gmltag * entry )
         cvterr = -1;
         for( k = 0, curr = page_att[k]; curr > 0; k++, curr = page_att[k] ) {
 
-            if( strnicmp( att_names[curr], g_att_val.att_name, g_att_val.att_len ) == 0 ) {
-                p = g_att_val.val_name;
+            if( strnicmp( att_names[curr], lay_attr.att_name, lay_attr.att_len ) == 0 ) {
+                p = lay_attr.val_name;
 
                 switch( curr ) {
                 case   e_top_margin:
                     if( AttrFlags.top_margin ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                            g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     cvterr = i_space_unit( p, curr,
                                            &layout_work.page.top_margin );
@@ -99,8 +99,8 @@ void    lay_page( const gmltag * entry )
                     break;
                 case   e_left_margin:
                     if( AttrFlags.left_margin ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                            g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     cvterr = i_space_unit( p, curr,
                                            &layout_work.page.left_margin );
@@ -108,8 +108,8 @@ void    lay_page( const gmltag * entry )
                     break;
                 case   e_right_margin:
                     if( AttrFlags.right_margin ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                            g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     cvterr = i_space_unit( p, curr,
                                            &layout_work.page.right_margin );
@@ -117,8 +117,8 @@ void    lay_page( const gmltag * entry )
                     break;
                 case   e_depth:
                     if( AttrFlags.depth ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                            g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     cvterr = i_space_unit( p, curr, &layout_work.page.depth );
                     AttrFlags.depth = true;

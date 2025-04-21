@@ -89,22 +89,22 @@ void    lay_heading( const gmltag * entry )
         cvterr = -1;
         for( k = 0, curr = heading_att[k]; curr > 0; k++, curr = heading_att[k] ) {
 
-            if( strnicmp( att_names[curr], g_att_val.att_name, g_att_val.att_len ) == 0 ) {
-                p = g_att_val.val_name;
+            if( strnicmp( att_names[curr], lay_attr.att_name, lay_attr.att_len ) == 0 ) {
+                p = lay_attr.val_name;
 
                 switch( curr ) {
                 case   e_delim:
                     if( AttrFlags.delim ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                            g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     cvterr = i_char( p, curr, &layout_work.heading.delim );
                     AttrFlags.delim = true;
                     break;
                 case   e_stop_eject:
                     if( AttrFlags.stop_eject ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                            g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     cvterr = i_yes_no( p, curr,
                                            &layout_work.heading.stop_eject );
@@ -112,8 +112,8 @@ void    lay_heading( const gmltag * entry )
                     break;
                 case   e_para_indent:
                     if( AttrFlags.para_indent ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                            g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     cvterr = i_yes_no( p, curr,
                                            &layout_work.heading.para_indent );
@@ -121,16 +121,16 @@ void    lay_heading( const gmltag * entry )
                     break;
                 case   e_threshold:
                     if( AttrFlags.threshold ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                            g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     cvterr = i_threshold( p, curr, &layout_work.heading.threshold );
                     AttrFlags.threshold = true;
                     break;
                 case   e_max_group:
                     if( AttrFlags.max_group ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                            g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     cvterr = i_int8( p, curr, &layout_work.heading.max_group );
                     AttrFlags.max_group = true;

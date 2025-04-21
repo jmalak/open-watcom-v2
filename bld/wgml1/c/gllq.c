@@ -106,14 +106,14 @@ void    lay_lq( const gmltag * entry )
         cvterr = -1;
         for( k = 0, curr = lq_att[k]; curr > 0; k++, curr =lq_att[k] ) {
 
-            if( strnicmp( att_names[curr], g_att_val.att_name, g_att_val.att_len ) == 0 ) {
-                p = g_att_val.val_name;
+            if( strnicmp( att_names[curr], lay_attr.att_name, lay_attr.att_len ) == 0 ) {
+                p = lay_attr.val_name;
 
                 switch( curr ) {
                 case   e_left_indent:
                     if( AttrFlags.left_indent ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                            g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     cvterr = i_space_unit( p, curr,
                                            &layout_work.lq.left_indent );
@@ -121,8 +121,8 @@ void    lay_lq( const gmltag * entry )
                     break;
                 case   e_right_indent:
                     if( AttrFlags.right_indent ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                            g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     cvterr = i_space_unit( p, curr,
                                            &layout_work.lq.right_indent );
@@ -130,32 +130,32 @@ void    lay_lq( const gmltag * entry )
                     break;
                 case   e_pre_skip:
                     if( AttrFlags.pre_skip ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                            g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     cvterr = i_space_unit( p, curr, &layout_work.lq.pre_skip );
                     AttrFlags.pre_skip = true;
                     break;
                 case   e_post_skip:
                     if( AttrFlags.post_skip ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                            g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     cvterr = i_space_unit( p, curr, &layout_work.lq.post_skip );
                     AttrFlags.post_skip = true;
                     break;
                 case   e_spacing:
                     if( AttrFlags.spacing ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                            g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     cvterr = i_spacing( p, curr, &layout_work.lq.spacing );
                     AttrFlags.spacing = true;
                     break;
                 case   e_font:
                     if( AttrFlags.font ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                            g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     cvterr = i_font_number( p, curr, &layout_work.lq.font );
                     if( layout_work.lq.font >= wgml_font_cnt ) {

@@ -99,14 +99,14 @@ void    lay_figcap( const gmltag * entry )
         cvterr = -1;
         for( k = 0, curr = figcap_att[k]; curr > 0; k++, curr = figcap_att[k] ) {
 
-            if( strnicmp( att_names[curr], g_att_val.att_name, g_att_val.att_len ) == 0 ) {
-                p = g_att_val.val_name;
+            if( strnicmp( att_names[curr], lay_attr.att_name, lay_attr.att_len ) == 0 ) {
+                p = lay_attr.val_name;
 
                 switch( curr ) {
                 case   e_pre_lines:
                     if( AttrFlags.pre_lines ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                            g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     cvterr = i_space_unit( p, curr,
                                            &layout_work.figcap.pre_lines );
@@ -114,8 +114,8 @@ void    lay_figcap( const gmltag * entry )
                     break;
                 case   e_font:
                     if( AttrFlags.font ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                            g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     cvterr = i_font_number( p, curr, &layout_work.figcap.font );
                     if( layout_work.figcap.font >= wgml_font_cnt ) {
@@ -125,16 +125,16 @@ void    lay_figcap( const gmltag * entry )
                     break;
                 case   e_figcap_string:
                     if( AttrFlags.figcap_string ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                            g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     cvterr = i_xx_string( p, curr, layout_work.figcap.string );
                     AttrFlags.figcap_string = true;
                     break;
                 case   e_string_font:
                     if( AttrFlags.string_font ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                            g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     cvterr = i_font_number( p, curr, &layout_work.figcap.string_font );
                     if( layout_work.figcap.string_font >= wgml_font_cnt ) {
@@ -144,8 +144,8 @@ void    lay_figcap( const gmltag * entry )
                     break;
                 case   e_delim:
                     if( AttrFlags.delim ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                            g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     cvterr = i_char( p, curr, &layout_work.figcap.delim );
                     AttrFlags.delim = true;

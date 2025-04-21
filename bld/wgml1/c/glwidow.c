@@ -59,14 +59,14 @@ void    lay_widow( const gmltag * entry )
         cvterr = -1;
         for( k = 0, curr = widow_att[k]; curr > 0; k++, curr = widow_att[k] ) {
 
-            if( strnicmp( att_names[curr], g_att_val.att_name, g_att_val.att_len ) == 0 ) {
-                p = g_att_val.val_name;
+            if( strnicmp( att_names[curr], lay_attr.att_name, lay_attr.att_len ) == 0 ) {
+                p = lay_attr.val_name;
 
                 switch( curr ) {
                 case   e_threshold:
                     if( AttrFlags.threshold ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                            g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     cvterr = i_threshold( p, curr, &layout_work.widow.threshold );
                     AttrFlags.threshold = true;

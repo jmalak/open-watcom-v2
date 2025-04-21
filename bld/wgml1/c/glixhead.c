@@ -107,14 +107,14 @@ void    lay_ixhead( const gmltag * entry )
                 curr = e_frame;         // use correct externalname
             }
 
-            if( strnicmp( att_names[curr], g_att_val.att_name, g_att_val.att_len ) == 0 ) {
-                p = g_att_val.val_name;
+            if( strnicmp( att_names[curr], lay_attr.att_name, lay_attr.att_len ) == 0 ) {
+                p = lay_attr.val_name;
 
                 switch( curr ) {
                 case   e_pre_skip:
                     if( AttrFlags.pre_skip ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                            g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     cvterr = i_space_unit( p, curr,
                                            &layout_work.ixhead.pre_skip );
@@ -122,8 +122,8 @@ void    lay_ixhead( const gmltag * entry )
                     break;
                 case   e_post_skip:
                     if( AttrFlags.post_skip ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                            g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     cvterr = i_space_unit( p, curr,
                                            &layout_work.ixhead.post_skip );
@@ -131,8 +131,8 @@ void    lay_ixhead( const gmltag * entry )
                     break;
                 case   e_font:
                     if( AttrFlags.font ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                            g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     cvterr = i_font_number( p, curr, &layout_work.ixhead.font );
                     if( layout_work.ixhead.font >= wgml_font_cnt ) {
@@ -142,8 +142,8 @@ void    lay_ixhead( const gmltag * entry )
                     break;
                 case   e_indent:
                     if( AttrFlags.indent ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                            g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     cvterr = i_space_unit( p, curr,
                                            &layout_work.ixhead.indent );
@@ -151,8 +151,8 @@ void    lay_ixhead( const gmltag * entry )
                     break;
                 case   e_frame:
                     if( AttrFlags.frame ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                            g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     cvterr = i_default_frame( p, curr,
                                            &layout_work.ixhead.frame );
@@ -160,8 +160,8 @@ void    lay_ixhead( const gmltag * entry )
                     break;
                 case   e_header:
                     if( AttrFlags.header ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                            g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
                     }
                     cvterr = i_yes_no( p, curr,
                                            &layout_work.ixhead.header );

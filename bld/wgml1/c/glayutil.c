@@ -133,7 +133,7 @@ void    eat_lay_sub_tag( void )
 /***************************************************************************/
 /*  parse lines like right_margin = '7i'                                   */
 /*              or   right_margin='7i'                                     */
-/*          and store result in g_att_val                                  */
+/*          and store result in lay_attr.                                 */
 /*  rc = pos if all ok                                                     */
 /*  rc = no  in case of error                                              */
 /*  rc = omit if nothing found                                             */
@@ -152,9 +152,9 @@ condcode    lay_attr_and_value( void )
 
     SkipSpacesTabs( p );                    // over WS to start of name
 
-    g_att_val.att_name = p;
-    g_att_val.att_len = -1;                 // switch for scanning error
-    g_att_val.val_len = -1;                 // switch for scanning error
+    lay_attr.att_name = p;
+    lay_attr.att_len = -1;                 // switch for scanning error
+    lay_attr.val_len = -1;                 // switch for scanning error
 
     for(;;) {                               // loop until attribute/value pair or rescan line found
         while( is_att_char( *p ) ) {
@@ -174,18 +174,18 @@ condcode    lay_attr_and_value( void )
                     } else {
                         p = scan_start;                 // new line is part of current tag
                         SkipSpacesTabs( p );            // over WS to start of alleged attribute
-                        g_att_val.att_name = p;         // set for new line
+                        lay_attr.att_name = p;         // set for new line
                         continue;
                     }
                 }
             }
         }
-        g_att_val.att_len = p - g_att_val.att_name;
+        lay_attr.att_len = p - lay_attr.att_name;
         if( *p == '.' ) {                   // end of tag
             ProcFlags.tag_end_found = true;
             return( omit );
         }
-        if( g_att_val.att_len < 4 ) {       // attribute name length
+        if( lay_attr.att_len < 4 ) {       // attribute name length
             xx_line_err_c( err_att_name_inv, pa );
         }
         SkipSpacesTabs( p );                // over WS to =
@@ -199,30 +199,30 @@ condcode    lay_attr_and_value( void )
             xx_line_err_c( err_eq_missing, p );
         }
 
-        g_att_val.val_name = p;             // delimiters must be included for error checking
+        lay_attr.val_name = p;             // delimiters must be included for error checking
         pa = p;
 
         if( is_quote_char( *p ) ) {
             quote = *p;
             ++p;
-            g_att_val.val_quoted = true;
+            lay_attr.val_quoted = true;
         } else {
             quote = ' ';
-            g_att_val.val_quoted = false;
+            lay_attr.val_quoted = false;
         }
 
         while( *p != '\0' && *p != quote ) {
             ++p;
         }
 
-        if( g_att_val.val_quoted
+        if( lay_attr.val_quoted
           && is_quote_char( *p ) ) {
             p++;                            // over terminating quote
         }
 
-        g_att_val.val_len = p - g_att_val.val_name;
+        lay_attr.val_len = p - lay_attr.val_name;
 
-        if( g_att_val.val_len < 1 ) {       // attribute value length
+        if( lay_attr.val_len < 1 ) {       // attribute value length
             xx_line_err_c( err_att_val_missing, pa );
         } else {
             rc = pos;
@@ -230,12 +230,12 @@ condcode    lay_attr_and_value( void )
 
         if( *(p - 1) == '.' ) {             // final "." is end of tag
             ProcFlags.tag_end_found = true;
-            g_att_val.val_len--;            // remove final "." from value
+            lay_attr.val_len--;            // remove final "." from value
         }
 
-        val_start = g_att_val.val_name;
-        val_len = g_att_val.val_len;
-        if( g_att_val.val_quoted) {         // delimiters must be omitted for these externs
+        val_start = lay_attr.val_name;
+        val_len = lay_attr.val_len;
+        if( lay_attr.val_quoted) {         // delimiters must be omitted for these externs
             val_start++;
             val_len -= 2;
         }
