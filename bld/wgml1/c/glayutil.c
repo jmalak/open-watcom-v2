@@ -356,7 +356,7 @@ bool    i_case( char * p, lay_attr_i lay_attr, case_t * tm )
     return( cvterr );
 }
 
-void    o_case( FILE * f, lay_attr_o lay_attr, const case_t * tm )
+void    o_case( FILE *fp, lay_attr_o lay_attr, const case_t * tm )
 {
     char    * p;
 
@@ -369,7 +369,7 @@ void    o_case( FILE * f, lay_attr_o lay_attr, const case_t * tm )
     } else {
         p = "???";
     }
-    fprintf( f, "        %s = %s\n", lay_att_names[lay_attr], p );
+    fprintf( fp, "        %s = %s\n", lay_att_names[lay_attr], p );
     return;
 }
 
@@ -394,9 +394,9 @@ bool    i_char( char * p, lay_attr_i lay_attr, char * tm )
     return( false );
 }
 
-void    o_char( FILE * f, lay_attr_o lay_attr, const char * tm )
+void    o_char( FILE *fp, lay_attr_o lay_attr, const char * tm )
 {
-    fprintf( f, "        %s = '%c'\n", lay_att_names[lay_attr], *tm );
+    fprintf( fp, "        %s = '%c'\n", lay_att_names[lay_attr], *tm );
     return;
 }
 
@@ -434,7 +434,7 @@ bool    i_content( char * p, lay_attr_i lay_attr, content * tm )
     return( cvterr );
 }
 
-void    o_content( FILE * f, lay_attr_o lay_attr, const content * tm )
+void    o_content( FILE *fp, lay_attr_o lay_attr, const content * tm )
 {
     const   char    * p;
     char              c;
@@ -443,22 +443,22 @@ void    o_content( FILE * f, lay_attr_o lay_attr, const content * tm )
       && tm->content_type < max_content) {
         p = tm->string;
         if( tm->content_type == string_content ) { // user string with quotes
-            fprintf( f, "        %s = '", lay_att_names[lay_attr] );
+            fprintf( fp, "        %s = '", lay_att_names[lay_attr] );
             while( (c = *p++) != '\0' ) {
                 if( c == '&' ) {
-                    fprintf( f, "&$amp." );
+                    fprintf( fp, "&$amp." );
                 } else {
-                    fputc( c, f );
+                    fputc( c, fp );
                 }
             }
-            fputc( '\'', f );
-            fputc( '\n', f );
+            fputc( '\'', fp );
+            fputc( '\n', fp );
             return;
         }
     } else {
         p = "???";
     }
-    fprintf( f, "        %s = %s\n", lay_att_names[lay_attr], p );
+    fprintf( fp, "        %s = %s\n", lay_att_names[lay_attr], p );
     return;
 }
 
@@ -494,24 +494,24 @@ bool    i_default_frame( char * p, lay_attr_i lay_attr, def_frame * tm )
 
 }
 
-void    o_default_frame( FILE * f, lay_attr_o lay_attr, const def_frame * tm )
+void    o_default_frame( FILE *fp, lay_attr_o lay_attr, const def_frame * tm )
 {
 
     switch( tm->type ) {
     case none_frame:
-        fprintf( f, "        %s = none\n", lay_att_names[lay_attr] );
+        fprintf( fp, "        %s = none\n", lay_att_names[lay_attr] );
         break;
     case rule_frame:
-        fprintf( f, "        %s = rule\n", lay_att_names[lay_attr] );
+        fprintf( fp, "        %s = rule\n", lay_att_names[lay_attr] );
         break;
     case box_frame:
-        fprintf( f, "        %s = box\n", lay_att_names[lay_attr] );
+        fprintf( fp, "        %s = box\n", lay_att_names[lay_attr] );
         break;
     case char_frame:
-        fprintf( f, "        %s = '%s'\n", lay_att_names[lay_attr], tm->string );
+        fprintf( fp, "        %s = '%s'\n", lay_att_names[lay_attr], tm->string );
         break;
     default:
-        fprintf( f, "        %s = ???\n", lay_att_names[lay_attr] );
+        fprintf( fp, "        %s = ???\n", lay_att_names[lay_attr] );
         break;
     }
     return;
@@ -542,7 +542,7 @@ bool    i_docsect( char * p, lay_attr_i lay_attr, ban_docsect * tm )
     return( cvterr );
 }
 
-void    o_docsect( FILE * f, lay_attr_o lay_attr, const ban_docsect * tm )
+void    o_docsect( FILE *fp, lay_attr_o lay_attr, const ban_docsect * tm )
 {
     const   char    * p;
 
@@ -552,7 +552,7 @@ void    o_docsect( FILE * f, lay_attr_o lay_attr, const ban_docsect * tm )
     } else {
         p = "???";
     }
-    fprintf( f, "        %s = %s\n", lay_att_names[lay_attr], p );
+    fprintf( fp, "        %s = %s\n", lay_att_names[lay_attr], p );
     return;
 }
 
@@ -578,7 +578,7 @@ bool    i_frame( char * p, lay_attr_i lay_attr, bool * tm )
 
 }
 
-void    o_frame( FILE * f, lay_attr_o lay_attr, const bool * tm )
+void    o_frame( FILE *fp, lay_attr_o lay_attr, const bool * tm )
 {
     char    * p;
 
@@ -587,7 +587,7 @@ void    o_frame( FILE * f, lay_attr_o lay_attr, const bool * tm )
     } else {
         p = "none";
     }
-    fprintf( f, "        %s = %s\n", lay_att_names[lay_attr], p );
+    fprintf( fp, "        %s = %s\n", lay_att_names[lay_attr], p );
     return;
 }
 
@@ -603,9 +603,9 @@ bool    i_int32( char * p, lay_attr_i lay_attr, int32_t * tm )
     return( false );
 }
 
-void    o_int32( FILE * f, lay_attr_o lay_attr, const int32_t * tm )
+void    o_int32( FILE *fp, lay_attr_o lay_attr, const int32_t * tm )
 {
-    fprintf( f, "        %s = %d\n", lay_att_names[lay_attr], *tm );
+    fprintf( fp, "        %s = %d\n", lay_att_names[lay_attr], *tm );
     return;
 }
 
@@ -623,11 +623,11 @@ bool    i_int8( char * p, lay_attr_i lay_attr, int8_t * tm )
     return( false );
 }
 
-void    o_int8( FILE * f, lay_attr_o lay_attr, const int8_t * tm )
+void    o_int8( FILE *fp, lay_attr_o lay_attr, const int8_t * tm )
 {
     int     wk = *tm;
 
-    fprintf( f, "        %s = %d\n", lay_att_names[lay_attr], wk );
+    fprintf( fp, "        %s = %d\n", lay_att_names[lay_attr], wk );
     return;
 }
 
@@ -645,11 +645,11 @@ bool    i_uint8( char * p, lay_attr_i lay_attr, uint8_t * tm )
     return( false );
 }
 
-void    o_uint8( FILE * f, lay_attr_o lay_attr, const uint8_t * tm )
+void    o_uint8( FILE *fp, lay_attr_o lay_attr, const uint8_t * tm )
 {
     int     wk = *tm;
 
-    fprintf( f, "        %s = %d\n", lay_att_names[lay_attr], wk );
+    fprintf( fp, "        %s = %d\n", lay_att_names[lay_attr], wk );
     return;
 }
 
@@ -674,9 +674,9 @@ bool    i_font_number( char *p, lay_attr_i lay_attr, font_number *tm )
     return( false );
 }
 
-void    o_font_number( FILE * f, lay_attr_o lay_attr, const font_number *tm )
+void    o_font_number( FILE *fp, lay_attr_o lay_attr, const font_number *tm )
 {
-    fprintf( f, "        %s = %u\n", lay_att_names[lay_attr], (unsigned)*tm );
+    fprintf( fp, "        %s = %u\n", lay_att_names[lay_attr], (unsigned)*tm );
 }
 
 
@@ -702,7 +702,7 @@ bool    i_number_form( char * p, lay_attr_i lay_attr, num_form * tm )
     return( cvterr );
 }
 
-void    o_number_form( FILE * f, lay_attr_o lay_attr, const num_form * tm )
+void    o_number_form( FILE *fp, lay_attr_o lay_attr, const num_form * tm )
 {
     char    * p;
 
@@ -715,7 +715,7 @@ void    o_number_form( FILE * f, lay_attr_o lay_attr, const num_form * tm )
     } else {
         p = "???";
     }
-    fprintf( f, "        %s = %s\n", lay_att_names[lay_attr], p );
+    fprintf( fp, "        %s = %s\n", lay_att_names[lay_attr], p );
     return;
 }
 
@@ -796,7 +796,7 @@ bool    i_number_style( char * p, lay_attr_i lay_attr, num_style * tm )
     return( cvterr );
 }
 
-void    o_number_style( FILE * f, lay_attr_o lay_attr, const num_style * tm )
+void    o_number_style( FILE *fp, lay_attr_o lay_attr, const num_style * tm )
 {
     char        str[4];
     char    *    p;
@@ -838,7 +838,7 @@ void    o_number_style( FILE * f, lay_attr_o lay_attr, const num_style * tm )
         p++;
     }
     *p = '\0';
-    fprintf( f, "        %s = %s\n", lay_att_names[lay_attr], str );
+    fprintf( fp, "        %s = %s\n", lay_att_names[lay_attr], str );
     return;
 }
 
@@ -867,7 +867,7 @@ bool    i_page_eject( char * p, lay_attr_i lay_attr, page_ej * tm )
     return( cvterr );
 }
 
-void    o_page_eject( FILE * f, lay_attr_o lay_attr, const page_ej * tm )
+void    o_page_eject( FILE *fp, lay_attr_o lay_attr, const page_ej * tm )
 {
     const   char    *   p;
 
@@ -882,7 +882,7 @@ void    o_page_eject( FILE * f, lay_attr_o lay_attr, const page_ej * tm )
     } else {
         p = "???";
     }
-    fprintf( f, "        %s = %s\n", lay_att_names[lay_attr], p );
+    fprintf( fp, "        %s = %s\n", lay_att_names[lay_attr], p );
     return;
 }
 
@@ -910,7 +910,7 @@ bool    i_page_position( char * p, lay_attr_i lay_attr, page_pos * tm )
     return( cvterr );
 }
 
-void    o_page_position( FILE * f, lay_attr_o lay_attr, const page_pos * tm )
+void    o_page_position( FILE *fp, lay_attr_o lay_attr, const page_pos * tm )
 {
     char    * p;
 
@@ -923,7 +923,7 @@ void    o_page_position( FILE * f, lay_attr_o lay_attr, const page_pos * tm )
     } else {
         p = "???";
     }
-    fprintf( f, "        %s = %s\n", lay_att_names[lay_attr], p );
+    fprintf( fp, "        %s = %s\n", lay_att_names[lay_attr], p );
     return;
 }
 
@@ -952,7 +952,7 @@ bool    i_place( char * p, lay_attr_i lay_attr, bf_place * tm )
     return( cvterr );
 }
 
-void    o_place( FILE * f, lay_attr_o lay_attr, const bf_place * tm )
+void    o_place( FILE *fp, lay_attr_o lay_attr, const bf_place * tm )
 {
     const   char    *   p;
             int         k;
@@ -963,7 +963,7 @@ void    o_place( FILE * f, lay_attr_o lay_attr, const bf_place * tm )
             p = bf_places[k].name;
         }
     }
-    fprintf( f, "        %s = %s\n", lay_att_names[lay_attr], p );
+    fprintf( fp, "        %s = %s\n", lay_att_names[lay_attr], p );
     return;
 }
 
@@ -1002,7 +1002,7 @@ bool    i_pouring( char * p, lay_attr_i lay_attr, reg_pour * tm )
     return( cvterr );
 }
 
-void    o_pouring( FILE * f, lay_attr_o lay_attr, const reg_pour * tm )
+void    o_pouring( FILE *fp, lay_attr_o lay_attr, const reg_pour * tm )
 {
     char    * p;
 
@@ -1027,7 +1027,7 @@ void    o_pouring( FILE * f, lay_attr_o lay_attr, const reg_pour * tm )
     } else {
         p = "???";
     }
-    fprintf( f, "        %s = %s\n", lay_att_names[lay_attr], p );
+    fprintf( fp, "        %s = %s\n", lay_att_names[lay_attr], p );
     return;
 }
 
@@ -1043,14 +1043,14 @@ bool    i_space_unit( char * p, lay_attr_i lay_attr, su * tm )
     return( att_val_to_su( tm, true ) );    // no negative values allowed TBD
 }
 
-void    o_space_unit( FILE * f, lay_attr_o lay_attr, const su * tm )
+void    o_space_unit( FILE *fp, lay_attr_o lay_attr, const su * tm )
 {
 
     if( tm->su_u == SU_chars_lines || tm->su_u == SU_undefined ||
         tm->su_u >= SU_lay_left ) {
-        fprintf( f, "        %s = %s\n", lay_att_names[lay_attr], tm->su_txt );
+        fprintf( fp, "        %s = %s\n", lay_att_names[lay_attr], tm->su_txt );
     } else {
-        fprintf( f, "        %s = '%s'\n", lay_att_names[lay_attr], tm->su_txt );
+        fprintf( fp, "        %s = '%s'\n", lay_att_names[lay_attr], tm->su_txt );
     }
     return;
 }
@@ -1073,11 +1073,11 @@ bool    i_spacing( char *p, lay_attr_i lay_attr, text_space *tm )
     return( false );
 }
 
-void    o_spacing( FILE * f, lay_attr_o lay_attr, const text_space *tm )
+void    o_spacing( FILE *fp, lay_attr_o lay_attr, const text_space *tm )
 {
     unsigned wk = *tm;
 
-    fprintf( f, "        %s = %u\n", lay_att_names[lay_attr], wk );
+    fprintf( fp, "        %s = %u\n", lay_att_names[lay_attr], wk );
     return;
 }
 
@@ -1109,11 +1109,11 @@ bool    i_threshold( char * p, lay_attr_i lay_attr, uint16_t * tm )
     return( false );
 }
 
-void    o_threshold( FILE * f, lay_attr_o lay_attr, const uint16_t * tm )
+void    o_threshold( FILE *fp, lay_attr_o lay_attr, const uint16_t * tm )
 {
     unsigned wk = *tm;
 
-    fprintf( f, "        %s = %d\n", lay_att_names[lay_attr], wk );
+    fprintf( fp, "        %s = %d\n", lay_att_names[lay_attr], wk );
     return;
 }
 
@@ -1140,10 +1140,10 @@ bool    i_xx_string( char * p, lay_attr_i lay_attr, xx_str * tm )
     return( cvterr );
 }
 
-void    o_xx_string( FILE * f, lay_attr_o lay_attr, const xx_str * tm )
+void    o_xx_string( FILE *fp, lay_attr_o lay_attr, const xx_str * tm )
 {
 
-    fprintf( f, "        %s = \"%s\"\n", lay_att_names[lay_attr], tm );
+    fprintf( fp, "        %s = \"%s\"\n", lay_att_names[lay_attr], tm );
     return;
 }
 
@@ -1155,9 +1155,9 @@ bool    i_date_form( char * p, lay_attr_i lay_attr, xx_str * tm )
     return( i_xx_string( p, lay_attr, tm ) );
 }
 
-void    o_date_form( FILE * f, lay_attr_o lay_attr, const xx_str * tm )
+void    o_date_form( FILE *fp, lay_attr_o lay_attr, const xx_str * tm )
 {
-    o_xx_string( f, lay_attr, tm );
+    o_xx_string( fp, lay_attr, tm );
 }
 
 /***************************************************************************/
@@ -1180,7 +1180,7 @@ bool    i_yes_no( char * p, lay_attr_i lay_attr, bool * tm )
     return( cvterr );
 }
 
-void    o_yes_no( FILE * f, lay_attr_o lay_attr, const bool * tm )
+void    o_yes_no( FILE *fp, lay_attr_o lay_attr, const bool * tm )
 {
     char    const   *   p;
 
@@ -1189,7 +1189,7 @@ void    o_yes_no( FILE * f, lay_attr_o lay_attr, const bool * tm )
     } else {
         p = stryes;
     }
-    fprintf( f, "        %s = %s\n", lay_att_names[lay_attr], p );
+    fprintf( fp, "        %s = %s\n", lay_att_names[lay_attr], p );
     return;
 }
 

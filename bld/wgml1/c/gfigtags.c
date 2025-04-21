@@ -350,18 +350,18 @@ static void insert_frame_line( void )
 
 
 /***************************************************************************/
-/*      :FIG [depth=�vert-space-unit�]                                     */
+/*      :FIG [depth='vert-space-unit']                                     */
 /*           [frame=box                                                    */
 /*                  rule                                                   */
 /*                  none                                                   */
-/*                  �character string�]                                    */
-/*           [id=�id-name�]                                                */
+/*                  'character string']                                    */
+/*           [id='id-name']                                                */
 /*           [place=top                                                    */
 /*                  bottom                                                 */
 /*                  inline]                                                */
 /*           [width=page                                                   */
 /*                  column                                                 */
-/*                  �hor-space-unit�].                                     */
+/*                  'hor-space-unit'].                                     */
 /*           <paragraph elements>                                          */
 /*           <basic document elements>                                     */
 /* This tag signals the start of a figure. Each line of source text        */
