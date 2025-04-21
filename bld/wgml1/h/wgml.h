@@ -87,12 +87,12 @@ extern  void        set_pgnum_style( void );
 
 
 /* gdata.c                              */
-extern  void    init_global_vars( void );
-extern  void    init_pass_data( void );
+extern  void        init_global_vars( void );
+extern  void        init_pass_data( void );
 
 
 /* gdeflay.c                            */
-extern  void    init_def_lay( void );
+extern  void        init_def_lay( void );
 
 
 /* gdocpage.c                           */
@@ -115,8 +115,8 @@ extern  void        text_col_out( void );
 
 
 /* gdocsect.c                           */
-extern  void    set_section_banners( doc_section ds );
-extern  void    start_doc_sect( void );
+extern  void        set_section_banners( doc_section ds );
+extern  void        start_doc_sect( void );
 
 
 /* getnum.c                             */
@@ -124,22 +124,22 @@ extern  condcode    getnum( getnum_block * gn );
 
 
 /* ghx.c                                */
-extern  void    gen_heading( char *h_text, const char *hdrefid, hdsrc hn_lvl, hdsrc hds_lvl );
-extern  void    out_head_page( ffh_entry * in_entry, ref_entry * in_ref, uint32_t in_pageno );
+extern  void        gen_heading( char *h_text, const char *hdrefid, hdsrc hn_lvl, hdsrc hds_lvl );
+extern  void        out_head_page( ffh_entry * in_entry, ref_entry * in_ref, uint32_t in_pageno );
 
 
 /* gindexut.c                           */
-extern  void            eol_index_page( eol_ix * eol_index, uint32_t page_nr );
-extern  void            find_create_ix_e_entry( ix_h_blk * ixhwork, char * ref, size_t len, ix_h_blk * seeidwork, ereftyp type );
-extern  ix_h_blk    *   find_create_ix_h_entry( ix_h_blk * ixhwork, ix_h_blk * ixhbase, char * printtxt, size_t printtxtlen, char * txt, size_t txtlen, uint32_t lvl );
-extern  void            free_index_dict( ix_h_blk ** dict );
-extern  void            init_entry_list( ix_h_blk * term );
+extern  void        eol_index_page( eol_ix * eol_index, uint32_t page_nr );
+extern  void        find_create_ix_e_entry( ix_h_blk * ixhwork, char * ref, size_t len, ix_h_blk * seeidwork, ereftyp type );
+extern  ix_h_blk    *find_create_ix_h_entry( ix_h_blk * ixhwork, ix_h_blk * ixhbase, char * printtxt, size_t printtxtlen, char * txt, size_t txtlen, uint32_t lvl );
+extern  void        free_index_dict( ix_h_blk ** dict );
+extern  void        init_entry_list( ix_h_blk * term );
 
 
 /* glayutil.c                           */
 extern  void        eat_lay_sub_tag( void );
 extern  void        free_layout( void );
-extern  condcode    get_attr_and_value( void );
+extern  condcode    lay_attr_and_value( void );
 extern  bool        i_case( char * p, lay_att curr, case_t * tm );
 extern  void        o_case( FILE * f, lay_att curr, const case_t * tm );
 extern  bool        i_char( char * p, lay_att curr, char * tm );

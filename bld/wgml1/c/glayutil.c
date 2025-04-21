@@ -139,7 +139,7 @@ void    eat_lay_sub_tag( void )
 /*  rc = omit if nothing found                                             */
 /***************************************************************************/
 
-condcode    get_attr_and_value( void )
+condcode    lay_attr_and_value( void )
 {
     char        *   p;
     char        *   pa;

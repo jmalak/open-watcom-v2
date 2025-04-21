@@ -93,7 +93,7 @@ void    lay_lp( const gmltag * entry )
     if( ProcFlags.lay_xxx != el_lp ) {
         ProcFlags.lay_xxx = el_lp;
     }
-    cc = get_attr_and_value();            // get att with value
+    cc = lay_attr_and_value();            // get att with value
     while( cc == pos ) {
         cvterr = -1;
         for( k = 0, curr = lp_att[k]; curr > 0; k++, curr = lp_att[k] ) {
@@ -165,7 +165,7 @@ void    lay_lp( const gmltag * entry )
         if( cvterr < 0 ) {
             xx_err( err_att_name_inv );
         }
-        cc = get_attr_and_value();            // get att with value
+        cc = lay_attr_and_value();            // get att with value
     }
     scan_start = scan_stop + 1;
     return;

@@ -101,7 +101,7 @@ void    lay_xmp( const gmltag * entry )
     if( ProcFlags.lay_xxx != el_xmp ) {
         ProcFlags.lay_xxx = el_xmp;
     }
-    cc = get_attr_and_value();            // get att with value
+    cc = lay_attr_and_value();            // get att with value
     while( cc == pos ) {
         cvterr = -1;
         for( k = 0, curr = xmp_att[k]; curr > 0; k++, curr = xmp_att[k] ) {
@@ -175,7 +175,7 @@ void    lay_xmp( const gmltag * entry )
         if( cvterr < 0 ) {
             xx_err( err_att_name_inv );
         }
-        cc = get_attr_and_value();            // get att with value
+        cc = lay_attr_and_value();            // get att with value
     }
     if( layout_work.xmp.spacing < 1 ) { // enforce minimum value
         xx_err( err_num_zero );

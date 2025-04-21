@@ -71,7 +71,7 @@ void    lay_figdesc( const gmltag * entry )
     if( ProcFlags.lay_xxx != el_figdesc ) {
         ProcFlags.lay_xxx = el_figdesc;
     }
-    cc = get_attr_and_value();            // get att with value
+    cc = lay_attr_and_value();            // get att with value
     while( cc == pos ) {
         cvterr = -1;
         for( k = 0, curr = figdesc_att[k]; curr > 0; k++, curr = figdesc_att[k] ) {
@@ -112,7 +112,7 @@ void    lay_figdesc( const gmltag * entry )
         if( cvterr < 0 ) {
             xx_err( err_att_name_inv );
         }
-        cc = get_attr_and_value();            // get att with value
+        cc = lay_attr_and_value();            // get att with value
     }
     scan_start = scan_stop + 1;
     return;
