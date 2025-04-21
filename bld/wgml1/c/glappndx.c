@@ -215,12 +215,10 @@ void    lay_appendix( const gmltag * entry )
     while( cc == pos ) {
         cvterr = -1;
         for( k = 0, curr = appendix_att[k]; curr > 0; k++, curr = appendix_att[k] ) {
-
-            if( strnicmp( att_names[curr], lay_attr.att_name, lay_attr.att_len ) == 0 ) {
+            if( strcmp( lay_att_names[curr], lay_attr.attname ) == 0 ) {
                 p = lay_attr.val_name;
-
                 switch( curr ) {
-                case   e_indent:
+                case e_indent:
                     if( AttrFlags.indent ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -229,7 +227,7 @@ void    lay_appendix( const gmltag * entry )
                                     &layout_work.hx.hx_head[hds_appendix].indent );
                     AttrFlags.indent = true;
                     break;
-                case   e_pre_top_skip:
+                case e_pre_top_skip:
                     if( AttrFlags.pre_top_skip ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -238,7 +236,7 @@ void    lay_appendix( const gmltag * entry )
                                 &layout_work.hx.hx_sect[hds_appendix].pre_top_skip );
                     AttrFlags.pre_top_skip = true;
                     break;
-                case   e_pre_skip:
+                case e_pre_skip:
                     if( AttrFlags.pre_skip ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -247,7 +245,7 @@ void    lay_appendix( const gmltag * entry )
                                     &layout_work.hx.hx_head[hds_appendix].pre_skip );
                     AttrFlags.pre_skip = true;
                     break;
-                case   e_post_skip:
+                case e_post_skip:
                     if( AttrFlags.post_skip ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -256,7 +254,7 @@ void    lay_appendix( const gmltag * entry )
                                     &layout_work.hx.hx_sect[hds_appendix].post_skip );
                     AttrFlags.post_skip = true;
                     break;
-                case   e_spacing:
+                case e_spacing:
                     if( AttrFlags.spacing ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -264,7 +262,7 @@ void    lay_appendix( const gmltag * entry )
                     cvterr = i_spacing( p, &lay_attr, &layout_work.hx.hx_sect[hds_appendix].spacing );
                     AttrFlags.spacing = true;
                     break;
-                case   e_font:
+                case e_font:
                     if( AttrFlags.font ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -276,7 +274,7 @@ void    lay_appendix( const gmltag * entry )
                     }
                     AttrFlags.font = true;
                     break;
-                case   e_number_font:
+                case e_number_font:
                     if( AttrFlags.number_font ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -288,7 +286,7 @@ void    lay_appendix( const gmltag * entry )
                     }
                     AttrFlags.number_font = true;
                     break;
-                case   e_number_form:
+                case e_number_form:
                     if( AttrFlags.number_form ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -297,7 +295,7 @@ void    lay_appendix( const gmltag * entry )
                                 &layout_work.hx.hx_head[hds_appendix].number_form );
                     AttrFlags.number_form = true;
                     break;
-                case   e_page_position:
+                case e_page_position:
                     if( AttrFlags.page_position ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -306,7 +304,7 @@ void    lay_appendix( const gmltag * entry )
                                 &layout_work.hx.hx_head[hds_appendix].line_position );
                     AttrFlags.page_position = true;
                     break;
-                case   e_number_style:
+                case e_number_style:
                     if( AttrFlags.number_style ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -315,7 +313,7 @@ void    lay_appendix( const gmltag * entry )
                                 &layout_work.hx.hx_head[hds_appendix].number_style );
                     AttrFlags.number_style = true;
                     break;
-                case   e_page_eject:
+                case e_page_eject:
                     if( AttrFlags.page_eject ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -324,7 +322,7 @@ void    lay_appendix( const gmltag * entry )
                                 &layout_work.hx.hx_head[hds_appendix].page_eject );
                     AttrFlags.page_eject = true;
                     break;
-                case   e_line_break:
+                case e_line_break:
                     if( AttrFlags.line_break ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -333,7 +331,7 @@ void    lay_appendix( const gmltag * entry )
                                 &layout_work.hx.hx_head[hds_appendix].line_break );
                     AttrFlags.line_break = true;
                     break;
-                case   e_display_heading:
+                case e_display_heading:
                     if( AttrFlags.display_heading ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -342,7 +340,7 @@ void    lay_appendix( const gmltag * entry )
                             &layout_work.hx.hx_head[hds_appendix].display_heading );
                     AttrFlags.display_heading = true;
                     break;
-                case   e_number_reset:
+                case e_number_reset:
                     if( AttrFlags.number_reset ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -351,7 +349,7 @@ void    lay_appendix( const gmltag * entry )
                                 &layout_work.hx.hx_head[hds_appendix].number_reset );
                     AttrFlags.number_reset = true;
                     break;
-                case   e_case:
+                case e_case:
                     if( AttrFlags.case_a ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -360,7 +358,7 @@ void    lay_appendix( const gmltag * entry )
                                      &layout_work.hx.hx_head[hds_appendix].hd_case );
                     AttrFlags.case_a = true;
                     break;
-                case   e_align:
+                case e_align:
                     if( AttrFlags.align ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -369,7 +367,7 @@ void    lay_appendix( const gmltag * entry )
                                         &layout_work.hx.hx_head[hds_appendix].align );
                     AttrFlags.align = true;
                     break;
-                case   e_header:
+                case e_header:
                     if( AttrFlags.header ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -378,7 +376,7 @@ void    lay_appendix( const gmltag * entry )
                                        &layout_work.hx.hx_sect[hds_appendix].header );
                     AttrFlags.header = true;
                     break;
-                case   e_appendix_string:
+                case e_appendix_string:
                     if( AttrFlags.appendix_string ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -386,7 +384,7 @@ void    lay_appendix( const gmltag * entry )
                     cvterr = i_xx_string( p, &lay_attr, layout_work.appendix.string );
                     AttrFlags.appendix_string = true;
                     break;
-                case   e_page_reset:
+                case e_page_reset:
                     if( AttrFlags.page_reset ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -394,7 +392,7 @@ void    lay_appendix( const gmltag * entry )
                     cvterr = i_yes_no( p, &lay_attr, &layout_work.appendix.page_reset );
                     AttrFlags.page_reset = true;
                     break;
-                case   e_section_eject:
+                case e_section_eject:
                     if( AttrFlags.section_eject ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -403,7 +401,7 @@ void    lay_appendix( const gmltag * entry )
                                                 &layout_work.appendix.section_eject );
                     AttrFlags.section_eject = true;
                     break;
-                case   e_columns:
+                case e_columns:
                     if( AttrFlags.columns ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);

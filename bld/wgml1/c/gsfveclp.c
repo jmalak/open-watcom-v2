@@ -31,7 +31,7 @@ static  bool    vec_pos;           // true if &'vecpos, false if &'veclastpos
 /*    tion returns the subscript number of  the first occurrence of 'nee-  */
 /*    dle' in 'haystack'  set symbol.   The search for a  match starts at  */
 /*    the first element  of 'haystack' but may be overridden  by adding a  */
-/*    'start'  subscript in  'haystack'.    The default  case  of 'M'  or  */
+/*    'start'  subscript in  'haystack'.    The default  case of 'M'  or  */
 /*    'Mixed' searches for  an element which matches exactly,   a case of  */
 /*    'U' or  'Upper' will match the  'needle' and 'haystack'  element in  */
 /*    uppercase.    If the  'needle'  string is  not  found,   a zero  is  */

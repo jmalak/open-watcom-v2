@@ -322,7 +322,7 @@ extern  const   ban_places    bf_places[max_place];
 /*  longest attribute name is extract_threshold  (=17)                     */
 /*                            ....+....1....+..                            */
 /***************************************************************************/
-extern  const   char    att_names[e_dummy_max + 1][18];
+extern  const   char        lay_att_names[e_dummy_max + 1][18];
 
 /***************************************************************************/
 /*   declarations for the sequence of LAYOUT attribute values              */

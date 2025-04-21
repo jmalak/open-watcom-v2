@@ -107,12 +107,10 @@ void    lay_ixhead( const gmltag * entry )
             if( curr == e_ixhead_frame ) {
                 curr = e_frame;         // use correct externalname
             }
-
-            if( strnicmp( att_names[curr], lay_attr.att_name, lay_attr.att_len ) == 0 ) {
+            if( strcmp( lay_att_names[curr], lay_attr.attname ) == 0 ) {
                 p = lay_attr.val_name;
-
                 switch( curr ) {
-                case   e_pre_skip:
+                case e_pre_skip:
                     if( AttrFlags.pre_skip ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -121,7 +119,7 @@ void    lay_ixhead( const gmltag * entry )
                                            &layout_work.ixhead.pre_skip );
                     AttrFlags.pre_skip = true;
                     break;
-                case   e_post_skip:
+                case e_post_skip:
                     if( AttrFlags.post_skip ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -130,7 +128,7 @@ void    lay_ixhead( const gmltag * entry )
                                            &layout_work.ixhead.post_skip );
                     AttrFlags.post_skip = true;
                     break;
-                case   e_font:
+                case e_font:
                     if( AttrFlags.font ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -141,7 +139,7 @@ void    lay_ixhead( const gmltag * entry )
                     }
                     AttrFlags.font = true;
                     break;
-                case   e_indent:
+                case e_indent:
                     if( AttrFlags.indent ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -150,7 +148,7 @@ void    lay_ixhead( const gmltag * entry )
                                            &layout_work.ixhead.indent );
                     AttrFlags.indent = true;
                     break;
-                case   e_frame:
+                case e_frame:
                     if( AttrFlags.frame ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -159,7 +157,7 @@ void    lay_ixhead( const gmltag * entry )
                                            &layout_work.ixhead.frame );
                     AttrFlags.frame = true;
                     break;
-                case   e_header:
+                case e_header:
                     if( AttrFlags.header ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);

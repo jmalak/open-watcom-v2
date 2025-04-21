@@ -16,22 +16,6 @@
 #include "wgml.h"
 
 
-#define IS_ATTNAME_END(p)   (!is_macro_char(*p))
-
-static bool     get_att_name( const char *p, char *attname )
-{
-    size_t  len;
-
-    for( len = 0; len < TAG_ATT_NAME_LENGTH; len++ ) {
-        if( IS_ATTNAME_END( p ) ) {
-            break;
-        }
-        *attname++ = my_tolower( *p++ );     // copy lowercase macro name
-    }
-    *attname = '\0';
-    return( !IS_ATTNAME_END( p ) );
-}
-
 /***************************************************************************/
 /* GML ATTRIBUTE defines an attribute of a GML tag.  Multiple uses of the  */
 /* control word are needed to define the  list of values that this attri-  */
@@ -212,7 +196,7 @@ static  condcode    scan_att_optionsA( gaflags * att_flags )
         }
         p = g_tok_start;
         switch( my_tolower( *p ) ) {
-        case   'u' :
+        case 'u' :
             if( (arg_flen > 1) && (arg_flen < 11)
               && strnicmp( "UPpercase", p, arg_flen ) == 0 ) {
                 *att_flags |= att_upper;
@@ -220,7 +204,7 @@ static  condcode    scan_att_optionsA( gaflags * att_flags )
                 cc = neg;               // perhaps option B
             }
             break;
-        case   'r' :
+        case 'r' :
             if( (arg_flen > 2) && (arg_flen < 9)
               && strnicmp( "REQuired", p, arg_flen ) == 0 ) {
                 *att_flags |= att_req;
@@ -228,7 +212,7 @@ static  condcode    scan_att_optionsA( gaflags * att_flags )
                 cc = neg;               // perhaps option B
             }
             break;
-        case   'o' :
+        case 'o' :
             if( strnicmp( "OFF", p, arg_flen ) == 0 ) {
                 *att_flags |= att_off;
             } else {
@@ -272,7 +256,7 @@ static  condcode    scan_att_optionsB( gavalflags * val_flags, condcode cca,
     cc = pos;
 
     switch( my_tolower( *g_tok_start ) ) {
-    case   'a' :
+    case 'a' :
         if( strnicmp( "ANY", g_tok_start, arg_flen ) == 0 ) {
             *val_flags |= val_any;
             *att_flags |= att_any;
@@ -306,7 +290,7 @@ static  condcode    scan_att_optionsB( gavalflags * val_flags, condcode cca,
             }
         }
         break;
-    case   'r' :
+    case 'r' :
         if( (arg_flen > 2) && (arg_flen < 6)
           && strnicmp( "RANge", g_tok_start, arg_flen ) == 0 ) {
             *val_flags |= val_range;
@@ -363,7 +347,7 @@ static  condcode    scan_att_optionsB( gavalflags * val_flags, condcode cca,
             }
         }
         break;
-    case   'l' :
+    case 'l' :
         if( (arg_flen > 2) && (arg_flen < 7)
           && strnicmp( "LENgth", g_tok_start, arg_flen ) == 0 ) {
             *val_flags |= val_length;
@@ -383,7 +367,7 @@ static  condcode    scan_att_optionsB( gavalflags * val_flags, condcode cca,
             cc = neg;
         }
         break;
-    case   'v' :
+    case 'v' :
         if( (arg_flen > 2) && (arg_flen < 6)
           && strnicmp( "VALue", g_tok_start, arg_flen ) == 0 ) {
             cc = getarg();

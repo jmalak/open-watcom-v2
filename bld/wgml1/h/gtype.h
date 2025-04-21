@@ -1819,19 +1819,21 @@ typedef struct attr_flags {
 /***************************************************************************/
 
 typedef struct lay_att_val {
-    char        *   att_name;
+    char            *att_name;
     uint32_t        att_len;
-    char        *   val_name;
+    char            *val_name;
     uint32_t        val_len;
-    bool            val_quoted;
+    char            val_quoted;
+    char            attname[TAG_ATT_NAME_LENGTH + 1];
 } lay_att_val;
 
 typedef struct tag_att_val {
-    char        *   att_name;
-    uint32_t        att_len;
-    char        *   val_name;
-    uint32_t        val_len;
-    bool            val_quoted;
+    char            *att_name;
+    int             att_len;
+    char            *val_name;
+    int             val_len;
+    char            val_quoted;
+    char            attname[LAY_ATT_NAME_LENGTH + 1];
 } tag_att_val;
 
 #endif                                  // GTYPE_H_INCLUDED

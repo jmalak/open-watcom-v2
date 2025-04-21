@@ -52,12 +52,10 @@ void    lay_flpgnum( const gmltag * entry )
     while( cc == pos ) {
         cvterr = -1;
         for( k = 0, curr = flpgnum_att[k]; curr > 0; k++, curr = flpgnum_att[k] ) {
-
-            if( strnicmp( att_names[curr], lay_attr.att_name, lay_attr.att_len ) == 0 ) {
+            if( strcmp( lay_att_names[curr], lay_attr.attname ) == 0 ) {
                 p = lay_attr.val_name;
-
                 switch( curr ) {
-                case   e_size:
+                case e_size:
                     if( AttrFlags.size ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -66,7 +64,7 @@ void    lay_flpgnum( const gmltag * entry )
                                            &layout_work.flpgnum.size );
                     AttrFlags.size = true;
                     break;
-                case   e_font:
+                case e_font:
                     if( AttrFlags.font ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);

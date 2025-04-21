@@ -99,12 +99,10 @@ void    lay_figcap( const gmltag * entry )
     while( cc == pos ) {
         cvterr = -1;
         for( k = 0, curr = figcap_att[k]; curr > 0; k++, curr = figcap_att[k] ) {
-
-            if( strnicmp( att_names[curr], lay_attr.att_name, lay_attr.att_len ) == 0 ) {
+            if( strcmp( lay_att_names[curr], lay_attr.attname ) == 0 ) {
                 p = lay_attr.val_name;
-
                 switch( curr ) {
-                case   e_pre_lines:
+                case e_pre_lines:
                     if( AttrFlags.pre_lines ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -113,7 +111,7 @@ void    lay_figcap( const gmltag * entry )
                                            &layout_work.figcap.pre_lines );
                     AttrFlags.pre_lines = true;
                     break;
-                case   e_font:
+                case e_font:
                     if( AttrFlags.font ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -124,7 +122,7 @@ void    lay_figcap( const gmltag * entry )
                     }
                     AttrFlags.font = true;
                     break;
-                case   e_figcap_string:
+                case e_figcap_string:
                     if( AttrFlags.figcap_string ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -132,7 +130,7 @@ void    lay_figcap( const gmltag * entry )
                     cvterr = i_xx_string( p, &lay_attr, layout_work.figcap.string );
                     AttrFlags.figcap_string = true;
                     break;
-                case   e_string_font:
+                case e_string_font:
                     if( AttrFlags.string_font ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -143,7 +141,7 @@ void    lay_figcap( const gmltag * entry )
                     }
                     AttrFlags.string_font = true;
                     break;
-                case   e_delim:
+                case e_delim:
                     if( AttrFlags.delim ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);

@@ -285,22 +285,22 @@ static bool ifcompare( termcb * t1, relop r, termcb * t2 )
     }
 
     switch( r ) {                       // now set compare result
-    case  EQ:
+    case EQ:
         result = (term1 == term2);
         break;
-    case  NE:
+    case NE:
         result = (term1 != term2);
         break;
-    case  LT:
+    case LT:
         result = (term1 <  term2);
         break;
-    case  GT:
+    case GT:
         result = (term1 >  term2);
         break;
-    case  LE:
+    case LE:
         result = (term1 <= term2);
         break;
-    case  GE:
+    case GE:
         result = (term1 >= term2);
         break;
 

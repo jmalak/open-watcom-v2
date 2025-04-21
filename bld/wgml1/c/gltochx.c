@@ -110,25 +110,25 @@ void    lay_tochx( const gmltag * entry )
         return;                         // process during first pass only
     }
     switch( entry->tagname[4] ) {
-    case   '0':
+    case '0':
         hx_l = el_toch0;
         break;
-    case   '1':
+    case '1':
         hx_l = el_toch1;
         break;
-    case   '2':
+    case '2':
         hx_l = el_toch2;
         break;
-    case   '3':
+    case '3':
         hx_l = el_toch3;
         break;
-    case   '4':
+    case '4':
         hx_l = el_toch4;
         break;
-    case   '5':
+    case '5':
         hx_l = el_toch5;
         break;
-    case   '6':
+    case '6':
         hx_l = el_toch6;
         break;
     default:
@@ -151,12 +151,10 @@ void    lay_tochx( const gmltag * entry )
     while( cc == pos ) {
         cvterr = -1;
         for( k = 0, curr = tochx_att[k]; curr > 0; k++, curr = tochx_att[k] ) {
-
-            if( strnicmp( att_names[curr], lay_attr.att_name, lay_attr.att_len ) == 0 ) {
+            if( strcmp( lay_att_names[curr], lay_attr.attname ) == 0 ) {
                 p = lay_attr.val_name;
-
                 switch( curr ) {
-                case   e_group:
+                case e_group:
                     if( AttrFlags.group ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -164,7 +162,7 @@ void    lay_tochx( const gmltag * entry )
                     cvterr = i_int8( p, &lay_attr, &layout_work.tochx[hx_l].group );
                     AttrFlags.group = true;
                     break;
-                case   e_indent:
+                case e_indent:
                     if( AttrFlags.indent ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -173,7 +171,7 @@ void    lay_tochx( const gmltag * entry )
                                            &layout_work.tochx[hx_l].indent );
                     AttrFlags.indent = true;
                     break;
-                case   e_skip:
+                case e_skip:
                     if( AttrFlags.skip ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -182,7 +180,7 @@ void    lay_tochx( const gmltag * entry )
                                            &layout_work.tochx[hx_l].skip );
                     AttrFlags.skip = true;
                     break;
-                case   e_pre_skip:
+                case e_pre_skip:
                     if( AttrFlags.pre_skip ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -191,7 +189,7 @@ void    lay_tochx( const gmltag * entry )
                                            &layout_work.tochx[hx_l].pre_skip );
                     AttrFlags.pre_skip = true;
                     break;
-                case   e_post_skip:
+                case e_post_skip:
                     if( AttrFlags.post_skip ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -200,7 +198,7 @@ void    lay_tochx( const gmltag * entry )
                                            &layout_work.tochx[hx_l].post_skip );
                     AttrFlags.post_skip = true;
                     break;
-                case   e_font:
+                case e_font:
                     if( AttrFlags.font ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -211,7 +209,7 @@ void    lay_tochx( const gmltag * entry )
                     }
                     AttrFlags.font = true;
                     break;
-                case   e_align:
+                case e_align:
                     if( AttrFlags.align ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -220,7 +218,7 @@ void    lay_tochx( const gmltag * entry )
                                            &layout_work.tochx[hx_l].align );
                     AttrFlags.align = true;
                     break;
-                case   e_display_in_toc:
+                case e_display_in_toc:
                     if( AttrFlags.display_in_toc ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);

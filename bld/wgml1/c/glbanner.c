@@ -214,10 +214,8 @@ void    lay_banner( const gmltag * entry )
     while( cc == pos ) {
         for( k = 0; k < att_count; k++ ) {
             curr = banner_att[k];
-
-            if( strnicmp( att_names[curr], lay_attr.att_name, lay_attr.att_len ) == 0 ) {
+            if( strcmp( lay_att_names[curr], lay_attr.attname ) == 0 ) {
                 p = lay_attr.val_name;
-
                 if( count[k] ) {
                     if( sum_count == att_count ) {  // all attributes found
                         xx_err( err_lay_text );     // per wgml 4.0: treat as text
@@ -336,15 +334,15 @@ void    lay_banner( const gmltag * entry )
                     if( !count[k] ) {               // copy only unchanged values
                         count[k] = 1;               // treat as new value
                         switch( banner_att[k] ) {
-                        case   e_left_adjust:
+                        case e_left_adjust:
                             memcpy( &(wk.left_adjust), &(ref_ban->left_adjust),
                                     sizeof( wk.left_adjust ) );
                             break;
-                        case   e_right_adjust:
+                        case e_right_adjust:
                             memcpy( &(wk.right_adjust), &(ref_ban->right_adjust),
                                     sizeof( wk.right_adjust ) );
                             break;
-                        case   e_depth:
+                        case e_depth:
                             memcpy( &(wk.depth), &(ref_ban->depth),
                                     sizeof( wk.depth ) );
                             break;
@@ -383,13 +381,13 @@ void    lay_banner( const gmltag * entry )
             for( k = 0; k < att_count; ++k ) {  // update banwk
                 if( count[k] ) {                // copy only changed values
                     switch( banner_att[k] ) {
-                    case   e_left_adjust:
+                    case e_left_adjust:
                         memcpy( &(banwk->left_adjust), &(wk.left_adjust), sizeof( wk.left_adjust ) );
                         break;
-                    case   e_right_adjust:
+                    case e_right_adjust:
                         memcpy( &(banwk->right_adjust), &(wk.right_adjust), sizeof( wk.right_adjust ) );
                         break;
-                    case   e_depth:
+                    case e_depth:
                         memcpy( &(banwk->depth), &(wk.depth), sizeof( wk.depth ) );
                         break;
                     default:                // refdoc and refplace are not stored

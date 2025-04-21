@@ -151,12 +151,10 @@ void    lay_fn( const gmltag * entry )
     while( cc == pos ) {
         cvterr = true;
         for( k = 0, curr = fn_att[k]; curr > 0; k++, curr = fn_att[k] ) {
-
-            if( strnicmp( att_names[curr], lay_attr.att_name, lay_attr.att_len ) == 0 ) {
+            if( strcmp( lay_att_names[curr], lay_attr.attname ) == 0 ) {
                 p = lay_attr.val_name;
-
                 switch( curr ) {
-                case   e_line_indent:
+                case e_line_indent:
                     if( AttrFlags.line_indent ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -165,7 +163,7 @@ void    lay_fn( const gmltag * entry )
                                            &layout_work.fn.line_indent );
                     AttrFlags.line_indent = true;
                     break;
-                case   e_align:
+                case e_align:
                     if( AttrFlags.align ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -173,7 +171,7 @@ void    lay_fn( const gmltag * entry )
                     cvterr = i_space_unit( p, &lay_attr, &layout_work.fn.align );
                     AttrFlags.align = true;
                     break;
-                case   e_pre_lines:
+                case e_pre_lines:
                     if( AttrFlags.pre_lines ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -181,7 +179,7 @@ void    lay_fn( const gmltag * entry )
                     cvterr = i_space_unit( p, &lay_attr, &layout_work.fn.pre_lines );
                     AttrFlags.pre_lines = true;
                     break;
-                case   e_skip:
+                case e_skip:
                     if( AttrFlags.skip ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -189,7 +187,7 @@ void    lay_fn( const gmltag * entry )
                     cvterr = i_space_unit( p, &lay_attr, &layout_work.fn.skip );
                     AttrFlags.skip = true;
                     break;
-                case   e_spacing:
+                case e_spacing:
                     if( AttrFlags.spacing ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -197,7 +195,7 @@ void    lay_fn( const gmltag * entry )
                     cvterr = i_spacing( p, &lay_attr, &layout_work.fn.spacing );
                     AttrFlags.spacing = true;
                     break;
-                case   e_font:
+                case e_font:
                     if( AttrFlags.font ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -208,7 +206,7 @@ void    lay_fn( const gmltag * entry )
                     }
                     AttrFlags.font = true;
                     break;
-                case   e_number_font:
+                case e_number_font:
                     if( AttrFlags.number_font ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -219,7 +217,7 @@ void    lay_fn( const gmltag * entry )
                     }
                     AttrFlags.number_font = true;
                     break;
-                case   e_number_style:
+                case e_number_style:
                     if( AttrFlags.number_style ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -228,7 +226,7 @@ void    lay_fn( const gmltag * entry )
                                              &layout_work.fn.number_style );
                     AttrFlags.number_style = true;
                     break;
-                case   e_frame:
+                case e_frame:
                     if( AttrFlags.frame ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -281,12 +279,10 @@ void    lay_fnref( const gmltag * entry )
     while( cc == pos ) {
         cvterr = -1;
         for( k = 0, curr = fnref_att[k]; curr > 0; k++, curr = fnref_att[k] ) {
-
-            if( strnicmp( att_names[curr], lay_attr.att_name, lay_attr.att_len ) == 0 ) {
+            if( strcmp( lay_att_names[curr], lay_attr.attname ) == 0 ) {
                 p = lay_attr.val_name;
-
                 switch( curr ) {
-                case   e_font:
+                case e_font:
                     if( AttrFlags.font ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -297,7 +293,7 @@ void    lay_fnref( const gmltag * entry )
                     }
                     AttrFlags.font = true;
                     break;
-                case   e_number_style:
+                case e_number_style:
                     if( AttrFlags.number_style ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);

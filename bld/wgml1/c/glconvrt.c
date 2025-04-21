@@ -19,7 +19,7 @@
 /* Layout attributes as character strings                                  */
 /***************************************************************************/
 
-const   char    att_names[e_dummy_max + 1][18] = {
+const   char    lay_att_names[e_dummy_max + 1][18] = {
 //   18 is enough for longest attribute name  ( extract_threshold )
     { "DUMMY" },                       // enum zero not used
     #define pick( name, funci, funco, result ) { #name },
@@ -54,38 +54,38 @@ static  void    put_lay_abspref( FILE * layfile, abspref_lay_tag * ap,
     for( k = 0, lay_attr = abspref_att[k]; lay_attr > 0; k++, lay_attr = abspref_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_post_skip:
+        case e_post_skip:
             o_space_unit( layfile, lay_attr, &apsect->post_skip );
             break;
-        case   e_pre_top_skip:
+        case e_pre_top_skip:
             o_space_unit( layfile, lay_attr, &apsect->pre_top_skip );
             break;
-        case   e_font:
+        case e_font:
             o_font_number( layfile, lay_attr, &apsect->text_font );
             break;
-        case   e_spacing:
+        case e_spacing:
             o_spacing( layfile, lay_attr, &apsect->spacing );
             break;
-        case   e_header:
+        case e_header:
             o_yes_no( layfile, lay_attr, &apsect->header );
             break;
-        case   e_abstract_string:
+        case e_abstract_string:
             if( *name == 'A' ) {        // :Abstract output
                 o_xx_string( layfile, lay_attr, ap->string );
             }
             break;
-        case   e_preface_string:
+        case e_preface_string:
             if( *name == 'P' ) {        // :Preface output
                 o_xx_string( layfile, lay_attr, ap->string );
             }
             break;
-        case   e_page_eject:
+        case e_page_eject:
             o_page_eject( layfile, lay_attr, &ap->page_eject );
             break;
-        case   e_page_reset:
+        case e_page_reset:
             o_yes_no( layfile, lay_attr, &ap->page_reset );
             break;
-        case   e_columns:
+        case e_columns:
             o_int8( layfile, lay_attr, &ap->columns );
             break;
         default:
@@ -119,19 +119,19 @@ static  void    put_lay_address( FILE * layfile, layout_data * lay )
     for( k = 0, lay_attr = address_att[k]; lay_attr > 0; k++, lay_attr = address_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_left_adjust:
+        case e_left_adjust:
             o_space_unit( layfile, lay_attr, &lay->address.left_adjust );
             break;
-        case   e_right_adjust:
+        case e_right_adjust:
             o_space_unit( layfile, lay_attr, &lay->address.right_adjust );
             break;
-        case   e_page_position:
+        case e_page_position:
             o_page_position( layfile, lay_attr, &lay->address.page_position );
             break;
-        case   e_font:
+        case e_font:
             o_font_number( layfile, lay_attr, &lay->address.font );
             break;
-        case   e_pre_skip:
+        case e_pre_skip:
             o_space_unit( layfile, lay_attr, &lay->address.pre_skip );
             break;
         default:
@@ -155,7 +155,7 @@ static  void    put_lay_aline( FILE * layfile, layout_data * lay )
     for( k = 0, lay_attr = aline_att[k]; lay_attr > 0; k++, lay_attr = aline_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_skip:
+        case e_skip:
             o_space_unit( layfile, lay_attr, &lay->aline.skip );
             break;
         default:
@@ -179,67 +179,67 @@ static  void    put_lay_appendix( FILE * layfile, layout_data * lay )
     for( k = 0, lay_attr = appendix_att[k]; lay_attr > 0; k++, lay_attr = appendix_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_indent:
+        case e_indent:
             o_space_unit( layfile, lay_attr, &lay->hx.hx_head[hds_appendix].indent );
             break;
-        case   e_pre_top_skip:
+        case e_pre_top_skip:
             o_space_unit( layfile, lay_attr, &lay->hx.hx_sect[hds_appendix].pre_top_skip );
             break;
-        case   e_pre_skip:
+        case e_pre_skip:
             o_space_unit( layfile, lay_attr, &lay->hx.hx_head[hds_appendix].pre_skip );
             break;
-        case   e_post_skip:
+        case e_post_skip:
             o_space_unit( layfile, lay_attr, &lay->hx.hx_sect[hds_appendix].post_skip );
             break;
-        case   e_spacing:
+        case e_spacing:
             o_spacing( layfile, lay_attr, &lay->hx.hx_sect[hds_appendix].spacing );
             break;
-        case   e_font:
+        case e_font:
             o_font_number( layfile, lay_attr, &lay->hx.hx_sect[hds_appendix].text_font );
             break;
-        case   e_number_font:
+        case e_number_font:
             o_font_number( layfile, lay_attr, &lay->hx.hx_head[hds_appendix].number_font );
             break;
-        case   e_number_form:
+        case e_number_form:
             o_number_form( layfile, lay_attr, &lay->hx.hx_head[hds_appendix].number_form );
             break;
-        case   e_page_position:
+        case e_page_position:
             o_page_position( layfile, lay_attr, &lay->hx.hx_head[hds_appendix].line_position );
             break;
-        case   e_number_style:
+        case e_number_style:
             o_number_style( layfile, lay_attr, &lay->hx.hx_head[hds_appendix].number_style );
             break;
-        case   e_page_eject:
+        case e_page_eject:
             o_page_eject( layfile, lay_attr, &lay->hx.hx_head[hds_appendix].page_eject );
             break;
-        case   e_line_break:
+        case e_line_break:
             o_yes_no( layfile, lay_attr, &lay->hx.hx_head[hds_appendix].line_break );
             break;
-        case   e_display_heading:
+        case e_display_heading:
             o_yes_no( layfile, lay_attr, &lay->hx.hx_head[hds_appendix].display_heading );
             break;
-        case   e_number_reset:
+        case e_number_reset:
             o_yes_no( layfile, lay_attr, &lay->hx.hx_head[hds_appendix].number_reset );
             break;
-        case   e_case:
+        case e_case:
             o_case( layfile, lay_attr, &lay->hx.hx_head[hds_appendix].hd_case );
             break;
-        case   e_align:
+        case e_align:
             o_space_unit( layfile, lay_attr, &lay->hx.hx_head[hds_appendix].align );
             break;
-        case   e_header:
+        case e_header:
             o_yes_no( layfile, lay_attr, &lay->hx.hx_sect[hds_appendix].header );
             break;
-        case   e_appendix_string:
+        case e_appendix_string:
             o_xx_string( layfile, lay_attr, lay->appendix.string );
             break;
-        case   e_page_reset:
+        case e_page_reset:
             o_yes_no( layfile, lay_attr, &lay->appendix.page_reset );
             break;
-        case   e_section_eject:
+        case e_section_eject:
             o_page_eject( layfile, lay_attr, &lay->appendix.section_eject );
             break;
-        case   e_columns:
+        case e_columns:
             o_int8( layfile, lay_attr, &lay->appendix.columns );
             break;
         default:
@@ -263,22 +263,22 @@ static  void    put_lay_author( FILE * layfile, layout_data * lay )
     for( k = 0, lay_attr = author_att[k]; lay_attr > 0; k++, lay_attr = author_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_left_adjust:
+        case e_left_adjust:
             o_space_unit( layfile, lay_attr, &lay->author.left_adjust );
             break;
-        case   e_right_adjust:
+        case e_right_adjust:
             o_space_unit( layfile, lay_attr, &lay->author.right_adjust );
             break;
-        case   e_page_position:
+        case e_page_position:
             o_page_position( layfile, lay_attr, &lay->author.page_position );
             break;
-        case   e_font:
+        case e_font:
             o_font_number( layfile, lay_attr, &lay->author.font );
             break;
-        case   e_pre_skip:
+        case e_pre_skip:
             o_space_unit( layfile, lay_attr, &lay->author.pre_skip );
             break;
-        case   e_skip:
+        case e_skip:
             o_space_unit( layfile, lay_attr, &lay->author.skip );
             break;
         default:
@@ -303,37 +303,37 @@ static  void    put_lay_backbod( FILE * layfile, backbod_lay_tag * bb,
     for( k = 0, lay_attr = backbod_att[k]; lay_attr > 0; k++, lay_attr = backbod_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_post_skip:
+        case e_post_skip:
             o_space_unit( layfile, lay_attr, &bbsect->post_skip );
             break;
-        case   e_pre_top_skip:
+        case e_pre_top_skip:
             o_space_unit( layfile, lay_attr, &bbsect->pre_top_skip );
             break;
-        case   e_header:
+        case e_header:
             o_yes_no( layfile, lay_attr, &bbsect->header );
             break;
-        case   e_body_string:
+        case e_body_string:
             if( *(name + 1) == 'O') {   // BODY tag
                 o_xx_string( layfile, lay_attr, bb->string );
             }
             break;
-        case   e_backm_string:
+        case e_backm_string:
             if( *(name + 1) == 'A') {   // BACKM tag
                 o_xx_string( layfile, lay_attr, bb->string );
             }
             break;
-        case   e_page_eject:
+        case e_page_eject:
             o_page_eject( layfile, lay_attr, &bb->page_eject );
             break;
-        case   e_page_reset:
+        case e_page_reset:
             o_yes_no( layfile, lay_attr, &bb->page_reset );
             break;
-        case   e_columns:
+        case e_columns:
             if( *(name + 1) == 'A') {   // BACKM tag
                 o_int8( layfile, lay_attr, &bb->columns );
             }
             break;
-        case   e_font:
+        case e_font:
             o_font_number( layfile, lay_attr, &bbsect->text_font );
             break;
         default:
@@ -368,37 +368,37 @@ static  void    put_lay_region( FILE * layfile, region_lay_tag * reg )
          k++, lay_attr = banregion_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_indent:
+        case e_indent:
             o_space_unit( layfile, lay_attr, &reg->indent );
             break;
-        case   e_hoffset:
+        case e_hoffset:
             o_space_unit( layfile, lay_attr, &reg->hoffset );
             break;
-        case   e_width:
+        case e_width:
             o_space_unit( layfile, lay_attr, &reg->width );
             break;
-        case   e_voffset:
+        case e_voffset:
             o_space_unit( layfile, lay_attr, &reg->voffset );
             break;
-        case   e_depth:
+        case e_depth:
             o_space_unit( layfile, lay_attr, &reg->depth );
             break;
-        case   e_font:
+        case e_font:
             o_font_number( layfile, lay_attr, &reg->font );
             break;
-        case   e_refnum:
+        case e_refnum:
             o_uint8( layfile, lay_attr, &reg->refnum );
             break;
-        case   e_region_position:
+        case e_region_position:
             o_page_position( layfile, lay_attr, &reg->region_position );
             break;
-        case   e_pouring:
+        case e_pouring:
             o_pouring( layfile, lay_attr, &reg->pouring );
             break;
-        case   e_script_format:
+        case e_script_format:
             o_yes_no( layfile, lay_attr, &reg->script_format );
             break;
-        case   e_contents:
+        case e_contents:
             o_content( layfile, lay_attr, &reg->contents );
             break;
         default:
@@ -424,23 +424,23 @@ static  void    put_lay_single_ban( FILE * layfile, banner_lay_tag * ban )
     for( k = 0, lay_attr = banner_att[k]; lay_attr > 0; k++, lay_attr = banner_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_left_adjust:
+        case e_left_adjust:
             o_space_unit( layfile, lay_attr, &ban->left_adjust );
             break;
-        case   e_right_adjust:
+        case e_right_adjust:
             o_space_unit( layfile, lay_attr, &ban->right_adjust );
             break;
-        case   e_depth:
+        case e_depth:
             o_space_unit( layfile, lay_attr, &ban->depth );
             break;
-        case   e_place:
+        case e_place:
             o_place( layfile, lay_attr, &ban->place );
             break;
-        case   e_docsect:
+        case e_docsect:
             o_docsect( layfile, lay_attr, &ban->docsect );
             break;
-        case   e_refplace:
-        case   e_refdoc:
+        case e_refplace:
+        case e_refdoc:
             /* no action these are only used for input */
             break;
         default:
@@ -486,22 +486,22 @@ static  void    put_lay_date( FILE * layfile, layout_data * lay )
     for( k = 0, lay_attr = date_att[k]; lay_attr > 0; k++, lay_attr = date_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_date_form:
+        case e_date_form:
             o_date_form( layfile, lay_attr, lay->date.date_form );
             break;
-        case   e_left_adjust:
+        case e_left_adjust:
             o_space_unit( layfile, lay_attr, &lay->date.left_adjust );
             break;
-        case   e_right_adjust:
+        case e_right_adjust:
             o_space_unit( layfile, lay_attr, &lay->date.right_adjust );
             break;
-        case   e_page_position:
+        case e_page_position:
             o_page_position( layfile, lay_attr, &lay->date.page_position );
             break;
-        case   e_font:
+        case e_font:
             o_font_number( layfile, lay_attr, &lay->date.font );
             break;
-        case   e_pre_skip:
+        case e_pre_skip:
             o_space_unit( layfile, lay_attr, &lay->date.pre_skip );
             break;
         default:
@@ -525,10 +525,10 @@ static  void    put_lay_dd( FILE * layfile, layout_data * lay )
     for( k = 0, lay_attr = dd_att[k]; lay_attr > 0; k++, lay_attr = dd_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_line_left:
+        case e_line_left:
             o_space_unit( layfile, lay_attr, &lay->dd.line_left );
             break;
-        case   e_font:
+        case e_font:
             o_font_number( layfile, lay_attr, &lay->dd.font );
             break;
         default:
@@ -552,25 +552,25 @@ static  void    put_lay_default( FILE * layfile, layout_data * lay )
     for( k = 0, lay_attr = default_att[k]; lay_attr > 0; k++, lay_attr = default_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_spacing:
+        case e_spacing:
             o_spacing( layfile, lay_attr, &lay->defaults.spacing );
             break;
-        case   e_columns:
+        case e_columns:
             o_int8( layfile, lay_attr, &lay->defaults.columns );
             break;
-        case   e_font:
+        case e_font:
             o_font_number( layfile, lay_attr, &lay->defaults.font );
             break;
-        case   e_justify:
+        case e_justify:
             o_yes_no( layfile, lay_attr, &lay->defaults.justify );
             break;
-        case   e_input_esc:
+        case e_input_esc:
             o_char( layfile, lay_attr, &lay->defaults.input_esc );
             break;
-        case   e_gutter:
+        case e_gutter:
             o_space_unit( layfile, lay_attr, &lay->defaults.gutter );
             break;
-        case   e_binding:
+        case e_binding:
             o_space_unit( layfile, lay_attr, &lay->defaults.binding );
             break;
         default:
@@ -598,31 +598,31 @@ static  void    put_lay_dl( FILE * layfile, layout_data * lay )
         for( k = 0, lay_attr = dl_att[k]; lay_attr > 0; k++, lay_attr = dl_att[k] ) {
 
             switch( lay_attr ) {
-            case   e_level:
+            case e_level:
                 o_int8( layfile, lay_attr, &dl_layout->level );
                 break;
-            case   e_left_indent:
+            case e_left_indent:
                 o_space_unit( layfile, lay_attr, &dl_layout->left_indent );
                 break;
-            case   e_right_indent:
+            case e_right_indent:
                 o_space_unit( layfile, lay_attr, &dl_layout->right_indent );
                 break;
-            case   e_pre_skip:
+            case e_pre_skip:
                 o_space_unit( layfile, lay_attr, &dl_layout->pre_skip );
                 break;
-            case   e_skip:
+            case e_skip:
                 o_space_unit( layfile, lay_attr, &dl_layout->skip );
                 break;
-            case   e_spacing:
+            case e_spacing:
                 o_spacing( layfile, lay_attr, &dl_layout->spacing );
                 break;
-            case   e_post_skip:
+            case e_post_skip:
                 o_space_unit( layfile, lay_attr, &dl_layout->post_skip );
                 break;
-            case   e_align:
+            case e_align:
                 o_space_unit( layfile, lay_attr, &dl_layout->align );
                 break;
-            case   e_line_break:
+            case e_line_break:
                 o_yes_no( layfile, lay_attr, &dl_layout->line_break );
                 break;
             default:
@@ -648,22 +648,22 @@ static  void    put_lay_docnum( FILE * layfile, layout_data * lay )
     for( k = 0, lay_attr = docnum_att[k]; lay_attr > 0; k++, lay_attr = docnum_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_left_adjust:
+        case e_left_adjust:
             o_space_unit( layfile, lay_attr, &lay->docnum.left_adjust );
             break;
-        case   e_right_adjust:
+        case e_right_adjust:
             o_space_unit( layfile, lay_attr, &lay->docnum.right_adjust );
             break;
-        case   e_page_position:
+        case e_page_position:
             o_page_position( layfile, lay_attr, &lay->docnum.page_position );
             break;
-        case   e_font:
+        case e_font:
             o_font_number( layfile, lay_attr, &lay->docnum.font );
             break;
-        case   e_pre_skip:
+        case e_pre_skip:
             o_space_unit( layfile, lay_attr, &lay->docnum.pre_skip );
             break;
-        case   e_docnum_string:
+        case e_docnum_string:
             o_xx_string( layfile, lay_attr, lay->docnum.string );
             break;
         default:
@@ -687,28 +687,28 @@ static  void    put_lay_fig( FILE * layfile, layout_data * lay )
     for( k = 0, lay_attr = fig_att[k]; lay_attr > 0; k++, lay_attr = fig_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_left_adjust:
+        case e_left_adjust:
             o_space_unit( layfile, lay_attr, &lay->fig.left_adjust );
             break;
-        case   e_right_adjust:
+        case e_right_adjust:
             o_space_unit( layfile, lay_attr, &lay->fig.right_adjust );
             break;
-        case   e_pre_skip:
+        case e_pre_skip:
             o_space_unit( layfile, lay_attr, &lay->fig.pre_skip );
             break;
-        case   e_post_skip:
+        case e_post_skip:
             o_space_unit( layfile, lay_attr, &lay->fig.post_skip );
             break;
-        case   e_spacing:
+        case e_spacing:
             o_spacing( layfile, lay_attr, &lay->fig.spacing );
             break;
-        case   e_font:
+        case e_font:
             o_font_number( layfile, lay_attr, &lay->fig.font );
             break;
-        case   e_default_place:
+        case e_default_place:
             o_place( layfile, lay_attr, &lay->fig.default_place );
             break;
-        case   e_default_frame:
+        case e_default_frame:
             o_default_frame( layfile, lay_attr, &lay->fig.default_frame );
             break;
         default:
@@ -732,19 +732,19 @@ static  void    put_lay_figcap( FILE * layfile, layout_data * lay )
     for( k = 0, lay_attr = figcap_att[k]; lay_attr > 0; k++, lay_attr = figcap_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_pre_lines:
+        case e_pre_lines:
             o_space_unit( layfile, lay_attr, &lay->figcap.pre_lines );
             break;
-        case   e_font:
+        case e_font:
             o_font_number( layfile, lay_attr, &lay->figcap.font );
             break;
-        case   e_figcap_string:
+        case e_figcap_string:
             o_xx_string( layfile, lay_attr, lay->figcap.string );
             break;
-        case   e_string_font:
+        case e_string_font:
             o_font_number( layfile, lay_attr, &lay->figcap.string_font );
             break;
-        case   e_delim:
+        case e_delim:
             o_char( layfile, lay_attr, &lay->figcap.delim );
             break;
         default:
@@ -768,10 +768,10 @@ static  void    put_lay_figdesc( FILE * layfile, layout_data * lay )
     for( k = 0, lay_attr = figdesc_att[k]; lay_attr > 0; k++, lay_attr = figdesc_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_pre_lines:
+        case e_pre_lines:
             o_space_unit( layfile, lay_attr, &lay->figdesc.pre_lines );
             break;
-        case   e_font:
+        case e_font:
             o_font_number( layfile, lay_attr, &lay->figdesc.font );
             break;
         default:
@@ -795,22 +795,22 @@ static  void    put_lay_figlist( FILE * layfile, layout_data * lay )
     for( k = 0, lay_attr = figlist_att[k]; lay_attr > 0; k++, lay_attr = figlist_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_left_adjust:
+        case e_left_adjust:
             o_space_unit( layfile, lay_attr, &lay->figlist.left_adjust );
             break;
-        case   e_right_adjust:
+        case e_right_adjust:
             o_space_unit( layfile, lay_attr, &lay->figlist.right_adjust );
             break;
-        case   e_skip:
+        case e_skip:
             o_space_unit( layfile, lay_attr, &lay->figlist.skip );
             break;
-        case   e_spacing:
+        case e_spacing:
             o_spacing( layfile, lay_attr, &lay->figlist.spacing );
             break;
-        case   e_columns:
+        case e_columns:
             o_int8( layfile, lay_attr, &lay->figlist.columns );
             break;
-        case   e_fill_string:
+        case e_fill_string:
             o_xx_string( layfile, lay_attr, lay->figlist.fill_string );
             break;
         default:
@@ -834,10 +834,10 @@ static  void    put_lay_flpgnum( FILE * layfile, layout_data * lay )
     for( k = 0, lay_attr = flpgnum_att[k]; lay_attr > 0; k++, lay_attr = flpgnum_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_size:
+        case e_size:
             o_space_unit( layfile, lay_attr, &lay->flpgnum.size );
             break;
-        case   e_font:
+        case e_font:
             o_font_number( layfile, lay_attr, &lay->flpgnum.font );
             break;
         default:
@@ -861,31 +861,31 @@ static  void    put_lay_fn( FILE * layfile, layout_data * lay )
     for( k = 0, lay_attr = fn_att[k]; lay_attr > 0; k++, lay_attr = fn_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_line_indent:
+        case e_line_indent:
             o_space_unit( layfile, lay_attr, &lay->fn.line_indent );
             break;
-        case   e_align:
+        case e_align:
             o_space_unit( layfile, lay_attr, &lay->fn.align );
             break;
-        case   e_pre_lines:
+        case e_pre_lines:
             o_space_unit( layfile, lay_attr, &lay->fn.pre_lines );
             break;
-        case   e_skip:
+        case e_skip:
             o_space_unit( layfile, lay_attr, &lay->fn.skip );
             break;
-        case   e_spacing:
+        case e_spacing:
             o_spacing( layfile, lay_attr, &lay->fn.spacing );
             break;
-        case   e_font:
+        case e_font:
             o_font_number( layfile, lay_attr, &lay->fn.font );
             break;
-        case   e_number_font:
+        case e_number_font:
             o_font_number( layfile, lay_attr, &lay->fn.number_font );
             break;
-        case   e_number_style:
+        case e_number_style:
             o_number_style( layfile, lay_attr, &lay->fn.number_style );
             break;
-        case   e_frame:
+        case e_frame:
             o_frame( layfile, lay_attr, &lay->fn.frame );
             break;
         default:
@@ -909,10 +909,10 @@ static  void    put_lay_fnref( FILE * layfile, layout_data * lay )
     for( k = 0, lay_attr = fnref_att[k]; lay_attr > 0; k++, lay_attr = fnref_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_font:
+        case e_font:
             o_font_number( layfile, lay_attr, &lay->fnref.font );
             break;
-        case   e_number_style:
+        case e_number_style:
             o_number_style( layfile, lay_attr, &lay->fnref.number_style );
             break;
         default:
@@ -940,31 +940,31 @@ static  void    put_lay_gl( FILE * layfile, layout_data * lay )
         for( k = 0, lay_attr = gl_att[k]; lay_attr > 0; k++, lay_attr = gl_att[k] ) {
 
             switch( lay_attr ) {
-            case   e_level:
+            case e_level:
                 o_int8( layfile, lay_attr, &gl_layout->level );
                 break;
-            case   e_left_indent:
+            case e_left_indent:
                 o_space_unit( layfile, lay_attr, &gl_layout->left_indent );
                 break;
-            case   e_right_indent:
+            case e_right_indent:
                 o_space_unit( layfile, lay_attr, &gl_layout->right_indent );
                 break;
-            case   e_pre_skip:
+            case e_pre_skip:
                 o_space_unit( layfile, lay_attr, &gl_layout->pre_skip );
                 break;
-            case   e_skip:
+            case e_skip:
                 o_space_unit( layfile, lay_attr, &gl_layout->skip );
                 break;
-            case   e_spacing:
+            case e_spacing:
                 o_spacing( layfile, lay_attr, &gl_layout->spacing );
                 break;
-            case   e_post_skip:
+            case e_post_skip:
                 o_space_unit( layfile, lay_attr, &gl_layout->post_skip );
                 break;
-            case   e_align:
+            case e_align:
                 o_space_unit( layfile, lay_attr, &gl_layout->align );
                 break;
-            case   e_delim:
+            case e_delim:
                 o_char( layfile, lay_attr, &gl_layout->delim );
                 break;
             default:
@@ -993,55 +993,55 @@ static  void    put_lay_hx( FILE * layfile, layout_data * lay )
         for( k = 0, lay_attr = hx_att[k]; lay_attr > 0; k++, lay_attr = hx_att[k] ) {
 
             switch( lay_attr ) {
-            case   e_group:
+            case e_group:
                 o_int8( layfile, lay_attr, &lay->hx.group );
                 break;
-            case   e_indent:
+            case e_indent:
                 o_space_unit( layfile, lay_attr, &lay->hx.hx_head[lvl].indent );
                 break;
-            case   e_pre_top_skip:
+            case e_pre_top_skip:
                 o_space_unit( layfile, lay_attr, &lay->hx.hx_sect[lvl].pre_top_skip );
                 break;
-            case   e_pre_skip:
+            case e_pre_skip:
                 o_space_unit( layfile, lay_attr, &lay->hx.hx_head[lvl].pre_skip );
                 break;
-            case   e_post_skip:
+            case e_post_skip:
                 o_space_unit( layfile, lay_attr, &lay->hx.hx_sect[lvl].post_skip );
                 break;
-            case   e_spacing:
+            case e_spacing:
                 o_spacing( layfile, lay_attr, &lay->hx.hx_sect[lvl].spacing );
                 break;
-            case   e_font:
+            case e_font:
                 o_font_number( layfile, lay_attr, &lay->hx.hx_sect[lvl].text_font );
                 break;
-            case   e_number_font:
+            case e_number_font:
                 o_font_number( layfile, lay_attr, &lay->hx.hx_head[lvl].number_font );
                 break;
-            case   e_number_form:
+            case e_number_form:
                 o_number_form( layfile, lay_attr, &lay->hx.hx_head[lvl].number_form );
                 break;
-            case   e_page_position:
+            case e_page_position:
                 o_page_position( layfile, lay_attr, &lay->hx.hx_head[lvl].line_position );
                 break;
-            case   e_number_style:
+            case e_number_style:
                 o_number_style( layfile, lay_attr, &lay->hx.hx_head[lvl].number_style );
                 break;
-            case   e_page_eject:
+            case e_page_eject:
                 o_page_eject( layfile, lay_attr, &lay->hx.hx_head[lvl].page_eject );
                 break;
-            case   e_line_break:
+            case e_line_break:
                 o_yes_no( layfile, lay_attr, &lay->hx.hx_head[lvl].line_break );
                 break;
-            case   e_display_heading:
+            case e_display_heading:
                 o_yes_no( layfile, lay_attr, &lay->hx.hx_head[lvl].display_heading );
                 break;
-            case   e_number_reset:
+            case e_number_reset:
                 o_yes_no( layfile, lay_attr, &lay->hx.hx_head[lvl].number_reset );
                 break;
-            case   e_case:
+            case e_case:
                 o_case( layfile, lay_attr, &lay->hx.hx_head[lvl].hd_case );
                 break;
-            case   e_align:
+            case e_align:
                 o_space_unit( layfile, lay_attr, &lay->hx.hx_head[lvl].align );
                 break;
             default:
@@ -1065,19 +1065,19 @@ static  void    put_lay_heading( FILE * layfile, layout_data * lay )
 
     for( k = 0, lay_attr = heading_att[k]; lay_attr > 0; k++, lay_attr = heading_att[k] ) {
         switch( lay_attr ) {
-        case   e_delim:
+        case e_delim:
             o_char( layfile, lay_attr, &lay->heading.delim );
             break;
-        case   e_stop_eject:
+        case e_stop_eject:
             o_yes_no( layfile, lay_attr, &lay->heading.stop_eject );
             break;
-        case   e_para_indent:
+        case e_para_indent:
             o_yes_no( layfile, lay_attr, &lay->heading.para_indent );
             break;
-        case   e_threshold:
+        case e_threshold:
             o_threshold( layfile, lay_attr, &lay->heading.threshold );
             break;
-        case   e_max_group:
+        case e_max_group:
             o_int8( layfile, lay_attr, &lay->heading.max_group );
             break;
         default:
@@ -1103,28 +1103,28 @@ static  void    put_lay_ix( FILE * layfile, layout_data * lay )
 
         for( k = 0, lay_attr = ix_att[k]; lay_attr > 0; k++, lay_attr = ix_att[k] ) {
             switch( lay_attr ) {
-            case   e_pre_skip:
+            case e_pre_skip:
                 o_space_unit( layfile, lay_attr, &lay->ix[lvl].pre_skip );
                 break;
-            case   e_post_skip:
+            case e_post_skip:
                 o_space_unit( layfile, lay_attr, &lay->ix[lvl].post_skip );
                 break;
-            case   e_skip:
+            case e_skip:
                 o_space_unit( layfile, lay_attr, &lay->ix[lvl].skip );
                 break;
-            case   e_font:
+            case e_font:
                 o_font_number( layfile, lay_attr, &lay->ix[lvl].font );
                 break;
-            case   e_indent:
+            case e_indent:
                 o_space_unit( layfile, lay_attr, &lay->ix[lvl].indent );
                 break;
-            case   e_wrap_indent:
+            case e_wrap_indent:
                 o_space_unit( layfile, lay_attr, &lay->ix[lvl].wrap_indent );
                 break;
-            case   e_index_delim:
+            case e_index_delim:
                 o_xx_string( layfile, lay_attr, lay->ix[lvl].index_delim );
                 break;
-            case   e_string_font:
+            case e_string_font:
                 if( lvl < 2 ) {         // :I3 has no string font
                     o_font_number( layfile, lay_attr, &lay->ix[lvl].string_font );
                 }
@@ -1151,43 +1151,43 @@ static  void    put_lay_index( FILE * layfile, layout_data * lay )
     for( k = 0, lay_attr = index_att[k]; lay_attr > 0; k++, lay_attr = index_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_post_skip:
+        case e_post_skip:
             o_space_unit( layfile, lay_attr, &lay->hx.hx_sect[hds_index].post_skip );
             break;
-        case   e_pre_top_skip:
+        case e_pre_top_skip:
             o_space_unit( layfile, lay_attr, &lay->hx.hx_sect[hds_index].pre_top_skip );
             break;
-        case   e_left_adjust:
+        case e_left_adjust:
             o_space_unit( layfile, lay_attr, &lay->index.left_adjust );
             break;
-        case   e_right_adjust:
+        case e_right_adjust:
             o_space_unit( layfile, lay_attr, &lay->index.right_adjust );
             break;
-        case   e_spacing:
+        case e_spacing:
             o_spacing( layfile, lay_attr, &lay->hx.hx_sect[hds_index].spacing );
             break;
-        case   e_columns:
+        case e_columns:
             o_int8( layfile, lay_attr, &lay->index.columns );
             break;
-        case   e_see_string:
+        case e_see_string:
             o_xx_string( layfile, lay_attr, lay->index.see_string );
             break;
-        case   e_see_also_string:
+        case e_see_also_string:
             o_xx_string( layfile, lay_attr, lay->index.see_also_string );
             break;
-        case   e_header:
+        case e_header:
             o_yes_no( layfile, lay_attr, &lay->hx.hx_sect[hds_index].header );
             break;
-        case   e_index_string:
+        case e_index_string:
             o_xx_string( layfile, lay_attr, lay->index.index_string );
             break;
-        case   e_page_eject:
+        case e_page_eject:
             o_page_eject( layfile, lay_attr, &lay->index.page_eject );
             break;
-        case   e_page_reset:
+        case e_page_reset:
             o_yes_no( layfile, lay_attr, &lay->index.page_reset );
             break;
-        case   e_font:
+        case e_font:
             o_font_number( layfile, lay_attr, &lay->hx.hx_sect[hds_index].text_font );
             break;
         default:
@@ -1211,23 +1211,23 @@ static  void    put_lay_ixhead( FILE * layfile, layout_data * lay )
     for( k = 0, lay_attr = ixhead_att[k]; lay_attr > 0; k++, lay_attr = ixhead_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_pre_skip:
+        case e_pre_skip:
             o_space_unit( layfile, lay_attr, &lay->ixhead.pre_skip );
             break;
-        case   e_post_skip:
+        case e_post_skip:
             o_space_unit( layfile, lay_attr, &lay->ixhead.post_skip );
             break;
-        case   e_font:
+        case e_font:
             o_font_number( layfile, lay_attr, &lay->ixhead.font );
             break;
-        case   e_indent:
+        case e_indent:
             o_space_unit( layfile, lay_attr, &lay->ixhead.indent );
             break;
-        case   e_ixhead_frame:
+        case e_ixhead_frame:
             lay_attr = e_frame;             // frame = instead of ixhead_frame =
             o_default_frame( layfile, lay_attr, &lay->ixhead.frame );
             break;
-        case   e_header:
+        case e_header:
             o_yes_no( layfile, lay_attr, &lay->ixhead.header );
             break;
         default:
@@ -1251,22 +1251,22 @@ static  void    put_lay_lp( FILE * layfile, layout_data * lay )
     for( k = 0, lay_attr = lp_att[k]; lay_attr > 0; k++, lay_attr = lp_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_left_indent:
+        case e_left_indent:
             o_space_unit( layfile, lay_attr, &lay->lp.left_indent );
             break;
-        case   e_right_indent:
+        case e_right_indent:
             o_space_unit( layfile, lay_attr, &lay->lp.right_indent );
             break;
-        case   e_line_indent:
+        case e_line_indent:
             o_space_unit( layfile, lay_attr, &lay->lp.line_indent );
             break;
-        case   e_pre_skip:
+        case e_pre_skip:
             o_space_unit( layfile, lay_attr, &lay->lp.pre_skip );
             break;
-        case   e_post_skip:
+        case e_post_skip:
             o_space_unit( layfile, lay_attr, &lay->lp.post_skip );
             break;
-        case   e_spacing:
+        case e_spacing:
             o_spacing( layfile, lay_attr, &lay->lp.spacing );
             break;
         default:
@@ -1290,22 +1290,22 @@ static  void    put_lay_lq( FILE * layfile, layout_data * lay )
     for( k = 0, lay_attr = lq_att[k]; lay_attr > 0; k++, lay_attr = lq_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_left_indent:
+        case e_left_indent:
             o_space_unit( layfile, lay_attr, &lay->lq.left_indent );
             break;
-        case   e_right_indent:
+        case e_right_indent:
             o_space_unit( layfile, lay_attr, &lay->lq.right_indent );
             break;
-        case   e_pre_skip:
+        case e_pre_skip:
             o_space_unit( layfile, lay_attr, &lay->lq.pre_skip );
             break;
-        case   e_post_skip:
+        case e_post_skip:
             o_space_unit( layfile, lay_attr, &lay->lq.post_skip );
             break;
-        case   e_spacing:
+        case e_spacing:
             o_spacing( layfile, lay_attr, &lay->lq.spacing );
             break;
-        case   e_font:
+        case e_font:
             o_font_number( layfile, lay_attr, &lay->lq.font );
             break;
         default:
@@ -1329,25 +1329,25 @@ static  void    put_lay_note( FILE * layfile, layout_data * lay )
     for( k = 0, lay_attr = note_att[k]; lay_attr > 0; k++, lay_attr = note_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_left_indent:
+        case e_left_indent:
             o_space_unit( layfile, lay_attr, &lay->note.left_indent );
             break;
-        case   e_right_indent:
+        case e_right_indent:
             o_space_unit( layfile, lay_attr, &lay->note.right_indent );
             break;
-        case   e_pre_skip:
+        case e_pre_skip:
             o_space_unit( layfile, lay_attr, &lay->note.pre_skip );
             break;
-        case   e_post_skip:
+        case e_post_skip:
             o_space_unit( layfile, lay_attr, &lay->note.post_skip );
             break;
-        case   e_spacing:
+        case e_spacing:
             o_spacing( layfile, lay_attr, &lay->note.spacing );
             break;
-        case   e_font:
+        case e_font:
             o_font_number( layfile, lay_attr, &lay->note.font );
             break;
-        case   e_note_string:
+        case e_note_string:
             o_xx_string( layfile, lay_attr, lay->note.string );
             break;
         default:
@@ -1375,37 +1375,37 @@ static  void    put_lay_ol( FILE * layfile, layout_data * lay )
         for( k = 0, lay_attr = ol_att[k]; lay_attr > 0; k++, lay_attr = ol_att[k] ) {
 
             switch( lay_attr ) {
-            case   e_level:
+            case e_level:
                 o_int8( layfile, lay_attr, &ol_layout->level );
                 break;
-            case   e_left_indent:
+            case e_left_indent:
                 o_space_unit( layfile, lay_attr, &ol_layout->left_indent );
                 break;
-            case   e_right_indent:
+            case e_right_indent:
                 o_space_unit( layfile, lay_attr, &ol_layout->right_indent );
                 break;
-            case   e_pre_skip:
+            case e_pre_skip:
                 o_space_unit( layfile, lay_attr, &ol_layout->pre_skip );
                 break;
-            case   e_skip:
+            case e_skip:
                 o_space_unit( layfile, lay_attr, &ol_layout->skip );
                 break;
-            case   e_spacing:
+            case e_spacing:
                 o_spacing( layfile, lay_attr, &ol_layout->spacing );
                 break;
-            case   e_post_skip:
+            case e_post_skip:
                 o_space_unit( layfile, lay_attr, &ol_layout->post_skip );
                 break;
-            case   e_font:
+            case e_font:
                 o_font_number(layfile, lay_attr, &ol_layout->font );
                 break;
-            case   e_align:
+            case e_align:
                 o_space_unit( layfile, lay_attr, &ol_layout->align );
                 break;
-            case   e_number_style:
+            case e_number_style:
                 o_number_style( layfile, lay_attr, &ol_layout->number_style );
                 break;
-            case   e_number_font:
+            case e_number_font:
                 o_font_number( layfile, lay_attr, &ol_layout->number_font );
                 break;
             default:
@@ -1432,16 +1432,16 @@ static  void    put_lay_page( FILE * layfile, layout_data * lay )
     for( k = 0, lay_attr = page_att[k]; lay_attr > 0; k++, lay_attr = page_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_top_margin:
+        case e_top_margin:
             units = &(lay->page.top_margin);
             break;
-        case   e_left_margin:
+        case e_left_margin:
             units = &(lay->page.left_margin);
             break;
-        case   e_right_margin:
+        case e_right_margin:
             units = &(lay->page.right_margin);
             break;
-        case   e_depth:
+        case e_depth:
             units = &(lay->page.depth);
             break;
         default:
@@ -1467,13 +1467,13 @@ static  void    put_lay_p_pc( FILE * layfile, p_lay_tag * ap, char * name )
     for( k = 0, lay_attr = p_att[k]; lay_attr > 0; k++, lay_attr = p_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_line_indent:
+        case e_line_indent:
             o_space_unit( layfile, lay_attr, &ap->line_indent );
             break;
-        case   e_pre_skip:
+        case e_pre_skip:
             o_space_unit( layfile, lay_attr, &ap->pre_skip );
             break;
-        case   e_post_skip:
+        case e_post_skip:
             o_space_unit( layfile, lay_attr, &ap->post_skip );
             break;
         default:
@@ -1510,28 +1510,28 @@ static  void    put_lay_sl( FILE * layfile, layout_data * lay )
         for( k = 0, lay_attr = sl_att[k]; lay_attr > 0; k++, lay_attr = sl_att[k] ) {
 
             switch( lay_attr ) {
-            case   e_level:
+            case e_level:
                 o_int8( layfile, lay_attr, &sl_layout->level );
                 break;
-            case   e_left_indent:
+            case e_left_indent:
                 o_space_unit( layfile, lay_attr, &sl_layout->left_indent );
                 break;
-            case   e_right_indent:
+            case e_right_indent:
                 o_space_unit( layfile, lay_attr, &sl_layout->right_indent );
                 break;
-            case   e_pre_skip:
+            case e_pre_skip:
                 o_space_unit( layfile, lay_attr, &sl_layout->pre_skip );
                 break;
-            case   e_skip:
+            case e_skip:
                 o_space_unit( layfile, lay_attr, &sl_layout->skip );
                 break;
-            case   e_spacing:
+            case e_spacing:
                 o_spacing( layfile, lay_attr, &sl_layout->spacing );
                 break;
-            case   e_post_skip:
+            case e_post_skip:
                 o_space_unit( layfile, lay_attr, &sl_layout->post_skip );
                 break;
-            case   e_font:
+            case e_font:
                 o_font_number(layfile, lay_attr, &sl_layout->font );
                 break;
             default:
@@ -1557,22 +1557,22 @@ static  void    put_lay_title( FILE * layfile, layout_data * lay )
     for( k = 0, lay_attr = title_att[k]; lay_attr > 0; k++, lay_attr = title_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_left_adjust:
+        case e_left_adjust:
             o_space_unit( layfile, lay_attr, &lay->title.left_adjust );
             break;
-        case   e_right_adjust:
+        case e_right_adjust:
             o_space_unit( layfile, lay_attr, &lay->title.right_adjust );
             break;
-        case   e_page_position:
+        case e_page_position:
             o_page_position( layfile, lay_attr, &lay->title.page_position );
             break;
-        case   e_font:
+        case e_font:
             o_font_number( layfile, lay_attr, &lay->title.font );
             break;
-        case   e_pre_top_skip:
+        case e_pre_top_skip:
             o_space_unit( layfile, lay_attr, &lay->title.pre_top_skip );
             break;
-        case   e_skip:
+        case e_skip:
             o_space_unit( layfile, lay_attr, &lay->title.skip );
             break;
         default:
@@ -1596,10 +1596,10 @@ static  void    put_lay_titlep( FILE * layfile, layout_data * lay )
     for( k = 0, lay_attr = titlep_att[k]; lay_attr > 0; k++, lay_attr = titlep_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_spacing:
+        case e_spacing:
             o_spacing( layfile, lay_attr, &lay->titlep.spacing );
             break;
-        case   e_columns:
+        case e_columns:
             o_int8( layfile, lay_attr, &lay->titlep.columns );
             break;
         default:
@@ -1623,22 +1623,22 @@ static  void    put_lay_toc( FILE * layfile, layout_data * lay )
     for( k = 0, lay_attr = toc_att[k]; lay_attr > 0; k++, lay_attr = toc_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_left_adjust:
+        case e_left_adjust:
             o_space_unit( layfile, lay_attr, &lay->toc.left_adjust );
             break;
-        case   e_right_adjust:
+        case e_right_adjust:
             o_space_unit( layfile, lay_attr, &lay->toc.right_adjust );
             break;
-        case   e_spacing:
+        case e_spacing:
             o_spacing( layfile, lay_attr, &lay->toc.spacing );
             break;
-        case   e_columns:
+        case e_columns:
             o_int8( layfile, lay_attr, &lay->toc.columns );
             break;
-        case   e_toc_levels:
+        case e_toc_levels:
             o_int8( layfile, lay_attr, &lay->toc.toc_levels );
             break;
-        case   e_fill_string:
+        case e_fill_string:
             o_xx_string( layfile, lay_attr, lay->toc.fill_string );
             break;
         default:
@@ -1662,10 +1662,10 @@ static  void    put_lay_tocpgnum( FILE * layfile, layout_data * lay )
     for( k = 0, lay_attr = tocpgnum_att[k]; lay_attr > 0; k++, lay_attr = tocpgnum_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_size:
+        case e_size:
             o_space_unit( layfile, lay_attr, &lay->tocpgnum.size );
             break;
-        case   e_font:
+        case e_font:
             o_font_number( layfile, lay_attr, &lay->tocpgnum.font );
             break;
         default:
@@ -1693,28 +1693,28 @@ static  void    put_lay_tochx( FILE * layfile, layout_data * lay )
         for( k = 0, lay_attr = tochx_att[k]; lay_attr > 0; k++, lay_attr = tochx_att[k] ) {
 
             switch( lay_attr ) {
-            case   e_group:
+            case e_group:
                 o_int8( layfile, lay_attr, &lay->tochx[lvl].group );
                 break;
-            case   e_indent:
+            case e_indent:
                 o_space_unit( layfile, lay_attr, &lay->tochx[lvl].indent );
                 break;
-            case   e_skip:
+            case e_skip:
                 o_space_unit( layfile, lay_attr, &lay->tochx[lvl].skip );
                 break;
-            case   e_pre_skip:
+            case e_pre_skip:
                 o_space_unit( layfile, lay_attr, &lay->tochx[lvl].pre_skip );
                 break;
-            case   e_post_skip:
+            case e_post_skip:
                 o_space_unit( layfile, lay_attr, &lay->tochx[lvl].post_skip );
                 break;
-            case   e_font:
+            case e_font:
                 o_font_number( layfile, lay_attr, &lay->tochx[lvl].font );
                 break;
-            case   e_align:
+            case e_align:
                 o_space_unit( layfile, lay_attr, &lay->tochx[lvl].align );
                 break;
-            case   e_display_in_toc:
+            case e_display_in_toc:
                 o_yes_no( layfile, lay_attr, &lay->tochx[lvl].display_in_toc );
                 break;
                 break;
@@ -1744,40 +1744,40 @@ static  void    put_lay_ul( FILE * layfile, layout_data * lay )
         for( k = 0, lay_attr = ul_att[k]; lay_attr > 0; k++, lay_attr = ul_att[k] ) {
 
             switch( lay_attr ) {
-            case   e_level:
+            case e_level:
                 o_int8( layfile, lay_attr, &ul_layout->level );
                 break;
-            case   e_left_indent:
+            case e_left_indent:
                 o_space_unit( layfile, lay_attr, &ul_layout->left_indent );
                 break;
-            case   e_right_indent:
+            case e_right_indent:
                 o_space_unit( layfile, lay_attr, &ul_layout->right_indent );
                 break;
-            case   e_pre_skip:
+            case e_pre_skip:
                 o_space_unit( layfile, lay_attr, &ul_layout->pre_skip );
                 break;
-            case   e_skip:
+            case e_skip:
                 o_space_unit( layfile, lay_attr, &ul_layout->skip );
                 break;
-            case   e_spacing:
+            case e_spacing:
                 o_spacing( layfile, lay_attr, &ul_layout->spacing );
                 break;
-            case   e_post_skip:
+            case e_post_skip:
                 o_space_unit( layfile, lay_attr, &ul_layout->post_skip );
                 break;
-            case   e_font:
+            case e_font:
                 o_font_number(layfile, lay_attr, &ul_layout->font );
                 break;
-            case   e_align:
+            case e_align:
                 o_space_unit( layfile, lay_attr, &ul_layout->align );
                 break;
-            case   e_bullet:
+            case e_bullet:
                 o_char( layfile, lay_attr, &ul_layout->bullet );
                 break;
-            case   e_bullet_translate:
+            case e_bullet_translate:
                 o_yes_no( layfile, lay_attr, &ul_layout->bullet_translate );
                 break;
-            case   e_bullet_font:
+            case e_bullet_font:
                 o_font_number( layfile, lay_attr, &ul_layout->bullet_font );
                 break;
             default:
@@ -1803,7 +1803,7 @@ static  void    put_lay_widow( FILE * layfile, layout_data * lay )
     for( k = 0, lay_attr = widow_att[k]; lay_attr > 0; k++, lay_attr = widow_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_threshold:
+        case e_threshold:
             o_threshold( layfile, lay_attr, &lay->widow.threshold );
             break;
         default:
@@ -1827,22 +1827,22 @@ static  void    put_lay_xmp( FILE * layfile, layout_data * lay )
     for( k = 0, lay_attr = xmp_att[k]; lay_attr > 0; k++, lay_attr = xmp_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_left_indent:
+        case e_left_indent:
             o_space_unit( layfile, lay_attr, &lay->xmp.left_indent );
             break;
-        case   e_right_indent:
+        case e_right_indent:
             o_space_unit( layfile, lay_attr, &lay->xmp.right_indent );
             break;
-        case   e_pre_skip:
+        case e_pre_skip:
             o_space_unit( layfile, lay_attr, &lay->xmp.pre_skip );
             break;
-        case   e_post_skip:
+        case e_post_skip:
             o_space_unit( layfile, lay_attr, &lay->xmp.post_skip );
             break;
-        case   e_spacing:
+        case e_spacing:
             o_spacing( layfile, lay_attr, &lay->xmp.spacing );
             break;
-        case   e_font:
+        case e_font:
             o_font_number( layfile, lay_attr, &lay->xmp.font );
             break;
         default:
@@ -1866,7 +1866,7 @@ static  void    put_lay_xx( FILE * layfile, font_number *font, char * name )
     for( k = 0, lay_attr = xx_att[k]; lay_attr > 0; k++, lay_attr = xx_att[k] ) {
 
         switch( lay_attr ) {
-        case   e_font:
+        case e_font:
             o_font_number( layfile, lay_attr, font );
             break;
         default:

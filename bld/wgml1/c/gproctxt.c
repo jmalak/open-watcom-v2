@@ -1285,7 +1285,7 @@ void do_justify( uint32_t lm, uint32_t rm, text_line * line )
 
     switch( just ) {                  // what type of justification is wanted
 /*************************************
-    case  ju_half:                   Treated as left ??? TBD
+    case ju_half:                   Treated as left ??? TBD
         delta /= 2;
         if( delta < 1
           && rem < 1 ) {
@@ -1293,8 +1293,8 @@ void do_justify( uint32_t lm, uint32_t rm, text_line * line )
         }
         // falltrough
 ************************************** */
-    case  ju_half:
-    case  ju_on:
+    case ju_half:
+    case ju_on:
 //      if( tc->x_address < lm ) {
 //          break;                      // left of left margin no justify
 //      }
@@ -1351,7 +1351,7 @@ void do_justify( uint32_t lm, uint32_t rm, text_line * line )
             }
         }
         break;
-    case  ju_left:
+    case ju_left:
         delta = tc->x_address - lm;     // shift to the left
         if( delta < 1 ) {
             break;                      // already left
@@ -1362,7 +1362,7 @@ void do_justify( uint32_t lm, uint32_t rm, text_line * line )
             tw = tw->next;
         } while( tw != NULL );
         break;
-    case  ju_right:
+    case ju_right:
         delta = rm - hor_end;           // shift right
         if( delta < 1 ) {
             break;                      // already at right margin
@@ -1373,7 +1373,7 @@ void do_justify( uint32_t lm, uint32_t rm, text_line * line )
            tw = tw->next;
         } while( tw != NULL );
         break;
-    case  ju_centre:
+    case ju_centre:
         delta = (rm - hor_end) / 2;
         if( delta < 1 ) {
             break;                      // too wide no centre possible

@@ -67,9 +67,9 @@ condcode    scr_strip( parm parms[MAX_FUN_PARMS], int parmcount, char **result, 
             }
 
             switch( type ) {
-            case   'b':
-            case   'l':
-            case   't':
+            case 'b':
+            case 'l':
+            case 't':
                 // type value is valid do nothing
                 break;
             default:

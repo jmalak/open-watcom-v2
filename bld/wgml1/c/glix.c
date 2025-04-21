@@ -114,10 +114,10 @@ void    lay_ix( const gmltag * entry )
         return;                         // process during first pass only
     }
     switch( entry->tagname[1] ) {
-    case   '1':
+    case '1':
         ix_l = el_i1;
         break;
-    case   '2':
+    case '2':
         ix_l = el_i2;
         break;
     default:
@@ -138,12 +138,10 @@ void    lay_ix( const gmltag * entry )
     while( cc == pos ) {
         cvterr = -1;
         for( k = 0, curr = ix_att[k]; curr > 0; k++, curr = ix_att[k] ) {
-
-            if( strnicmp( att_names[curr], lay_attr.att_name, lay_attr.att_len ) == 0 ) {
+            if( strcmp( lay_att_names[curr], lay_attr.attname ) == 0 ) {
                 p = lay_attr.val_name;
-
                 switch( curr ) {
-                case   e_pre_skip:
+                case e_pre_skip:
                     if( AttrFlags.pre_skip ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -152,7 +150,7 @@ void    lay_ix( const gmltag * entry )
                                            &layout_work.ix[ix_l].pre_skip );
                     AttrFlags.pre_skip = true;
                     break;
-                case   e_post_skip:
+                case e_post_skip:
                     if( AttrFlags.post_skip ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -161,7 +159,7 @@ void    lay_ix( const gmltag * entry )
                                            &layout_work.ix[ix_l].post_skip );
                     AttrFlags.post_skip = true;
                     break;
-                case   e_skip:
+                case e_skip:
                     if( AttrFlags.skip ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -170,7 +168,7 @@ void    lay_ix( const gmltag * entry )
                                            &layout_work.ix[ix_l].skip );
                     AttrFlags.skip = true;
                     break;
-                case   e_font:
+                case e_font:
                     if( AttrFlags.font ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -181,7 +179,7 @@ void    lay_ix( const gmltag * entry )
                     }
                     AttrFlags.font = true;
                     break;
-                case   e_indent:
+                case e_indent:
                     if( AttrFlags.indent ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -190,7 +188,7 @@ void    lay_ix( const gmltag * entry )
                                            &layout_work.ix[ix_l].indent );
                     AttrFlags.indent = true;
                     break;
-                case   e_wrap_indent:
+                case e_wrap_indent:
                     if( AttrFlags.wrap_indent ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -199,7 +197,7 @@ void    lay_ix( const gmltag * entry )
                                            &layout_work.ix[ix_l].wrap_indent );
                     AttrFlags.wrap_indent = true;
                     break;
-                case   e_index_delim:
+                case e_index_delim:
                     if( AttrFlags.index_delim ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -208,7 +206,7 @@ void    lay_ix( const gmltag * entry )
                                           layout_work.ix[ix_l].index_delim );
                     AttrFlags.index_delim = true;
                     break;
-                case   e_string_font:
+                case e_string_font:
                     if( AttrFlags.string_font ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);

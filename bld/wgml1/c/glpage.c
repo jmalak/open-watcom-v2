@@ -84,12 +84,10 @@ void    lay_page( const gmltag * entry )
     while( cc == pos ) {
         cvterr = -1;
         for( k = 0, curr = page_att[k]; curr > 0; k++, curr = page_att[k] ) {
-
-            if( strnicmp( att_names[curr], lay_attr.att_name, lay_attr.att_len ) == 0 ) {
+            if( strcmp( lay_att_names[curr], lay_attr.attname ) == 0 ) {
                 p = lay_attr.val_name;
-
                 switch( curr ) {
-                case   e_top_margin:
+                case e_top_margin:
                     if( AttrFlags.top_margin ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -98,7 +96,7 @@ void    lay_page( const gmltag * entry )
                                            &layout_work.page.top_margin );
                     AttrFlags.top_margin = true;
                     break;
-                case   e_left_margin:
+                case e_left_margin:
                     if( AttrFlags.left_margin ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -107,7 +105,7 @@ void    lay_page( const gmltag * entry )
                                            &layout_work.page.left_margin );
                     AttrFlags.left_margin = true;
                     break;
-                case   e_right_margin:
+                case e_right_margin:
                     if( AttrFlags.right_margin ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -116,7 +114,7 @@ void    lay_page( const gmltag * entry )
                                            &layout_work.page.right_margin );
                     AttrFlags.right_margin = true;
                     break;
-                case   e_depth:
+                case e_depth:
                     if( AttrFlags.depth ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);

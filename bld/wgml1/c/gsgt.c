@@ -264,7 +264,7 @@ static  condcode    scan_tag_options( gtflags * tag_flags )
         }
         p = g_tok_start;
         switch( my_tolower( *p ) ) {
-        case   'a' :
+        case 'a' :
             if( (arg_flen > 2) && (arg_flen < 12)
               && strnicmp( "ATTributes", p, arg_flen ) == 0 ) {
                 *tag_flags |= tag_attr;
@@ -272,7 +272,7 @@ static  condcode    scan_tag_options( gtflags * tag_flags )
                 cc = neg;               // invalid option
             }
             break;
-        case   'c' :
+        case 'c' :
             if( (arg_flen == 5)
               && strnicmp( "CSOFF", p, 5 ) == 0 ) {
                 *tag_flags |= tag_csoff;
@@ -285,7 +285,7 @@ static  condcode    scan_tag_options( gtflags * tag_flags )
                 }
             }
             break;
-        case   'n' :
+        case 'n' :
             if( (arg_flen > 5) && (arg_flen < 11)
               && strnicmp( "NOCONTinue", p, arg_flen ) == 0 ) {
                 *tag_flags |= tag_nocont;
@@ -293,7 +293,7 @@ static  condcode    scan_tag_options( gtflags * tag_flags )
                 cc = neg;               // invalid option
             }
             break;
-        case   't' :
+        case 't' :
             if( (arg_flen > 3) && (arg_flen < 8)
               && strnicmp( "TAGNext", p, arg_flen ) == 0 ) {
                 *tag_flags |= tag_next;
@@ -397,7 +397,7 @@ void    scr_gt( void )
     p = g_tok_start;
     function = 0;
     switch( my_tolower( *p ) ) {
-    case   'a':
+    case 'a':
         if( strnicmp( "ADD ", p, 4 ) == 0 ) {
             function = f_add;
         }

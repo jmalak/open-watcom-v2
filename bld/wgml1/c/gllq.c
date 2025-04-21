@@ -106,12 +106,10 @@ void    lay_lq( const gmltag * entry )
     while( cc == pos ) {
         cvterr = -1;
         for( k = 0, curr = lq_att[k]; curr > 0; k++, curr =lq_att[k] ) {
-
-            if( strnicmp( att_names[curr], lay_attr.att_name, lay_attr.att_len ) == 0 ) {
+            if( strcmp( lay_att_names[curr], lay_attr.attname ) == 0 ) {
                 p = lay_attr.val_name;
-
                 switch( curr ) {
-                case   e_left_indent:
+                case e_left_indent:
                     if( AttrFlags.left_indent ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -120,7 +118,7 @@ void    lay_lq( const gmltag * entry )
                                            &layout_work.lq.left_indent );
                     AttrFlags.left_indent = true;
                     break;
-                case   e_right_indent:
+                case e_right_indent:
                     if( AttrFlags.right_indent ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -129,7 +127,7 @@ void    lay_lq( const gmltag * entry )
                                            &layout_work.lq.right_indent );
                     AttrFlags.right_indent = true;
                     break;
-                case   e_pre_skip:
+                case e_pre_skip:
                     if( AttrFlags.pre_skip ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -137,7 +135,7 @@ void    lay_lq( const gmltag * entry )
                     cvterr = i_space_unit( p, &lay_attr, &layout_work.lq.pre_skip );
                     AttrFlags.pre_skip = true;
                     break;
-                case   e_post_skip:
+                case e_post_skip:
                     if( AttrFlags.post_skip ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -145,7 +143,7 @@ void    lay_lq( const gmltag * entry )
                     cvterr = i_space_unit( p, &lay_attr, &layout_work.lq.post_skip );
                     AttrFlags.post_skip = true;
                     break;
-                case   e_spacing:
+                case e_spacing:
                     if( AttrFlags.spacing ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -153,7 +151,7 @@ void    lay_lq( const gmltag * entry )
                     cvterr = i_spacing( p, &lay_attr, &layout_work.lq.spacing );
                     AttrFlags.spacing = true;
                     break;
-                case   e_font:
+                case e_font:
                     if( AttrFlags.font ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);

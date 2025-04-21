@@ -358,14 +358,14 @@ void file_mac_info_nest( void )
         nw = nest_cb->p_stack;
         while( nw != NULL ) {
             switch( nw->nest_flag & II_input ) {
-            case    II_file:
+            case II_file:
                 uinttodec( nw->lineno, linestr );
                 g_info( inf_file_line, linestr, nw->s.filename );
                 break;
-            case    II_tag:
+            case II_tag:
                 g_info( err_inf_tag, nw->s.mt.tag_m->tagname );
                 /* fall through */
-            case    II_macro:
+            case II_macro:
                 uinttodec( nw->lineno, linestr );
                 uinttodec( nw->s.mt.m->lineno, linemac );
                 g_info( err_inf_mac_def, linestr, nw->s.mt.m->macname,

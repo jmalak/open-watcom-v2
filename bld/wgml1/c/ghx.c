@@ -562,7 +562,7 @@ static void gml_hx_common( const gmltag * entry, hdsrc hn_lvl )
 
     hdrefid[0] = '\0';                           // null string if no id found
     switch( hn_lvl ) {
-    case   hds_h0:
+    case hds_h0:
         if( !((ProcFlags.doc_sect == doc_sect_body)
           || (ProcFlags.doc_sect_nxt == doc_sect_body)) ) {
 
@@ -571,7 +571,7 @@ static void gml_hx_common( const gmltag * entry, hdsrc hn_lvl )
             hd_level = hn_lvl;              // H0 always valid in BODY
         }
         break;
-    case  hds_h1:
+    case hds_h1:
         if( !((ProcFlags.doc_sect >= doc_sect_body)
           || (ProcFlags.doc_sect_nxt >= doc_sect_body)) ) {
 
@@ -588,11 +588,11 @@ static void gml_hx_common( const gmltag * entry, hdsrc hn_lvl )
             }
         }
         break;
-    case  hds_h2:
-    case  hds_h3:
-    case  hds_h4:
-    case  hds_h5:
-    case  hds_h6:
+    case hds_h2:
+    case hds_h3:
+    case hds_h4:
+    case hds_h5:
+    case hds_h6:
         if( hd_level < hn_lvl - 1 ) {
             g_wng_hlevel( hn_lvl, hd_level + 1 );
             /* Update numbers for the skipped headings. */

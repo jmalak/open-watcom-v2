@@ -941,6 +941,20 @@ char * format_num( uint32_t n, char * r, size_t rsize, num_style ns )
     return( r );
 }
 
+bool     get_att_name( const char *p, char *attname )
+{
+    size_t  len;
+
+    for( len = 0; len < TAG_ATT_NAME_LENGTH; len++ ) {
+        if( !is_att_char( *p ) ) {
+            break;
+        }
+        *attname++ = my_tolower( *p++ );     // copy lowercase macro name
+    }
+    *attname = '\0';
+    return( is_att_char( *p ) );
+}
+
 /***************************************************************************/
 /* get the start of the next potential attribute                           */
 /* returns the start of the part of the line on which that potential       */

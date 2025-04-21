@@ -587,14 +587,14 @@ void show_include_stack( void )
     out_msg( "\n" );
     while( ip != NULL ) {
         switch( ip->fmflags & II_input ) {
-        case    II_file:
+        case II_file:
             uinttodec( ip->s.f->lineno, linestr );
             g_info( err_inf_line_file, linestr, ip->s.f->filename );
             break;
-        case    II_tag:
+        case II_tag:
             g_info( err_inf_tag, ip->s.m->tag->tagname );
             /* fall through */
-        case    II_macro:
+        case II_macro:
             uinttodec( ip->s.m->lineno, linestr );
             uinttodec( ip->s.m->mac->lineno, linemac );
             g_info( err_inf_mac_def, linestr, ip->s.m->mac->macname,

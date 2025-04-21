@@ -53,12 +53,10 @@ void    lay_docnum( const gmltag * entry )
     while( cc == pos ) {
         cvterr = -1;
         for( k = 0, curr = docnum_att[k]; curr > 0; k++, curr = docnum_att[k] ) {
-
-            if( strnicmp( att_names[curr], lay_attr.att_name, lay_attr.att_len ) == 0 ) {
+            if( strcmp( lay_att_names[curr], lay_attr.attname ) == 0 ) {
                 p = lay_attr.val_name;
-
                 switch( curr ) {
-                case   e_left_adjust:
+                case e_left_adjust:
                     if( AttrFlags.left_adjust ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -67,7 +65,7 @@ void    lay_docnum( const gmltag * entry )
                                            &layout_work.docnum.left_adjust );
                     AttrFlags.left_adjust = true;
                     break;
-                case   e_right_adjust:
+                case e_right_adjust:
                     if( AttrFlags.right_adjust ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -76,7 +74,7 @@ void    lay_docnum( const gmltag * entry )
                                            &layout_work.docnum.right_adjust );
                     AttrFlags.right_adjust = true;
                     break;
-                case   e_page_position:
+                case e_page_position:
                     if( AttrFlags.page_position ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -85,7 +83,7 @@ void    lay_docnum( const gmltag * entry )
                                           &layout_work.docnum.page_position );
                     AttrFlags.page_position = true;
                     break;
-                case   e_font:
+                case e_font:
                     if( AttrFlags.font ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -96,7 +94,7 @@ void    lay_docnum( const gmltag * entry )
                     }
                     AttrFlags.font = true;
                     break;
-                case   e_pre_skip:
+                case e_pre_skip:
                     if( AttrFlags.pre_skip ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
@@ -105,7 +103,7 @@ void    lay_docnum( const gmltag * entry )
                                            &layout_work.docnum.pre_skip );
                     AttrFlags.pre_skip = true;
                     break;
-                case   e_docnum_string:
+                case e_docnum_string:
                     if( AttrFlags.docnum_string ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
                             lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);

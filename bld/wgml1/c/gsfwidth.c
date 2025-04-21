@@ -69,14 +69,14 @@ condcode    scr_width( parm parms[MAX_FUN_PARMS], int parmcount, char **result, 
             unquote_if_quoted( &parm2 );
             type = my_tolower( *parm2.s );
             switch( type ) {
-            case   'c':                 // CPI
+            case 'c':                 // CPI
                 width = cop_text_width( parm1.s, len, g_curr_font );
                 width = (width * CPI + g_resh / 2) / g_resh;
                 break;
-            case   'u':                 // Device Units
+            case 'u':                 // Device Units
                 width = cop_text_width( parm1.s, len, g_curr_font );
                 break;
-            case   'n':                 // character count
+            case 'n':                 // character count
                 width = len;
                 break;
             default:
