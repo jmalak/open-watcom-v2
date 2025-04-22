@@ -59,7 +59,7 @@ void gml_address( const gmltag * entry )
     t_doc_el_group = cur_doc_el_group;
     cur_doc_el_group = NULL;
 
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 
@@ -137,7 +137,7 @@ void gml_eaddress( const gmltag * entry )
 
     script_process_break();                // commit last address line
     line_position = old_line_pos;
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 
@@ -195,6 +195,6 @@ void gml_aline( const gmltag * entry )
     script_process_break();                // commit address line (or blank line)
 
     first_aline = false;
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
 }
 

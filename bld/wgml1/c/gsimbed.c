@@ -144,7 +144,7 @@ void    scr_im( void )
     p = scan_start;
     SkipSpaces( p );
     gn.arg.s = p;
-    gn.arg.e = scan_stop + 1;
+    gn.arg.e = scan_stop;
     gn.ignore_blanks = false;
     cc = getnum( &gn );
     if( (cc == pos) && (gn.result < 10) ) { // include SYSUSR0x.GML
@@ -170,12 +170,12 @@ void    scr_im( void )
         strcpy_s( token_buf, buf_size, fnstart );
     }
 
-    if( p != scan_stop ) {
+    if( p < scan_stop ) {
         new_file_parms = p + 1;
     } else {
         new_file_parms = NULL;
     }
-    scan_restart = scan_stop + 1;
+    scan_restart = scan_stop;
     ProcFlags.newLevelFile = 1;
     line_from = LINEFROM_DEFAULT;
     line_to   = LINETO_DEFAULT;

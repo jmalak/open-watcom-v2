@@ -111,7 +111,7 @@ extern  void    gml_set( const gmltag * entry )
             process_text( p, g_curr_font);  // if text follows
         }
     }
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 

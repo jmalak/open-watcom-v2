@@ -257,7 +257,7 @@ void    scr_br( void )
     }
     script_process_break();                // break processing
 
-    scan_restart = scan_stop + 1;
+    scan_restart = scan_stop;
     return;
 }
 

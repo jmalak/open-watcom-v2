@@ -1401,7 +1401,7 @@ static void gml_doc_xxx( doc_section ds )
     ProcFlags.doc_sect_nxt = ds;        // remember new section
     ProcFlags.start_section = false;    // do real section start later
 
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 
@@ -1553,7 +1553,7 @@ void gml_index( const gmltag * entry )
     }
 
     if( ProcFlags.doc_sect_nxt == doc_sect_index ) {// duplicate :INDEX tag
-        scan_start = scan_stop + 1;     // ignore this call
+        scan_start = scan_stop;         // ignore this call
         return;                         // wgml4 OS/2 crashes with page fault
     }
 

@@ -105,6 +105,6 @@
 
 void scr_cd( void )
 {
-    scan_restart = scan_stop + 1;
+    scan_restart = scan_stop;
     return;
 }

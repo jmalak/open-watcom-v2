@@ -94,7 +94,7 @@ void    lay_default( const gmltag * entry )
     cvterr = false;
 
     if( !WgmlFlags.firstpass ) {
-        scan_start = scan_stop + 1;
+        scan_start = scan_stop;
         eat_lay_sub_tag();
         return;                         // process during first pass only
     }
@@ -186,6 +186,6 @@ void    lay_default( const gmltag * entry )
         }
         cc = lay_attr_and_value( &lay_attr );            // get att with value
     }
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }

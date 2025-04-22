@@ -60,7 +60,7 @@ void scr_pp( void )
         process_text( p, g_curr_font );
     }
 
-    scan_restart = scan_stop + 1;
+    scan_restart = scan_stop;
     return;
 }
 

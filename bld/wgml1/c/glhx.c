@@ -182,7 +182,7 @@ void    lay_hx( const gmltag * entry )
     p = scan_start;
 
     if( !WgmlFlags.firstpass ) {
-        scan_start = scan_stop + 1;
+        scan_start = scan_stop;
         eat_lay_sub_tag();
         return;                         // process during first pass only
     }
@@ -391,7 +391,7 @@ void    lay_hx( const gmltag * entry )
     if( l_group > 0 ) {         // only group 0 is supported
         xx_warn_c( wng_unsupp_lay_att, "group" );
     }
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 

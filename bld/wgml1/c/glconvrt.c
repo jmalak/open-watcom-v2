@@ -2074,7 +2074,7 @@ void    lay_convert( const gmltag * entry )
     (void)entry;
 
     p = scan_start;
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
 
     if( !WgmlFlags.firstpass ) {
         ProcFlags.layout = true;

@@ -266,7 +266,7 @@ void gml_dl( const gmltag * entry )
     g_text_spacing = nest_cb->u.dl_layout->spacing;
 
     ProcFlags.null_value = false;
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 
@@ -368,7 +368,7 @@ void gml_gl( const gmltag * entry )
 
     g_text_spacing = nest_cb->u.gl_layout->spacing;
 
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 
@@ -456,7 +456,7 @@ void gml_ol( const gmltag * entry )
 
     g_text_spacing = nest_cb->u.ol_layout->spacing;
 
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 
@@ -542,7 +542,7 @@ void gml_sl( const gmltag * entry )
 
     g_text_spacing = nest_cb->u.sl_layout->spacing;
 
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 
@@ -629,7 +629,7 @@ void gml_ul( const gmltag * entry )
 
     g_text_spacing = nest_cb->u.ul_layout->spacing;
 
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 
@@ -698,7 +698,7 @@ static void     gml_exl_common( const gmltag * entry )
 
     ProcFlags.need_li_lp = false;       // :LI or :LP no longer needed
     dl_gl_starting = false;
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
 }
 
 
@@ -938,7 +938,7 @@ static  void    gml_li_ol( const gmltag * entry )
         process_text( p, g_curr_font ); // if text follows
     }
 
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 
@@ -983,7 +983,7 @@ static  void    gml_li_sl( const gmltag * entry )
         process_text( p, g_curr_font ); // if text follows
     }
 
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 
@@ -1047,7 +1047,7 @@ static  void    gml_li_ul( const gmltag * entry )
 
     t_page.cur_left = nest_cb->lm + nest_cb->left_indent + nest_cb->align;
 
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 
@@ -1169,7 +1169,7 @@ void    gml_lp( const gmltag * entry )
         process_text( p, g_curr_font ); // if text follows
     }
 
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 
@@ -1231,7 +1231,7 @@ void gml_dthd( const gmltag * entry )
         } else {
             ProcFlags.need_text = true;
         }
-        scan_start = scan_stop + 1;
+        scan_start = scan_stop;
     }
 
     ProcFlags.need_ddhd = true;
@@ -1297,7 +1297,7 @@ void gml_ddhd( const gmltag * entry )
         ProcFlags.need_text = true;
     }
 
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 
@@ -1376,7 +1376,7 @@ void gml_dt( const gmltag * entry )
         } else {
             ProcFlags.need_text = true;
         }
-        scan_start = scan_stop + 1;
+        scan_start = scan_stop;
     }
 
     ProcFlags.need_dd = true;
@@ -1455,7 +1455,7 @@ void gml_dd( const gmltag * entry )
         }
     }
 
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 
@@ -1517,7 +1517,7 @@ void gml_gt( const gmltag * entry )
         } else {
             ProcFlags.need_text = true;
         }
-        scan_start = scan_stop + 1;
+        scan_start = scan_stop;
     }
 
     ProcFlags.need_gd = true;
@@ -1587,7 +1587,7 @@ void gml_gd( const gmltag * entry )
         process_text( p, g_curr_font ); // if text follows
     }
 
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 

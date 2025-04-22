@@ -65,7 +65,7 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
 
     if( !WgmlFlags.index ) {          // index option not active
         ProcFlags.index_tag_cw_seen = true;
-        scan_start = scan_stop + 1;     // ignore tag
+        scan_start = scan_stop;         // ignore tag
         return;
     }
 
@@ -491,7 +491,7 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
     ProcFlags.null_value = false;
     ProcFlags.post_ix = true;           // records use of index tag only if indexing is on
 
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 

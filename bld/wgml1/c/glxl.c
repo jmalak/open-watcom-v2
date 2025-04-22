@@ -518,7 +518,7 @@ void    lay_dl( const gmltag * entry )
     p = scan_start;
 
     if( !WgmlFlags.firstpass ) {
-        scan_start = scan_stop + 1;
+        scan_start = scan_stop;
         eat_lay_sub_tag();
         return;                         // process during first pass only
     }
@@ -686,7 +686,7 @@ void    lay_dl( const gmltag * entry )
         curr_level->next = dl_layout;
     }
 
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 
@@ -709,7 +709,7 @@ void    lay_gl( const gmltag * entry )
     p = scan_start;
 
     if( !WgmlFlags.firstpass ) {
-        scan_start = scan_stop + 1;
+        scan_start = scan_stop;
         eat_lay_sub_tag();
         return;                         // process during first pass only
     }
@@ -877,7 +877,7 @@ void    lay_gl( const gmltag * entry )
         curr_level->next = gl_layout;
     }
 
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 
@@ -900,7 +900,7 @@ void    lay_ol( const gmltag * entry )
     p = scan_start;
 
     if( !WgmlFlags.firstpass ) {
-        scan_start = scan_stop + 1;
+        scan_start = scan_stop;
         eat_lay_sub_tag();
         return;                         // process during first pass only
     }
@@ -1098,7 +1098,7 @@ void    lay_ol( const gmltag * entry )
         curr_level->next = ol_layout;
     }
 
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 
@@ -1121,7 +1121,7 @@ void    lay_sl( const gmltag * entry )
     p = scan_start;
 
     if( !WgmlFlags.firstpass ) {
-        scan_start = scan_stop + 1;
+        scan_start = scan_stop;
         eat_lay_sub_tag();
         return;                         // process during first pass only
     }
@@ -1279,7 +1279,7 @@ void    lay_sl( const gmltag * entry )
         curr_level->next = sl_layout;
     }
 
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 
@@ -1302,7 +1302,7 @@ void    lay_ul( const gmltag * entry )
     p = scan_start;
 
     if( !WgmlFlags.firstpass ) {
-        scan_start = scan_stop + 1;
+        scan_start = scan_stop;
         eat_lay_sub_tag();
         return;                         // process during first pass only
     }
@@ -1512,7 +1512,7 @@ void    lay_ul( const gmltag * entry )
         curr_level->next = ul_layout;
     }
 
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 

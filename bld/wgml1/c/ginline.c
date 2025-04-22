@@ -174,7 +174,7 @@ static void gml_inline_common( const gmltag * entry, font_number font, e_tags t 
       || (input_cbs->fmflags & II_macro)) ) {
         script_process_break();            // ensure line is output
     }
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 
@@ -336,7 +336,7 @@ static void gml_e_inlne_common( const gmltag * entry, e_tags t )
             script_process_break();        // ensure line is output
         }
     }
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
 }
 
 
@@ -439,7 +439,7 @@ void gml_sf( const gmltag * entry )
         xx_line_err_c( err_att_missing, val_start );
     }
 
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 

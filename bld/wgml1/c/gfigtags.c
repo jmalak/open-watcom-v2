@@ -690,7 +690,7 @@ void gml_fig( const gmltag * entry )
             process_text( p, g_curr_font);  // if text follows
         }
     }
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 
@@ -1073,7 +1073,7 @@ void gml_efig( const gmltag * entry )
         fig_entry = fig_entry->next;    // get to next FIG
     }
     g_text_spacing = spacing_save;
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 
@@ -1168,7 +1168,7 @@ void gml_figcap( const gmltag * entry )
     fig_entry->flags |= ffh_figcap;         // mark as FIGCAP present, with or without text
     figcap_done = true;
 
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 
@@ -1221,7 +1221,7 @@ void gml_figdesc( const gmltag * entry )
             script_process_break();
         }
     }
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 

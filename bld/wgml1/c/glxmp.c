@@ -94,7 +94,7 @@ void    lay_xmp( const gmltag * entry )
     p = scan_start;
 
     if( !WgmlFlags.firstpass ) {
-        scan_start = scan_stop + 1;
+        scan_start = scan_stop;
         eat_lay_sub_tag();
         return;                         // process during first pass only
     }
@@ -180,7 +180,7 @@ void    lay_xmp( const gmltag * entry )
         xx_err( err_num_zero );
     }
 
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 

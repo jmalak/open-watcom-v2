@@ -68,7 +68,7 @@ void gml_lq( const gmltag * entry )
         process_text( p, g_curr_font );
     }
 
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
 }
 
 
@@ -118,6 +118,6 @@ void gml_elq( const gmltag * entry )
         ProcFlags.force_pc = true;
     }
 
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
 }
 

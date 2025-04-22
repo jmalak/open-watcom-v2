@@ -75,11 +75,11 @@ void    gml_include( const gmltag *entry )
                 strncpy( token_buf, val_start, len );
                 token_buf[len] = '\0';
                 ProcFlags.newLevelFile = 1;     // start new include level
-                scan_start = scan_stop + 1;     // .. and ignore remaining line
+                scan_start = scan_stop;         // .. and ignore remaining line
             }
         } else {                                // wgml 4.0 appears to mark "" as the filename
             ProcFlags.newLevelFile = 1;         // start new include level
-            scan_start = scan_stop + 1;         // .. and ignore remaining line
+            scan_start = scan_stop;             // .. and ignore remaining line
         }
     }
 

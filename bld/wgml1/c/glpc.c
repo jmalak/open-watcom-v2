@@ -145,7 +145,7 @@ void    lay_p( const gmltag * entry )
     (void)entry;
 
     if( !WgmlFlags.firstpass ) {
-        scan_start = scan_stop + 1;
+        scan_start = scan_stop;
         eat_lay_sub_tag();
         return;                         // process during first pass only
     }
@@ -158,7 +158,7 @@ void    lay_p( const gmltag * entry )
         cvterr = process_arg( &layout_work.p, &lay_attr );
         cc = lay_attr_and_value( &lay_attr );            // get att with value
     }
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 
@@ -176,7 +176,7 @@ void    lay_pc( const gmltag * entry )
     (void)entry;
 
     if( !WgmlFlags.firstpass ) {
-        scan_start = scan_stop + 1;
+        scan_start = scan_stop;
         eat_lay_sub_tag();
         return;                         // process during first pass only
     }
@@ -189,7 +189,7 @@ void    lay_pc( const gmltag * entry )
         cvterr = process_arg( &layout_work.pc, &lay_attr );
         cc = lay_attr_and_value( &lay_attr );            // get att with value
     }
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 

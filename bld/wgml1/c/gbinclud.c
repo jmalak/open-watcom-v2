@@ -32,7 +32,7 @@ void    gml_binclude( const gmltag * entry )
     uint32_t        depth;
     size_t          len;
     FILE            *fp;
-    int				i;
+    int                         i;
 
     memset( &AttrFlags, 0, sizeof( AttrFlags ) );   // clear all attribute flags
     if( (ProcFlags.doc_sect < doc_sect_gdoc) ) {
@@ -175,7 +175,7 @@ void    gml_binclude( const gmltag * entry )
         xx_err_c( err_file_not_found, file );
     }
 
-    scan_start = scan_stop + 1;         // skip following text
+    scan_start = scan_stop;             // skip following text
     return;
 }
 

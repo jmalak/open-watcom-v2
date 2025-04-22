@@ -181,7 +181,7 @@ void    scr_label( void )
     } else {
 
         gn.arg.s = scan_start;
-        gn.arg.e = scan_stop + 1;
+        gn.arg.e = scan_stop;
         gn.ignore_blanks = false;
         cc = getnum( &gn );             // try numeric expression evaluation
         if( cc == pos ) {               // numeric linenumber
@@ -263,7 +263,7 @@ void    scr_label( void )
                 split_input( buff2, scan_start, input_cbs->fmflags );   // split and process next
             }
         }
-        scan_restart = scan_stop + 1;
+        scan_restart = scan_stop;
         return;
     }
 }
@@ -328,7 +328,7 @@ void    scr_go( void )
     }
 
     gn.arg.s = g_tok_start;
-    gn.arg.e = scan_stop + 1;
+    gn.arg.e = scan_stop;
     gn.ignore_blanks = false;
     cc = getnum( &gn );             // try numeric expression evaluation
     if( cc == pos  || cc  == neg) {     // numeric linenumber
@@ -381,7 +381,7 @@ void    scr_go( void )
     input_cbs->hidden_head = NULL;
     input_cbs->hidden_tail = NULL;
     ProcFlags.goto_active = true;       // special goto processing
-    scan_restart = scan_stop + 1;
+    scan_restart = scan_stop;
 
 }
 

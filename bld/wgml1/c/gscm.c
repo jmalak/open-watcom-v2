@@ -20,6 +20,6 @@
 void    scr_cm( void )
 {
     // simply do nothing
-    scan_restart = scan_stop + 1;
+    scan_restart = scan_stop;
 }
 

@@ -152,7 +152,7 @@ void gml_xmp( const gmltag * entry )
         ProcFlags.skip_blank_line = true;
     }
 
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 
@@ -267,7 +267,7 @@ void gml_exmp( const gmltag * entry )
         ProcFlags.force_pc = true;
     }
 
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 

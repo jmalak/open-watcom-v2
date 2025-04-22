@@ -273,7 +273,7 @@ void    lay_banregion( const gmltag * entry )
     rs_loc = banreg_tag;
 
     if( !WgmlFlags.firstpass ) {
-        scan_start = scan_stop + 1;
+        scan_start = scan_stop;
         eat_lay_sub_tag();
         return;                         // process during first pass only
     }
@@ -535,7 +535,7 @@ void    lay_banregion( const gmltag * entry )
         }
     }
 
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 
@@ -548,7 +548,7 @@ void    lay_ebanregion( const gmltag * entry )
 {
     rs_loc = banner_tag;
     if( !WgmlFlags.firstpass ) {
-        scan_start = scan_stop + 1;
+        scan_start = scan_stop;
         eat_lay_sub_tag();
         return;                         // process during first pass only
     }
@@ -557,6 +557,6 @@ void    lay_ebanregion( const gmltag * entry )
     } else {
         xx_err_cc( err_no_lay, &(entry->tagname[1]), entry->tagname );
     }
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }

@@ -374,7 +374,7 @@ void scr_fb( void )
         break;
     }
 
-    scan_restart = scan_stop + 1;
+    scan_restart = scan_stop;
     return;
 }
 
@@ -479,7 +479,7 @@ void scr_fk( void )
         break;
     }
 
-    scan_restart = scan_stop + 1;
+    scan_restart = scan_stop;
     return;
 }
 

@@ -79,18 +79,18 @@ condcode getarg( void )
     bool        quoted;
     bool        valquoted;
 
-    if( scan_stop <= scan_start ) {     // already at end
+    if( scan_start >= scan_stop ) {     // already at end
         cc = omit;                      // arg omitted
     } else {
         p = scan_start;
-        while( *p == ' ' && p <= scan_stop ) {// skip leading blanks
+        while( *p == ' ' && p < scan_stop ) {// skip leading blanks
             p++;
         }
-        if( p > scan_stop ) {
+        if( p == scan_stop ) {
             return( omit );             // nothing found
         }
 
-        if( p == scan_stop) {           // one character token found
+        if( p + 1 == scan_stop ) {      // one character token found
             arg_flen = 1;
             g_tok_start = p;
             scan_start = p + 1;         // address of start for next call
@@ -113,7 +113,7 @@ condcode getarg( void )
         }
         for( ;; p++ ) {
 
-            if( p > scan_stop || *p == '\0' ) {
+            if( p >= scan_stop || *p == '\0' ) {
                 if( quoted ) {
                     quote = '\0';
                     quoted = false;
@@ -134,7 +134,7 @@ condcode getarg( void )
                 valquoted = true;
                 valquote = p[1];
                 p += 2;
-                for( ; *p != '\0' && p <= scan_stop; p++ ) {
+                for( ; *p != '\0' && p < scan_stop; p++ ) {
                     if( *p == valquote ) {
                         p++;
                         break;
@@ -180,15 +180,15 @@ condcode getqst( void )
     char        quote;
     bool        quoted;
 
-    if( scan_stop <= scan_start ) {     // already at end
+    if( scan_start >= scan_stop ) {     // already at end
         cc = omit;                      // arg omitted
     } else {
         p = scan_start;
-        while( *p == ' ' && p <= scan_stop ) {// skip leading blanks
+        while( *p == ' ' && p < scan_stop ) {// skip leading blanks
             p++;
         }
 
-        if( p > scan_stop ) {
+        if( p == scan_stop ) {
             return( omit );             // nothing found
         }
 
@@ -204,7 +204,7 @@ condcode getqst( void )
             quote = '\0';
             quoted = false;
         }
-        for( ; *p != '\0' && p <= scan_stop; p++ ) {  // look for end of string
+        for( ; *p != '\0' && p < scan_stop; p++ ) {  // look for end of string
             if( quoted ) {
                 if( *p == quote ) {
                     if( p[1] == '\0' || p[1] == ' ' ) {

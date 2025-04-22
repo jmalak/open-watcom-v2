@@ -176,7 +176,7 @@ static void scr_style_common( style_cw_type type, style_cw_info * cw_info )
                 pa = p;
             } else {                            // no following text
                 gn.arg.s = g_tok_start;
-                gn.arg.e = scan_stop + 1;
+                gn.arg.e = scan_stop;
                 gn.ignore_blanks = false;
                 cc = getnum( &gn );             // try numeric expression evaluation
                 if( (cc == notnum) || (cc == neg) ) {
@@ -233,7 +233,7 @@ static void scr_style_common( style_cw_type type, style_cw_info * cw_info )
         g_curr_font = script_style.font;
     }
 
-    scan_restart = scan_stop + 1;
+    scan_restart = scan_stop;
     return;
 
 }

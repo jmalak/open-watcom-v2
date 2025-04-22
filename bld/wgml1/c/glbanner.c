@@ -200,7 +200,7 @@ void    lay_banner( const gmltag * entry )
     rs_loc = banner_tag;
 
     if( !WgmlFlags.firstpass ) {
-        scan_start = scan_stop + 1;
+        scan_start = scan_stop;
         eat_lay_sub_tag();
         return;                         // process during first pass only
     }
@@ -482,7 +482,7 @@ void    lay_banner( const gmltag * entry )
             }
         }
     }
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }
 
@@ -502,7 +502,7 @@ void    lay_ebanner( const gmltag * entry )
     rs_loc = 0;
 
     if( !WgmlFlags.firstpass ) {
-        scan_start = scan_stop + 1;
+        scan_start = scan_stop;
         eat_lay_sub_tag();
         return;                         // process during first pass only
     }
@@ -556,6 +556,6 @@ void    lay_ebanner( const gmltag * entry )
     } else {
         xx_err_c( err_tag_expected, "BANNER" );
     }
-    scan_start = scan_stop + 1;
+    scan_start = scan_stop;
     return;
 }

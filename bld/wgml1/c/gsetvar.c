@@ -309,7 +309,7 @@ void    scr_se( void )
                 condcode        cc;
 
                 gn.arg.s = valstart;
-                gn.arg.e = scan_stop + 1;
+                gn.arg.e = scan_stop;
                 gn.ignore_blanks = true;
                 cc = getnum( &gn );             // try numeric expression evaluation
                 if( cc != notnum ) {

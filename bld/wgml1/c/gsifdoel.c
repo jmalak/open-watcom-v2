@@ -528,7 +528,7 @@ void    scr_if( void )
             ProcFlags.pre_fsp = false;       // cancel fsp
         }
     }
-    scan_restart = scan_stop + 1;
+    scan_restart = scan_stop;
     return;
 }
 
@@ -592,7 +592,7 @@ void    scr_th( void )
     if( *scan_start ) {                 // rest of line is not empty
         split_input( buff2, scan_start, input_cbs->fmflags );   // split and process next
     }
-    scan_restart = scan_stop + 1;
+    scan_restart = scan_stop;
     return;
 }
 
@@ -648,7 +648,7 @@ void    scr_el( void )
     if( *scan_start ) {                 // rest of line is not empty
         split_input( buff2, scan_start, input_cbs->fmflags );   // split and process next
     }
-    scan_restart = scan_stop + 1;
+    scan_restart = scan_stop;
     return;
 }
 
@@ -693,7 +693,7 @@ void    scr_do( void )
         if( (input_cbs->fmflags & II_research) && WgmlFlags.firstpass ) {
             show_ifcb( "dobegin", cb );
         }
-        scan_restart = scan_stop + 1;
+        scan_restart = scan_stop;
         return;
     } else {
         if( strnicmp( g_tok_start, "end", 3 ) == 0 ) {
@@ -709,7 +709,7 @@ void    scr_do( void )
                         WgmlFlags.firstpass ) {
                         show_ifcb( "doend", cb );
                     }
-                    scan_restart = scan_stop + 1;
+                    scan_restart = scan_stop;
                     return;
                 }
 
@@ -741,7 +741,7 @@ void    scr_do( void )
       && WgmlFlags.firstpass ) {
         show_ifcb( "do xx", cb );
     }
-    scan_restart = scan_stop + 1;
+    scan_restart = scan_stop;
     return;
 }
 
