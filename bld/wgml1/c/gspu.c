@@ -136,9 +136,8 @@ void    scr_pu( void )
         gn.arg.e = p;
         gn.ignore_blanks = false;
         cc = getnum( &gn );
-
         if( cc != notnum ) {            // number found
-            if( (len > 1) || (cc !=pos)  || (*pa < '1') || (*pa > '9') ) {
+            if( (len > 1) || (cc != pos)  || (*pa < '1') || (*pa > '9') ) {
                 numb_err();
             }
             workn = *pa - '0';          // workfile specified

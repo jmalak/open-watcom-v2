@@ -64,6 +64,7 @@ condcode    scr_d2c( parm parms[MAX_FUN_PARMS], int parmcount, char **result, in
 
     if( parms[1].arg.s <= parms[1].arg.e ) {
         gn.arg = parm1;
+        gn.arg.e++;
         cc = getnum( &gn );
         if( (cc != pos) ) {
             if( !ProcFlags.suppress_msg ) {

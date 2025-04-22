@@ -201,10 +201,9 @@ void scr_ix( void )
         /* Unquoted numeric string here must be a structure number */
 
         gn.arg.s = g_tok_start;
-        gn.arg.e = scan_stop;
+        gn.arg.e = scan_stop + 1;
         gn.ignore_blanks = false;
         cc = getnum( &gn );
-
         if( (cc == pos) || (cc == neg) ) {
 
             p = g_tok_start;

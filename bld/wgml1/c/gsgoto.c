@@ -181,7 +181,7 @@ void    scr_label( void )
     } else {
 
         gn.arg.s = scan_start;
-        gn.arg.e = scan_stop;
+        gn.arg.e = scan_stop + 1;
         gn.ignore_blanks = false;
         cc = getnum( &gn );             // try numeric expression evaluation
         if( cc == pos ) {               // numeric linenumber
@@ -328,7 +328,7 @@ void    scr_go( void )
     }
 
     gn.arg.s = g_tok_start;
-    gn.arg.e = scan_stop;
+    gn.arg.e = scan_stop + 1;
     gn.ignore_blanks = false;
     cc = getnum( &gn );             // try numeric expression evaluation
     if( cc == pos  || cc  == neg) {     // numeric linenumber

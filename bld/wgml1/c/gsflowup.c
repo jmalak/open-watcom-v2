@@ -85,6 +85,7 @@ static condcode scr_lowup( parm parms[MAX_FUN_PARMS], int parmcount,
     if( parmcount > 1 ) {               // evalute start pos
         if( parms[1].arg.s <= parms[1].arg.e ) {// start pos specified
             gn.arg = parms[1].arg;
+            gn.arg.e++;
             cc = getnum( &gn );
             if( (cc != pos) || (gn.result > len) ) {
                 if( !ProcFlags.suppress_msg ) {
@@ -99,6 +100,7 @@ static condcode scr_lowup( parm parms[MAX_FUN_PARMS], int parmcount,
     if( parmcount > 2 ) {               // evalute length for upper
         if( parms[2].arg.s <= parms[2].arg.e ) {// length specified
             gn.arg = parms[2].arg;
+            gn.arg.e++;
             cc = getnum( &gn );
             if( (cc != pos) || (gn.result == 0) ) {
                 if( !ProcFlags.suppress_msg ) {

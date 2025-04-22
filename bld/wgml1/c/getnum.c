@@ -390,7 +390,7 @@ condcode getnum( getnum_block *gn )
     }
     gn->errstart = p;
     gn->first    = p;
-    if( p > pend ) {
+    if( p == pend ) {
         gn->cc = omit;
         return( omit );         // nothing there
     }
@@ -401,15 +401,14 @@ condcode getnum( getnum_block *gn )
         gn->num_sign = ' ';     // no unary sign
     }
     ignore_blanks = gn->ignore_blanks;
-    pend++;
     c = *pend;
-    *pend = '\0';                 // make null terminated string
+    *pend = '\0';               // make null terminated string
     rc = evaluate( &p, &gn->result );
     *pend = c;
     if( rc != 0 ) {
         gn->cc = notnum;
     } else {
-        gn->arg.s = p + 1;      // start for next scan
+        gn->arg.s = p;          // start for next scan
         gn->length = sprintf( gn->resultstr, "%d", gn->result );
         if( gn->result >= 0 ) {
             gn->cc = pos;

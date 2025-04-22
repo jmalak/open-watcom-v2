@@ -58,6 +58,7 @@ condcode    scr_delstr( parm parms[MAX_FUN_PARMS], int parmcount, char **result,
 
     if( parms[1].arg.s <= parms[1].arg.e ) {// start pos
         gn.arg = parms[1].arg;
+        gn.arg.e++;
         cc = getnum( &gn );
         if( (cc != pos) || (gn.result == 0) ) {
             if( !ProcFlags.suppress_msg ) {
@@ -71,6 +72,7 @@ condcode    scr_delstr( parm parms[MAX_FUN_PARMS], int parmcount, char **result,
     if( parmcount > 2 ) {               // evalute length
         if( parms[2].arg.s <= parms[2].arg.e ) {// length specified
             gn.arg = parms[2].arg;
+            gn.arg.e++;
             cc = getnum( &gn );
             if( (cc != pos) || (gn.result == 0) ) {
                 if( !ProcFlags.suppress_msg ) {

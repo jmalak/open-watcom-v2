@@ -311,9 +311,7 @@ static bool su_expression( su * in_su )
     gn.arg.e = gn.arg.s = in_su->su_txt;
     while( *gn.arg.e != '\0' )
         gn.arg.e++;
-    gn.arg.e--;
     cc = getnum( &gn );
-
     if( cc == notnum ) {
         retval = false;
     } else {

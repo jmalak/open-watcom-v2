@@ -252,7 +252,6 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
                 gn.arg.e = val_start + val_len;
                 gn.ignore_blanks = false;
                 cc = getnum( &gn );
-
                 if( (cc == pos)
                   || (cc == neg) ) {
 

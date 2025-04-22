@@ -62,6 +62,7 @@ condcode    scr_min( parm parms[MAX_FUN_PARMS], int parmcount, char **result, in
             continue;                   // skip empty value
         }
         gn.arg = parmx;
+        gn.arg.e++;
         cc = getnum( &gn );
         if( !(cc == pos  || cc == neg) ) {
             if( !ProcFlags.suppress_msg ) {

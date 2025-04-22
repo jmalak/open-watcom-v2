@@ -218,10 +218,9 @@ void    scr_tb( void )
             while( (p != pa) && !my_isdigit( *p ) ) { // back up over alignment
                 p--;
             }
-            pb = p + 1;
+            p++;
             gn.arg.e = p;
             cc = getnum( &gn );
-            p = pb;                             // alignment start
             if( gn.num_sign == ' ' ) {
                 relative = false;
             } else {

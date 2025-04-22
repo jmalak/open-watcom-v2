@@ -180,7 +180,6 @@ char * scan_sym( char * p, symvar * sym, sub_index * subscript, char * * result,
                     while( *gn.arg.e != '\0' && (*gn.arg.e != ')') )
                         gn.arg.e++;
                     *gn.arg.e = '\0';    // make nul terminated string
-                    gn.arg.e--;
                     gn.ignore_blanks = false;
                     cc = getnum( &gn );     // try numeric expression evaluation
                     if( cc == pos || cc == neg ) {
@@ -310,7 +309,7 @@ void    scr_se( void )
                 condcode        cc;
 
                 gn.arg.s = valstart;
-                gn.arg.e = scan_stop;
+                gn.arg.e = scan_stop + 1;
                 gn.ignore_blanks = true;
                 cc = getnum( &gn );             // try numeric expression evaluation
                 if( cc != notnum ) {

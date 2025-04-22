@@ -297,12 +297,11 @@ static  condcode    scan_att_optionsB( gavalflags * val_flags, condcode cca,
             *att_flags |= att_range;
 
             gn.arg.s = scan_start;
-            gn.arg.e = scan_stop;
+            gn.arg.e = scan_stop + 1;
             gn.ignore_blanks = false;
             ranges[2] = INT_MIN;
             ranges[3] = INT_MIN;
             for( k = 0; k < 4; k++ ) {  // scan max 4 numbers
-
                 cc = getnum( &gn );
                 if(  cc == omit ) {
                     break;
@@ -352,7 +351,7 @@ static  condcode    scan_att_optionsB( gavalflags * val_flags, condcode cca,
           && strnicmp( "LENgth", g_tok_start, arg_flen ) == 0 ) {
             *val_flags |= val_length;
             gn.arg.s = scan_start;
-            gn.arg.e = scan_stop;
+            gn.arg.e = scan_stop + 1;
             gn.ignore_blanks = false;
             cc = getnum( &gn );
             if( cc == notnum || cc == omit ) {

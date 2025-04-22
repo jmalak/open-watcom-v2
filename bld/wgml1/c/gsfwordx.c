@@ -128,6 +128,7 @@ static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], int parmcount,
 
     if( parms[1].arg.s <= parms[1].arg.e ) {// start pos specified
         gn.arg = parms[1].arg;
+        gn.arg.e++;
         cc = getnum( &gn );
         if( cc != pos
           || gn.result > len ) {
@@ -145,6 +146,7 @@ static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], int parmcount,
         if( parmcount > 2 ) {           // evalute word count
             if( parms[2].arg.s <= parms[2].arg.e ) {
                 gn.arg = parms[2].arg;
+                gn.arg.e++;
                 cc = getnum( &gn );
                 if( cc != pos
                   || gn.result == 0 ) {
@@ -352,6 +354,7 @@ condcode    scr_wordpos( parm parms[MAX_FUN_PARMS], int parmcount, char * * resu
     if( parmcount > 2 ) {               // evalute start word
         if( parms[2].arg.s <= parms[2].arg.e ) {
             gn.arg = parms[2].arg;
+            gn.arg.e++;
             gn.ignore_blanks = false;
             cc = getnum( &gn );
             if( cc != pos
