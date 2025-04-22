@@ -143,7 +143,6 @@ condcode    lay_attr_and_value( lay_att_val *lay_attr )
 {
     char        *   p;
     char        *   pa;
-    char            quote;
     condcode        rc;
     int             i;
 
@@ -157,7 +156,7 @@ condcode    lay_attr_and_value( lay_att_val *lay_attr )
     lay_attr->att_len = 0;
     lay_attr->val_name = NULL;
     lay_attr->val_len = 0;
-    lay_attr->val_quoted = 0;
+    lay_attr->val_quoted = ' ';
 
     for(;;) {                               // loop until attribute/value pair or rescan line found
         while( is_att_char( *p ) ) {
@@ -166,7 +165,6 @@ condcode    lay_attr_and_value( lay_att_val *lay_attr )
         if( *p == '\0' ) {                  // end of line: get new line
             if( (input_cbs->fmflags & II_eof) == 0 ) {
                 if( get_line( true ) ) {    // next line for missing attribute
-
                     process_line();
                     scan_start = buff2;
                     scan_stop  = buff2 + buff2_lg;
@@ -174,12 +172,11 @@ condcode    lay_attr_and_value( lay_att_val *lay_attr )
                       || (*scan_start == GML_char) ) {  // tag found: end-of-tag
                         ProcFlags.reprocess_line = true;
                         break;
-                    } else {
-                        p = scan_start;                 // new line is part of current tag
-                        SkipSpacesTabs( p );            // over WS to start of alleged attribute
-                        lay_attr->att_name = p;         // set for new line
-                        continue;
                     }
+                    p = scan_start;                 // new line is part of current tag
+                    SkipSpacesTabs( p );            // over WS to start of alleged attribute
+                    lay_attr->att_name = p;         // set for new line
+                    continue;
                 }
             }
         }
@@ -202,41 +199,35 @@ condcode    lay_attr_and_value( lay_att_val *lay_attr )
             xx_line_err_c( err_eq_missing, p );
         }
 
-        lay_attr->val_name = p;             // delimiters must be included for error checking
         pa = p;
-
+        lay_attr->val_name = p;             // delimiters must be included for error checking
         if( is_quote_char( *p ) ) {
-            quote = *p;
-            ++p;
-            lay_attr->val_quoted = true;
+            lay_attr->val_quoted = *p++;
+            while( *p != '\0' && *p != lay_attr->val_quoted ) {
+                p++;
+            }
+            if( *p != '\0' ) {
+                p++;                        // over terminating quote
+            }
         } else {
-            quote = ' ';
-            lay_attr->val_quoted = false;
+            while( *p != '\0' && *p != ' ' && *p != '.' ) {
+                p++;
+            }
         }
-
-        while( *p != '\0' && *p != quote ) {
-            ++p;
-        }
-
-        if( lay_attr->val_quoted
-          && is_quote_char( *p ) ) {
-            p++;                            // over terminating quote
-        }
-
         lay_attr->val_len = p - lay_attr->val_name;
 
-        if( lay_attr->val_len < 1 ) {       // attribute value length
-            xx_line_err_c( err_att_val_missing, pa );
-        } else {
-            rc = pos;
-        }
-
-        if( *(p - 1) == '.' ) {             // final "." is end of tag
+        if( *p == '.' ) {                   // final "." is end of tag
             ProcFlags.tag_end_found = true;
-            lay_attr->val_len--;            // remove final "." from value
+            p++;
         }
 
-        if( lay_attr->val_quoted) {         // delimiters must be omitted for these externs
+        if( lay_attr->val_len > 0 ) {       // attribute value length
+            rc = pos;
+        } else {
+            xx_line_err_c( err_att_val_missing, pa );
+        }
+
+        if( lay_attr->val_quoted != ' ' ) {         // delimiters must be omitted for these externs
             lay_attr->val_name++;
             lay_attr->val_len -= 2;
         }
