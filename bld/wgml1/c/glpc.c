@@ -90,12 +90,12 @@ static  int     process_arg( p_lay_tag * p_or_pc, lay_att_val *lay_attr )
 
     for( k = 0, curr = p_att[k]; curr > 0; k++, curr = p_att[k] ) {
         if( strcmp( lay_att_names[curr], lay_attr->attname ) == 0 ) {
-            p = lay_attr->val_name;
+            p = lay_attr->val.name;
             switch( curr ) {
             case e_line_indent:
                 if( AttrFlags.line_indent ) {
                     xx_line_err_ci( err_att_dup, lay_attr->att_name,
-                        lay_attr->val_name - lay_attr->att_name + lay_attr->val_len);
+                        lay_attr->val.name - lay_attr->att_name + lay_attr->val.len);
                 }
                 cvterr = i_space_unit( p, lay_attr, &p_or_pc->line_indent );
                 AttrFlags.line_indent = true;
@@ -103,7 +103,7 @@ static  int     process_arg( p_lay_tag * p_or_pc, lay_att_val *lay_attr )
             case e_pre_skip:
                 if( AttrFlags.pre_skip ) {
                     xx_line_err_ci( err_att_dup, lay_attr->att_name,
-                        lay_attr->val_name - lay_attr->att_name + lay_attr->val_len);
+                        lay_attr->val.name - lay_attr->att_name + lay_attr->val.len);
                 }
                 cvterr = i_space_unit( p, lay_attr, &p_or_pc->pre_skip );
                 AttrFlags.pre_skip = true;
@@ -111,7 +111,7 @@ static  int     process_arg( p_lay_tag * p_or_pc, lay_att_val *lay_attr )
             case e_post_skip:
                 if( AttrFlags.post_skip ) {
                     xx_line_err_ci( err_att_dup, lay_attr->att_name,
-                        lay_attr->val_name - lay_attr->att_name + lay_attr->val_len);
+                        lay_attr->val.name - lay_attr->att_name + lay_attr->val.len);
                 }
                 cvterr = i_space_unit( p, lay_attr, &p_or_pc->post_skip );
                 AttrFlags.post_skip = true;

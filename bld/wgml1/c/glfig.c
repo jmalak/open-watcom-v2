@@ -119,12 +119,12 @@ void    lay_fig( const gmltag * entry )
         cvterr = -1;
         for( k = 0, curr = fig_att[k]; curr > 0; k++, curr = fig_att[k] ) {
             if( strcmp( lay_att_names[curr], lay_attr.attname ) == 0 ) {
-                p = lay_attr.val_name;
+                p = lay_attr.val.name;
                 switch( curr ) {
                 case e_left_adjust:
                     if( AttrFlags.left_adjust ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
-                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
+                            lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.fig.left_adjust );
@@ -133,7 +133,7 @@ void    lay_fig( const gmltag * entry )
                 case e_right_adjust:
                     if( AttrFlags.right_adjust ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
-                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
+                            lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.fig.right_adjust );
@@ -142,7 +142,7 @@ void    lay_fig( const gmltag * entry )
                 case e_pre_skip:
                     if( AttrFlags.pre_skip ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
-                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
+                            lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_space_unit( p, &lay_attr, &layout_work.fig.pre_skip );
                     AttrFlags.pre_skip = true;
@@ -150,7 +150,7 @@ void    lay_fig( const gmltag * entry )
                 case e_post_skip:
                     if( AttrFlags.post_skip ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
-                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
+                            lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_space_unit( p, &lay_attr, &layout_work.fig.post_skip );
                     AttrFlags.post_skip = true;
@@ -158,7 +158,7 @@ void    lay_fig( const gmltag * entry )
                 case e_spacing:
                     if( AttrFlags.spacing ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
-                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
+                            lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_spacing( p, &lay_attr, &layout_work.fig.spacing );
                     AttrFlags.spacing = true;
@@ -166,7 +166,7 @@ void    lay_fig( const gmltag * entry )
                 case e_font:
                     if( AttrFlags.font ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
-                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
+                            lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_font_number( p, &lay_attr, &layout_work.fig.font );
                     if( layout_work.fig.font >= wgml_font_cnt ) {
@@ -177,7 +177,7 @@ void    lay_fig( const gmltag * entry )
                 case e_default_place:
                     if( AttrFlags.default_place ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
-                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
+                            lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_place( p, &lay_attr,
                                       &layout_work.fig.default_place );
@@ -186,7 +186,7 @@ void    lay_fig( const gmltag * entry )
                 case e_default_frame:
                     if( AttrFlags.default_frame ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
-                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
+                            lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_default_frame( p, &lay_attr,
                                               &layout_work.fig.default_frame );

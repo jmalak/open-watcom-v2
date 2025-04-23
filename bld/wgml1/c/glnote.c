@@ -113,12 +113,12 @@ void    lay_note( const gmltag * entry )
         cvterr = -1;
         for( k = 0, curr = note_att[k]; curr > 0; k++, curr = note_att[k] ) {
             if( strcmp( lay_att_names[curr], lay_attr.attname ) == 0 ) {
-                p = lay_attr.val_name;
+                p = lay_attr.val.name;
                 switch( curr ) {
                 case e_left_indent:
                     if( AttrFlags.left_indent ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
-                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
+                            lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.note.left_indent );
@@ -127,7 +127,7 @@ void    lay_note( const gmltag * entry )
                 case e_right_indent:
                     if( AttrFlags.right_indent ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
-                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
+                            lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.note.right_indent );
@@ -136,7 +136,7 @@ void    lay_note( const gmltag * entry )
                 case e_pre_skip:
                     if( AttrFlags.pre_skip ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
-                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
+                            lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.note.pre_skip );
@@ -145,7 +145,7 @@ void    lay_note( const gmltag * entry )
                 case e_post_skip:
                     if( AttrFlags.post_skip ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
-                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
+                            lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.note.post_skip );
@@ -154,7 +154,7 @@ void    lay_note( const gmltag * entry )
                 case e_font:
                     if( AttrFlags.font ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
-                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
+                            lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_font_number( p, &lay_attr, &layout_work.note.font );
                     if( layout_work.note.font >= wgml_font_cnt ) {
@@ -165,7 +165,7 @@ void    lay_note( const gmltag * entry )
                 case e_spacing:
                     if( AttrFlags.spacing ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
-                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
+                            lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_spacing( p, &lay_attr, &layout_work.note.spacing );
                     AttrFlags.spacing = true;
@@ -173,7 +173,7 @@ void    lay_note( const gmltag * entry )
                 case e_note_string:
                     if( AttrFlags.note_string ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
-                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
+                            lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_xx_string( p, &lay_attr, layout_work.note.string );
                     AttrFlags.note_string = true;

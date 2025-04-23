@@ -100,12 +100,12 @@ void    lay_figcap( const gmltag * entry )
         cvterr = -1;
         for( k = 0, curr = figcap_att[k]; curr > 0; k++, curr = figcap_att[k] ) {
             if( strcmp( lay_att_names[curr], lay_attr.attname ) == 0 ) {
-                p = lay_attr.val_name;
+                p = lay_attr.val.name;
                 switch( curr ) {
                 case e_pre_lines:
                     if( AttrFlags.pre_lines ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
-                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
+                            lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_space_unit( p, &lay_attr,
                                            &layout_work.figcap.pre_lines );
@@ -114,7 +114,7 @@ void    lay_figcap( const gmltag * entry )
                 case e_font:
                     if( AttrFlags.font ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
-                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
+                            lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_font_number( p, &lay_attr, &layout_work.figcap.font );
                     if( layout_work.figcap.font >= wgml_font_cnt ) {
@@ -125,7 +125,7 @@ void    lay_figcap( const gmltag * entry )
                 case e_figcap_string:
                     if( AttrFlags.figcap_string ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
-                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
+                            lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_xx_string( p, &lay_attr, layout_work.figcap.string );
                     AttrFlags.figcap_string = true;
@@ -133,7 +133,7 @@ void    lay_figcap( const gmltag * entry )
                 case e_string_font:
                     if( AttrFlags.string_font ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
-                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
+                            lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_font_number( p, &lay_attr, &layout_work.figcap.string_font );
                     if( layout_work.figcap.string_font >= wgml_font_cnt ) {
@@ -144,7 +144,7 @@ void    lay_figcap( const gmltag * entry )
                 case e_delim:
                     if( AttrFlags.delim ) {
                         xx_line_err_ci( err_att_dup, lay_attr.att_name,
-                            lay_attr.val_name - lay_attr.att_name + lay_attr.val_len);
+                            lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_char( p, &lay_attr, &layout_work.figcap.delim );
                     AttrFlags.delim = true;
