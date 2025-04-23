@@ -415,6 +415,7 @@ void gml_sf( const gmltag * entry )
     char        *   p;
     char        *   pa;
     font_number     font;
+    att_val_type    attr_val;
 
     p = scan_start;
     SkipSpaces( p );
@@ -425,9 +426,9 @@ void gml_sf( const gmltag * entry )
         if( !ProcFlags.reprocess_line ) {
             if( strnicmp( "font", p, 4 ) == 0 ) {
                 p += 4;
-                p = get_att_value( p );
-                if( val_start != NULL ) {
-                    font = get_font_number( val_start, val_len );
+                p = get_att_value( p, &attr_val );
+                if( attr_val.name != NULL ) {
+                    font = get_font_number( attr_val.name, attr_val.len );
                     font_seen = true;
                     scan_start = p;
                     gml_inline_common( entry, font, t_SF );
@@ -436,7 +437,7 @@ void gml_sf( const gmltag * entry )
         }
     }
     if( !font_seen ) {          // font is a required attribute
-        xx_line_err_c( err_att_missing, val_start );
+        xx_line_err_c( err_att_missing, attr_val.name );
     }
 
     scan_start = scan_stop;

@@ -25,8 +25,9 @@ static  char    refid[ID_LEN];
 
 static char * get_ref_attributes( void )
 {
-    char        *   p;
-    char        *   pa;
+    char            *p;
+    char            *pa;
+    att_val_type    attr_val;
 
     scan_err = false;
     p = scan_start;
@@ -42,24 +43,24 @@ static char * get_ref_attributes( void )
             if( strnicmp( "page", p, 4 ) == 0 ) {
                 page_found = true;
                 p += 4;
-                p = get_att_value( p );
-                if( val_start == NULL ) {
+                p = get_att_value( p, &attr_val );
+                if( attr_val.name == NULL ) {
                     break;
                 }
-                if( strnicmp( "yes", val_start, 3 ) == 0 ) {
+                if( strnicmp( "yes", attr_val.name, 3 ) == 0 ) {
                     ref_page = true;
-                } else if( strnicmp( "no", val_start, 2 ) == 0 ) {
+                } else if( strnicmp( "no", attr_val.name, 2 ) == 0 ) {
                     ref_page = false;
                 } else {
-                    xx_line_err_c( err_inv_att_val, val_start );
+                    xx_line_err_c( err_inv_att_val, attr_val.name );
                 }
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
             } else if( strnicmp( "refid", p, 5 ) == 0 ) {
                 p += 5;
-                p = get_refid_value( p, refid );
-                if( val_start == NULL ) {
+                p = get_refid_value( p, &attr_val, refid );
+                if( attr_val.name == NULL ) {
                     break;
                 }
                 refid_found = true;

@@ -26,6 +26,7 @@ void    gml_binclude( const gmltag * entry )
     char            rt_buff[MAX_FILE_ATTR];
     char            *p;
     char            *pa;
+    char            *attr_name;
     doc_element     *cur_el;
     inputcb         *cb = input_cbs;
     su              depth_su;
@@ -53,29 +54,25 @@ void    gml_binclude( const gmltag * entry )
     } else {
         for( ;; ) {
             p = get_att_start( p, &pa );
-            g_att_val.att_name = p;
-            g_att_val.att_len = 0;
-            for( i = 0; is_att_char( *(p + i) ); i++ ) {
-                g_att_val.att_len++;
-            }
+            attr_name = p;
             if( ProcFlags.reprocess_line ) {
                 break;
             }
             if( strnicmp( "file", p, 4 ) == 0 ) {
                 p += 4;
-                p = get_value( p );
+                p = get_att_value( p, &attr_val );
                 if( AttrFlags.file ) {
-                    xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                        g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                    xx_line_err_ci( err_att_dup, attr_name,
+                        attr_val.name - attr_name + attr_val.len);
                 }
                 AttrFlags.file = true;
-                if( g_att_val.val_name == NULL ) {
+                if( attr_val.name == NULL ) {
                     break;
                 }
-                len = g_att_val.val_len;
+                len = attr_val.len;
                 if( len > _MAX_PATH - 1 )
                     len = _MAX_PATH - 1;
-                strncpy( file, g_att_val.val_name, len );
+                strncpy( file, attr_val.name, len );
                 file[len] = '\0';
                 split_attr_file( file, rt_buff, MAX_FILE_ATTR );
                 if( (rt_buff[0] != '\0') ) {
@@ -89,45 +86,42 @@ void    gml_binclude( const gmltag * entry )
                 }
             } else if( strnicmp( "depth", p, 5 ) == 0 ) {
                 p += 5;
-                p = get_value( p );
+                p = get_att_value( p, &attr_val );
                 if( AttrFlags.depth ) {
-                    xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                        g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                    xx_line_err_ci( err_att_dup, attr_name,
+                        attr_val.name - attr_name + attr_val.len);
                 }
                 AttrFlags.depth = true;
-                if( g_att_val.val_name == NULL ) {
+                if( attr_val.name == NULL ) {
                     break;
                 }
-                attr_val.name = g_att_val.val_name;
-                attr_val.len = g_att_val.val_len;
-                attr_val.quoted = g_att_val.val_quoted;
                 if( att_val_to_su( &depth_su, true, &attr_val, false ) ) {
                     break;
                 }
                 depth = conv_vert_unit( &depth_su, g_text_spacing, g_curr_font );
                 if( depth > t_page.max_depth ) {
-                    xx_line_err_c( err_inv_depth_binclude, g_att_val.val_name );
+                    xx_line_err_c( err_inv_depth_binclude, attr_val.name );
                 }
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
             } else if( strnicmp( "reposition", p, 10 ) == 0 ) {
                 p += 10;
-                p = get_value( p );
+                p = get_att_value( p, &attr_val );
                 if( AttrFlags.reposition ) {
-                    xx_line_err_ci( err_att_dup, g_att_val.att_name,
-                        g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
+                    xx_line_err_ci( err_att_dup, attr_name,
+                        attr_val.name - attr_name + attr_val.len);
                 }
                 AttrFlags.reposition = true;
-                if( g_att_val.val_name == NULL ) {
+                if( attr_val.name == NULL ) {
                     break;
                 }
-                if( strnicmp( "start", g_att_val.val_name, 5 ) == 0 ) {
+                if( strnicmp( "start", attr_val.name, 5 ) == 0 ) {
                     reposition = true;  // moving following text down by depth
-                } else if( strnicmp( "end", g_att_val.val_name, 3 ) == 0 ) {
+                } else if( strnicmp( "end", attr_val.name, 3 ) == 0 ) {
                     reposition = false; // device at proper position after insertion
                 } else {
-                    xx_line_err_c( err_inv_att_val, g_att_val.val_name );
+                    xx_line_err_c( err_inv_att_val, attr_val.name );
                 }
                 if( ProcFlags.tag_end_found ) {
                     break;

@@ -40,6 +40,7 @@ extern  void    gml_set( const gmltag * entry )
     sub_index       subscript;
     sym_dict_hdl    working_dict;
     size_t          len;
+    att_val_type    attr_val;
 
     (void)entry;
 
@@ -60,26 +61,26 @@ extern  void    gml_set( const gmltag * entry )
 
                 /* both get_att_value() and scan_sym() must be used */
 
-                p = get_att_value( p );
-                if( val_start == NULL ) {
+                p = get_att_value( p, &attr_val );
+                if( attr_val.name == NULL ) {
                     break;
                 }
-                scan_sym( val_start, &sym, &subscript, NULL, false );
+                scan_sym( attr_val.name, &sym, &subscript, NULL, false );
                 if( scan_err ) {
                     break;
                 }
                 symbol_found = true;
             } else if( strnicmp( "value", p, 5 ) == 0 ) {
                 p += 5;
-                p = get_att_value( p );
-                if( val_start == NULL ) {
+                p = get_att_value( p, &attr_val );
+                if( attr_val.name == NULL ) {
                     break;
                 }
                 value_found = true;
-                len = val_len;
+                len = attr_val.len;
                 if( len > buf_size - 1 )
                     len = buf_size - 1;
-                strncpy( token_buf, val_start, len );
+                strncpy( token_buf, attr_val.name, len );
                 token_buf[len] = '\0';
             } else if( strnicmp( token_buf, "delete", 6 ) == 0 ) {
                 p += 6;

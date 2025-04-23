@@ -46,9 +46,10 @@
 
 void    gml_include( const gmltag *entry )
 {
-    char        *p;
-    char        *pa;
-    size_t      len;
+    char            *p;
+    char            *pa;
+    size_t          len;
+    att_val_type    attr_val;
 
     (void)entry;
 
@@ -63,16 +64,16 @@ void    gml_include( const gmltag *entry )
         if( !ProcFlags.reprocess_line ) {
             if( strnicmp( "file", p, 4 ) == 0 ) {
                 p += 4;
-                p = get_att_value( p );
+                p = get_att_value( p, &attr_val );
             } else {
                 p = pa;                 // reset for possible file name
-                p = get_tag_value( p );
+                p = get_tag_value( p, &attr_val );
             }
-            if( val_start != NULL ) {
-                len = val_len;
+            if( attr_val.name != NULL ) {
+                len = attr_val.len;
                 if( len > _MAX_PATH - 1 )
                     len = _MAX_PATH - 1;
-                strncpy( token_buf, val_start, len );
+                strncpy( token_buf, attr_val.name, len );
                 token_buf[len] = '\0';
                 ProcFlags.newLevelFile = 1;     // start new include level
                 scan_start = scan_stop;         // .. and ignore remaining line

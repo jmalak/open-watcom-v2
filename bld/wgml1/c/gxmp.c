@@ -77,13 +77,10 @@ void gml_xmp( const gmltag * entry )
 
             if( strnicmp( "depth", p, 5 ) == 0 ) {
                 p += 5;
-                p = get_att_value( p );
-                if( val_start == NULL ) {
+                p = get_att_value( p, &attr_val );
+                if( attr_val.name == NULL ) {
                     break;
                 }
-                attr_val.name = val_start;
-                attr_val.len = val_len;
-                attr_val.quoted = quote_char;
                 if( att_val_to_su( &cur_su, true, &attr_val, false ) ) {
                     break;
                 }

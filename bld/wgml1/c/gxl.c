@@ -208,33 +208,30 @@ void gml_dl( const gmltag * entry )
                 }
             } else if( strnicmp( "headhi", p, 6 ) == 0 ) {
                 p += 6;
-                p = get_att_value( p );
-                if( val_start == NULL ) {
+                p = get_att_value( p, &attr_val );
+                if( attr_val.name == NULL ) {
                     break;
                 }
-                headhi = get_font_number( val_start, val_len );
+                headhi = get_font_number( attr_val.name, attr_val.len );
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
             } else if( strnicmp( "termhi", p, 6 ) == 0 ) {
                 p += 6;
-                p = get_att_value( p );
-                if( val_start == NULL ) {
+                p = get_att_value( p, &attr_val );
+                if( attr_val.name == NULL ) {
                     break;
                 }
-                termhi = get_font_number( val_start, val_len );
+                termhi = get_font_number( attr_val.name, attr_val.len );
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
             } else if( strnicmp( "tsize", p, 5 ) == 0 ) {
                 p += 5;
-                p = get_att_value( p );
-                if( val_start == NULL ) {
+                p = get_att_value( p, &attr_val );
+                if( attr_val.name == NULL ) {
                     break;
                 }
-                attr_val.name = val_start;
-                attr_val.len = val_len;
-                attr_val.quoted = quote_char;
                 if( att_val_to_su( &cur_su, true, &attr_val, false ) ) {
                     break;
                 }
@@ -300,6 +297,7 @@ void gml_gl( const gmltag * entry )
     char        *   p;
     char        *   pa;
     font_number     termhi  =   0;
+    att_val_type    attr_val;
 
     (void)entry;
 
@@ -325,11 +323,11 @@ void gml_gl( const gmltag * entry )
                 compact = true;
             } else if( strnicmp( "termhi", p, 6 ) == 0 ) {
                 p += 6;
-                p = get_att_value( p );
-                if( val_start == NULL ) {
+                p = get_att_value( p, &attr_val );
+                if( attr_val.name == NULL ) {
                     break;
                 }
-                termhi = get_font_number( val_start, val_len );
+                termhi = get_font_number( attr_val.name, attr_val.len );
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }

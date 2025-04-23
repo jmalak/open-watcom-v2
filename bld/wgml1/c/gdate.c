@@ -70,7 +70,7 @@ void    gml_date( const gmltag * entry )
     t_page.cur_left += left_indent;
     t_page.cur_width = t_page.cur_left;
     if( t_page.max_width < right_indent ) {
-        xx_line_err_c( err_page_width_too_small, val_start );
+        xx_line_err_c( err_page_width_too_small, scan_start );
     } else {
         t_page.max_width -= right_indent;
     }

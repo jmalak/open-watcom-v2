@@ -180,7 +180,7 @@ void gml_aline( const gmltag * entry )
     t_page.cur_left += nest_cb->left_indent;
     t_page.cur_width = t_page.cur_left;
     if( t_page.max_width < -1 * nest_cb->right_indent ) {
-        xx_line_err_c( err_page_width_too_small, val_start );
+        xx_line_err_c( err_page_width_too_small, scan_start );
     } else {
         t_page.max_width += nest_cb->right_indent;
     }

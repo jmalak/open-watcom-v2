@@ -26,6 +26,7 @@ void    gml_title( const gmltag * entry )
     page_pos        old_line_pos;
     uint32_t        left_indent;
     uint32_t        right_indent;
+    att_val_type    attr_val;
 
     if( !((ProcFlags.doc_sect == doc_sect_titlep) ||
           (ProcFlags.doc_sect_nxt == doc_sect_titlep)) ) {
@@ -44,12 +45,12 @@ void    gml_title( const gmltag * entry )
             }
             if( strnicmp( "stitle", p, 6 ) == 0 ) {
                 p += 6;
-                p = get_att_value( p );
-                if( val_start == NULL ) {
+                p = get_att_value( p, &attr_val );
+                if( attr_val.name == NULL ) {
                     break;
                 }
                 if( WgmlFlags.firstpass && !ProcFlags.stitle_seen ) {  // first stitle goes into dictionary
-                    add_symvar( global_dict, "$stitle", val_start, no_subscript, 0 );
+                    add_symvar( global_dict, "$stitle", attr_val.name, no_subscript, 0 );
                     ProcFlags.stitle_seen = true;
                 }
                 if( ProcFlags.tag_end_found ) {
@@ -91,7 +92,7 @@ void    gml_title( const gmltag * entry )
     t_page.cur_left += left_indent;
     t_page.cur_width = t_page.cur_left;
     if( t_page.max_width < right_indent ) {
-        xx_line_err_c( err_page_width_too_small, val_start );
+        xx_line_err_c( err_page_width_too_small, attr_val.name );
     } else {
         t_page.max_width -= right_indent;
     }

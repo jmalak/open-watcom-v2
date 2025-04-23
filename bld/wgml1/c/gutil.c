@@ -485,7 +485,7 @@ static bool su_layout_special( su * in_su )
 }
 
 /***************************************************************************/
-/*  initializes in_su->su_txt using val_start/val_len                      */
+/*  initializes in_su->su_txt using attr_val argument                      */
 /*  converts in_su->su_txt using su_layout_special() or internal_to_su()   */
 /*  for use with tag attribute values, not control word operands           */
 /*                                                                         */
@@ -942,13 +942,11 @@ char *get_att_start( char *p, char **orig )
 /*     [<white space>]=[<white space>]<value>                              */
 /***************************************************************************/
 
-char *get_att_value( char *p )
+char *get_att_value( char *p, att_val_type *attr_val )
 {
-    char        quote;
-
-    quote_char = '\0';
-    val_start = NULL;
-    val_len = 0;
+    attr_val->name = NULL;
+    attr_val->len = 0;
+    attr_val->quoted = '\0';
     SkipSpaces( p );                    // over WS to '='
     if( *p == '=' ) {
         p++;
@@ -966,13 +964,12 @@ char *get_att_value( char *p )
     if( *p == '"'
       || *p == '\''
       || *p == '`' ) {
-        quote = *p;
-        quote_char = *p;
+        attr_val->quoted = *p;
         ++p;
-        val_start = p;
+        attr_val->name = p;
         while( *p != '\0' ) {
-            if( *p == quote ) {
-                if( *(p + 1) != quote ) {
+            if( *p == attr_val->quoted ) {
+                if( *(p + 1) != attr_val->quoted ) {
                     break;
                 }
                 { // this should almost never be used
@@ -986,84 +983,17 @@ char *get_att_value( char *p )
             }
             ++p;
         }
-        val_len = p - val_start;    // up to (not including) final quote
-        if( *p != quote ) {         // terminating quote not found
-            xx_line_err_c( err_att_val_open, val_start - 1 );
+        attr_val->len = p - attr_val->name;    // up to (not including) final quote
+        if( *p != attr_val->quoted ) {         // terminating quote not found
+            xx_line_err_c( err_att_val_open, attr_val->name - 1 );
         }
         ++p;                        // over final quote
     } else {
-        val_start = p;
+        attr_val->name = p;
         while( *p != '\0' && *p != ' ' && *p != '.' ) {
             ++p;
         }
-        val_len = p - val_start;
-    }
-    if( *p == '.' ) {
-        ProcFlags.tag_end_found = true;
-    }
-    return( p );
-}
-
-/***************************************************************************/
-/* get the attribute value and report tag-end ('.') if found               */
-/*     [<white space>]=[<white space>]<value>                              */
-/***************************************************************************/
-
-char * get_value( char * p )
-{
-    char        quote;
-
-    quote_char = '\0';
-    g_att_val.val_name = NULL;
-    g_att_val.val_len = 0;
-    SkipSpaces( p );                    // over WS to '='
-    if( *p == '=' ) {
-        p++;
-        SkipSpaces( p );                // over WS to value
-    } else {
-        if( *p == '.' ) {
-            ProcFlags.tag_end_found = true;
-        }
-        xx_line_err_c( err_eq_missing, p );
-    }
-    if( (*p == '\0')
-      || (*p == '.') ) { // value is missing
-        xx_line_err_c( err_att_val_missing, p );
-    }
-    if( *p == '"'
-      || *p == '\''
-      || *p == '`' ) {
-        quote = *p;
-        quote_char = *p;
-        ++p;
-        g_att_val.val_name = p;
-        while( *p != '\0' ) {
-            if( *p == quote ) {
-                if( *(p + 1) != quote ) {
-                    break;
-                }
-                { // this should almost never be used
-                    char    *   q;
-                    char    *   r;
-                    q = p;
-                    for( r = p + 1; *r != '\0'; r++ ) {
-                        *q++ = *r;
-                    }
-                }
-            }
-            ++p;
-        }
-        g_att_val.val_len = p - g_att_val.val_name; // up to (not including) final quote
-        if( *p != quote ) {         // terminating quote not found
-            xx_line_err_c( err_att_val_open, g_att_val.val_name - 1 );
-        }
-        ++p;                        // over final quote
-    } else {
-        g_att_val.val_name = p;
-        while( *p != '\0' && *p != ' ' && *p != '.' ) {
-            ++p;
-        }
-        g_att_val.val_len = p - g_att_val.val_name;
+        attr_val->len = p - attr_val->name;
     }
     if( *p == '.' ) {
         ProcFlags.tag_end_found = true;
@@ -1111,7 +1041,7 @@ font_number get_font_number( char * value, size_t len )
     }
 
     if( p != pb ) {                             // badly-formed token
-        xx_line_err_c( err_num_too_large, val_start );
+        xx_line_err_c( err_num_too_large, value );
     }
 
     wk = strtol( value, NULL, 10 );
@@ -1127,14 +1057,12 @@ font_number get_font_number( char * value, size_t len )
 /*     used by INCLUDE to capture file names without the "file" attribute  */
 /***************************************************************************/
 
-char * get_tag_value( char * p )
+char * get_tag_value( char *p, att_val_type *attr_val )
 {
-    char        quote;
-
     ProcFlags.tag_end_found = false;
-    quote_char = '\0';
-    val_start = NULL;
-    val_len = 0;
+    attr_val->quoted = '\0';
+    attr_val->name = NULL;
+    attr_val->len = 0;
     SkipSpaces( p );                    // over WS to '='
     if( (*p == '\0')
       || (*p == '.') ) { // value is missing
@@ -1146,13 +1074,12 @@ char * get_tag_value( char * p )
     if( *p == '"'
       || *p == '\''
       || *p == '`' ) {
-        quote = *p;
-        quote_char = *p;
+        attr_val->quoted = *p;
         ++p;
-        val_start = p;
+        attr_val->name = p;
         while( *p != '\0' ) {
-            if( *p == quote ) {
-                if( *(p + 1) != quote ) {
+            if( *p == attr_val->quoted ) {
+                if( *(p + 1) != attr_val->quoted ) {
                     break;
                 }
                 { // this should almost never be used
@@ -1166,17 +1093,17 @@ char * get_tag_value( char * p )
             }
             ++p;
         }
-        val_len = p - val_start;    // up to (not including) final quote
-        if( *p != quote ) {         // terminating quote not found
-            xx_line_err_c( err_att_val_open, val_start - 1 );
+        attr_val->len = p - attr_val->name;    // up to (not including) final quote
+        if( *p != attr_val->quoted ) {         // terminating quote not found
+            xx_line_err_c( err_att_val_open, attr_val->name - 1 );
         }
         ++p;                        // over final quote
     } else {
-        val_start = p;
+        attr_val->name = p;
         while( *p != '\0' && *p != ' ' && *p != '.' ) {
             ++p;
         }
-        val_len = p - val_start;
+        attr_val->len = p - attr_val->name;
     }
     if( *p == '.' ) {
         ProcFlags.tag_end_found = true;

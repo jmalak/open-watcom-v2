@@ -42,10 +42,6 @@ global  char        *   new_file_parms; // command tail for IM/AP
 global  bool            scan_err;       // used by character scanning routines
 global  char        *   g_tok_start;    // start of scanned token
 global  size_t          arg_flen;       // arg length
-global  tag_att_val     g_att_val;      // current attribute/value info
-global  size_t          val_len;        // attribute value length
-global  char        *   val_start;      // attribute value start
-global  char            quote_char;     // value is quoted by this char or \0
 global  locflags        rs_loc;         // restricted location
 
 global  int             switch_char;    // DOS switch character

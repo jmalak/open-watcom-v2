@@ -541,6 +541,7 @@ static void gml_hx_common( const gmltag * entry, hdsrc hn_lvl )
     hdsrc           hds_lvl;
     text_space      sav_spacing;
     size_t          len;
+    att_val_type    attr_val;
 
     static char     hxstr[4]    = ":HX";
 
@@ -637,8 +638,8 @@ static void gml_hx_common( const gmltag * entry, hdsrc hn_lvl )
             }
             if( strnicmp( "id", p, 2 ) == 0 ) {
                 p += 2;
-                p = get_refid_value( p, hdrefid );
-                if( val_start == NULL ) {
+                p = get_refid_value( p, &attr_val, hdrefid );
+                if( attr_val.name == NULL ) {
                     break;
                 }
                 id_seen = true;             // valid id attribute found
@@ -647,8 +648,8 @@ static void gml_hx_common( const gmltag * entry, hdsrc hn_lvl )
                 }
             } else if( strnicmp( "stitle", p, 6 ) == 0 ) {
                 p += 6;
-                p = get_att_value( p );
-                if( val_start == NULL ) {
+                p = get_att_value( p, &attr_val );
+                if( attr_val.name == NULL ) {
                     break;
                 }
                 xx_warn_c( wng_unsupp_att, "stitle" );

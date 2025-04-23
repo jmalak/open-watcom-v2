@@ -38,6 +38,7 @@ void gml_fn( const gmltag * entry )
     char        *   p;
     char        *   pa;
     ref_entry   *   cur_ref;
+    att_val_type    attr_val;
 
     (void)entry;
 
@@ -61,8 +62,8 @@ void gml_fn( const gmltag * entry )
             }
             if( strnicmp( "id", p, 2 ) == 0 ) {
                 p += 2;
-                p = get_refid_value( p, fnrefid );
-                if( val_start == NULL ) {
+                p = get_refid_value( p, &attr_val, fnrefid );
+                if( attr_val.name == NULL ) {
                     break;
                 }
                 id_seen = true;             // valid id attribute found

@@ -471,7 +471,7 @@ bool    i_default_frame( char * p, lay_attr_i lay_attr, def_frame * tm )
     } else if( !is_quote_char( *p ) ) {
         cvterr = true;
     } else {
-        if( val_len == 0 ) {        // empty string entered
+        if( lay_attr->val_len == 0 ) {        // empty string entered
             tm->type = none_frame;  // should work for both FIG and IXHEAD
         } else {                    // string value entered
             i_xx_string( p, lay_attr, tm->string );
@@ -1125,10 +1125,10 @@ bool    i_xx_string( char * p, lay_attr_i lay_attr, xx_str * tm )
     (void)lay_attr;
 
     cvterr = false;
-    if( (val_start != NULL)
-      && (val_len < str_size) ) {
-        memcpy_s( tm, str_size, val_start, val_len );
-        *(tm + val_len) = '\0';
+    if( (lay_attr->val_name != NULL)
+      && (lay_attr->val_len < str_size) ) {
+        memcpy_s( tm, str_size, lay_attr->val_name, lay_attr->val_len );
+        *(tm + lay_attr->val_len) = '\0';
     } else {
         xx_line_err_c( err_xx_string, p );
     }
