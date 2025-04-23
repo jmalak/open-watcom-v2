@@ -47,6 +47,7 @@
 
 #define TAG_ATT_NAME_LENGTH 10          // gml tag attribute name max. length
 #define LAY_ATT_NAME_LENGTH 17          // layout attribute name max. length
+#define SPECVAL_LENGTH      10
 
 #define ID_LEN              15          // length of refids wgml 4 gives a warning
                                         // for lengths > 7 but processes it
@@ -1822,6 +1823,7 @@ typedef struct att_val_type {
     char            *name;
     unsigned        len;
     char            quoted;
+    char            specval[SPECVAL_LENGTH + 1];
 } att_val_type;
 
 typedef struct lay_att_val {
@@ -1830,6 +1832,7 @@ typedef struct lay_att_val {
     char            *val_name;
     uint32_t        val_len;
     char            val_quoted;
+    char            val_specval[SPECVAL_LENGTH + 1];
     char            attname[LAY_ATT_NAME_LENGTH + 1];
 } lay_att_val;
 

@@ -542,6 +542,7 @@ static void gml_hx_common( const gmltag * entry, hdsrc hn_lvl )
     text_space      sav_spacing;
     size_t          len;
     att_val_type    attr_val;
+    char            attname[TAG_ATT_NAME_LENGTH + 1];
 
     static char     hxstr[4]    = ":HX";
 
@@ -632,12 +633,11 @@ static void gml_hx_common( const gmltag * entry, hdsrc hn_lvl )
         /* already at tag end */
     } else {
         for( ;; ) {
-            p = get_att_start( p, &pa );
+            p = get_att_name( p, &pa, attname );
             if( ProcFlags.reprocess_line ) {
                 break;
             }
-            if( strnicmp( "id", p, 2 ) == 0 ) {
-                p += 2;
+            if( strcmp( "id", attname ) == 0 ) {
                 p = get_refid_value( p, &attr_val, hdrefid );
                 if( attr_val.name == NULL ) {
                     break;
@@ -646,8 +646,7 @@ static void gml_hx_common( const gmltag * entry, hdsrc hn_lvl )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( strnicmp( "stitle", p, 6 ) == 0 ) {
-                p += 6;
+            } else if( strcmp( "stitle", attname ) == 0 ) {
                 p = get_att_value( p, &attr_val );
                 if( attr_val.name == NULL ) {
                     break;

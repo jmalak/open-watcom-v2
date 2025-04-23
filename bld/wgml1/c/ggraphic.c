@@ -37,6 +37,7 @@ void    gml_graphic( const gmltag * entry )
     int32_t         yoff                    = 0;
     FILE            *fp;
     att_val_type    attr_val;
+    char            attname[TAG_ATT_NAME_LENGTH + 1];
 
     if( (ProcFlags.doc_sect < doc_sect_gdoc) ) {
         if( (ProcFlags.doc_sect_nxt < doc_sect_gdoc) ) {
@@ -56,23 +57,20 @@ void    gml_graphic( const gmltag * entry )
         /* already at tag end */
     } else {
         for( ;; ) {
-            p = get_att_start( p, &pa );
+            p = get_att_name( p, &pa, attname );
             if( ProcFlags.reprocess_line ) {
                 break;
             }
-            if( strnicmp( "file", p, 4 ) == 0 ) {
-                p += 4;
+            if( strcmp( "file", attname ) == 0 ) {
                 p = get_att_value( p, &attr_val );
                 if( attr_val.name == NULL ) {
                     break;
                 }
                 file_found = true;
-                memcpy_s( file, _MAX_PATH, attr_val.name, attr_val.len );
-                if( attr_val.len < _MAX_PATH ) {
-                    file[attr_val.len] = '\0';
-                } else {
-                    file[_MAX_PATH - 1] = '\0';
-                }
+                if( attr_val.len > _MAX_PATH - 1 )
+                    attr_val.len = _MAX_PATH - 1;
+                strncpy( file, attr_val.name, attr_val.len );
+                file[attr_val.len] = '\0';
                 split_attr_file( file, rt_buff, sizeof( rt_buff ) );
                 if( (rt_buff[0] != '\0') ) {
                     xx_warn( wng_rec_type_graphic );
@@ -80,8 +78,7 @@ void    gml_graphic( const gmltag * entry )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( strnicmp( "depth", p, 5 ) == 0 ) {
-                p += 5;
+            } else if( strcmp( "depth", attname ) == 0 ) {
                 p = get_att_value( p, &attr_val );
                 if( attr_val.name == NULL ) {
                     break;
@@ -100,8 +97,7 @@ void    gml_graphic( const gmltag * entry )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( strnicmp( "width", p, 5 ) == 0 ) {
-                p += 5;
+            } else if( strcmp( "width", attname ) == 0 ) {
                 p = get_att_value( p, &attr_val );
                 if( attr_val.name == NULL ) {
                     break;
@@ -109,9 +105,9 @@ void    gml_graphic( const gmltag * entry )
 
                 /* GRAPHIC uses the current column width even if "page" is specified */
 
-                if( strnicmp( "page", attr_val.name, 4 ) == 0 ) {
+                if( strcmp( "page", attr_val.specval ) == 0 ) {
                     // default value is the correct value to use
-                } else if( strnicmp( "column", attr_val.name, 6 ) == 0 ) {
+                } else if( strcmp( "column", attr_val.specval ) == 0 ) {
                     // default value is the correct value to use
                 } else {    // value actually specifies the width
                     if( att_val_to_su( &cur_su, true, &attr_val, false ) ) {
@@ -128,8 +124,7 @@ void    gml_graphic( const gmltag * entry )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( strnicmp( "scale", p, 5 ) == 0 ) {
-                p += 5;
+            } else if( strcmp( "scale", attname ) == 0 ) {
                 p = get_att_value( p, &attr_val );
                 if( attr_val.name == NULL ) {
                     break;
@@ -155,8 +150,7 @@ void    gml_graphic( const gmltag * entry )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( strnicmp( "xoff", p, 4 ) == 0 ) {
-                p += 4;
+            } else if( strcmp( "xoff", attname ) == 0 ) {
                 p = get_att_value( p, &attr_val );
                 if( attr_val.name == NULL ) {
                     break;
@@ -168,8 +162,7 @@ void    gml_graphic( const gmltag * entry )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( strnicmp( "yoff", p, 4 ) == 0 ) {
-                p += 4;
+            } else if( strcmp( "yoff", attname ) == 0 ) {
                 p = get_att_value( p, &attr_val );
                 if( attr_val.name == NULL ) {
                     break;

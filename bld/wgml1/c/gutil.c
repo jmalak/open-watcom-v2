@@ -865,20 +865,6 @@ char * format_num( uint32_t n, char * r, size_t rsize, num_style ns )
     return( r );
 }
 
-bool     get_att_name( const char *p, char *attname )
-{
-    size_t  len;
-
-    for( len = 0; len < TAG_ATT_NAME_LENGTH; len++ ) {
-        if( !is_att_char( *p ) ) {
-            break;
-        }
-        *attname++ = my_tolower( *p++ );     // copy lowercase macro name
-    }
-    *attname = '\0';
-    return( is_att_char( *p ) );
-}
-
 /***************************************************************************/
 /* get the start of the next potential attribute                           */
 /* returns the start of the part of the line on which that potential       */
@@ -890,9 +876,10 @@ bool     get_att_name( const char *p, char *attname )
 /*       unless, of course, it is                                          */
 /***************************************************************************/
 
-char *get_att_start( char *p, char **orig )
+char *get_att_name( char *p, char **orig, char *attname )
 {
-    static  char      buf[BUF_SIZE];
+    static char     buf[BUF_SIZE];
+    int             i;
 
     ProcFlags.tag_end_found = false;
     for(;;) {                           // loop until potential attribute/rescan line found
@@ -934,6 +921,13 @@ char *get_att_start( char *p, char **orig )
             break;      // potential next attribute found
         }
     }
+    i = 0;
+    while( is_att_char( *p ) ) {
+        if( i < TAG_ATT_NAME_LENGTH )
+            attname[i++] = my_tolower( *p );
+        p++;
+    }
+    attname[i] = '\0';
     return( p );
 }
 
@@ -944,6 +938,8 @@ char *get_att_start( char *p, char **orig )
 
 char *get_att_value( char *p, att_val_type *attr_val )
 {
+    int         i;
+
     attr_val->name = NULL;
     attr_val->len = 0;
     attr_val->quoted = '\0';
@@ -995,6 +991,12 @@ char *get_att_value( char *p, att_val_type *attr_val )
         }
         attr_val->len = p - attr_val->name;
     }
+    for( i = 0; i < SPECVAL_LENGTH; i++ ) {
+        if( !is_att_char( attr_val->name[i] ) )
+            break;
+        attr_val->specval[i] = my_tolower( attr_val->name[i] );
+    }
+    attr_val->specval[i] = '\0';
     if( *p == '.' ) {
         ProcFlags.tag_end_found = true;
     }

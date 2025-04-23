@@ -298,19 +298,19 @@ global  laystack    *   lay_files;      // layout file(s) specified on cmdline
 /*  tagnames as strings for msg display                                    */
 /***************************************************************************/
 
-extern const char       *str_tags[];
+extern const char       * const str_tags[];
 
 /***************************************************************************/
 /*  document sections for banner definition                                */
 /***************************************************************************/
 
-extern  const   ban_sections    doc_sections[max_ban];
+extern const ban_sections   doc_sections[max_ban];
 
 /***************************************************************************/
 /*  place names for fig and banner definition                              */
 /***************************************************************************/
 
-extern  const   ban_places    bf_places[max_place];
+extern const ban_places     bf_places[max_place];
 
 /***************************************************************************/
 /* Layout attribute names as character strings                             */
@@ -318,7 +318,7 @@ extern  const   ban_places    bf_places[max_place];
 /*  longest attribute name is extract_threshold  (=17)                     */
 /*                            ....+....1....+..                            */
 /***************************************************************************/
-extern  const   char        lay_att_names[e_dummy_max + 1][18];
+extern const char           * const lay_att_names[];
 
 /***************************************************************************/
 /*   declarations for the sequence of LAYOUT attribute values              */

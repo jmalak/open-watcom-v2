@@ -75,8 +75,7 @@ typedef enum ban_docsect {
 /***************************************************************************/
 
 typedef struct  ban_sections {
-    char            name[12];
-    size_t          len;
+    const char      *name;
     ban_docsect     type;
 } ban_sections;
 
@@ -85,8 +84,7 @@ typedef struct  ban_sections {
 /***************************************************************************/
 
 typedef struct  ban_places {
-    char            name[12];
-    size_t          len;
+    const char      *name;
     bf_place        type;
 } ban_places;
 

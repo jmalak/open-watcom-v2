@@ -27,6 +27,7 @@ void    gml_title( const gmltag * entry )
     uint32_t        left_indent;
     uint32_t        right_indent;
     att_val_type    attr_val;
+    char            attname[TAG_ATT_NAME_LENGTH + 1];
 
     if( !((ProcFlags.doc_sect == doc_sect_titlep) ||
           (ProcFlags.doc_sect_nxt == doc_sect_titlep)) ) {
@@ -39,12 +40,11 @@ void    gml_title( const gmltag * entry )
         /* already at tag end */
     } else {
         for( ;; ) {
-            p = get_att_start( p, &pa );
+            p = get_att_name( p, &pa, attname );
             if( ProcFlags.reprocess_line ) {
                 break;
             }
-            if( strnicmp( "stitle", p, 6 ) == 0 ) {
-                p += 6;
+            if( strcmp( "stitle", attname ) == 0 ) {
                 p = get_att_value( p, &attr_val );
                 if( attr_val.name == NULL ) {
                     break;

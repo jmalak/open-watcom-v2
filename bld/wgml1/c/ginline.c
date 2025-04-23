@@ -416,16 +416,16 @@ void gml_sf( const gmltag * entry )
     char        *   pa;
     font_number     font;
     att_val_type    attr_val;
+    char            attname[TAG_ATT_NAME_LENGTH + 1];
 
     p = scan_start;
     SkipSpaces( p );
     if( *p == '.' ) {
         /* already at tag end */
     } else {
-        p = get_att_start( p, &pa );
+        p = get_att_name( p, &pa, attname );
         if( !ProcFlags.reprocess_line ) {
-            if( strnicmp( "font", p, 4 ) == 0 ) {
-                p += 4;
+            if( strcmp( "font", attname ) == 0 ) {
                 p = get_att_value( p, &attr_val );
                 if( attr_val.name != NULL ) {
                     font = get_font_number( attr_val.name, attr_val.len );

@@ -19,7 +19,7 @@
 #define MAX_LINE_LEN    75
 
 
-const char    *str_tags[] = {
+const char    * const str_tags[] = {
     { "NONE" },
     #define pickc( name, length, gmlfunc, gmlflags, gmllocflags, clsflags, layfunc, layflags, laylocflags ) { #name },
     #define pickg( name, length, gmlfunc, gmlflags, gmllocflags, clsflags ) { #name },

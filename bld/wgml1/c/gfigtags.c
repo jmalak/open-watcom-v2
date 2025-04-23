@@ -386,6 +386,7 @@ void gml_fig( const gmltag * entry )
     su              cur_su;
     uint32_t        max_width;
     att_val_type    attr_val;
+    char            attname[TAG_ATT_NAME_LENGTH + 1];
 
     (void)entry;
 
@@ -417,12 +418,11 @@ void gml_fig( const gmltag * entry )
         /* already at tag end */
     } else {
         for( ;; ) {
-            p = get_att_start( p, &pa );
+            p = get_att_name( p, &pa, attname );
             if( ProcFlags.reprocess_line ) {
                 break;
             }
-            if( strnicmp( "depth", p, 5 ) == 0 ) {
-                p += 5;
+            if( strcmp( "depth", attname ) == 0 ) {
                 p = get_att_value( p, &attr_val );
                 if( attr_val.name == NULL ) {
                     break;
@@ -434,30 +434,27 @@ void gml_fig( const gmltag * entry )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( strnicmp( "frame", p, 5 ) == 0 ) {
-                p += 5;
+            } else if( strcmp( "frame", attname ) == 0 ) {
                 p = get_att_value( p, &attr_val );
                 if( attr_val.name == NULL ) {
                     break;
                 }
-                if( strnicmp( "none", attr_val.name, 4 ) == 0 ) {
+                if( strcmp( "none", attr_val.specval ) == 0 ) {
                     frame.type = none_frame;
-                } else if( strnicmp( "box", attr_val.name, 3 ) == 0 ) {
+                } else if( strcmp( "box", attr_val.specval ) == 0 ) {
                     frame.type = box_frame;
-                } else if( strnicmp( "rule", attr_val.name, 4 ) == 0 ) {
+                } else if( strcmp( "rule", attr_val.specval ) == 0 ) {
                     frame.type = rule_frame;
                 } else {
                     frame.type = char_frame;
                 }
                 if( frame.type == char_frame ) {
-                    size_t  len;
-
-                    len = attr_val.len;
-                    if( len > str_size - 1 )
-                        len = str_size - 1;
-                    strncpy( frame.string, attr_val.name, len );
-                    frame.string[len] = '\0';
-                    if( len == 0 ) {
+                    if( attr_val.len > 0 ) {
+                        if( attr_val.len > str_size - 1 )
+                            attr_val.len = str_size - 1;
+                        strncpy( frame.string, attr_val.name, attr_val.len );
+                        frame.string[attr_val.len] = '\0';
+                    } else {
                         frame.type = none_frame;// treat null string as "none"
                     }
                 } else {                        // blank any existing frame.string value
@@ -466,8 +463,7 @@ void gml_fig( const gmltag * entry )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( strnicmp( "id", p, 2 ) == 0 ) {
-                p += 2;
+            } else if( strcmp( "id", attname ) == 0 ) {
                 p = get_refid_value( p, &attr_val, figrefid );
                 if( attr_val.name == NULL ) {
                     break;
@@ -476,17 +472,16 @@ void gml_fig( const gmltag * entry )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( strnicmp( "place", p, 5 ) == 0 ) {
-                p += 5;
+            } else if( strcmp( "place", attname ) == 0 ) {
                 p = get_att_value( p, &attr_val );
                 if( attr_val.name == NULL ) {
                     break;
                 }
-                if( strnicmp( "bottom", attr_val.name, 5 ) == 0 ) {
+                if( strcmp( "bottom", attr_val.specval ) == 0 ) {
                     place = bottom_place;
-                } else if( strnicmp( "inline", attr_val.name, 6 ) == 0 ) {
+                } else if( strcmp( "inline", attr_val.specval ) == 0 ) {
                     place = inline_place;
-                } else if( strnicmp( "top", attr_val.name, 3 ) == 0 ) {
+                } else if( strcmp( "top", attr_val.specval ) == 0 ) {
                     place = top_place;
                 } else {
                     xx_line_err_c( err_inv_att_val, attr_val.name );
@@ -494,16 +489,15 @@ void gml_fig( const gmltag * entry )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( strnicmp( "width", p, 5 ) == 0 ) {
-                p += 5;
+            } else if( strcmp( "width", attname ) == 0 ) {
                 p = get_att_value( p, &attr_val );
                 if( attr_val.name == NULL ) {
                     break;
                 }
-                if( strnicmp( "page", attr_val.name, 4 ) == 0 ) {
+                if( strcmp( "page", attr_val.specval ) == 0 ) {
                     // this will be used to set t_page_width and width below
                     page_width = true;
-                } else if( strnicmp( "column", attr_val.name, 6 ) == 0 ) {
+                } else if( strcmp( "column", attr_val.specval ) == 0 ) {
                     // default value is the correct value to use
                 } else {    // value actually specifies the width
                     pa = attr_val.name;

@@ -59,6 +59,7 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
     size_t          seetextlen      = 0;    // len for see = <string> value
     size_t          txtlen;                 // len for entry value
     att_val_type    attr_val;
+    char            attname[TAG_ATT_NAME_LENGTH + 1];
 
     if( input_cbs->fmflags & II_tag_mac ) {   // ensure next line is valid
         input_cbs->s.m->ix_seen = true;     // records use of tag, even if indexing is off
@@ -104,14 +105,13 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
         /* already at tag end */
     } else {
         for( ;; ) {
-            p = get_att_start( p, &pa );
+            p = get_att_name( p, &pa, attname );
             pb = p;
             if( ProcFlags.reprocess_line ) {
                 break;
             }
 
-            if( strnicmp( "id", p, 2 ) == 0 ) {
-                p += 2;
+            if( strcmp( "id", attname ) == 0 ) {
                 p = get_refid_value( p, &attr_val, ixrefid );
                 if( attr_val.name == NULL ) {
                     break;
@@ -125,8 +125,7 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( strnicmp( "refid", p, 5 ) == 0 ) {
-                p += 5;
+            } else if( strcmp( "refid", attname ) == 0 ) {
                 p = get_refid_value( p, &attr_val, refrefid );
                 if( attr_val.name == NULL ) {
                     break;
@@ -147,8 +146,7 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( strnicmp( "pg", p, 2 ) == 0 ) {
-                p += 2;
+            } else if( strcmp( "pg", attname ) == 0 ) {
                 p = get_att_value( p, &attr_val );
 
                 scan_start = p;
@@ -159,11 +157,11 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
                   || (hxstring[2] == lvlc) ) {
                     pgseen = true;
                     if( attr_val.quoted == '\0' ) {  // value not quoted
-                        if( strnicmp( "start", attr_val.name, 5 ) == 0 ) {
+                        if( strcmp( "start", attr_val.specval ) == 0 ) {
                             pgvalue = pgstart;
-                        } else if( strnicmp( "end", attr_val.name, 3 ) == 0 ) {
+                        } else if( strcmp( "end", attr_val.specval ) == 0 ) {
                             pgvalue = pgend;
-                        } else if( strnicmp( "major", attr_val.name, 5 ) == 0 ) {
+                        } else if( strcmp( "major", attr_val.specval ) == 0 ) {
                             pgvalue = pgmajor;
                         }
                     }
@@ -171,7 +169,7 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
                         pgvalue = pgstring;
                         pgtext = mem_alloc( attr_val.len + 1 );
                         strncpy( pgtext, attr_val.name, attr_val.len );// use text instead of pageno
-                        *(pgtext + attr_val.len) = '\0';
+                        pgtext[attr_val.len] = '\0';
                         pgtextlen = attr_val.len;
                     }
                 } else {                        // end-of-tag for IHx
@@ -181,8 +179,7 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( strnicmp( "print", p, 5 ) == 0 ) {
-                p += 5;
+            } else if( strcmp( "print", attname ) == 0 ) {
                 p = get_att_value( p, &attr_val );
 
                 scan_start = p;
@@ -192,9 +189,9 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
                 if( hxstring[3] == lvlc ) {     // IHx only
                     printseen = true;
                     printtxt = mem_alloc( attr_val.len + 1 );
-                    printtxtlen = attr_val.len;
                     strncpy( printtxt, attr_val.name, attr_val.len );
-                    *(printtxt + attr_val.len) = '\0';
+                    printtxt[attr_val.len] = '\0';
+                    printtxtlen = attr_val.len;
                 } else {                        // end-of-tag for Ix, IREF
                     p = pa;                     // restore spaces before text
                     break;
@@ -202,8 +199,7 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( strnicmp( "seeid", p, 5 ) == 0 ) {
-                p += 5;
+            } else if( strcmp( "seeid", attname ) == 0 ) {
                 p = get_refid_value( p, &attr_val, seerefid );
                 if( attr_val.name == NULL ) {
                     break;
@@ -224,8 +220,7 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( strnicmp( "see", p, 3 ) == 0 ) {
-                p += 3;
+            } else if( strcmp( "see", attname ) == 0 ) {
                 p = get_att_value( p, &attr_val );
 
                 scan_start = p;
@@ -237,7 +232,7 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
                     seeseen = true;
                     seetext = mem_alloc( attr_val.len + 1 );
                     strncpy( seetext, attr_val.name, attr_val.len );
-                    *(seetext + attr_val.len) = '\0';
+                    seetext[attr_val.len] = '\0';
                     seetextlen = attr_val.len;
                 } else {                        // end-of-tag for Ix
                     p = pa;                     // restore spaces before text
@@ -246,8 +241,7 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( strnicmp( "ix", p, 2 ) == 0 ) {
-                p += 2;
+            } else if( strcmp( "ix", attname ) == 0 ) {
                 p = get_att_value( p, &attr_val );
                 gn.arg.s = attr_val.name;
                 gn.arg.e = attr_val.name + attr_val.len;

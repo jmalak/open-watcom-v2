@@ -156,6 +156,7 @@ void gml_dl( const gmltag * entry )
     su              cur_su;
     uint32_t        tsize;
     att_val_type    attr_val;
+    char            attname[TAG_ATT_NAME_LENGTH + 1];
 
     (void)entry;
 
@@ -189,25 +190,22 @@ void gml_dl( const gmltag * entry )
         /* already at tag end */
     } else {
         for( ;; ) {
-            p = get_att_start( p, &pa );
+            p = get_att_name( p, &pa, attname );
             if( ProcFlags.reprocess_line ) {
                 break;
             }
 
-            if( strnicmp( "compact", p, 7 ) == 0 ) {
+            if( strcmp( "compact", attname ) == 0 ) {
                 compact = true;
-                p += 7;
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( strnicmp( "break", p, 5 ) == 0 ) {
-                p += 5;
+            } else if( strcmp( "break", attname ) == 0 ) {
                 dl_break = true;
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( strnicmp( "headhi", p, 6 ) == 0 ) {
-                p += 6;
+            } else if( strcmp( "headhi", attname ) == 0 ) {
                 p = get_att_value( p, &attr_val );
                 if( attr_val.name == NULL ) {
                     break;
@@ -216,8 +214,7 @@ void gml_dl( const gmltag * entry )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( strnicmp( "termhi", p, 6 ) == 0 ) {
-                p += 6;
+            } else if( strcmp( "termhi", attname ) == 0 ) {
                 p = get_att_value( p, &attr_val );
                 if( attr_val.name == NULL ) {
                     break;
@@ -226,8 +223,7 @@ void gml_dl( const gmltag * entry )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( strnicmp( "tsize", p, 5 ) == 0 ) {
-                p += 5;
+            } else if( strcmp( "tsize", attname ) == 0 ) {
                 p = get_att_value( p, &attr_val );
                 if( attr_val.name == NULL ) {
                     break;
@@ -298,6 +294,7 @@ void gml_gl( const gmltag * entry )
     char        *   pa;
     font_number     termhi  =   0;
     att_val_type    attr_val;
+    char            attname[TAG_ATT_NAME_LENGTH + 1];
 
     (void)entry;
 
@@ -313,16 +310,14 @@ void gml_gl( const gmltag * entry )
         /* already at tag end */
     } else {
         for( ;; ) {
-            p = get_att_start( p, &pa );
+            p = get_att_name( p, &pa, attname );
             if( ProcFlags.reprocess_line ) {
                 break;
             }
 
-            if( strnicmp( "compact", p, 7 ) == 0 ) {
-                p += 7;
+            if( strcmp( "compact", attname ) == 0 ) {
                 compact = true;
-            } else if( strnicmp( "termhi", p, 6 ) == 0 ) {
-                p += 6;
+            } else if( strcmp( "termhi", attname ) == 0 ) {
                 p = get_att_value( p, &attr_val );
                 if( attr_val.name == NULL ) {
                     break;
@@ -392,9 +387,10 @@ void gml_gl( const gmltag * entry )
 
 void gml_ol( const gmltag * entry )
 {
-    bool        compact =   false;
-    char    *   p;
-    char    *   pa;
+    bool            compact =   false;
+    char            *p;
+    char            *pa;
+    char            attname[TAG_ATT_NAME_LENGTH + 1];
 
     (void)entry;
 
@@ -408,13 +404,12 @@ void gml_ol( const gmltag * entry )
         /* already at tag end */
     } else {
         for( ;; ) {
-            p = get_att_start( p, &pa );
+            p = get_att_name( p, &pa, attname );
             if( ProcFlags.reprocess_line ) {
                 break;
             }
 
-            if( strnicmp( "compact", p, 7 ) == 0 ) {
-                p += 7;
+            if( strcmp( "compact", attname ) == 0 ) {
                 compact = true;
             } else {
                 p = pa; // restore any spaces before non-attribute value
@@ -479,9 +474,10 @@ void gml_ol( const gmltag * entry )
 
 void gml_sl( const gmltag * entry )
 {
-    bool        compact =   false;
-    char    *   p;
-    char    *   pa;
+    bool            compact =   false;
+    char            *p;
+    char            *pa;
+    char            attname[TAG_ATT_NAME_LENGTH + 1];
 
     (void)entry;
 
@@ -495,13 +491,12 @@ void gml_sl( const gmltag * entry )
         /* already at tag end */
     } else {
         for( ;; ) {
-            p = get_att_start( p, &pa );
+            p = get_att_name( p, &pa, attname );
             if( ProcFlags.reprocess_line ) {
                 break;
             }
 
-            if( strnicmp( "compact", p, 7 ) == 0 ) {
-                p += 7;
+            if( strcmp( "compact", attname ) == 0 ) {
                 compact = true;
             } else {
                 p = pa; // restore any spaces before non-attribute value
@@ -565,9 +560,10 @@ void gml_sl( const gmltag * entry )
 
 void gml_ul( const gmltag * entry )
 {
-    bool        compact =   false;
-    char    *   p;
-    char    *   pa;
+    bool            compact =   false;
+    char            *p;
+    char            *pa;
+    char            attname[TAG_ATT_NAME_LENGTH + 1];
 
     (void)entry;
 
@@ -581,13 +577,12 @@ void gml_ul( const gmltag * entry )
         /* already at tag end */
     } else {
         for( ;; ) {
-            p = get_att_start( p, &pa );
+            p = get_att_name( p, &pa, attname );
             if( ProcFlags.reprocess_line ) {
                 break;
             }
 
-            if( strnicmp( "compact", p, 7 ) == 0 ) {
-                p += 7;
+            if( strcmp( "compact", attname ) == 0 ) {
                 compact = true;
             } else {
                 p = pa; // restore any spaces before non-attribute value

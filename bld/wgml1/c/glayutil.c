@@ -18,83 +18,79 @@
 #include "wgml.h"
 
 
-static char  const      stryes[] =  { "yes" };
-static char  const      strno[]  =  { "no" };
-
 typedef struct  content_names {
-    char                name[12];
-    size_t              len;
+    const char          *name;
     content_enum        type;
 } content_names;
 
-static  const   content_names   content_text[max_content] =  {
-    { "none",      4, no_content        },
-    { "author",    6, author_content    },
-    { "bothead",   7, bothead_content   },
-    { "date",      4, date_content      },
-    { "docnum",    6, docnum_content    },
-    { "head0",     5, head0_content     },
-    { "head1",     5, head1_content     },
-    { "head2",     5, head2_content     },
-    { "head3",     5, head3_content     },
-    { "head4",     5, head4_content     },
-    { "head5",     5, head5_content     },
-    { "head6",     5, head6_content     },
-    { "headnum0",  8, headnum0_content  },
-    { "headnum1",  8, headnum1_content  },
-    { "headnum2",  8, headnum2_content  },
-    { "headnum3",  8, headnum3_content  },
-    { "headnum4",  8, headnum4_content  },
-    { "headnum5",  8, headnum5_content  },
-    { "headnum6",  8, headnum6_content  },
-    { "headtext0", 9, headtext0_content },
-    { "headtext1", 9, headtext1_content },
-    { "headtext2", 9, headtext2_content },
-    { "headtext3", 9, headtext3_content },
-    { "headtext4", 9, headtext4_content },
-    { "headtext5", 9, headtext5_content },
-    { "headtext6", 9, headtext6_content },
+static const content_names      content_text[max_content] =  {
+    { "none",      no_content        },
+    { "author",    author_content    },
+    { "bothead",   bothead_content   },
+    { "date",      date_content      },
+    { "docnum",    docnum_content    },
+    { "head0",     head0_content     },
+    { "head1",     head1_content     },
+    { "head2",     head2_content     },
+    { "head3",     head3_content     },
+    { "head4",     head4_content     },
+    { "head5",     head5_content     },
+    { "head6",     head6_content     },
+    { "headnum0",  headnum0_content  },
+    { "headnum1",  headnum1_content  },
+    { "headnum2",  headnum2_content  },
+    { "headnum3",  headnum3_content  },
+    { "headnum4",  headnum4_content  },
+    { "headnum5",  headnum5_content  },
+    { "headnum6",  headnum6_content  },
+    { "headtext0", headtext0_content },
+    { "headtext1", headtext1_content },
+    { "headtext2", headtext2_content },
+    { "headtext3", headtext3_content },
+    { "headtext4", headtext4_content },
+    { "headtext5", headtext5_content },
+    { "headtext6", headtext6_content },
     /* The "d" forms must be first or they will never be found */
-    { "pgnumad",   7, pgnumad_content   },
-    { "pgnuma",    6, pgnuma_content    },
-    { "pgnumrd",   7, pgnumrd_content   },
-    { "pgnumr",    6, pgnumr_content    },
-    { "pgnumcd",   7, pgnumcd_content   },
-    { "pgnumc",    6, pgnumc_content    },
-    { "rule",      4, rule_content      },
-    { "sec",       3, sec_content       },
-    { "stitle",    6, stitle_content    },
-    { "title",     5, title_content     },
-    { "time",      4, time_content      },
-    { "tophead",   7, tophead_content   },
+    { "pgnumad",   pgnumad_content   },
+    { "pgnuma",    pgnuma_content    },
+    { "pgnumrd",   pgnumrd_content   },
+    { "pgnumr",    pgnumr_content    },
+    { "pgnumcd",   pgnumcd_content   },
+    { "pgnumc",    pgnumc_content    },
+    { "rule",      rule_content      },
+    { "sec",       sec_content       },
+    { "stitle",    stitle_content    },
+    { "title",     title_content     },
+    { "time",      time_content      },
+    { "tophead",   tophead_content   },
     /* Must be last: will match any following entries */
-    { "",          0, string_content    },  // special
+    { "",          string_content    },  // special
 };
 
 /***************************************************************************/
 /*  document sections for banner definition                                */
 /***************************************************************************/
 
-const   ban_sections    doc_sections[max_ban] = {
-    { "???",      3, no_ban        },
-    { "abstract", 8, abstract_ban  },
-    { "appendix", 8, appendix_ban  },
-    { "backm",    5, backm_ban     },
-    { "body",     4, body_ban      },
-    { "figlist",  7, figlist_ban   },
-    { "index",    5, index_ban     },
-    { "preface",  7, preface_ban   },
-    { "toc",      3, toc_ban       },
-    { "head0",    5, head0_ban     },
-    { "head1",    5, head1_ban     },
-    { "head2",    5, head2_ban     },
-    { "head3",    5, head3_ban     },
-    { "head4",    5, head4_ban     },
-    { "head5",    5, head5_ban     },
-    { "head6",    5, head6_ban     },
-    { "letfirst", 8, letfirst_ban  },
-    { "letlast",  7, letlast_ban   },
-    { "letter",   6, letter_ban    },
+const ban_sections      doc_sections[max_ban] = {
+    { "???",      no_ban        },
+    { "abstract", abstract_ban  },
+    { "appendix", appendix_ban  },
+    { "backm",    backm_ban     },
+    { "body",     body_ban      },
+    { "figlist",  figlist_ban   },
+    { "index",    index_ban     },
+    { "preface",  preface_ban   },
+    { "toc",      toc_ban       },
+    { "head0",    head0_ban     },
+    { "head1",    head1_ban     },
+    { "head2",    head2_ban     },
+    { "head3",    head3_ban     },
+    { "head4",    head4_ban     },
+    { "head5",    head5_ban     },
+    { "head6",    head6_ban     },
+    { "letfirst", letfirst_ban  },
+    { "letlast",  letlast_ban   },
+    { "letter",   letter_ban    },
 };
 
 
@@ -102,15 +98,15 @@ const   ban_sections    doc_sections[max_ban] = {
 /*  place names for fig and banner definition                              */
 /***************************************************************************/
 
-const   ban_places    bf_places[max_place] = {
-    { "???",      3, no_place      },
-    { "inline",   6, inline_place  },
-    { "bottom",   6, bottom_place  },
-    { "botodd",   6, botodd_place  },
-    { "boteven",  7, boteven_place },
-    { "topodd",   6, topodd_place  },
-    { "topeven",  7, topeven_place },
-    { "top",      3, top_place     },   // must follow or topodd/topeven are never found
+const ban_places        const bf_places[max_place] = {
+    { "???",      no_place      },
+    { "inline",   inline_place  },
+    { "bottom",   bottom_place  },
+    { "botodd",   botodd_place  },
+    { "boteven",  boteven_place },
+    { "topodd",   topodd_place  },
+    { "topeven",  topeven_place },
+    { "top",      top_place     },   // must follow or topodd/topeven are never found
 };
 
 
@@ -157,11 +153,17 @@ condcode    lay_attr_and_value( lay_att_val *lay_attr )
     lay_attr->val_name = NULL;
     lay_attr->val_len = 0;
     lay_attr->val_quoted = ' ';
+    lay_attr->val_specval[0] = '\0';
 
     for(;;) {                               // loop until attribute/value pair or rescan line found
+        i = 0;
         while( is_att_char( *p ) ) {
+            if( i < LAY_ATT_NAME_LENGTH ) {
+                lay_attr->attname[i++] = my_tolower( *p );
+            }
             p++;
         }
+        lay_attr->attname[i] = '\0';
         if( *p == '\0' ) {                  // end of line: get new line
             if( (input_cbs->fmflags & II_eof) == 0 ) {
                 if( get_line( true ) ) {    // next line for missing attribute
@@ -231,14 +233,15 @@ condcode    lay_attr_and_value( lay_att_val *lay_attr )
             lay_attr->val_name++;
             lay_attr->val_len -= 2;
         }
+        for( i = 0; i < SPECVAL_LENGTH; i++ ) {
+            if( !is_att_char( lay_attr->val_name[i] ) )
+                break;
+            lay_attr->val_specval[i] = my_tolower( lay_attr->val_name[i] );
+        }
+        lay_attr->val_specval[i] = '\0';
+
         break;                              // values found
     }
-    for( i = 0; i < LAY_ATT_NAME_LENGTH; i++ ) {
-        if( !is_att_char( lay_attr->att_name[i] ) )
-            break;
-        lay_attr->attname[i] = my_tolower( lay_attr->att_name[i] );
-    }
-    lay_attr->attname[i] = '\0';
     scan_start = p;
     return( rc );
 }
@@ -335,11 +338,11 @@ bool    i_case( char * p, lay_attr_i lay_attr, case_t * tm )
     (void)lay_attr;
 
     cvterr = false;
-    if( strnicmp( "mixed", p, 5 ) == 0 ) {
+    if( strcmp( "mixed", lay_attr->val_specval ) == 0 ) {
         *tm = case_mixed;
-    } else if( strnicmp( "lower", p, 5 ) == 0 ) {
+    } else if( strcmp( "lower", lay_attr->val_specval ) == 0 ) {
         *tm = case_lower;
-    } else if( strnicmp( "upper", p, 5 ) == 0 ) {
+    } else if( strcmp( "upper", lay_attr->val_specval ) == 0 ) {
         *tm = case_upper;
     } else {
         xx_line_err_c( err_inv_att_val, p );
@@ -407,7 +410,7 @@ bool    i_content( char * p, lay_attr_i lay_attr, content * tm )
     cvterr = false;
     tm->content_type = no_content;
     for( k = no_content; k < max_content; ++k ) {
-        if( strnicmp( content_text[k].name, p, content_text[k].len ) == 0 ) {
+        if( strcmp( content_text[k].name, lay_attr->val_specval ) == 0 ) {
             tm->content_type = content_text[k].type;
             strcpy( tm->string, content_text[k].name );
             break;
@@ -462,11 +465,11 @@ bool    i_default_frame( char * p, lay_attr_i lay_attr, def_frame * tm )
     bool        cvterr;
 
     cvterr = false;
-    if( strnicmp( "none", p, 4 ) == 0 ) {
+    if( strcmp( "none", lay_attr->val_specval ) == 0 ) {
         tm->type = none_frame;
-    } else if( strnicmp( "rule", p, 4 ) == 0 ) {
+    } else if( strcmp( "rule", lay_attr->val_specval ) == 0 ) {
         tm->type = rule_frame;
-    } else if( strnicmp( "box", p, 3 ) == 0 ) {
+    } else if( strcmp( "box", lay_attr->val_specval ) == 0 ) {
         tm->type = box_frame;
     } else if( !is_quote_char( *p ) ) {
         cvterr = true;
@@ -522,7 +525,7 @@ bool    i_docsect( char * p, lay_attr_i lay_attr, ban_docsect * tm )
     cvterr = false;
     *tm = no_ban;
     for( k = no_ban; k < max_ban; ++k ) {
-        if( strnicmp( doc_sections[k].name, p, doc_sections[k].len ) == 0 ) {
+        if( strcmp( doc_sections[k].name, lay_attr->val_specval ) == 0 ) {
             *tm = doc_sections[k].type;
             break;
         }
@@ -558,9 +561,9 @@ bool    i_frame( char * p, lay_attr_i lay_attr, bool * tm )
     (void)lay_attr;
 
     cvterr = false;
-    if( strnicmp( "none", p, 4 ) == 0 ) {
+    if( strcmp( "none", lay_attr->val_specval ) == 0 ) {
         *tm = false;
-    } else if( strnicmp( "rule", p, 4 ) == 0 ) {
+    } else if( strcmp( "rule", lay_attr->val_specval ) == 0 ) {
         *tm = true;
     } else {
         xx_line_err_c( err_inv_att_val, p );
@@ -681,11 +684,11 @@ bool    i_number_form( char * p, lay_attr_i lay_attr, num_form * tm )
     (void)lay_attr;
 
     cvterr = false;
-    if( strnicmp( "none", p, 4 ) == 0 ) {
+    if( strcmp( "none", lay_attr->val_specval ) == 0 ) {
         *tm = num_none;
-    } else if( strnicmp( "prop", p, 4 ) == 0 ) {
+    } else if( strcmp( "prop", lay_attr->val_specval ) == 0 ) {
         *tm = num_prop;
-    } else if( strnicmp( "new", p, 3 ) == 0 ) {
+    } else if( strcmp( "new", lay_attr->val_specval ) == 0 ) {
         *tm = num_new;
     } else {
         xx_line_err_c( err_inv_att_val, p );
@@ -844,13 +847,13 @@ bool    i_page_eject( char * p, lay_attr_i lay_attr, page_ej * tm )
     (void)lay_attr;
 
     cvterr = false;
-    if( strnicmp( strno, p, 2 ) == 0 ) {
+    if( strcmp( "no", lay_attr->val_specval ) == 0 ) {
         *tm = ej_no;
-    } else if( strnicmp( stryes, p, 3 ) == 0 ) {
+    } else if( strcmp( "yes", lay_attr->val_specval ) == 0 ) {
         *tm = ej_yes;
-    } else if( strnicmp( "odd", p, 3 ) == 0 ) {
+    } else if( strcmp( "odd", lay_attr->val_specval ) == 0 ) {
         *tm = ej_odd;
-    } else if( strnicmp( "even", p, 4 ) == 0 ) {
+    } else if( strcmp( "even", lay_attr->val_specval ) == 0 ) {
         *tm = ej_even;
     } else {
         xx_line_err_c( err_inv_att_val, p );
@@ -863,9 +866,9 @@ void    o_page_eject( FILE *fp, lay_attr_o lay_attr, const page_ej * tm )
     const   char    *   p;
 
     if( *tm == ej_no ) {
-        p = strno;
+        p = "no";
     } else if( *tm == ej_yes ) {
-        p = stryes;
+        p = "yes";
     } else if( *tm == ej_odd ) {
         p = "odd";
     } else if( *tm == ej_even ) {
@@ -888,12 +891,12 @@ bool    i_page_position( char * p, lay_attr_i lay_attr, page_pos * tm )
     (void)lay_attr;
 
     cvterr = false;
-    if( strnicmp( "left", p, 4 ) == 0 ) {
+    if( strcmp( "left", lay_attr->val_specval ) == 0 ) {
         *tm = pos_left;
-    } else if( strnicmp( "right", p, 5 ) == 0 ) {
+    } else if( strcmp( "right", lay_attr->val_specval ) == 0 ) {
         *tm = pos_right;
-    } else if( strnicmp( "centre", p, 6 ) == 0
-      || strnicmp( "center", p, 6 ) == 0 ) {
+    } else if( strcmp( "centre", lay_attr->val_specval ) == 0
+      || strcmp( "center", lay_attr->val_specval ) == 0 ) {
         *tm = pos_center;
     } else {
         xx_line_err_c( err_inv_att_val, p );
@@ -932,7 +935,7 @@ bool    i_place( char * p, lay_attr_i lay_attr, bf_place * tm )
     cvterr = false;
     *tm = no_place;
     for( k = no_place; k < max_place; ++k ) {
-        if( strnicmp( bf_places[k].name, p, bf_places[k].len ) == 0 ) {
+        if( strcmp( bf_places[k].name, lay_attr->val_specval ) == 0 ) {
             *tm = bf_places[k].type;
             break;
         }
@@ -969,23 +972,23 @@ bool    i_pouring( char * p, lay_attr_i lay_attr, reg_pour * tm )
     (void)lay_attr;
 
     cvterr = false;
-    if( strnicmp( "none", p, 4 ) == 0 ) {
+    if( strcmp( "none", lay_attr->val_specval ) == 0 ) {
         *tm = no_pour;
-    } else if( strnicmp( "last", p, 4 ) == 0 ) {
+    } else if( strcmp( "last", lay_attr->val_specval ) == 0 ) {
         *tm = last_pour;
-    } else if( strnicmp( "head0", p, 5 ) == 0 ) {
+    } else if( strcmp( "head0", lay_attr->val_specval ) == 0 ) {
         *tm = head0_pour;
-    } else if( strnicmp( "head1", p, 5 ) == 0 ) {
+    } else if( strcmp( "head1", lay_attr->val_specval ) == 0 ) {
         *tm = head1_pour;
-    } else if( strnicmp( "head2", p, 5 ) == 0 ) {
+    } else if( strcmp( "head2", lay_attr->val_specval ) == 0 ) {
         *tm = head2_pour;
-    } else if( strnicmp( "head3", p, 5 ) == 0 ) {
+    } else if( strcmp( "head3", lay_attr->val_specval ) == 0 ) {
         *tm = head3_pour;
-    } else if( strnicmp( "head4", p, 5 ) == 0 ) {
+    } else if( strcmp( "head4", lay_attr->val_specval ) == 0 ) {
         *tm = head4_pour;
-    } else if( strnicmp( "head5", p, 5 ) == 0 ) {
+    } else if( strcmp( "head5", lay_attr->val_specval ) == 0 ) {
         *tm = head5_pour;
-    } else if( strnicmp( "head6", p, 5 ) == 0 ) {
+    } else if( strcmp( "head6", lay_attr->val_specval ) == 0 ) {
         *tm = head6_pour;
     } else {
         xx_line_err_c( err_inv_att_val, p );
@@ -1035,6 +1038,7 @@ bool    i_space_unit( char * p, lay_attr_i lay_attr, su * tm )
     attr_val.name = lay_attr->val_name;
     attr_val.len = lay_attr->val_len;
     attr_val.quoted = lay_attr->val_quoted;
+    strcpy( attr_val.specval, lay_attr->val_specval );
     return( att_val_to_su( tm, true, &attr_val, true ) );    // no negative values allowed TBD
 }
 
@@ -1165,9 +1169,9 @@ bool    i_yes_no( char * p, lay_attr_i lay_attr, bool * tm )
     (void)lay_attr;
 
     cvterr = false;
-    if( strnicmp( strno, p, 2 ) == 0 ) {
+    if( strcmp( "no", lay_attr->val_specval ) == 0 ) {
         *tm = false;
-    } else if( strnicmp( stryes, p, 3 ) == 0 ) {
+    } else if( strcmp( "yes", lay_attr->val_specval ) == 0 ) {
         *tm = true;
     } else {
         xx_line_err_c( err_inv_att_val, p );
@@ -1180,11 +1184,10 @@ void    o_yes_no( FILE *fp, lay_attr_o lay_attr, const bool * tm )
     char    const   *   p;
 
     if( *tm == 0 ) {
-        p = strno;
+        p = "no";
     } else {
-        p = stryes;
+        p = "yes";
     }
     fprintf( fp, "        %s = %s\n", lay_att_names[lay_attr], p );
     return;
 }
-

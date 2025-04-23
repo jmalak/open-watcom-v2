@@ -49,6 +49,7 @@ void gml_xmp( const gmltag * entry )
     su              cur_su;
     uint32_t        depth;
     att_val_type    attr_val;
+    char            attname[TAG_ATT_NAME_LENGTH + 1];
 
     (void)entry;
 
@@ -70,13 +71,12 @@ void gml_xmp( const gmltag * entry )
         /* already at tag end */
     } else {
         for( ;; ) {
-            p = get_att_start( p, &pa );
+            p = get_att_name( p, &pa, attname );
             if( ProcFlags.reprocess_line ) {
                 break;
             }
 
-            if( strnicmp( "depth", p, 5 ) == 0 ) {
-                p += 5;
+            if( strcmp( "depth", attname ) == 0 ) {
                 p = get_att_value( p, &attr_val );
                 if( attr_val.name == NULL ) {
                     break;

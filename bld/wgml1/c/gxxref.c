@@ -28,6 +28,7 @@ static char * get_ref_attributes( void )
     char            *p;
     char            *pa;
     att_val_type    attr_val;
+    char            attname[TAG_ATT_NAME_LENGTH + 1];
 
     scan_err = false;
     p = scan_start;
@@ -36,20 +37,19 @@ static char * get_ref_attributes( void )
         /* already at tag end */
     } else {
         for( ;; ) {
-            p = get_att_start( p, &pa );
+            p = get_att_name( p, &pa, attname );
             if( ProcFlags.reprocess_line ) {
                 break;
             }
-            if( strnicmp( "page", p, 4 ) == 0 ) {
+            if( strcmp( "page", attname ) == 0 ) {
                 page_found = true;
-                p += 4;
                 p = get_att_value( p, &attr_val );
                 if( attr_val.name == NULL ) {
                     break;
                 }
-                if( strnicmp( "yes", attr_val.name, 3 ) == 0 ) {
+                if( strcmp( "yes", attr_val.specval ) == 0 ) {
                     ref_page = true;
-                } else if( strnicmp( "no", attr_val.name, 2 ) == 0 ) {
+                } else if( strcmp( "no", attr_val.specval ) == 0 ) {
                     ref_page = false;
                 } else {
                     xx_line_err_c( err_inv_att_val, attr_val.name );
@@ -57,8 +57,7 @@ static char * get_ref_attributes( void )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( strnicmp( "refid", p, 5 ) == 0 ) {
-                p += 5;
+            } else if( strcmp( "refid", attname ) == 0 ) {
                 p = get_refid_value( p, &attr_val, refid );
                 if( attr_val.name == NULL ) {
                     break;

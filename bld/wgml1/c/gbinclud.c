@@ -26,15 +26,13 @@ void    gml_binclude( const gmltag * entry )
     char            rt_buff[MAX_FILE_ATTR];
     char            *p;
     char            *pa;
-    char            *attr_name;
     doc_element     *cur_el;
     inputcb         *cb = input_cbs;
     su              depth_su;
     uint32_t        depth;
-    size_t          len;
     FILE            *fp;
-    int             i;
     att_val_type    attr_val;
+    char            attname[TAG_ATT_NAME_LENGTH + 1];
 
     memset( &AttrFlags, 0, sizeof( AttrFlags ) );   // clear all attribute flags
     if( (ProcFlags.doc_sect < doc_sect_gdoc) ) {
@@ -53,27 +51,23 @@ void    gml_binclude( const gmltag * entry )
         /* already at tag end */
     } else {
         for( ;; ) {
-            p = get_att_start( p, &pa );
-            attr_name = p;
+            p = get_att_name( p, &pa, attname );
             if( ProcFlags.reprocess_line ) {
                 break;
             }
-            if( strnicmp( "file", p, 4 ) == 0 ) {
-                p += 4;
+            if( strcmp( "file", attname ) == 0 ) {
                 p = get_att_value( p, &attr_val );
                 if( AttrFlags.file ) {
-                    xx_line_err_ci( err_att_dup, attr_name,
-                        attr_val.name - attr_name + attr_val.len);
+                    xx_line_err_ci( err_att_dup, pa, attr_val.name - pa);
                 }
                 AttrFlags.file = true;
                 if( attr_val.name == NULL ) {
                     break;
                 }
-                len = attr_val.len;
-                if( len > _MAX_PATH - 1 )
-                    len = _MAX_PATH - 1;
-                strncpy( file, attr_val.name, len );
-                file[len] = '\0';
+                if( attr_val.len > _MAX_PATH - 1 )
+                    attr_val.len = _MAX_PATH - 1;
+                strncpy( file, attr_val.name, attr_val.len );
+                file[attr_val.len] = '\0';
                 split_attr_file( file, rt_buff, MAX_FILE_ATTR );
                 if( (rt_buff[0] != '\0') ) {
                     has_rec_type = true;
@@ -84,12 +78,10 @@ void    gml_binclude( const gmltag * entry )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( strnicmp( "depth", p, 5 ) == 0 ) {
-                p += 5;
+            } else if( strcmp( "depth", attname ) == 0 ) {
                 p = get_att_value( p, &attr_val );
                 if( AttrFlags.depth ) {
-                    xx_line_err_ci( err_att_dup, attr_name,
-                        attr_val.name - attr_name + attr_val.len);
+                    xx_line_err_ci( err_att_dup, pa, attr_val.name - pa);
                 }
                 AttrFlags.depth = true;
                 if( attr_val.name == NULL ) {
@@ -105,20 +97,18 @@ void    gml_binclude( const gmltag * entry )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( strnicmp( "reposition", p, 10 ) == 0 ) {
-                p += 10;
+            } else if( strcmp( "reposition", attname ) == 0 ) {
                 p = get_att_value( p, &attr_val );
                 if( AttrFlags.reposition ) {
-                    xx_line_err_ci( err_att_dup, attr_name,
-                        attr_val.name - attr_name + attr_val.len);
+                    xx_line_err_ci( err_att_dup, pa, attr_val.name - pa);
                 }
                 AttrFlags.reposition = true;
                 if( attr_val.name == NULL ) {
                     break;
                 }
-                if( strnicmp( "start", attr_val.name, 5 ) == 0 ) {
+                if( strcmp( "start", attr_val.specval ) == 0 ) {
                     reposition = true;  // moving following text down by depth
-                } else if( strnicmp( "end", attr_val.name, 3 ) == 0 ) {
+                } else if( strcmp( "end", attr_val.specval ) == 0 ) {
                     reposition = false; // device at proper position after insertion
                 } else {
                     xx_line_err_c( err_inv_att_val, attr_val.name );

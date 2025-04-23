@@ -39,6 +39,7 @@ void gml_fn( const gmltag * entry )
     char        *   pa;
     ref_entry   *   cur_ref;
     att_val_type    attr_val;
+    char            attname[TAG_ATT_NAME_LENGTH + 1];
 
     (void)entry;
 
@@ -56,11 +57,11 @@ void gml_fn( const gmltag * entry )
         /* already at tag end */
     } else {
         for( ;; ) {
-            p = get_att_start( p, &pa );
+            p = get_att_name( p, &pa, attname );
             if( ProcFlags.reprocess_line ) {
                 break;
             }
-            if( strnicmp( "id", p, 2 ) == 0 ) {
+            if( strcmp( "id", attname ) == 0 ) {
                 p += 2;
                 p = get_refid_value( p, &attr_val, fnrefid );
                 if( attr_val.name == NULL ) {

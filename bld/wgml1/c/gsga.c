@@ -519,8 +519,12 @@ void    scr_ga( void )
     } else {
         saveatt = ' ';                      // no quick access
         g_att_entry = NULL;
-        if( get_att_name( p, g_attname ) ) {
-            xx_err( err_att_name_inv );// attname with invalid or too many chars
+        for( k = 0; k < TAG_ATT_NAME_LENGTH && is_att_char( p[k] ); k++ ) {
+            g_attname[k] = my_tolower( p[k] );
+        }
+        g_attname[k] = '\0';
+        if( is_att_char( p[k] ) ) {
+            xx_err( err_att_name_inv );     // attname with too many chars
             cc = neg;
             return;
         }
