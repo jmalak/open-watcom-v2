@@ -1028,10 +1028,14 @@ void    o_pouring( FILE *fp, lay_attr_o lay_attr, const reg_pour * tm )
 /***************************************************************************/
 bool    i_space_unit( char * p, lay_attr_i lay_attr, su * tm )
 {
-    (void)lay_attr;
+    att_val_type    attr_val;
+
     (void)p;
 
-    return( att_val_to_su( tm, true ) );    // no negative values allowed TBD
+    attr_val.name = lay_attr->val_name;
+    attr_val.len = lay_attr->val_len;
+    attr_val.quoted = lay_attr->val_quoted;
+    return( att_val_to_su( tm, true, &attr_val, true ) );    // no negative values allowed TBD
 }
 
 void    o_space_unit( FILE *fp, lay_attr_o lay_attr, const su * tm )

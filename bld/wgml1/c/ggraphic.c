@@ -36,6 +36,7 @@ void    gml_graphic( const gmltag * entry )
     int32_t         xoff                    = 0;
     int32_t         yoff                    = 0;
     FILE            *fp;
+    att_val_type    attr_val;
 
     if( (ProcFlags.doc_sect < doc_sect_gdoc) ) {
         if( (ProcFlags.doc_sect_nxt < doc_sect_gdoc) ) {
@@ -86,7 +87,10 @@ void    gml_graphic( const gmltag * entry )
                     break;
                 }
                 depth_found = true;
-                if( att_val_to_su( &cur_su, true ) ) {
+                attr_val.name = val_start;
+                attr_val.len = val_len;
+                attr_val.quoted = quote_char;
+                if( att_val_to_su( &cur_su, true, &attr_val, false ) ) {
                     break;
                 }
                 depth = conv_vert_unit( &cur_su, g_text_spacing, g_curr_font );
@@ -113,7 +117,10 @@ void    gml_graphic( const gmltag * entry )
                 } else if( strnicmp( "column", val_start, 6 ) == 0 ) {
                     // default value is the correct value to use
                 } else {    // value actually specifies the width
-                    if( att_val_to_su( &cur_su, true ) ) {
+                    attr_val.name = val_start;
+                    attr_val.len = val_len;
+                    attr_val.quoted = quote_char;
+                    if( att_val_to_su( &cur_su, true, &attr_val, false ) ) {
                         break;
                     }
                     width = conv_hor_unit( &cur_su, g_curr_font );
@@ -160,7 +167,10 @@ void    gml_graphic( const gmltag * entry )
                 if( val_start == NULL ) {
                     break;
                 }
-                if( att_val_to_su( &cur_su, false ) ) {
+                attr_val.name = val_start;
+                attr_val.len = val_len;
+                attr_val.quoted = quote_char;
+                if( att_val_to_su( &cur_su, false, &attr_val, false ) ) {
                     break;
                 }
                 xoff = conv_hor_unit( &cur_su, g_curr_font );
@@ -173,7 +183,10 @@ void    gml_graphic( const gmltag * entry )
                 if( val_start == NULL ) {
                     break;
                 }
-                if( att_val_to_su( &cur_su, false ) ) {
+                attr_val.name = val_start;
+                attr_val.len = val_len;
+                attr_val.quoted = quote_char;
+                if( att_val_to_su( &cur_su, false, &attr_val, false ) ) {
                     break;
                 }
                 yoff = conv_vert_unit( &cur_su, g_text_spacing, g_curr_font );

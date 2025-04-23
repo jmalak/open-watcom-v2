@@ -411,10 +411,10 @@ extern  bool        process_tag( struct gtentry *ge, mac_entry *me );
 
 /* gutil.c                              */
 extern  void            add_dt_space( void );
-extern  bool            att_val_to_su( su * spaceunit, bool pos );
-extern  int32_t         conv_hor_unit( su * spaceunit, font_number font );
-extern  int32_t         conv_vert_unit( su * spaceunit, text_space text_spacing, font_number font );
-extern  bool            cw_val_to_su( char * * scaninput, su * spaceunit );
+extern  bool            att_val_to_su( su *spaceunit, bool pos, att_val_type *attr_val, bool specval );
+extern  int32_t         conv_hor_unit( su *spaceunit, font_number font );
+extern  int32_t         conv_vert_unit( su *spaceunit, text_space text_spacing, font_number font );
+extern  bool            cw_val_to_su( char **scaninput, su *spaceunit );
 extern  num_style       find_pgnum_style( void );
 extern  char        *   format_num( uint32_t n, char * r, size_t rsize, num_style ns );
 extern  void            free_ffh_list( ffh_entry * ffh_list );
@@ -435,7 +435,6 @@ extern  char        *   skip_to_quote( char * p, char quote );
 extern  int             uinttohex( unsigned value, char *buffer );
 extern  int             uinttodec( unsigned value, char *buffer );
 extern  int             sinttodec( int value, char *buffer );
-extern  bool            value_to_su( su * spaceunit, bool pos );
 
 
 /* messages.c                           */

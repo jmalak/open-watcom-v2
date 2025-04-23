@@ -1818,6 +1818,12 @@ typedef struct attr_flags {
 /*  structure for parsed tag attribute names and values                    */
 /***************************************************************************/
 
+typedef struct att_val_type {
+    char            *name;
+    unsigned        len;
+    char            quoted;
+} att_val_type;
+
 typedef struct lay_att_val {
     char            *att_name;
     uint32_t        att_len;

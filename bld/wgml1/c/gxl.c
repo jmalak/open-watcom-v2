@@ -146,15 +146,16 @@ static void gml_xl_lp_common( e_tags t )
 
 void gml_dl( const gmltag * entry )
 {
-    bool                compact     =   false;
-    bool                dl_break;
-    char            *   p;
-    char            *   pa;
-    dl_lay_level    *   dl_layout;
-    font_number         headhi;
-    font_number         termhi;
-    su                  cur_su;
-    uint32_t            tsize;
+    bool            compact     =   false;
+    bool            dl_break;
+    char            *p;
+    char            *pa;
+    dl_lay_level    *dl_layout;
+    font_number     headhi;
+    font_number     termhi;
+    su              cur_su;
+    uint32_t        tsize;
+    att_val_type    attr_val;
 
     (void)entry;
 
@@ -231,7 +232,10 @@ void gml_dl( const gmltag * entry )
                 if( val_start == NULL ) {
                     break;
                 }
-                if( att_val_to_su( &cur_su, true ) ) {
+                attr_val.name = val_start;
+                attr_val.len = val_len;
+                attr_val.quoted = quote_char;
+                if( att_val_to_su( &cur_su, true, &attr_val, false ) ) {
                     break;
                 }
                 tsize = conv_hor_unit( &cur_su, g_curr_font );

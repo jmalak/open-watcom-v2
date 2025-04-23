@@ -385,6 +385,7 @@ void gml_fig( const gmltag * entry )
     ref_entry       *cur_ref     = NULL;
     su              cur_su;
     uint32_t        max_width;
+    att_val_type    attr_val;
 
     (void)entry;
 
@@ -426,7 +427,10 @@ void gml_fig( const gmltag * entry )
                 if( val_start == NULL ) {
                     break;
                 }
-                if( att_val_to_su( &cur_su, true ) ) {
+                attr_val.name = val_start;
+                attr_val.len = val_len;
+                attr_val.quoted = quote_char;
+                if( att_val_to_su( &cur_su, true, &attr_val, false ) ) {
                     break;
                 }
                 depth = conv_vert_unit( &cur_su, g_text_spacing, g_curr_font );
@@ -506,7 +510,10 @@ void gml_fig( const gmltag * entry )
                     // default value is the correct value to use
                 } else {    // value actually specifies the width
                     pa = val_start;
-                    if( att_val_to_su( &cur_su, true ) ) {
+                    attr_val.name = val_start;
+                    attr_val.len = val_len;
+                    attr_val.quoted = quote_char;
+                    if( att_val_to_su( &cur_su, true, &attr_val, false ) ) {
                         break;
                     }
                     width = conv_hor_unit( &cur_su, g_curr_font );

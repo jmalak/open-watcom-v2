@@ -32,7 +32,8 @@ void    gml_binclude( const gmltag * entry )
     uint32_t        depth;
     size_t          len;
     FILE            *fp;
-    int                         i;
+    int             i;
+    att_val_type    attr_val;
 
     memset( &AttrFlags, 0, sizeof( AttrFlags ) );   // clear all attribute flags
     if( (ProcFlags.doc_sect < doc_sect_gdoc) ) {
@@ -97,7 +98,10 @@ void    gml_binclude( const gmltag * entry )
                 if( g_att_val.val_name == NULL ) {
                     break;
                 }
-                if( value_to_su( &depth_su, true ) ) {
+                attr_val.name = g_att_val.val_name;
+                attr_val.len = g_att_val.val_len;
+                attr_val.quoted = g_att_val.val_quoted;
+                if( att_val_to_su( &depth_su, true, &attr_val, false ) ) {
                     break;
                 }
                 depth = conv_vert_unit( &depth_su, g_text_spacing, g_curr_font );

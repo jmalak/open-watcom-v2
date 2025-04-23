@@ -48,6 +48,7 @@ void gml_xmp( const gmltag * entry )
     char        *   pa;
     su              cur_su;
     uint32_t        depth;
+    att_val_type    attr_val;
 
     (void)entry;
 
@@ -80,7 +81,10 @@ void gml_xmp( const gmltag * entry )
                 if( val_start == NULL ) {
                     break;
                 }
-                if( att_val_to_su( &cur_su, true ) ) {
+                attr_val.name = val_start;
+                attr_val.len = val_len;
+                attr_val.quoted = quote_char;
+                if( att_val_to_su( &cur_su, true, &attr_val, false ) ) {
                     break;
                 }
                 depth = conv_vert_unit( &cur_su, g_text_spacing, g_curr_font );

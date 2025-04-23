@@ -453,20 +453,8 @@ static bool su_layout_special( su * in_su )
     ps = s->su_txt;
     wh = 0;
     wd = 0;
-    quote = '\0';
 
-    /********************************************************************/
-    /* val_start will be NULL when called from lay_val_to_su().         */
-    /* val_start will not be NULL when called from att_val_to_su().     */
-    /* when not NULL, *(val_start - 1) should be a whitespace or "="    */
-    /********************************************************************/
-
-    if( (val_start != NULL)
-      && ((*(val_start - 1) == '\'')
-      || (*(val_start - 1) == '"' )
-      || (*ps == '+') || (*ps == '-' )) ) {   // values must not be quoted or signed
-        retval = false;
-    } else if( strnicmp( "left", ps, 4 ) == 0 ) {
+    if( strnicmp( "left", ps, 4 ) == 0 ) {
         s->su_u = SU_lay_left;
         strcpy( ps, "left" );
     } else if( strnicmp( "right", ps, 5 ) == 0 ) {
@@ -512,7 +500,7 @@ static bool su_layout_special( su * in_su )
 /*                    true on error (conversion error occurred)            */
 /***************************************************************************/
 
-bool att_val_to_su( su * in_su, bool pos )
+bool att_val_to_su( su * in_su, bool pos, att_val_type *attr_val, bool specval )
 {
     bool        cvterr  = true;
     char    *   ps      = NULL; // destination for value text
@@ -523,36 +511,36 @@ bool att_val_to_su( su * in_su, bool pos )
     ps = s->su_txt;
     *ps = '\0';
 
-    if( (val_len + 1) > MAX_SU_CHAR ) {     // won't fit
-        xx_line_err_c( err_inv_att_val, val_start );
+    if( (attr_val->len + 1) > MAX_SU_CHAR ) {     // won't fit
+        xx_line_err_c( err_inv_att_val, attr_val->name );
     }
-    memcpy_s( ps, MAX_SU_CHAR - 1, val_start, val_len );
-    ps[val_len] = '\0';
+    memcpy_s( ps, MAX_SU_CHAR - 1, attr_val->name, attr_val->len );
+    ps[attr_val->len] = '\0';
 
     s->su_u = SU_undefined;
     if( *ps == '+' ) {                      // not allowed with tags
-        xx_line_err_c( err_inv_att_val, val_start );
+        xx_line_err_c( err_inv_att_val, attr_val->name );
     } else if( *ps == '-' ) {               // not relative, just negative
         if( pos ) {                         // value must be positive
-            xx_line_err_c( err_inv_att_val, val_start );
+            xx_line_err_c( err_inv_att_val, attr_val->name );
         }
         sign = *ps;
         if( *(ps + 1) == '+'
           || *(ps + 1) == '-' ) {  // only one sign is allowed
-            xx_line_err_c( err_inv_att_val, val_start );
+            xx_line_err_c( err_inv_att_val, attr_val->name );
         }
     } else {
         sign = '+';
     }
     if( *ps == '\0' ) {                     // value end reached, not valid
-        xx_line_err_c( err_inv_att_val, val_start );
+        xx_line_err_c( err_inv_att_val, attr_val->name );
     }
     s->su_relative = false;             // no relative positioning with tags
 
-    if( su_layout_special( in_su ) ) {
+    if( specval && su_layout_special( in_su ) ) {
         cvterr = false;
     } else {
-        cvterr = internal_to_su( in_su, true, val_start );
+        cvterr = internal_to_su( in_su, true, attr_val->name );
     }
 
     return( cvterr );
@@ -592,7 +580,7 @@ bool cw_val_to_su( char * * scanp, su * in_su )
     len = p - pa;
     *scanp = p;                 // report back value of p
     if( (len + 1) > MAX_SU_CHAR ) {
-        xx_line_err_c( err_inv_cw_op_val, val_start );
+        xx_line_err_c( err_inv_cw_op_val, pa );
     }
     memcpy_s( ps, MAX_SU_CHAR - 1, pa, len );
     ps[len] = '\0';
@@ -634,7 +622,7 @@ bool cw_val_to_su( char * * scanp, su * in_su )
 /*                    true on error (conversion error occurred)            */
 /***************************************************************************/
 
-bool lay_init_su( const char * p, su * in_su )
+bool lay_init_su( const char *p, su * in_su )
 {
     bool            cvterr  = true;
     const char  *   pa      = NULL; // start of value text
@@ -653,7 +641,7 @@ bool lay_init_su( const char * p, su * in_su )
     len = p - pa;
 
     if( (len + 1) > MAX_SU_CHAR ) { // won't fit
-        xx_line_err_c( err_inv_att_val, val_start );
+        xx_line_err_c( err_inv_att_val, pa );
     }
     memcpy_s( ps, MAX_SU_CHAR - 1, pa, len );
     ps[len] = '\0';
@@ -679,68 +667,6 @@ bool lay_init_su( const char * p, su * in_su )
         cvterr = false;
     } else {
         cvterr = internal_to_su( in_su, true, pa );
-    }
-
-    return( cvterr );
-}
-
-/***************************************************************************/
-/*  initializes in_su->su_txt using g_att_val.val_name/g_att_val.val_len   */
-/*  converts in_su->su_txt using su_layout_special() or internal_to_su()   */
-/*  for use with tag attribute values, not control word operands           */
-/*                                                                         */
-/*  Note: in wgml 4.0, attribute values have these traits:                 */
-/*      they can be delimited                                              */
-/*      they can contain whitespace if delimited                           */
-/*      they can never be expressions, even if they do not include a unit  */
-/*      BANREGION indent, hoffset and width attributes can take special    */
-/*          values ("left", "right", "center", "centre", and "extend")     */
-/*                                                                         */
-/*    returns cvterr: false on success (no conversion error)               */
-/*                    true on error (conversion error occurred)            */
-/***************************************************************************/
-
-bool value_to_su( su * in_su, bool pos )
-{
-    bool        cvterr  = true;
-    char    *   ps      = NULL; // destination for value text
-    char        sign;
-    su      *   s;
-
-    s = in_su;
-    ps = s->su_txt;
-    *ps = '\0';
-
-    if( (g_att_val.val_len + 1) > MAX_SU_CHAR ) {     // won't fit
-        xx_line_err_c( err_inv_att_val, g_att_val.val_name );
-    }
-    memcpy_s( ps, MAX_SU_CHAR - 1, g_att_val.val_name, g_att_val.val_len );
-    ps[g_att_val.val_len] = '\0';
-
-    s->su_u = SU_undefined;
-    if( *ps == '+' ) {                      // not allowed with tags
-        xx_line_err_c( err_inv_att_val, g_att_val.val_name );
-    } else if( *ps == '-' ) {               // not relative, just negative
-        if( pos ) {                         // value must be positive
-            xx_line_err_c( err_inv_att_val, g_att_val.val_name );
-        }
-        sign = *ps;
-        if( *(ps + 1) == '+'
-          || *(ps + 1) == '-' ) {  // only one sign is allowed
-            xx_line_err_c( err_inv_att_val, g_att_val.val_name );
-        }
-    } else {
-        sign = '+';
-    }
-    if( *ps == '\0' ) {                     // value end reached, not valid
-        xx_line_err_c( err_inv_att_val, g_att_val.val_name );
-    }
-    s->su_relative = false;             // no relative positioning with tags
-
-    if( su_layout_special( in_su ) ) {
-        cvterr = false;
-    } else {
-        cvterr = internal_to_su( in_su, true, g_att_val.val_name );
     }
 
     return( cvterr );
