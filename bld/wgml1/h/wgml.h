@@ -410,29 +410,29 @@ extern  bool        process_tag( struct gtentry *ge, mac_entry *me );
 
 
 /* gutil.c                              */
-extern  void            add_dt_space( void );
-extern  bool            att_val_to_su( su *spaceunit, bool pos, att_val_type *attr_val, bool specval );
-extern  int32_t         conv_hor_unit( su *spaceunit, font_number font );
-extern  int32_t         conv_vert_unit( su *spaceunit, text_space text_spacing, font_number font );
-extern  bool            cw_val_to_su( char **scaninput, su *spaceunit );
-extern  num_style       find_pgnum_style( void );
-extern  char        *   format_num( uint32_t n, char * r, size_t rsize, num_style ns );
-extern  void            free_ffh_list( ffh_entry * ffh_list );
-extern  void            free_fwd_refs( fwd_ref * fwd_refs );
-extern  void            g_keep_nest( const char * cw_tag );
-extern  char        *   get_att_name( char * p, char **pa, char *attname );
-extern  char        *   get_att_value( char *p, att_val_type *attr_val );
-extern  font_number     get_font_number( char * p, size_t len );
-extern  char        *   get_tag_value( char *p, att_val_type *attr_val );
-extern  ffh_entry   *   init_ffh_entry( ffh_entry * ffh_list );
-extern  fwd_ref     *   init_fwd_ref( fwd_ref * fr_dict, const char * fr_id );
-extern  char        *   int_to_roman( uint32_t n, char * r, size_t rsize );
-extern  bool            lay_init_su( const char * p, su * in_su );
-extern  size_t          len_to_trail_space( const char *p , size_t len );
-extern  char        *   skip_to_quote( char * p, char quote );
-extern  int             uinttohex( unsigned value, char *buffer );
-extern  int             uinttodec( unsigned value, char *buffer );
-extern  int             sinttodec( int value, char *buffer );
+extern  void        add_dt_space( void );
+extern  bool        att_val_to_su( su *spaceunit, bool pos, att_val_type *attr_val, bool specval );
+extern  bool        cw_val_to_su( char **scaninput, su *spaceunit );
+extern  int32_t     conv_hor_unit( su *spaceunit, font_number font );
+extern  int32_t     conv_vert_unit( su *spaceunit, text_space text_spacing, font_number font );
+extern  num_style   find_pgnum_style( void );
+extern  char        *format_num( uint32_t n, char *r, size_t rsize, num_style ns );
+extern  void        free_ffh_list( ffh_entry *ffh_list );
+extern  void        free_fwd_refs( fwd_ref *fwd_refs );
+extern  void        g_keep_nest( const char *cw_tag );
+extern  char        *get_att_name( char *p, char **pa, char *attname );
+extern  char        *get_att_value( char *p, att_val_type *attr_val );
+extern  font_number get_font_number( char *p, size_t len );
+extern  char        *get_tag_value( char *p, att_val_type *attr_val );
+extern  ffh_entry   *init_ffh_entry( ffh_entry *ffh_list );
+extern  fwd_ref     *init_fwd_ref( fwd_ref *fr_dict, const char *fr_id );
+extern  char        *int_to_roman( uint32_t n, char *r, size_t rsize );
+extern  bool        lay_init_su( const char *p, su *spaceunit );
+extern  size_t      len_to_trail_space( const char *p , size_t len );
+extern  char        *skip_to_quote( char *p, char quote );
+extern  int         uinttohex( unsigned value, char *buffer );
+extern  int         uinttodec( unsigned value, char *buffer );
+extern  int         sinttodec( int value, char *buffer );
 
 
 /* messages.c                           */

@@ -57,11 +57,11 @@ static const bool internal_to_su( su *in_su, bool tag, const char *base )
 {
     bool        cvterr  = true;
     bool        is_cp   = false;
-    char    *   pd      = NULL; // ptr to decimal point
-    char    *   pd1     = NULL; // ptr to first decimal digit
-    char    *   pdn     = NULL; // ptr to last digit +1
-    char    *   ps      = NULL; // destination for value text
-    char    *   pu      = NULL; // ptr to trailing unit
+    char        *pd      = NULL; // ptr to decimal point
+    char        *pd1     = NULL; // ptr to first decimal digit
+    char        *pdn     = NULL; // ptr to last digit +1
+    char        *ps      = NULL; // destination for value text
+    char        *pu      = NULL; // ptr to trailing unit
     char        sign;
     char        unit[4];
     int         i;
@@ -69,17 +69,15 @@ static const bool internal_to_su( su *in_su, bool tag, const char *base )
     int         k;
     int         wh;
     int         wd;
-    su      *   s;
 
     unit[3] = '\0';
     unit[2] = '\0';
     unit[1] = '\0';
     unit[0] = '\0';
-    s = in_su;
     wh = 0;
     wd = 0;
 
-    ps = s->su_txt;
+    ps = in_su->su_txt;
 
     /********************************************************************/
     /* extract and skip the sign, if present                            */
@@ -109,7 +107,7 @@ static const bool internal_to_su( su *in_su, bool tag, const char *base )
         }
     }
     if( my_isdigit( *ps ) ) {                   // too many digits in whole part
-        val_parse_err( base + (ps - s->su_txt), tag );
+        val_parse_err( base + (ps - in_su->su_txt), tag );
     }
 
     if( *ps == '.' ) {                          // check for decimal point
@@ -133,7 +131,7 @@ static const bool internal_to_su( su *in_su, bool tag, const char *base )
             pdn = NULL;
         }
         if( my_isdigit( *ps ) ) {               // too many digits in decimals
-            val_parse_err( base + (ps - s->su_txt), tag );
+            val_parse_err( base + (ps - in_su->su_txt), tag );
         }
     }
 
@@ -151,7 +149,7 @@ static const bool internal_to_su( su *in_su, bool tag, const char *base )
         }
     }
     if( my_isalpha( *ps ) ) {                   // too many characters in unit
-        val_parse_err( base + (ps - s->su_txt), tag );
+        val_parse_err( base + (ps - in_su->su_txt), tag );
     }
 
     /***********************************************************************/
@@ -161,45 +159,45 @@ static const bool internal_to_su( su *in_su, bool tag, const char *base )
     if( unit[1] == '\0' ) {                     // single letter unit
         switch( unit[0] ) {
         case 'i':
-            s->su_u = SU_inch;
+            in_su->su_u = SU_inch;
             break;
         case 'm':
-            s->su_u = SU_ems;
+            in_su->su_u = SU_ems;
             if( pd != NULL ) {                  // no decimals with "M"
-                val_parse_err( base + (ps - s->su_txt), tag );
+                val_parse_err( base + (ps - in_su->su_txt), tag );
             }
             break;
         case 'c':
-            s->su_u = SU_cicero;
+            in_su->su_u = SU_cicero;
             is_cp = true;
             break;
         case 'p':
-            s->su_u = SU_pica;
+            in_su->su_u = SU_pica;
             is_cp = true;
             break;
         case '\0':                             // no unit is characters or lines
-            s->su_u = SU_chars_lines;
+            in_su->su_u = SU_chars_lines;
             break;
         default:
-            val_parse_err( base + (ps - s->su_txt), tag );
+            val_parse_err( base + (ps - in_su->su_txt), tag );
         }
     } else {                                    // two letter unit
         if( unit[1] == 'm' ) {                  // cm, mm ?
             if( unit[0] == 'c' ) {
-                s->su_u = SU_cm;
+                in_su->su_u = SU_cm;
             } else if( unit[0] == 'm' ) {
-                s->su_u = SU_mm;
+                in_su->su_u = SU_mm;
             } else {                            // invalid unit
-                val_parse_err( base + (ps - s->su_txt), tag );
+                val_parse_err( base + (ps - in_su->su_txt), tag );
             }
         } else if( unit[0] == 'd' ) {           // dv ?
             if( unit[1] == 'v' ) {
-                s->su_u = SU_dv;
+                in_su->su_u = SU_dv;
             } else {                            // invalid unit
-                val_parse_err( base + (ps - s->su_txt), tag );
+                val_parse_err( base + (ps - in_su->su_txt), tag );
             }
         } else {                                // invalid unit
-            val_parse_err( base + (ps - s->su_txt), tag );
+            val_parse_err( base + (ps - in_su->su_txt), tag );
         }
     }
 
@@ -216,50 +214,50 @@ static const bool internal_to_su( su *in_su, bool tag, const char *base )
             }
         }
         if( my_isdigit( *ps ) ) {     // too many digits after "C" or "P"
-            val_parse_err( base + (ps - s->su_txt), tag );
+            val_parse_err( base + (ps - in_su->su_txt), tag );
         }
     }
 
     if( *ps != '\0' ) {                         // value continues on: it shouldn't
-        val_parse_err( base + (ps - s->su_txt), tag );
+        val_parse_err( base + (ps - in_su->su_txt), tag );
     }
-    s->su_whole = wh;
-    s->su_dec   = wd;
+    in_su->su_whole = wh;
+    in_su->su_dec   = wd;
 
     if( k == 0 ) {                      // no trailing unit
         pu = NULL;
     }
     if( pd != NULL ) {                  // dec point found
         if( pu == NULL ) {              // need trailing unit
-            val_parse_err( base + (ps - s->su_txt - 1), tag );
+            val_parse_err( base + (ps - in_su->su_txt - 1), tag );
         }
     }
 
-    s->su_inch = 0;
-    s->su_mm   = 0;
+    in_su->su_inch = 0;
+    in_su->su_mm   = 0;
     k = 1;
     if( pd1 != NULL ) {
         if( pdn - pd1 == 1 ) {
             k = 10;                 // only 0.1 digit
         }
     }
-    switch( s->su_u ) {
+    switch( in_su->su_u ) {
     // the relative units are only stored, not converted
     case SU_chars_lines:
     case SU_ems:
     case SU_dv:
         break;
     case SU_inch:                      // inch, cm, mm valid with decimals
-        s->su_mm   = (wh * 100L + wd * k) * 2540L;
-        s->su_inch = (wh * 100L + wd * k) *  100L;
+        in_su->su_mm   = (wh * 100L + wd * k) * 2540L;
+        in_su->su_inch = (wh * 100L + wd * k) *  100L;
         break;
     case SU_cm:
-        s->su_mm   = (wh * 100L + wd * k) * 1000L;
-        s->su_inch = s->su_mm * 10L / 254L;
+        in_su->su_mm   = (wh * 100L + wd * k) * 1000L;
+        in_su->su_inch = in_su->su_mm * 10L / 254L;
         break;
     case SU_mm:
-        s->su_mm   = (wh * 100L + wd * k) *  100L;
-        s->su_inch = s->su_mm * 10L / 254L;
+        in_su->su_mm   = (wh * 100L + wd * k) *  100L;
+        in_su->su_inch = in_su->su_mm * 10L / 254L;
         break;
     case SU_cicero:                    // cicero
         if( wd > 11 ) {
@@ -267,9 +265,9 @@ static const bool internal_to_su( su *in_su, bool tag, const char *base )
             wh += div.quot;
             wd = div.rem;
         }
-        s->su_inch = wh * 10000L / 6L + wd * 10000L / 72L;
-        s->su_inch = (int64_t)s->su_inch * 10656L / 10000L;
-        s->su_mm = s->su_inch * 254L / 10L;
+        in_su->su_inch = wh * 10000L / 6L + wd * 10000L / 72L;
+        in_su->su_inch = (int64_t)in_su->su_inch * 10656L / 10000L;
+        in_su->su_mm = in_su->su_inch * 254L / 10L;
         break;
     case SU_pica:                      // pica
         if( wd > 11 ) {
@@ -277,17 +275,17 @@ static const bool internal_to_su( su *in_su, bool tag, const char *base )
             wh += div.quot;
             wd = div.rem;
         }
-        s->su_inch = wh * 10000L / 6L + wd * 10000L / 72L;
-        s->su_inch = (int64_t)s->su_inch * 9978L / 10000L;
-        s->su_mm = s->su_inch * 254L / 10L;
+        in_su->su_inch = wh * 10000L / 6L + wd * 10000L / 72L;
+        in_su->su_inch = (int64_t)in_su->su_inch * 9978L / 10000L;
+        in_su->su_mm = in_su->su_inch * 254L / 10L;
         break;
     default:
         break;
     }
     if( sign == '-' ) {
-        s->su_inch  = -s->su_inch;
-        s->su_mm    = -s->su_mm;
-        s->su_whole = -s->su_whole;
+        in_su->su_inch  = -in_su->su_inch;
+        in_su->su_mm    = -in_su->su_mm;
+        in_su->su_whole = -in_su->su_whole;
     }
 
     cvterr = false;
@@ -301,7 +299,7 @@ static const bool internal_to_su( su *in_su, bool tag, const char *base )
 /*          false otherwise (not necessarily an error)                     */
 /***************************************************************************/
 
-static bool su_expression( su * in_su )
+static bool su_expression( su *in_su )
 {
     bool                retval  = true;
     condcode            cc;
@@ -335,12 +333,12 @@ static bool su_expression( su * in_su )
 /*        used with items affected by DT/DD used inside a macro            */
 /***************************************************************************/
 
-static void add_spaces_t_element( char * spaces )
+static void add_spaces_t_element( char *spaces )
 {
     font_number     font;
     size_t          spc_cnt;
-    text_chars  *   sav_chars;
-    text_line   *   line;
+    text_chars      *sav_chars;
+    text_line       *line;
     uint32_t        start;
 
     spc_cnt = strlen( spaces );
@@ -426,7 +424,7 @@ size_t len_to_trail_space( const char *p , size_t len )
 /* will point to \0 if quote char not found                                */
 /***************************************************************************/
 
-char * skip_to_quote( char * p, char quote )
+char * skip_to_quote( char *p, char quote )
 {
     while( *p != '\0' && quote != *p ) {
         p++;
@@ -440,45 +438,43 @@ char * skip_to_quote( char * p, char quote )
 /*  returns true if an extended attribute value was found                  */
 /*          false otherwise (not necessarily an error)                     */
 /***************************************************************************/
-static bool su_layout_special( su * in_su )
+static bool su_layout_special( su *in_su )
 {
-    bool        retval = true;
-    char    *   ps;
-    su      *   s;
+    bool        retval;
+    char        *ps;
     int         wh;
     int         wd;
-    char        quote;
 
-    s = in_su;
-    ps = s->su_txt;
+    ps = in_su->su_txt;
     wh = 0;
     wd = 0;
 
+    retval = true;
     if( strnicmp( "left", ps, 4 ) == 0 ) {
-        s->su_u = SU_lay_left;
+        in_su->su_u = SU_lay_left;
         strcpy( ps, "left" );
     } else if( strnicmp( "right", ps, 5 ) == 0 ) {
-        s->su_u = SU_lay_right;
+        in_su->su_u = SU_lay_right;
         strcpy( ps, "right" );
     } else if( strnicmp( "center", ps, 6 ) == 0 ) {
-        s->su_u = SU_lay_centre;
+        in_su->su_u = SU_lay_centre;
         strcpy( ps, "center" );
     } else if( strnicmp( "centre", ps, 6 ) == 0 ) {
-        s->su_u = SU_lay_centre;
+        in_su->su_u = SU_lay_centre;
         strcpy( ps, "centre" );
     } else if( strnicmp( "extend", ps, 6 ) == 0 ) {
-        s->su_u = SU_lay_extend;
+        in_su->su_u = SU_lay_extend;
         strcpy( ps, "extend" );
     } else {
         retval = false;
     }
 
     if( retval ) {
-        s->su_whole = 0;
-        s->su_dec   = 0;
-        s->su_inch  = 0;
-        s->su_mm    = 0;
-        s->su_relative = false;
+        in_su->su_whole = 0;
+        in_su->su_dec   = 0;
+        in_su->su_inch  = 0;
+        in_su->su_mm    = 0;
+        in_su->su_relative = false;
     }
 
     return( retval );
@@ -500,24 +496,21 @@ static bool su_layout_special( su * in_su )
 /*                    true on error (conversion error occurred)            */
 /***************************************************************************/
 
-bool att_val_to_su( su * in_su, bool pos, att_val_type *attr_val, bool specval )
+bool att_val_to_su( su *in_su, bool pos, att_val_type *attr_val, bool specval )
 {
-    bool        cvterr  = true;
-    char    *   ps      = NULL; // destination for value text
+    char        *ps      = NULL; // destination for value text
     char        sign;
-    su      *   s;
 
-    s = in_su;
-    ps = s->su_txt;
+    ps = in_su->su_txt;
     *ps = '\0';
 
-    if( (attr_val->len + 1) > MAX_SU_CHAR ) {     // won't fit
+    if( attr_val->len > MAX_SU_CHAR - 1 ) { // won't fit
         xx_line_err_c( err_inv_att_val, attr_val->name );
     }
-    memcpy_s( ps, MAX_SU_CHAR - 1, attr_val->name, attr_val->len );
+    strncpy( ps, attr_val->name, attr_val->len );
     ps[attr_val->len] = '\0';
 
-    s->su_u = SU_undefined;
+    in_su->su_u = SU_undefined;
     if( *ps == '+' ) {                      // not allowed with tags
         xx_line_err_c( err_inv_att_val, attr_val->name );
     } else if( *ps == '-' ) {               // not relative, just negative
@@ -535,15 +528,12 @@ bool att_val_to_su( su * in_su, bool pos, att_val_type *attr_val, bool specval )
     if( *ps == '\0' ) {                     // value end reached, not valid
         xx_line_err_c( err_inv_att_val, attr_val->name );
     }
-    s->su_relative = false;             // no relative positioning with tags
+    in_su->su_relative = false;             // no relative positioning with tags
 
-    if( specval && su_layout_special( in_su ) ) {
-        cvterr = false;
-    } else {
-        cvterr = internal_to_su( in_su, true, attr_val->name );
-    }
+    if( specval && su_layout_special( in_su ) )
+        return( false );
 
-    return( cvterr );
+    return( internal_to_su( in_su, true, attr_val->name ) );
 }
 
 /***************************************************************************/
@@ -556,52 +546,46 @@ bool att_val_to_su( su * in_su, bool pos, att_val_type *attr_val, bool specval )
 /*      they cannot contain whitespace                                     */
 /*      they can be expressions, provided they do not include a unit       */
 /*                                                                         */
-/*    returns cvterr: false on success (no conversion error)               */
-/*                    true on error (conversion error occurred)            */
+/*    returns false on success (no conversion error)                       */
+/*            true on error (conversion error occurred)                    */
 /***************************************************************************/
 
-bool cw_val_to_su( char * * scanp, su * in_su )
+bool cw_val_to_su( char **scanp, su *in_su )
 {
-    bool        cvterr  = true;
-    char    *   p       = NULL; // source of value text
-    char    *   pa      = NULL; // start of value text
-    char    *   ps      = NULL; // destination for value text
+    char        *p       = NULL; // source of value text
+    char        *pa      = NULL; // start of value text
+    char        *ps      = NULL; // destination for value text
     char        sign;
     size_t      len;
-    su      *   s;
 
-    s = in_su;
     p = *scanp;
     pa = p;
-    ps = s->su_txt;
+    ps = in_su->su_txt;
     *ps = '\0';
     SkipSpaces( p );            // just in case
     SkipNonSpaces( p );
     len = p - pa;
     *scanp = p;                 // report back value of p
-    if( (len + 1) > MAX_SU_CHAR ) {
+    if( len > MAX_SU_CHAR - 1 ) {
         xx_line_err_c( err_inv_cw_op_val, pa );
     }
-    memcpy_s( ps, MAX_SU_CHAR - 1, pa, len );
+    strncpy( ps, pa, len );
     ps[len] = '\0';
 
-    s->su_u = SU_undefined;
+    in_su->su_u = SU_undefined;
     if( *ps == '+'
       || *ps == '-' ) {
         sign = *ps;
-        s->su_relative = true;  // value is added / subtracted from old value
+        in_su->su_relative = true;  // value is added / subtracted from old value
     } else {
         sign = '+';
-        s->su_relative = false;         // value replaces old value
+        in_su->su_relative = false;         // value replaces old value
     }
 
-    if( su_expression( in_su ) ) {
-        cvterr = false;
-    } else {
-        cvterr = internal_to_su( in_su, false, pa );
-    }
+    if( su_expression( in_su ) )
+        return( false );
 
-    return( cvterr );
+    return( internal_to_su( in_su, false, pa ) );
 }
 
 /***************************************************************************/
@@ -622,31 +606,28 @@ bool cw_val_to_su( char * * scanp, su * in_su )
 /*                    true on error (conversion error occurred)            */
 /***************************************************************************/
 
-bool lay_init_su( const char *p, su * in_su )
+bool lay_init_su( const char *p, su *in_su )
 {
-    bool            cvterr  = true;
-    const char  *   pa      = NULL; // start of value text
-    char        *   ps      = NULL; // destination for value text
+    const char      *pa      = NULL; // start of value text
+    char            *ps      = NULL; // destination for value text
     char            sign;
     size_t          len;
-    su          *   s;
 
-    s = in_su;
     pa = p;
-    ps = s->su_txt;
+    ps = in_su->su_txt;
     *ps = '\0';
 
     SkipSpaces( p );                // just in case
     SkipNonSpaces( p );
     len = p - pa;
 
-    if( (len + 1) > MAX_SU_CHAR ) { // won't fit
+    if( len > MAX_SU_CHAR - 1 ) {   // won't fit
         xx_line_err_c( err_inv_att_val, pa );
     }
-    memcpy_s( ps, MAX_SU_CHAR - 1, pa, len );
+    strncpy( ps, pa, len );
     ps[len] = '\0';
 
-    s->su_u = SU_undefined;
+    in_su->su_u = SU_undefined;
     if( *ps == '+' ) {                      // not allowed with tags
         xx_line_err_c( err_inv_att_val, ps );
     } else if( *ps == '-' ) {               // not relative, just negative
@@ -661,15 +642,12 @@ bool lay_init_su( const char *p, su * in_su )
     if( *ps == '\0' ) {                     // value end reached, not valid
         xx_line_err_c( err_inv_att_val, ps );
     }
-    s->su_relative = false;                 // no relative positioning with tags
+    in_su->su_relative = false;                 // no relative positioning with tags
 
-    if( su_layout_special( in_su ) ) {
-        cvterr = false;
-    } else {
-        cvterr = internal_to_su( in_su, true, pa );
-    }
+    if( su_layout_special( in_su ) )
+        return( false );
 
-    return( cvterr );
+    return( internal_to_su( in_su, true, pa ) );
 }
 
 /***************************************************************************/
@@ -677,26 +655,26 @@ bool lay_init_su( const char *p, su * in_su )
 /*  return value is signed as space unit can be relative (+ -)             */
 /***************************************************************************/
 
-int32_t conv_hor_unit( su * s, font_number font )
+int32_t conv_hor_unit( su *in_su, font_number font )
 {
     int32_t     ds;
 
-    switch( s->su_u ) {
+    switch( in_su->su_u ) {
     case SU_chars_lines:
-        ds = s->su_whole * (int32_t)bin_device->horizontal_base_units / CPI;
+        ds = in_su->su_whole * (int32_t)bin_device->horizontal_base_units / CPI;
         break;
     case SU_dv:
-        ds = s->su_whole;
+        ds = in_su->su_whole;
         break;
     case SU_ems:
-        ds = s->su_whole * wgml_fonts[font].em_base;
+        ds = in_su->su_whole * wgml_fonts[font].em_base;
         break;
     case SU_inch:
     case SU_cm:
     case SU_mm:
     case SU_cicero:
     case SU_pica:
-        ds = (int64_t)s->su_inch * bin_device->horizontal_base_units / 10000L;
+        ds = (int64_t)in_su->su_inch * bin_device->horizontal_base_units / 10000L;
         break;
     default:
         ds = 0;
@@ -705,7 +683,7 @@ int32_t conv_hor_unit( su * s, font_number font )
     return( ds );
 }
 
-int32_t conv_vert_unit( su *s, text_space text_spacing, font_number font )
+int32_t conv_vert_unit( su *in_su, text_space text_spacing, font_number font )
 {
     int32_t         ds;
     int32_t         fp;
@@ -713,18 +691,18 @@ int32_t conv_vert_unit( su *s, text_space text_spacing, font_number font )
     if( !( text_spacing > 0 ) ) {       // if spacing valid use it
         text_spacing = g_text_spacing;  // else default
     }
-    switch( s->su_u ) {
+    switch( in_su->su_u ) {
     case SU_chars_lines:
     case SU_ems:
         // no decimals, use spacing, round negative values down
-        ds = text_spacing * s->su_whole * wgml_fonts[font].line_height;
+        ds = text_spacing * in_su->su_whole * wgml_fonts[font].line_height;
         if( ds < 0 ) {
             ds++;
         }
         break;
     case SU_dv:
         // no decimals, no spacing, round negative values down
-        ds = s->su_whole;
+        ds = in_su->su_whole;
         if( ds < 0 ) {
             ds++;
         }
@@ -734,13 +712,13 @@ int32_t conv_vert_unit( su *s, text_space text_spacing, font_number font )
     case SU_mm:
     case SU_cicero:
     case SU_pica:
-        if ( s->su_inch == 0 ) {    // if the value is "0", ds is "0"
+        if ( in_su->su_inch == 0 ) {    // if the value is "0", ds is "0"
             ds = 0;
             break;
         }
-        ds = (int64_t)s->su_inch * bin_device->vertical_base_units / 10000L;
-        fp = (int64_t)s->su_inch * bin_device->vertical_base_units % 10000L;
-        if( s->su_inch > 0 ) {
+        ds = (int64_t)in_su->su_inch * bin_device->vertical_base_units / 10000L;
+        fp = (int64_t)in_su->su_inch * bin_device->vertical_base_units % 10000L;
+        if( in_su->su_inch > 0 ) {
             if ( fp > 5000 ) {
                 ds++;
             }
@@ -763,12 +741,12 @@ int32_t conv_vert_unit( su *s, text_space text_spacing, font_number font )
 /*  returns ptr to string or NULL if error                                 */
 /***************************************************************************/
 
-char * format_num( uint32_t n, char * r, size_t rsize, num_style ns )
+char *format_num( uint32_t n, char *r, size_t rsize, num_style ns )
 {
     size_t      pos;
     size_t      pos1;
-    char    *   p;
-    char    *   rp;
+    char        *p;
+    char        *rp;
     char        temp[MAX_L_AS_STR + 3]; // +3 for () and decimal point
     char        a1;
     char        a2;
@@ -901,7 +879,7 @@ char *get_att_name( char *p, char **orig, char *attname )
                     /* changes made by the tag calling it                  */
                     /*******************************************************/
 
-                    strcpy_s( buf, strlen( buff2 ) + 1, buff2 );
+                    strcpy( buf, buff2 );
                     scan_start = buff2;
                     scan_stop  = buff2 + buff2_lg;
                     if( (*scan_start == SCR_char)       // cw found: end-of-tag
@@ -969,8 +947,8 @@ char *get_att_value( char *p, att_val_type *attr_val )
                     break;
                 }
                 { // this should almost never be used
-                    char    *   q;
-                    char    *   r;
+                    char        *q;
+                    char        *r;
                     q = p;
                     for( r = p + 1; *r != '\0'; r++ ) {
                         *q++ = *r;
@@ -1009,7 +987,7 @@ char *get_att_value( char *p, att_val_type *attr_val )
 /* be looked at at some point                                              */
 /***************************************************************************/
 
-void g_keep_nest( const char * cw_tag ) {
+void g_keep_nest( const char *cw_tag ) {
     switch( cur_group_type ) {
     case gt_fb:
         keep_nest_err( cw_tag, "a floating block" );
@@ -1029,10 +1007,10 @@ void g_keep_nest( const char * cw_tag ) {
 /* parse and return a font number value                                    */
 /***************************************************************************/
 
-font_number get_font_number( char * value, size_t len )
+font_number get_font_number( char *value, size_t len )
 {
-    char        *   p;
-    char        *   pb;
+    char            *p;
+    char            *pb;
     uint32_t        wk;
 
     p = value;
@@ -1059,7 +1037,7 @@ font_number get_font_number( char * value, size_t len )
 /*     used by INCLUDE to capture file names without the "file" attribute  */
 /***************************************************************************/
 
-char * get_tag_value( char *p, att_val_type *attr_val )
+char *get_tag_value( char *p, att_val_type *attr_val )
 {
     ProcFlags.tag_end_found = false;
     attr_val->quoted = '\0';
@@ -1085,8 +1063,8 @@ char * get_tag_value( char *p, att_val_type *attr_val )
                     break;
                 }
                 { // this should almost never be used
-                    char    *   q;
-                    char    *   r;
+                    char        *q;
+                    char        *r;
                     q = p;
                     for( r = p + 1; *r != '\0'; r++ ) {
                         *q++ = *r;
@@ -1117,7 +1095,7 @@ char * get_tag_value( char *p, att_val_type *attr_val )
 /*  convert integer to roman digits                                        */
 /***************************************************************************/
 
-char * int_to_roman( uint32_t n, char * r, size_t rsize )
+char *int_to_roman( uint32_t n, char *r, size_t rsize )
 {
     static const struct {
         uint32_t    val;
@@ -1227,9 +1205,9 @@ num_style find_pgnum_style( void )
 /*        style field is set from correct and current information          */
 /***************************************************************************/
 
-ffh_entry * init_ffh_entry( ffh_entry * ffh_list )
+ffh_entry *init_ffh_entry( ffh_entry *ffh_list )
 {
-    ffh_entry   *   curr;
+    ffh_entry       *curr;
 
     curr = ffh_list;
     if( curr == NULL ) {            // first entry
@@ -1257,11 +1235,11 @@ ffh_entry * init_ffh_entry( ffh_entry * ffh_list )
 /*  initalize a fwd_ref instance and insert it (if new) in alpha order     */
 /***************************************************************************/
 
-fwd_ref * init_fwd_ref( fwd_ref *dict, const char *refid )
+fwd_ref *init_fwd_ref( fwd_ref *dict, const char *refid )
 {
-    fwd_ref *   curr;
-    fwd_ref *   local;
-    fwd_ref *   prev;
+    fwd_ref     *curr;
+    fwd_ref     *local;
+    fwd_ref     *prev;
 
     if( dict == NULL ) {
         curr = (fwd_ref *) mem_alloc( sizeof( fwd_ref ) );
@@ -1300,9 +1278,9 @@ fwd_ref * init_fwd_ref( fwd_ref *dict, const char *refid )
 /*  free the memory controlled by fig_list, fn_list, or hd_list            */
 /***************************************************************************/
 
-void free_ffh_list( ffh_entry * ffh_list )
+void free_ffh_list( ffh_entry *ffh_list )
 {
-    ffh_entry   *   curr;
+    ffh_entry       *curr;
 
     while( ffh_list != NULL ) {
         if( ffh_list->prefix != NULL ) {
@@ -1322,9 +1300,9 @@ void free_ffh_list( ffh_entry * ffh_list )
 /*  free the memory controlled by fig_fwd_refs, fn_fwd_refs or hd_fwd_refs */
 /***************************************************************************/
 
-void free_fwd_refs( fwd_ref * fwd_refs )
+void free_fwd_refs( fwd_ref *fwd_refs )
 {
-    fwd_ref *   curr;
+    fwd_ref     *curr;
 
     while( fwd_refs != NULL ) {
         curr = fwd_refs;

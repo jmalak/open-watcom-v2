@@ -1821,14 +1821,14 @@ typedef struct attr_flags {
 
 typedef struct att_val_type {
     char            *name;
-    unsigned        len;
+    int             len;
     char            quoted;
     char            specval[SPECVAL_LENGTH + 1];
 } att_val_type;
 
 typedef struct lay_att_val {
     char            *att_name;
-    uint32_t        att_len;
+    int             att_len;
     att_val_type    val;
     char            attname[LAY_ATT_NAME_LENGTH + 1];
 } lay_att_val;

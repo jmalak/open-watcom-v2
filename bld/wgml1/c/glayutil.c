@@ -222,14 +222,16 @@ condcode    lay_attr_and_value( lay_att_val *lay_attr )
             ProcFlags.tag_end_found = true;
             p++;
         }
-
+        /*
+         * blank quoted value is valid, length check include quotes
+         */
         if( lay_attr->val.len > 0 ) {       // attribute value length
             rc = pos;
         } else {
             xx_line_err_c( err_att_val_missing, pa );
         }
 
-        if( lay_attr->val.quoted != ' ' ) {         // delimiters must be omitted for these externs
+        if( lay_attr->val.quoted != ' ' ) { // delimiters must be omitted for these externs
             lay_attr->val.name++;
             lay_attr->val.len -= 2;
         }
@@ -335,8 +337,6 @@ bool    i_case( char * p, lay_attr_i lay_attr, case_t * tm )
 {
     bool        cvterr;
 
-    (void)lay_attr;
-
     cvterr = false;
     if( strcmp( "mixed", lay_attr->val.specval ) == 0 ) {
         *tm = case_mixed;
@@ -404,8 +404,6 @@ bool    i_content( char * p, lay_attr_i lay_attr, content * tm )
     char    *   pa;
     int         k;
     size_t      len;
-
-    (void)lay_attr;
 
     cvterr = false;
     tm->content_type = no_content;
@@ -681,8 +679,6 @@ bool    i_number_form( char * p, lay_attr_i lay_attr, num_form * tm )
 {
     bool        cvterr;
 
-    (void)lay_attr;
-
     cvterr = false;
     if( strcmp( "none", lay_attr->val.specval ) == 0 ) {
         *tm = num_none;
@@ -844,8 +840,6 @@ bool    i_page_eject( char * p, lay_attr_i lay_attr, page_ej * tm )
 {
     bool        cvterr;
 
-    (void)lay_attr;
-
     cvterr = false;
     if( strcmp( "no", lay_attr->val.specval ) == 0 ) {
         *tm = ej_no;
@@ -888,8 +882,6 @@ bool    i_page_position( char * p, lay_attr_i lay_attr, page_pos * tm )
 {
     bool        cvterr;
 
-    (void)lay_attr;
-
     cvterr = false;
     if( strcmp( "left", lay_attr->val.specval ) == 0 ) {
         *tm = pos_left;
@@ -930,8 +922,6 @@ bool    i_place( char * p, lay_attr_i lay_attr, bf_place * tm )
     bool        cvterr;
     int         k;
 
-    (void)lay_attr;
-
     cvterr = false;
     *tm = no_place;
     for( k = no_place; k < max_place; ++k ) {
@@ -968,8 +958,6 @@ void    o_place( FILE *fp, lay_attr_o lay_attr, const bf_place * tm )
 bool    i_pouring( char * p, lay_attr_i lay_attr, reg_pour * tm )
 {
     bool        cvterr;
-
-    (void)lay_attr;
 
     cvterr = false;
     if( strcmp( "none", lay_attr->val.specval ) == 0 ) {
@@ -1031,15 +1019,9 @@ void    o_pouring( FILE *fp, lay_attr_o lay_attr, const reg_pour * tm )
 /***************************************************************************/
 bool    i_space_unit( char * p, lay_attr_i lay_attr, su * tm )
 {
-    att_val_type    attr_val;
-
     (void)p;
 
-    attr_val.name = lay_attr->val.name;
-    attr_val.len = lay_attr->val.len;
-    attr_val.quoted = lay_attr->val.quoted;
-    strcpy( attr_val.specval, lay_attr->val.specval );
-    return( att_val_to_su( tm, true, &attr_val, true ) );    // no negative values allowed TBD
+    return( att_val_to_su( tm, true, &lay_attr->val, true ) );    // no negative values allowed TBD
 }
 
 void    o_space_unit( FILE *fp, lay_attr_o lay_attr, const su * tm )
@@ -1126,13 +1108,11 @@ bool    i_xx_string( char * p, lay_attr_i lay_attr, xx_str * tm )
 {
     bool        cvterr;
 
-    (void)lay_attr;
-
     cvterr = false;
     if( (lay_attr->val.name != NULL)
       && (lay_attr->val.len < str_size) ) {
-        memcpy_s( tm, str_size, lay_attr->val.name, lay_attr->val.len );
-        *(tm + lay_attr->val.len) = '\0';
+        strncpy( tm, lay_attr->val.name, lay_attr->val.len );
+        tm[lay_attr->val.len] = '\0';
     } else {
         xx_line_err_c( err_xx_string, p );
     }
@@ -1166,8 +1146,6 @@ bool    i_yes_no( char * p, lay_attr_i lay_attr, bool * tm )
 {
     bool        cvterr;
 
-    (void)lay_attr;
-
     cvterr = false;
     if( strcmp( "no", lay_attr->val.specval ) == 0 ) {
         *tm = false;
@@ -1183,7 +1161,7 @@ void    o_yes_no( FILE *fp, lay_attr_o lay_attr, const bool * tm )
 {
     char    const   *   p;
 
-    if( *tm == 0 ) {
+    if( *tm == '\0' ) {
         p = "no";
     } else {
         p = "yes";

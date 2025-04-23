@@ -917,7 +917,7 @@ void    scan_line( void )
 
                     if( !(ProcFlags.skip_blank_line
                       && (*scan_start == ' ')
-                      && ((scan_stop - scan_start) == 1)
+                      && (scan_start == scan_stop - 1)
                       && (input_cbs->fmflags & II_file)) ) {
                         if( ProcFlags.force_pc ) {
                             do_force_pc( scan_start );

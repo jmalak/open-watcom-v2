@@ -31,7 +31,7 @@ typedef lay_att         lay_attr_o;
     #define global  extern
 #endif
 
-global struct tm            doc_tm;         // document time/date
+global struct tm        doc_tm;         // document time/date
 
 global  jmp_buf     *   environment;    // var for GSuicide()
 
@@ -124,14 +124,14 @@ global char         *   buff2;          // input buffer
 global size_t           buff2_lg;       // input buffer used length
 
 // the following to manage .gt * and .ga * * syntax
-global char         g_tagname[TAG_NAME_LENGTH + 1];// last defined GML tag name
+global char             g_tagname[TAG_NAME_LENGTH + 1];// last defined GML tag name
 global struct gtentry   *g_tag_entry;   // ... entry in tag_dict
-global char         g_attname[TAG_ATT_NAME_LENGTH + 1];// last defined GML attribute
+global char             g_attname[TAG_ATT_NAME_LENGTH + 1];// last defined GML attribute
 global struct gaentry   *g_att_entry;   // ... entry in tag_dict
 
-global int          li_cnt;             // remaining count for .li processing
+global int              li_cnt;         // remaining count for .li processing
 
-global uint8_t      in_esc;             // input escape char from .ti
+global uint8_t          in_esc;         // input escape char from .ti
 
 
 // file block support
