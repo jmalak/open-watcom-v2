@@ -98,7 +98,7 @@ const ban_sections      doc_sections[max_ban] = {
 /*  place names for fig and banner definition                              */
 /***************************************************************************/
 
-const ban_places        const bf_places[max_place] = {
+const ban_places        bf_places[max_place] = {
     { "???",      no_place      },
     { "inline",   inline_place  },
     { "bottom",   bottom_place  },
