@@ -47,7 +47,7 @@ condcode    scr_right( parm parms[MAX_FUN_PARMS], int parmcount, char **result, 
     }
 
     parm1 = parms[0].arg;
-    unquote_if_quoted( &parm1 );
+    scr_unquote_parm( &parm1 );
     len = parm1.e - parm1.s + 1;              // total length
 
     gn.ignore_blanks = false;
@@ -68,7 +68,7 @@ condcode    scr_right( parm parms[MAX_FUN_PARMS], int parmcount, char **result, 
             if( parmcount > 2 ) {       // pad character specified
                 if( parms[2].arg.s <= parms[2].arg.e ) {
                     tok_type parm = parms[2].arg;
-                    unquote_if_quoted( &parm);
+                    scr_unquote_parm( &parm);
                     if( parm.s <= parm.e ) {
                         padchar = *parm.s;
                     }

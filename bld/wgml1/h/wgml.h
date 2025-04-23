@@ -76,7 +76,6 @@ extern  bool        is_space_tab_char( char c );
 extern  bool        is_stop_char( char c );
 extern  bool        is_symbol_char( char c );
 extern  char        parse_char( const char *pa, size_t len );
-extern  void        unquote_if_quoted( tok_type *tok );
 
 /* gbanner.c                            */
 extern  void        out_ban_bot( void );
@@ -307,6 +306,7 @@ extern  void                fb_blocks_out( void );
 
 /* gsfuncs.c                            */
 extern  char    *   scr_multi_funcs( char * in, char * pstart, char * * ppval, int32_t valsize );
+extern  void        scr_unquote_parm( tok_type *tok );
 
 
 /* gsfunelu.c                           */

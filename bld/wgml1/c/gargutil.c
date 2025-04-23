@@ -334,18 +334,3 @@ bool is_space_tab_char( char c )
 {
     return( ( c == ' ' ) || ( c == '\t' ) );
 }
-
-/*
- * If first and last character are the same and one of the quote chars
- * the start and end pointers are adjusted
- * but only if a and z are not equal (that is, only if the value has more
- * than one character
- */
-
-void unquote_if_quoted( tok_type *tok )
-{
-    if( (tok->s != tok->e) && (tok->s[0] == tok->e[0]) && is_quote_char( tok->s[0] ) ) {
-        tok->s++;
-        tok->e--;
-    }
-}

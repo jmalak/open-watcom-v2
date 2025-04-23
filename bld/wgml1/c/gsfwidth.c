@@ -53,7 +53,7 @@ condcode    scr_width( parm parms[MAX_FUN_PARMS], int parmcount, char **result, 
     }
 
     parm1 = parms[0].arg;
-    unquote_if_quoted( &parm1 );
+    scr_unquote_parm( &parm1 );
     len = parm1.e - parm1.s + 1;
 
     if( len <= 0 ) {                    // null string width 0
@@ -66,7 +66,7 @@ condcode    scr_width( parm parms[MAX_FUN_PARMS], int parmcount, char **result, 
     if( parmcount > 1 ) {               // evalute type
         if( parms[1].arg.s <= parms[1].arg.e ) {// type
             parm2 = parms[1].arg;
-            unquote_if_quoted( &parm2 );
+            scr_unquote_parm( &parm2 );
             type = my_tolower( *parm2.s );
             switch( type ) {
             case 'c':                 // CPI

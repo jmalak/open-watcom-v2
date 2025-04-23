@@ -59,7 +59,7 @@ condcode    scr_substr( parm parms[MAX_FUN_PARMS], int parmcount, char **result,
     }
 
     parm1 = parms[0].arg;
-    unquote_if_quoted( &parm1 );
+    scr_unquote_parm( &parm1 );
     stringlen = parm1.e - parm1.s + 1;  // length of string
     padchar = ' ';                      // default padchar
     len = 0;
@@ -100,7 +100,7 @@ condcode    scr_substr( parm parms[MAX_FUN_PARMS], int parmcount, char **result,
     if( parmcount > 3 ) {               // isolate padchar
         if( parms[3].arg.s <= parms[3].arg.e ) {
             tok_type parm = parms[3].arg;
-            unquote_if_quoted( &parm );
+            scr_unquote_parm( &parm );
             if( parm.s <= parm.e ) {
                 padchar = *parm.s;
             }

@@ -156,7 +156,7 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
                 if( (hx_lvl == 0)
                   || (hxstring[2] == lvlc) ) {
                     pgseen = true;
-                    if( attr_val.quoted == '\0' ) {  // value not quoted
+                    if( attr_val.quoted == ' ' ) {  // value not quoted
                         if( strcmp( "start", attr_val.specval ) == 0 ) {
                             pgvalue = pgstart;
                         } else if( strcmp( "end", attr_val.specval ) == 0 ) {

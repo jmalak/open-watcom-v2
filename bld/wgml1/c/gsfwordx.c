@@ -115,7 +115,7 @@ static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], int parmcount,
     }
 
     parm1 = parms[0].arg;
-    unquote_if_quoted( &parm1 );
+    scr_unquote_parm( &parm1 );
     len = parm1.e - parm1.s + 1;              // default length
 
     if( len <= 0 ) {                    // null string nothing to do
@@ -261,7 +261,7 @@ condcode    scr_words( parm parms[MAX_FUN_PARMS], int parmcount, char * * result
     }
 
     parm1 = parms[0].arg;
-    unquote_if_quoted( &parm1 );
+    scr_unquote_parm( &parm1 );
     len = parm1.e - parm1.s + 1;
 
     if( len <= 0 ) {                    // null string nothing to do
@@ -333,11 +333,11 @@ condcode    scr_wordpos( parm parms[MAX_FUN_PARMS], int parmcount, char * * resu
     }
 
     phrase = parms[0].arg;
-    unquote_if_quoted( &phrase );
+    scr_unquote_parm( &phrase );
     len = phrase.e - phrase.s + 1;
 
     pstr = parms[1].arg;
-    unquote_if_quoted( &pstr );
+    scr_unquote_parm( &pstr );
 
     if( len <= 0                      // null phrase nothing to do
       || pstr.e - pstr.s + 1 <= 0 ) { // null string nothing to do
@@ -479,13 +479,13 @@ condcode    scr_find( parm parms[MAX_FUN_PARMS], int parmcount, char **result, i
     index = 0;
 
     phrase = parms[1].arg;
-    unquote_if_quoted( &phrase );
+    scr_unquote_parm( &phrase );
     trimSpaces( &phrase );
 
     if( phrase.s <= phrase.e ) {
 
         string = parms[0].arg;
-        unquote_if_quoted( &string );
+        scr_unquote_parm( &string );
         trimSpaces( &string );
 
         string_start = string.s;

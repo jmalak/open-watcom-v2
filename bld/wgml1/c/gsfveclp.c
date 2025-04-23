@@ -92,11 +92,11 @@ static  condcode    scr_veclp( parm parms[MAX_FUN_PARMS], int parmcount,
     }
 
     pneedle = parms[0].arg;
-    unquote_if_quoted( &pneedle );
+    scr_unquote_parm( &pneedle );
     needle_len = pneedle.e - pneedle.s + 1;   // needle length
 
     phay = parms[1].arg;
-    unquote_if_quoted( &phay );
+    scr_unquote_parm( &phay );
     hay_len = phay.e - phay.s + 1;       // haystack length
 
     rc = 0;

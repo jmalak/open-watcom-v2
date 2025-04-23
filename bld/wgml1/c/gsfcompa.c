@@ -56,11 +56,11 @@ condcode    scr_compare( parm parms[MAX_FUN_PARMS], int parmcount, char **result
     }
 
     string1 = parms[0].arg;
-    unquote_if_quoted( &string1 );
+    scr_unquote_parm( &string1 );
     len1 = string1.e - string1.s + 1;   // string1 length
 
     string2 = parms[1].arg;
-    unquote_if_quoted( &string2 );
+    scr_unquote_parm( &string2 );
     len2 = string2.e - string2.s + 1;   // string2 length
 
     len = len1;
@@ -69,10 +69,10 @@ condcode    scr_compare( parm parms[MAX_FUN_PARMS], int parmcount, char **result
 
     index = 0;
     if( len > 0 ) {
-        padchar = ' ';	/* default padding character ' ' */
+        padchar = ' ';  /* default padding character ' ' */
         if( parmcount > 2 ) {
             tok_type parm = parms[2].arg;
-            unquote_if_quoted( &parm );
+            scr_unquote_parm( &parm );
             if( parm.s <= parm.e ) {
                 padchar = *parm.s;
             }

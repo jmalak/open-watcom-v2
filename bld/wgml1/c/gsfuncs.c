@@ -380,6 +380,21 @@ char *scr_multi_funcs( char *in, char *pstart, char **result, int32_t valsize )
 }
 
 
+/*
+ * If first and last character are the same and one of the quote chars
+ * the start and end pointers are adjusted
+ * but only if a and z are not equal (that is, only if the value has more
+ * than one character
+ */
+
+void scr_unquote_parm( tok_type *tok )
+{
+    if( (tok->s != tok->e) && (tok->s[0] == tok->e[0]) && is_quote_char( tok->s[0] ) ) {
+        tok->s++;
+        tok->e--;
+    }
+}
+
 #if 0
 
 /*

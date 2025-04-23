@@ -920,7 +920,7 @@ char *get_att_value( char *p, att_val_type *attr_val )
 
     attr_val->name = NULL;
     attr_val->len = 0;
-    attr_val->quoted = '\0';
+    attr_val->quoted = ' ';
     SkipSpaces( p );                    // over WS to '='
     if( *p == '=' ) {
         p++;
@@ -1040,7 +1040,7 @@ font_number get_font_number( char *value, size_t len )
 char *get_tag_value( char *p, att_val_type *attr_val )
 {
     ProcFlags.tag_end_found = false;
-    attr_val->quoted = '\0';
+    attr_val->quoted = ' ';
     attr_val->name = NULL;
     attr_val->len = 0;
     SkipSpaces( p );                    // over WS to '='

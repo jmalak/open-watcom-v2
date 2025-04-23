@@ -330,7 +330,7 @@ static void set_bind( option * opt )
       || is_option() ) {
         xx_simple_err_cc( err_miss_inv_opt_value, opt->option, "" );
     } else {
-        attr_val.quoted = 0;
+        attr_val.quoted = ' ';
         attr_val.name = tokennext->token;
         attr_val.len = tokennext->toklen;
         scanerr = att_val_to_su( &bindwork, true, &attr_val, false ); // must be positive TBD

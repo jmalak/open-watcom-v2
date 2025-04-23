@@ -53,7 +53,7 @@ condcode    scr_translate( parm parms[MAX_FUN_PARMS], int parmcount, char **resu
     }
 
     parm1 = parms[0].arg;
-    unquote_if_quoted( &parm1 );
+    scr_unquote_parm( &parm1 );
 
     if( parm1.e - parm1.s + 1 <= 0 ) {      // null string nothing to do
         **result = '\0';
@@ -62,7 +62,7 @@ condcode    scr_translate( parm parms[MAX_FUN_PARMS], int parmcount, char **resu
 
     ptabo = parms[1].arg;
     if( (parmcount > 1) && (ptabo.s <= ptabo.e) ) {   // tableo is not empty
-        unquote_if_quoted( &ptabo );
+        scr_unquote_parm( &ptabo );
     } else {
         ptabo.s = NULL;
         ptabo.e = NULL;
@@ -70,7 +70,7 @@ condcode    scr_translate( parm parms[MAX_FUN_PARMS], int parmcount, char **resu
 
     ptabi = parms[2].arg;
     if( (parmcount > 2) && (ptabi.s <= ptabi.e) ) {   // tablei is not empty
-        unquote_if_quoted( &ptabi );
+        scr_unquote_parm( &ptabi );
     } else {
         ptabi.s = NULL;
         ptabi.e = NULL;
@@ -80,7 +80,7 @@ condcode    scr_translate( parm parms[MAX_FUN_PARMS], int parmcount, char **resu
     padchar = ' ';                      // padchar default is blank
     if( parmcount > 3 ) {               // padchar specified
         tok_type parm = parms[3].arg;
-        unquote_if_quoted( &parm );
+        scr_unquote_parm( &parm );
         if( parm.s <= parm.e ) {
             padchar = *parm.s;
             padchar_set = true;

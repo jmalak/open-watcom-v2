@@ -51,7 +51,7 @@ condcode    scr_d2c( parm parms[MAX_FUN_PARMS], int parmcount, char **result, in
     }
 
     parm1 = parms[0].arg;
-    unquote_if_quoted( &parm1 );
+    scr_unquote_parm( &parm1 );
     len = parm1.e - parm1.s + 1;    // default length
 
     if( len <= 0 ) {                // null string nothing to do

@@ -55,7 +55,7 @@ condcode    scr_min( parm parms[MAX_FUN_PARMS], int parmcount, char **result, in
 
     for( k = 0; k < parmcount; k++ ) {
         parmx = parms[k].arg;
-        unquote_if_quoted( &parmx );
+        scr_unquote_parm( &parmx );
         len = parmx.e - parmx.s + 1;    // length
 
         if( len <= 0 ) {                // null string nothing to do

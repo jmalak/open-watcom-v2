@@ -54,11 +54,11 @@ condcode    scr_insert( parm parms[MAX_FUN_PARMS], int parmcount, char **result,
     }
 
     parm1 = parms[0].arg;           // string to insert
-    unquote_if_quoted( &parm1 );
+    scr_unquote_parm( &parm1 );
     len = parm1.e - parm1.s + 1;    // length to insert
 
     parm2 = parms[1].arg;           // string to be modified
-    unquote_if_quoted( &parm2 );
+    scr_unquote_parm( &parm2 );
 
     if( len <= 0 ) {                // null string insert nothing to do
         **result = '\0';
