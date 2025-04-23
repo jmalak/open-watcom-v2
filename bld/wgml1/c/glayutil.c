@@ -137,8 +137,8 @@ void    eat_lay_sub_tag( void )
 
 condcode    lay_attr_and_value( lay_att_val *lay_attr )
 {
-    char        *   p;
-    char        *   pa;
+    char            *p;
+    char            *pa;
     condcode        rc;
     int             i;
 
@@ -1017,7 +1017,7 @@ void    o_pouring( FILE *fp, lay_attr_o lay_attr, const reg_pour * tm )
 /***************************************************************************/
 /*  space unit                                                             */
 /***************************************************************************/
-bool    i_space_unit( char * p, lay_attr_i lay_attr, su * tm )
+bool    i_space_unit( char *p, lay_attr_i lay_attr, su *tm )
 {
     (void)p;
 

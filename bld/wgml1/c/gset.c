@@ -80,7 +80,6 @@ extern  void    gml_set( const gmltag * entry )
                 strncpy( token_buf, attr_val.name, attr_val.len );
                 token_buf[attr_val.len] = '\0';
             } else if( strnicmp( token_buf, "delete", 6 ) == 0 ) {
-                p += 6;
                 sym.flags |= deleted;
             } else {    // no match = end-of-tag in wgml 4.0
                 ProcFlags.tag_end_found = true;

@@ -2588,7 +2588,7 @@ static void fb_font_switch( void )
 }
 
 /* Function fb_fs_marker().
- * Processes FONTSWIRCH-related markers.
+ * Processes FONTSWITCH-related markers.
  * Used with character devices.
  */
 

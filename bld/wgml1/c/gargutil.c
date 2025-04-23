@@ -90,7 +90,7 @@ condcode getarg( void )
             return( omit );             // nothing found
         }
 
-        if( p + 1 == scan_stop ) {      // one character token found
+        if( p == scan_stop - 1 ) {      // one character token found
             arg_flen = 1;
             g_tok_start = p;
             scan_start = p + 1;         // address of start for next call

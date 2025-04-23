@@ -166,4 +166,3 @@ void    gml_binclude( const gmltag * entry )
     scan_start = scan_stop;             // skip following text
     return;
 }
-

@@ -131,7 +131,6 @@ void    scr_pu( void )
     if( len == 0 ) {                    // omitted
         workn = 1;                      // "1" is default
     } else {
-
         gn.arg.s = pa;
         gn.arg.e = p;
         gn.ignore_blanks = false;

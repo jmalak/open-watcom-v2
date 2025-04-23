@@ -20,7 +20,6 @@
 /***************************************************************************/
 
 const char    * const lay_att_names[] = {
-//   18 is enough for longest attribute name  ( extract_threshold )
     { "DUMMY" },                       // enum zero not used
     #define pick( name, funci, funco, result ) { #name },
     #include "glayutil.h"
@@ -1716,7 +1715,6 @@ static  void    put_lay_tochx( FILE * layfile, layout_data * lay )
                 break;
             case e_display_in_toc:
                 o_yes_no( layfile, lay_attr, &lay->tochx[lvl].display_in_toc );
-                break;
                 break;
             default:
                 internal_err( __FILE__, __LINE__ );internal_err( __FILE__, __LINE__ );
