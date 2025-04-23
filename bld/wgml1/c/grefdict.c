@@ -25,7 +25,7 @@ char    *get_refid_value( char *p, att_val_type *attr_val, char *refid )
     size_t  k;
     size_t  len;
 
-    p = get_att_value( p, &attr_val );
+    p = get_att_value( p, attr_val );
 
     if( attr_val->name == NULL ) {       // no valid id
         return( p );
