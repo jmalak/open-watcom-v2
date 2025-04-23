@@ -55,13 +55,13 @@ condcode    scr_translate( parm parms[MAX_FUN_PARMS], int parmcount, char **resu
     parm1 = parms[0].arg;
     scr_unquote_parm( &parm1 );
 
-    if( parm1.e - parm1.s + 1 <= 0 ) {      // null string nothing to do
+    if( parm1.s == parm1.e ) {      // null string nothing to do
         **result = '\0';
         return( pos );
     }
 
     ptabo = parms[1].arg;
-    if( (parmcount > 1) && (ptabo.s <= ptabo.e) ) {   // tableo is not empty
+    if( (parmcount > 1) && (ptabo.s != ptabo.e) ) {   // tableo is not empty
         scr_unquote_parm( &ptabo );
     } else {
         ptabo.s = NULL;
@@ -69,7 +69,7 @@ condcode    scr_translate( parm parms[MAX_FUN_PARMS], int parmcount, char **resu
     }
 
     ptabi = parms[2].arg;
-    if( (parmcount > 2) && (ptabi.s <= ptabi.e) ) {   // tablei is not empty
+    if( (parmcount > 2) && (ptabi.s != ptabi.e) ) {   // tablei is not empty
         scr_unquote_parm( &ptabi );
     } else {
         ptabi.s = NULL;
@@ -81,31 +81,31 @@ condcode    scr_translate( parm parms[MAX_FUN_PARMS], int parmcount, char **resu
     if( parmcount > 3 ) {               // padchar specified
         tok_type parm = parms[3].arg;
         scr_unquote_parm( &parm );
-        if( parm.s <= parm.e ) {
+        if( parm.s != parm.e ) {
             padchar = *parm.s;
             padchar_set = true;
         }
     }
 
     if( (ptabi.s == NULL) && (ptabo.s == NULL) && !padchar_set ) {
-        while( (parm1.s <= parm1.e) && (ressize > 0) ) {  // translate to upper
+        while( (parm1.s < parm1.e) && (ressize > 0) ) {  // translate to upper
             **result = my_toupper( *parm1.s++ );
             *result += 1;
             ressize--;
         }
     } else {    // translate as specified in tablei and tableo
-        for( ; parm1.s <= parm1.e && ressize > 0; parm1.s++ ) {
+        for( ; parm1.s < parm1.e && ressize > 0; parm1.s++ ) {
             c = *parm1.s;
             ifound = false;
             if( ptabi.s == NULL ) {
                 c = padchar;
             } else {
-                for( iptr = ptabi.s; iptr <= ptabi.e; iptr++ ) {
+                for( iptr = ptabi.s; iptr < ptabi.e; iptr++ ) {
                     if( c == *iptr ) {
                         ifound = true;  // char found in input table
                         offset = iptr - ptabi.s;
                         optr = ptabo.s + offset;
-                        if( optr <= ptabo.e ) {
+                        if( optr < ptabo.e ) {
                             **result = *optr;  // take char from output table
                         } else {
                             **result = padchar;// output table too short use padchar

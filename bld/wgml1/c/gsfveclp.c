@@ -93,11 +93,11 @@ static  condcode    scr_veclp( parm parms[MAX_FUN_PARMS], int parmcount,
 
     pneedle = parms[0].arg;
     scr_unquote_parm( &pneedle );
-    needle_len = pneedle.e - pneedle.s + 1;   // needle length
+    needle_len = pneedle.e - pneedle.s; // needle length
 
     phay = parms[1].arg;
     scr_unquote_parm( &phay );
-    hay_len = phay.e - phay.s + 1;       // haystack length
+    hay_len = phay.e - phay.s;          // haystack length
 
     rc = 0;
     scan_err = false;
@@ -110,10 +110,10 @@ static  condcode    scr_veclp( parm parms[MAX_FUN_PARMS], int parmcount,
         ProcFlags.suppress_msg = true;
         scan_err = false;
 
-        c = *(phay.e + 1);
-        *(phay.e + 1) = '\0';
+        c = *phay.e;
+        *phay.e = '\0';
         scan_sym( phay.s, &symvar_entry, &var_ind, NULL, false );
-        *(phay.e + 1) = c;
+        *phay.e = c;
 
         ProcFlags.suppress_msg = suppress_msg;;
 
@@ -128,8 +128,8 @@ static  condcode    scr_veclp( parm parms[MAX_FUN_PARMS], int parmcount,
             if( rc > 0 ) {              // variable found
                 psymvar = symsubval->base;
                 if( psymvar->flags & subscripted ) {
-                    c = *(pneedle.e + 1);
-                    *(pneedle.e + 1) = '\0';   // make nul delimited
+                    c = *pneedle.e;
+                    *pneedle.e = '\0';   // make nul delimited
                     for( symsubval = psymvar->subscripts;
                          symsubval != NULL;
                          symsubval = symsubval->next ) {
@@ -141,7 +141,7 @@ static  condcode    scr_veclp( parm parms[MAX_FUN_PARMS], int parmcount,
                            }
                         }
                     }
-                    *(pneedle.e + 1) = c;
+                    *pneedle.e = c;
                 }
             }
         }

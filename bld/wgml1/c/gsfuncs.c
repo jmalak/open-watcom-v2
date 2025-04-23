@@ -389,7 +389,7 @@ char *scr_multi_funcs( char *in, char *pstart, char **result, int32_t valsize )
 
 void scr_unquote_parm( tok_type *tok )
 {
-    if( (tok->s != tok->e) && (tok->s[0] == tok->e[0]) && is_quote_char( tok->s[0] ) ) {
+    if( (tok->s != tok->e) && (tok->s[0] == tok->e[-1]) && is_quote_char( tok->s[0] ) ) {
         tok->s++;
         tok->e--;
     }

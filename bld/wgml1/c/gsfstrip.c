@@ -48,9 +48,9 @@ condcode    scr_strip( parm parms[MAX_FUN_PARMS], int parmcount, char **result, 
 
     parm1 = parms[0].arg;
     scr_unquote_parm( &parm1 );
-    len = parm1.e - parm1.s + 1;        // default length
+    len = parm1.e - parm1.s;            // default length
 
-    if( len <= 0 ) {                    // null string nothing to do
+    if( len == 0 ) {                    // null string nothing to do
         **result = '\0';
         return( pos );
     }
@@ -59,10 +59,10 @@ condcode    scr_strip( parm parms[MAX_FUN_PARMS], int parmcount, char **result, 
     type      = 'b';                    // default strip both ends
 
     if( parmcount > 1 ) {               // evalute type
-        if( parms[1].arg.s <= parms[1].arg.e ) {// type
+        if( parms[1].arg.s != parms[1].arg.e ) {// type
             tok_type parm = parms[1].arg;
             scr_unquote_parm( &parm );
-            if( parm.s <= parm.e ) {
+            if( parm.s != parm.e ) {
                 type = my_tolower( *parm.s );
             }
 
@@ -83,24 +83,24 @@ condcode    scr_strip( parm parms[MAX_FUN_PARMS], int parmcount, char **result, 
     }
 
     if( parmcount > 2 ) {               // stripchar
-        if( parms[2].arg.s <= parms[2].arg.e ) {
+        if( parms[2].arg.s != parms[2].arg.e ) {
             tok_type parm = parms[2].arg;
             scr_unquote_parm( &parm );
-            if( parm.s <= parm.e ) {
+            if( parm.s != parm.e ) {
                 stripchar = *parm.s;
             }
         }
     }
 
     if( type != 't' ) {                 // strip leading requested
-        for( ; parm1.s <= parm1.e; parm1.s++ ) {
+        for( ; parm1.s < parm1.e; parm1.s++ ) {
             if( *parm1.s != stripchar ) {
                 break;
             }
         }
     }
 
-    while( parm1.s <= parm1.e && ressize > 0 ) {
+    while( parm1.s < parm1.e && ressize > 0 ) {
         **result = *parm1.s++;
         *result += 1;
         ressize--;

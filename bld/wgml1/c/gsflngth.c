@@ -45,10 +45,9 @@ condcode    scr_length( parm parms[MAX_FUN_PARMS], int parmcount, char **result,
 
     parm1 = parms[0].arg;
     scr_unquote_parm( &parm1 );
-    len = parm1.e - parm1.s + 1;
+    len = parm1.e - parm1.s;
 
     *result += sprintf( *result, "%d", len );
 
     return( pos );
 }
-

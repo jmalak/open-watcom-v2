@@ -56,13 +56,12 @@ condcode    scr_min( parm parms[MAX_FUN_PARMS], int parmcount, char **result, in
     for( k = 0; k < parmcount; k++ ) {
         parmx = parms[k].arg;
         scr_unquote_parm( &parmx );
-        len = parmx.e - parmx.s + 1;    // length
+        len = parmx.e - parmx.s;        // length
 
-        if( len <= 0 ) {                // null string nothing to do
+        if( len == 0 ) {                // null string nothing to do
             continue;                   // skip empty value
         }
         gn.arg = parmx;
-        gn.arg.e++;
         cc = getnum( &gn );
         if( !(cc == pos  || cc == neg) ) {
             if( !ProcFlags.suppress_msg ) {

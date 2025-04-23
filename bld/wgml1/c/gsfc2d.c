@@ -53,7 +53,7 @@ condcode    scr_c2d( parm parms[MAX_FUN_PARMS], int parmcount, char **result, in
     scr_unquote_parm( &parm1 );
 
     n = 0;
-    while( parm1.s <= parm1.e ) {
+    while( parm1.s < parm1.e ) {
         n *= 256;                      // ignore overflow, let it wrap around
         n += (unsigned char)*parm1.s++;
     }

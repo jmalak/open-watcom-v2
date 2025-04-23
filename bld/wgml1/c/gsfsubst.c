@@ -60,7 +60,7 @@ condcode    scr_substr( parm parms[MAX_FUN_PARMS], int parmcount, char **result,
 
     parm1 = parms[0].arg;
     scr_unquote_parm( &parm1 );
-    stringlen = parm1.e - parm1.s + 1;  // length of string
+    stringlen = parm1.e - parm1.s;      // length of string
     padchar = ' ';                      // default padchar
     len = 0;
 
@@ -68,9 +68,8 @@ condcode    scr_substr( parm parms[MAX_FUN_PARMS], int parmcount, char **result,
     gn.ignore_blanks = false;
 
     if( parmcount > 1 ) {               // evalute start pos
-        if( parms[1].arg.s <= parms[1].arg.e ) {// start pos specified
+        if( parms[1].arg.s != parms[1].arg.e ) {// start pos specified
             gn.arg = parms[1].arg;
-            gn.arg.e++;
             cc = getnum( &gn );
             if( (cc != pos) || (gn.result == 0) ) {
                 if( !ProcFlags.suppress_msg ) {
@@ -83,9 +82,8 @@ condcode    scr_substr( parm parms[MAX_FUN_PARMS], int parmcount, char **result,
     }
 
     if( parmcount > 2 ) {               // evalute length
-        if( parms[2].arg.s <= parms[2].arg.e ) {// length specified
+        if( parms[2].arg.s != parms[2].arg.e ) {// length specified
             gn.arg = parms[2].arg;
-            gn.arg.e++;
             cc = getnum( &gn );
             if( (cc != pos) || (gn.result == 0) ) {
                 if( !ProcFlags.suppress_msg ) {
@@ -98,10 +96,10 @@ condcode    scr_substr( parm parms[MAX_FUN_PARMS], int parmcount, char **result,
     }
 
     if( parmcount > 3 ) {               // isolate padchar
-        if( parms[3].arg.s <= parms[3].arg.e ) {
+        if( parms[3].arg.s != parms[3].arg.e ) {
             tok_type parm = parms[3].arg;
             scr_unquote_parm( &parm );
-            if( parm.s <= parm.e ) {
+            if( parm.s != parm.e ) {
                 padchar = *parm.s;
             }
         }
@@ -109,12 +107,9 @@ condcode    scr_substr( parm parms[MAX_FUN_PARMS], int parmcount, char **result,
 
     parm1.s += n;                       // position to startpos
     if( len == 0 ) {                    // no length specified
-        len = parm1.e - parm1.s + 1;    // take rest of string
-        if( len < 0 ) {                 // if there is one
-            len = 0;
-        }
+        len = parm1.e - parm1.s;        // take rest of string
     }
-    for( k = 0; k < len && (parm1.s <= parm1.e) && (ressize > 0); k++ ) {
+    for( k = 0; k < len && (parm1.s < parm1.e) && (ressize > 0); k++ ) {
         **result = *parm1.s++;
         *result += 1;
         ressize--;

@@ -253,7 +253,7 @@ bool is_att_char( char c )
 {
     bool    test;
 
-    test = my_isalpha( c );
+    test = my_isalnum( c );
     if( !test ) {
         test = ( c == '_' );
     }

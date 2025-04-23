@@ -970,7 +970,7 @@ char *get_att_value( char *p, att_val_type *attr_val )
         attr_val->len = p - attr_val->name;
     }
     for( i = 0; i < SPECVAL_LENGTH; i++ ) {
-        if( !is_att_char( attr_val->name[i] ) )
+        if( !is_id_char( attr_val->name[i] ) )
             break;
         attr_val->specval[i] = my_tolower( attr_val->name[i] );
     }

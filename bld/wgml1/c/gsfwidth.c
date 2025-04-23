@@ -54,9 +54,9 @@ condcode    scr_width( parm parms[MAX_FUN_PARMS], int parmcount, char **result, 
 
     parm1 = parms[0].arg;
     scr_unquote_parm( &parm1 );
-    len = parm1.e - parm1.s + 1;
+    len = parm1.e - parm1.s;
 
-    if( len <= 0 ) {                    // null string width 0
+    if( len == 0 ) {                    // null string width 0
         **result = '0';
         *result += 1;
         **result = '\0';
@@ -64,7 +64,7 @@ condcode    scr_width( parm parms[MAX_FUN_PARMS], int parmcount, char **result, 
     }
 
     if( parmcount > 1 ) {               // evalute type
-        if( parms[1].arg.s <= parms[1].arg.e ) {// type
+        if( parms[1].arg.s != parms[1].arg.e ) {// type
             parm2 = parms[1].arg;
             scr_unquote_parm( &parm2 );
             type = my_tolower( *parm2.s );

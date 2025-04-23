@@ -51,7 +51,7 @@ condcode    scr_c2x( parm parms[MAX_FUN_PARMS], int parmcount, char **result, in
     parm1 = parms[0].arg;
     scr_unquote_parm( &parm1 );
 
-    while( (parm1.s <= parm1.e) && (ressize > 1) ) {
+    while( (parm1.s < parm1.e) && (ressize > 1) ) {
         unsigned char c = *parm1.s++;
         **result = hex( c >> 4 );
         *result += 1;

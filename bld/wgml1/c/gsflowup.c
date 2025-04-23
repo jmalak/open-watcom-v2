@@ -72,9 +72,9 @@ static condcode scr_lowup( parm parms[MAX_FUN_PARMS], int parmcount,
 
     parm1 = parms[0].arg;
     scr_unquote_parm( &parm1 );
-    len = parm1.e - parm1.s + 1;              // default length
+    len = parm1.e - parm1.s;            // default length
 
-    if( len <= 0 ) {                    // null string nothing to do
+    if( len == 0 ) {                    // null string nothing to do
         **result = '\0';
         return( pos );
     }
@@ -83,9 +83,8 @@ static condcode scr_lowup( parm parms[MAX_FUN_PARMS], int parmcount,
     gn.ignore_blanks = false;
 
     if( parmcount > 1 ) {               // evalute start pos
-        if( parms[1].arg.s <= parms[1].arg.e ) {// start pos specified
+        if( parms[1].arg.s < parms[1].arg.e ) {// start pos specified
             gn.arg = parms[1].arg;
-            gn.arg.e++;
             cc = getnum( &gn );
             if( (cc != pos) || (gn.result > len) ) {
                 if( !ProcFlags.suppress_msg ) {
@@ -98,9 +97,8 @@ static condcode scr_lowup( parm parms[MAX_FUN_PARMS], int parmcount,
     }
 
     if( parmcount > 2 ) {               // evalute length for upper
-        if( parms[2].arg.s <= parms[2].arg.e ) {// length specified
+        if( parms[2].arg.s < parms[2].arg.e ) {// length specified
             gn.arg = parms[2].arg;
-            gn.arg.e++;
             cc = getnum( &gn );
             if( (cc != pos) || (gn.result == 0) ) {
                 if( !ProcFlags.suppress_msg ) {
@@ -112,13 +110,13 @@ static condcode scr_lowup( parm parms[MAX_FUN_PARMS], int parmcount,
         }
     }
 
-    for( k = 0; k < n && (parm1.s <= parm1.e) && (ressize > 0); k++ ) {          // copy unchanged before startpos
+    for( k = 0; k < n && (parm1.s < parm1.e) && (ressize > 0); k++ ) {          // copy unchanged before startpos
         **result = *parm1.s++;
         *result += 1;
         ressize--;
     }
 
-    for( k = 0; k < len && (parm1.s <= parm1.e) && (ressize > 0); k++ ) {        // translate
+    for( k = 0; k < len && (parm1.s < parm1.e) && (ressize > 0); k++ ) {        // translate
         if( upper ) {
            **result = my_toupper( *parm1.s++ );
         } else {
@@ -128,7 +126,7 @@ static condcode scr_lowup( parm parms[MAX_FUN_PARMS], int parmcount,
         ressize--;
     }
 
-    for( ; parm1.s <= parm1.e && (ressize > 0); parm1.s++ ) {     // copy unchanged
+    for( ; parm1.s < parm1.e && (ressize > 0); parm1.s++ ) {     // copy unchanged
         **result = *parm1.s;
         *result += 1;
         ressize--;

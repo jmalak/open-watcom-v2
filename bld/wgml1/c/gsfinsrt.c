@@ -55,12 +55,12 @@ condcode    scr_insert( parm parms[MAX_FUN_PARMS], int parmcount, char **result,
 
     parm1 = parms[0].arg;           // string to insert
     scr_unquote_parm( &parm1 );
-    len = parm1.e - parm1.s + 1;    // length to insert
+    len = parm1.e - parm1.s;        // length to insert
 
     parm2 = parms[1].arg;           // string to be modified
     scr_unquote_parm( &parm2 );
 
-    if( len <= 0 ) {                // null string insert nothing to do
+    if( len == 0 ) {                // null string insert nothing to do
         **result = '\0';
         return( pos );
     }
@@ -68,9 +68,8 @@ condcode    scr_insert( parm parms[MAX_FUN_PARMS], int parmcount, char **result,
     n = 0;                          // default start pos
     gn.ignore_blanks = false;
     if( parmcount > 2 ) {           // evalute startpos
-        if( parms[2].arg.s <= parms[2].arg.e ) {
+        if( parms[2].arg.s != parms[2].arg.e ) {
             gn.arg = parms[2].arg;
-            gn.arg.e++;
             cc = getnum( &gn );
             if( cc != pos ) {
                 if( !ProcFlags.suppress_msg ) {
@@ -83,7 +82,7 @@ condcode    scr_insert( parm parms[MAX_FUN_PARMS], int parmcount, char **result,
     }
 
     k = 0;
-    while( (k < n) && (parm2.s <= parm2.e) && (ressize > 0) ) { // copy up to startpos
+    while( (k < n) && (parm2.s < parm2.e) && (ressize > 0) ) { // copy up to startpos
         k++;
         **result = *parm2.s++;
         *result += 1;
@@ -95,13 +94,13 @@ condcode    scr_insert( parm parms[MAX_FUN_PARMS], int parmcount, char **result,
         ressize--;
     }
 
-    while( (parm1.s <= parm1.e) && (ressize > 0) ) { // insert new string
+    while( (parm1.s < parm1.e) && (ressize > 0) ) { // insert new string
         **result = *parm1.s++;
         *result += 1;
         ressize--;
     }
 
-    while( (parm2.s <= parm2.e) && (ressize > 0) ) { // copy rest (if any)
+    while( (parm2.s < parm2.e) && (ressize > 0) ) { // copy rest (if any)
         **result = *parm2.s++;
         *result += 1;
         ressize--;

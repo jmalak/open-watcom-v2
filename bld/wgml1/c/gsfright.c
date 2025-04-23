@@ -48,11 +48,10 @@ condcode    scr_right( parm parms[MAX_FUN_PARMS], int parmcount, char **result, 
 
     parm1 = parms[0].arg;
     scr_unquote_parm( &parm1 );
-    len = parm1.e - parm1.s + 1;              // total length
+    len = parm1.e - parm1.s;            // total length
 
     gn.ignore_blanks = false;
     gn.arg = parms[1].arg;
-    gn.arg.e++;
     cc = getnum( &gn );
     if( cc != pos ) {
         if( !ProcFlags.suppress_msg ) {
@@ -66,10 +65,10 @@ condcode    scr_right( parm parms[MAX_FUN_PARMS], int parmcount, char **result, 
         if( n > len ) {                 // padding needed
             padchar = ' ';              // default padchar
             if( parmcount > 2 ) {       // pad character specified
-                if( parms[2].arg.s <= parms[2].arg.e ) {
+                if( parms[2].arg.s != parms[2].arg.e ) {
                     tok_type parm = parms[2].arg;
                     scr_unquote_parm( &parm);
-                    if( parm.s <= parm.e ) {
+                    if( parm.s != parm.e ) {
                         padchar = *parm.s;
                     }
                 }
@@ -79,14 +78,14 @@ condcode    scr_right( parm parms[MAX_FUN_PARMS], int parmcount, char **result, 
                 *result += 1;
                 ressize--;
             }
-            while( parm1.s <= parm1.e && ressize > 0 ) {
+            while( parm1.s < parm1.e && ressize > 0 ) {
                 **result = *parm1.s++;
                 *result += 1;
                 ressize--;
             }
         } else {                        // no padding
             parm1.s += len - n;
-            while( parm1.s <= parm1.e && ressize > 0 ) {
+            while( parm1.s < parm1.e && ressize > 0 ) {
                 **result = *parm1.s++;
                 *result += 1;
                 ressize--;

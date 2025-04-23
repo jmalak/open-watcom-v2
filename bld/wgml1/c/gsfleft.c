@@ -47,16 +47,15 @@ condcode    scr_left( parm parms[MAX_FUN_PARMS], int parmcount, char **result, i
 
     parm1 = parms[0].arg;
     scr_unquote_parm( &parm1 );
-    len = parm1.e - parm1.s + 1;        // default length
+    len = parm1.e - parm1.s;            // default length
 
-    if( len <= 0 ) {                    // null string nothing to do
+    if( len == 0 ) {                    // null string nothing to do
         **result = '\0';
         return( pos );
     }
 
-    if( parms[1].arg.s <= parms[1].arg.e ) {// length specified
+    if( parms[1].arg.s < parms[1].arg.e ) {// length specified
         gn.arg = parms[1].arg;
-        gn.arg.e++;
         cc = getnum( &gn );
         if( cc != pos ) {
             if( !ProcFlags.suppress_msg ) {
@@ -67,7 +66,7 @@ condcode    scr_left( parm parms[MAX_FUN_PARMS], int parmcount, char **result, i
         len = gn.result;
     }
 
-    for( k = 0; k < len && (parm1.s <= parm1.e) && (ressize > 0); k++ ) {   // copy from start
+    for( k = 0; k < len && (parm1.s < parm1.e) && (ressize > 0); k++ ) {   // copy from start
         **result = *parm1.s++;
         *result += 1;
         ressize--;
@@ -83,4 +82,3 @@ condcode    scr_left( parm parms[MAX_FUN_PARMS], int parmcount, char **result, i
 
     return( pos );
 }
-

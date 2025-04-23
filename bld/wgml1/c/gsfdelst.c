@@ -46,9 +46,9 @@ condcode    scr_delstr( parm parms[MAX_FUN_PARMS], int parmcount, char **result,
 
     parm1 = parms[0].arg;
     scr_unquote_parm( &parm1 );
-    len = parm1.e - parm1.s + 1;        // default length
+    len = parm1.e - parm1.s;            // default length
 
-    if( len <= 0 ) {                    // null string nothing to do
+    if( len == 0 ) {                    // null string nothing to do
         **result = '\0';
         return( pos );
     }
@@ -56,9 +56,8 @@ condcode    scr_delstr( parm parms[MAX_FUN_PARMS], int parmcount, char **result,
     n   = 0;                            // default start pos
     gn.ignore_blanks = false;
 
-    if( parms[1].arg.s <= parms[1].arg.e ) {// start pos
+    if( parms[1].arg.s != parms[1].arg.e ) {// start pos
         gn.arg = parms[1].arg;
-        gn.arg.e++;
         cc = getnum( &gn );
         if( (cc != pos) || (gn.result == 0) ) {
             if( !ProcFlags.suppress_msg ) {
@@ -70,9 +69,8 @@ condcode    scr_delstr( parm parms[MAX_FUN_PARMS], int parmcount, char **result,
     }
 
     if( parmcount > 2 ) {               // evalute length
-        if( parms[2].arg.s <= parms[2].arg.e ) {// length specified
+        if( parms[2].arg.s != parms[2].arg.e ) {// length specified
             gn.arg = parms[2].arg;
-            gn.arg.e++;
             cc = getnum( &gn );
             if( (cc != pos) || (gn.result == 0) ) {
                 if( !ProcFlags.suppress_msg ) {
@@ -85,7 +83,7 @@ condcode    scr_delstr( parm parms[MAX_FUN_PARMS], int parmcount, char **result,
     }
 
     k = 0;
-    while( (k < n) && (parm1.s <= parm1.e) && (ressize > 0) ) {// copy unchanged before startpos
+    while( (k < n) && (parm1.s < parm1.e) && (ressize > 0) ) {// copy unchanged before startpos
         **result = *parm1.s++;
         *result += 1;
         k++;
@@ -93,12 +91,12 @@ condcode    scr_delstr( parm parms[MAX_FUN_PARMS], int parmcount, char **result,
     }
 
     k = 0;
-    while( (k < len) && (parm1.s <= parm1.e) ) {  // delete
+    while( (k < len) && (parm1.s < parm1.e) ) {  // delete
         parm1.s++;
         k++;
     }
 
-    while( (parm1.s <= parm1.e) && (ressize > 0) ) {// copy unchanged
+    while( (parm1.s < parm1.e) && (ressize > 0) ) {// copy unchanged
         **result = *parm1.s++;
         *result += 1;
         ressize--;

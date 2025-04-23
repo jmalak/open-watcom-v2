@@ -236,7 +236,7 @@ condcode    lay_attr_and_value( lay_att_val *lay_attr )
             lay_attr->val.len -= 2;
         }
         for( i = 0; i < SPECVAL_LENGTH; i++ ) {
-            if( !is_att_char( lay_attr->val.name[i] ) )
+            if( !is_id_char( lay_attr->val.name[i] ) )
                 break;
             lay_attr->val.specval[i] = my_tolower( lay_attr->val.name[i] );
         }
