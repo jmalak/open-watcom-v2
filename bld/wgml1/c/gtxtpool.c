@@ -55,9 +55,8 @@ text_chars *alloc_text_chars( const char *text, size_t cnt, font_number font )
         if( size < TEXT_CHARS_DEF )
             size = TEXT_CHARS_DEF;
         curr = mem_alloc( sizeof( *curr ) + size );
-        curr->length = size;             // set max text size
-
-        if( text_pool == NULL ) {       // alloc 10 text_chars if pool empty
+        curr->length = size;                // set max text size
+        if( text_pool == NULL ) {           // alloc 10 text_chars if pool empty
             int k;
 
             text_pool = mem_alloc( sizeof( *prev ) + TEXT_CHARS_DEF );

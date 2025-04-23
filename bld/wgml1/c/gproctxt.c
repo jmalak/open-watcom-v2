@@ -1486,10 +1486,10 @@ void set_h_start( void )
 void process_line_full( text_line * a_line, bool justify )
 {
     bool            no_shift;       // shift no tab stops on new line
-    char        *   p;
-    text_chars  *   split_chars;    // first text_chars of second line, if any
-    text_chars  *   test_chars;     // used to find alignment of prior tab
-    text_line   *   b_line  = NULL; // for second line, if any
+    char            *p;
+    text_chars      *split_chars;   // first text_chars of second line, if any
+    text_chars      *test_chars;    // used to find alignment of prior tab
+    text_line       *b_line  = NULL;// for second line, if any
     uint32_t        offset;         // to adjust second line x_address fields, if any
 
     if( (a_line == NULL)
@@ -1740,11 +1740,11 @@ void process_line_full( text_line * a_line, bool justify )
 text_chars * process_word( const char *pword, size_t count, font_number font, bool hard_spaces )
 {
 
-    char        *   p;
-    char        *   pa;
+    char            *p;
+    char            *pa;
     int             i;
     int             j;
-    text_chars  *   n_chars;
+    text_chars      *n_chars;
     uint32_t        kbtabs;
     uint32_t        tab_pos;
 
@@ -1764,25 +1764,22 @@ text_chars * process_word( const char *pword, size_t count, font_number font, bo
 
     n_chars = alloc_text_chars( pword, count + (8 * kbtabs), font );
 
-    if( kbtabs > 0 ) {              // only need to do this if keyboard tabs were found
+    if( kbtabs > 0 ) {                  // only need to do this if keyboard tabs were found
         pa = n_chars->text;
-        n_chars->count = 0;
         for( i = 0; i < count; i++ ) {
-            if( pword[i] == '\t' ) {      // expand keyboard tab
+            if( pword[i] == '\t' ) {    // expand keyboard tab
                 tab_pos = 8 - (kbtab_count % 8);    // adjust to next keyboard tab stop
                 kbtab_count += tab_pos;             // increment tab_space to tab stop
                 for( j = 1; j <= tab_pos; j++ ) {
-                    *pa = ' ';         // insert spaces
-                    pa++;
-                    n_chars->count++;
+                    *pa++ = ' ';        // insert spaces
                 }
             } else {
-                *pa = pword[i];         // copy non-keyboard tab character
-                pa++;
-                n_chars->count++;
+                *pa++ = pword[i];       // copy non-keyboard tab character
                 kbtab_count++;          // increment for non-keyboard tab character
             }
         }
+        *pa = '\0';
+        n_chars->count = pa - n_chars->text;
     }
 
     /***************************************************************************/

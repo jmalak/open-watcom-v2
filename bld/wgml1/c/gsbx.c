@@ -266,23 +266,20 @@ static void box_blank_lines( uint32_t lines )
             while( cur_hline != NULL ) {
                 for( i_b = 0; i_b < cur_hline->current; i_b++ ) {
                     if( (cur_hline->cols[i_b].v_ind == bx_v_both)
-                            || (cur_hline->cols[i_b].v_ind == bx_v_new)
-                            || (cur_hline->cols[i_b].v_ind == bx_v_out)
-                            || (cur_hline->cols[i_b].v_ind == bx_v_split)
-                            || (cur_hline->cols[i_b].v_ind == bx_v_up) ) {  // ascender needed
+                      || (cur_hline->cols[i_b].v_ind == bx_v_new)
+                      || (cur_hline->cols[i_b].v_ind == bx_v_out)
+                      || (cur_hline->cols[i_b].v_ind == bx_v_split)
+                      || (cur_hline->cols[i_b].v_ind == bx_v_up) ) {  // ascender needed
                         if( cur_blank->first == NULL ) {
-                            cur_chars = alloc_text_chars( &bin_device->box.vertical_line, 1,
-                                                      bin_device->box.font );
+                            cur_chars = alloc_text_chars( &bin_device->box.vertical_line, 1, bin_device->box.font );
                             cur_blank->first = cur_chars;
                         } else {
-                            cur_chars->next = alloc_text_chars(
-                                    &bin_device->box.vertical_line, 1, bin_device->box.font );
+                            cur_chars->next = alloc_text_chars( &bin_device->box.vertical_line, 1, bin_device->box.font );
                             cur_chars->next->prev = cur_chars;
                             cur_chars = cur_chars->next;
                         }
                         cur_chars->x_address = cur_hline->cols[i_b].col - box_col_width;
-                        cur_chars->width = cop_text_width( cur_chars->text,
-                                           cur_chars->count, bin_device->box.font );
+                        cur_chars->width = cop_text_width( cur_chars->text, cur_chars->count, bin_device->box.font );
                     }
                     cur_blank->last = cur_chars;
                     /* Insert a marker after the riser */
@@ -968,8 +965,7 @@ static void  do_char_device( void )
         if( cur_doc_el_group->first != NULL ) {
             while( cur_doc_el_group->first != NULL ) {
                 if( cur_doc_el_group->depth <= max_depth ) {   // doc_elements will all fit
-                    cur_el = cur_doc_el_group->first;
-                    while( cur_el != NULL ) {
+                    for( cur_el = cur_doc_el_group->first; cur_el != NULL; cur_el = cur_doc_el_group->first ) {
                         if( ProcFlags.col_started ) {
                             skippage = cur_el->blank_lines + cur_el->subs_skip;
                             cur_el->subs_skip = 0;
@@ -990,7 +986,6 @@ static void  do_char_device( void )
                         } else {
                             box_char_element( cur_el );
                         }
-                        cur_el = cur_doc_el_group->first;
                     }
                 } else {                                    // finish off current page
                     next_column();
@@ -1044,10 +1039,9 @@ static void  do_char_device( void )
 
                 /* Create the horizontal box line from the BOX characters. */
 
-                p = cur_chars->text;
                 cur_col = cur_hline->cols[0].col;
                 i_b = 0;
-                for( i = 0; i < len; i++ ) {                    // iterate over all output columns
+                for( p = (char *)cur_chars->text, i = 0; i < len; i++, p++ ) {                    // iterate over all output columns
                     if( cur_col < cur_hline->cols[i_b].col ) {  // not a box column
                         *p = bin_device->box.horizontal_line;
                     } else {                                    // box column found
@@ -1113,7 +1107,6 @@ static void  do_char_device( void )
                         cur_col = cur_hline->cols[i_b].col;
                         i_b++;
                     }
-                    p++;
                     cur_col += box_col_width;
                     cur_chars->count++;
                 }
@@ -2666,10 +2659,9 @@ void scr_bx( void )
         /********************************************************/
 
         if( box_line->inner_box ) {
-            cur_temp = box_line->first;
             prev_temp = box_line->next->first;
             prev_col = 0;
-            while( cur_temp != NULL ) {
+            for( cur_temp = box_line->first; cur_temp != NULL; cur_temp = cur_temp->next ) {
                 for( cur_col = 0; cur_col < cur_temp->current; cur_col++ ) {
                     if( cur_temp->cols[cur_col].v_ind == bx_v_out ) {
                         while( prev_temp != NULL ) {
@@ -2690,7 +2682,6 @@ void scr_bx( void )
                         }
                     }
                 }
-                cur_temp = cur_temp->next;
             }
         }
 

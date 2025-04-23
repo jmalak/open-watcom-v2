@@ -23,21 +23,19 @@
 char    *get_refid_value( char *p, att_val_type *attr_val, char *refid )
 {
     size_t  k;
-    size_t  len;
 
     p = get_att_value( p, attr_val );
 
     if( attr_val->name == NULL ) {       // no valid id
         return( p );
     }
-    len = attr_val->len;
-    if( len > ID_LEN )
-        len = ID_LEN;
-    for( k = 0; k < len; k++ ) {
+    if( attr_val->len > ID_LEN )
+        attr_val->len = ID_LEN;
+    for( k = 0; k < attr_val->len; k++ ) {
         refid[k] = my_tolower( attr_val->name[k] );
     }
-    refid[len] = '\0';
-    if( len > 7 ) {                 // wgml 4 warning level
+    refid[attr_val->len] = '\0';
+    if( attr_val->len > 7 ) {                 // wgml 4 warning level
         xx_warn_c_info( wng_id_xxx, refid, inf_id_len );
     }
     return( p );

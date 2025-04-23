@@ -657,9 +657,9 @@ static void content_reg( region_lay_tag * region )
 
 static text_chars * split_text_chars( text_chars * in_chars )
 {
-    char        *   p;
-    text_chars  *   c_chars;
-    text_chars  *   old_next;
+    char            *p;
+    text_chars      *c_chars;
+    text_chars      *old_next;
     uint32_t        o_count;
 
     old_next = in_chars->next;
