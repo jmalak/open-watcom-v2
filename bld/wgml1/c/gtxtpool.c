@@ -35,28 +35,25 @@
 /***************************************************************************/
 text_chars *alloc_text_chars( const char *text, size_t cnt, font_number font )
 {
-    text_chars   	*curr;
-    text_chars   	*prev;
-    size_t			size;
+    text_chars          *curr;
+    text_chars          *prev;
+    size_t              size;
 
-    if( text == NULL ) {
-        cnt = 0;
-    }
-    curr = text_pool;
-    while( (curr != NULL) && (curr->length <= cnt) ) {
-        prev = curr;
-        curr = curr->next;
-    }
-    if( curr != NULL ) {                // we found one large enough
-        if( curr == text_pool ) {       // first is large enough
-            text_pool = curr->next;
-        } else {
-            prev->next = curr->next;    // unchain curr
+    for( curr = text_pool; curr != NULL; curr = curr->next ) {
+        if( curr->length > cnt ) {
+            if( curr == text_pool ) {       // first is large enough
+                text_pool = curr->next;
+            } else {
+                prev->next = curr->next;    // unchain curr
+            }
+            break;
         }
-    } else {                            // no one large enough found
+        prev = curr;
+    }
+    if( curr == NULL ) {                // we found one large enough
         size = cnt;
         if( size < TEXT_CHARS_DEF )
-        	size = TEXT_CHARS_DEF;
+            size = TEXT_CHARS_DEF;
         curr = mem_alloc( sizeof( *curr ) + size );
         curr->length = size;             // set max text size
 
@@ -87,10 +84,13 @@ text_chars *alloc_text_chars( const char *text, size_t cnt, font_number font )
     curr->font = font;
     curr->f_switch = fs_norm;
     curr->width = 0;
-    if( cnt > 0 ) {                         // text supplied
-        strncpy( curr->text, text, cnt );   // yes copy text
+    if( text != NULL ) {                   // text supplied
+        memcpy( curr->text, text, cnt ); // yes copy text
+        curr->count = cnt;              // set current size
+    } else {
+        curr->count = 0;                // init current size
+        curr->text[0] = '\0';
     }
-    curr->count = cnt;                      // set current size
     curr->text[cnt] = '\0';
 
     return( curr );
