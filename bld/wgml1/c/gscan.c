@@ -54,7 +54,7 @@ static  const   gmltag  lay_tags[] = {
 /*    SCRIPT control words                                                 */
 /***************************************************************************/
 
-static  const   scrtag  script_kwds[] = {
+static  const   scrtag  script_cwds[] = {
     #define picks( name, routine, flags) { #name, routine, flags },
     #define picklab( name, routine, flags) { #name, routine, flags },
     #include "gscrcws.h"
@@ -63,13 +63,13 @@ static  const   scrtag  script_kwds[] = {
     { "  ", NULL, 0   }                 // end
 };
 
-#define SCR_KWDMAX  (sizeof( script_kwds ) / sizeof( script_kwds[0] ) - 1)
+#define SCR_CWDMAX  (sizeof( script_cwds ) / sizeof( script_cwds[0] ) - 1)
 
-#define SCR_CW_LK_SIZE  (26 * 26)
+#define SCR_CWD_LK_SIZE  (26 * 26)
 
 static uint8_t  scr_lkup_tbl[26 * 26];
-static uint8_t  scr_cw_label;
-static uint8_t  scr_cw_hx;
+static uint8_t  scr_cwd_label;
+static uint8_t  scr_cwd_hx;
 static bool     scr_lkup_setup = false;
 
 /***************************************************************************/
@@ -91,8 +91,8 @@ static void build_script_cw_lookup( void )
     // build a lookup table holding keyword table indices; note that
     // the indices are offset by one so that zero turns into an invalid
     // index (-1) during lookup.
-    for( i = 0; i <= SCR_KWDMAX; ++i ) {
-        cw = &script_kwds[i];
+    for( i = 0; i <= SCR_CWDMAX; ++i ) {
+        cw = &script_cwds[i];
         if( islower( cw->tagname[0] )
           && islower( cw->tagname[1] ) ) {
             hash = (cw->tagname[0] - 'a') * 26 + (cw->tagname[1] - 'a');
@@ -101,10 +101,10 @@ static void build_script_cw_lookup( void )
           && cw->tagname[1] == '0' ) {
             hash = ('h' - 'a') * 26 + ('z' - 'a');  // fake it as .HZ
             scr_lkup_tbl[hash] = i + 1;
-            scr_cw_hx = i;
+            scr_cwd_hx = i;
         } else if( cw->tagname[0] == '.'
           && cw->tagname[1] == '.' ) {
-            scr_cw_label = i;   // the ... label
+            scr_cwd_label = i;   // the ... label
         } else {
             // .H1 to .H9 -- ignored here
         }
@@ -127,10 +127,10 @@ static int find_script_cw( const char *str )
         index = scr_lkup_tbl[hash] - 1;
     } else if( str[0] == '.'
       && str[1] == '.' ) {
-        index = scr_cw_label;
+        index = scr_cwd_label;
     } else if( str[0] == 'h'
       && isdigit( str[1] ) ) {
-        index = scr_cw_hx + str[1] - '0';
+        index = scr_cwd_hx + str[1] - '0';
     }
 
     return( index );
@@ -587,7 +587,7 @@ static void     scan_script( void )
                                  inc_level, SCR_char, token_buf,
                                  cb->s.f->filename, cb->s.f->lineno );
             }
-            add_SCR_tag_research( token_buf );
+            add_SCR_cwd_research( token_buf );
         }
         add_macro_cb_entry( me, NULL );
         inc_inc_level();
@@ -598,7 +598,7 @@ static void     scan_script( void )
         }
         scan_restart = scan_stop;
     } else if( !ProcFlags.literal ) {   // try script controlword if not in LI
-        scan_start += SCR_KW_LENGTH;
+        scan_start += SCR_CWD_LENGTH;
         p = scan_start;
         if( (cb->fmflags & II_research)
           && WgmlFlags.firstpass ) {
@@ -611,7 +611,7 @@ static void     scan_script( void )
                                  inc_level, SCR_char, token_buf,
                                  cb->s.f->filename, cb->s.f->lineno );
             }
-            add_SCR_tag_research( token_buf );
+            add_SCR_cwd_research( token_buf );
         }
 
         if( !token_buf[0] ) {   // lone . or .' -- ignored
@@ -623,7 +623,7 @@ static void     scan_script( void )
         if( k >= 0 ) {
             if( !ProcFlags.layout
               && !ProcFlags.fb_document_done
-              && (script_kwds[k].cwflags & cw_o_t) ) {
+              && (script_cwds[k].cwflags & cw_o_t) ) {
 
                 /********************************************************/
                 /* this is the first control word which produces output */
@@ -638,19 +638,19 @@ static void     scan_script( void )
                 if( strcmp( token_buf, "li" ) == 0 ) {  // .li
                     ProcFlags.CW_noblank = (*p != ' ');
                     scan_start = p; // found, process
-                    script_kwds[k].tagproc();
+                    script_cwds[k].tagproc();
                 }
             } else {
                 scan_start = p; // script controlword found, process
-                if( script_kwds[k].cwflags & cw_break ) {
+                if( script_cwds[k].cwflags & cw_break ) {
                     ProcFlags.force_pc = false;
                     script_process_break();// output incomplete line, if any
                 }
                 ProcFlags.CW_noblank = (*p != ' ');
-                script_kwds[k].tagproc();
+                script_cwds[k].tagproc();
             }
         } else {
-            xx_err_c( err_cw_unrecognized, token_buf );
+            xx_err_c( err_cwd_unrecognized, token_buf );
         }
     }
     scan_start = scan_restart;

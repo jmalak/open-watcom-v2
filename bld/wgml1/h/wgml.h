@@ -263,9 +263,9 @@ extern  ref_entry   *add_new_refid( ref_dict *dict, const char *refid, ffh_entry
 extern  void    add_GML_tag_research( char * tag );
 extern  void    free_GML_tags_research( void );
 extern  void    print_GML_tags_research( void );
-extern  void    add_SCR_tag_research( char * tag );
-extern  void    free_SCR_tags_research( void );
-extern  void    print_SCR_tags_research( void );
+extern  void    add_SCR_cwd_research( char *cw );
+extern  void    free_SCR_cwds_research( void );
+extern  void    print_SCR_cwds_research( void );
 extern  void    add_single_func_research( char * in );
 extern  void    free_single_funcs_research( void );
 extern  void    print_single_funcs_research( void );

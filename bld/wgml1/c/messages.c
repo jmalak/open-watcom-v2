@@ -655,7 +655,7 @@ void g_wng_hlevel( hdsrc hd_found, hdsrc hd_expected )
 void keep_nest_err( const char * arg1, const char * arg2 )
 {
     err_count++;
-    g_err( err_cw_tag_x_in_y, arg1, arg2 );
+    g_err( err_cwd_tag_x_in_y, arg1, arg2 );
     g_info( inf_nested_blocks1 );
     g_info( inf_nested_blocks2 );
     file_mac_info();

@@ -148,13 +148,13 @@ void    free_GML_tags_research( void )
 /*  add and/or count SCR keyword                                           */
 /***************************************************************************/
 
-void    add_SCR_tag_research( char * tag )
+void    add_SCR_cwd_research( char *cwd )
 {
     taglist *   wk = scrkws;
     taglist *   new;
 
     while( wk ) {
-        if( stricmp( tag, wk->tagname ) == 0 ) {
+        if( stricmp( cwd, wk->tagname ) == 0 ) {
             wk->count++;
             return;
         }
@@ -170,7 +170,7 @@ void    add_SCR_tag_research( char * tag )
         wk->nxt = new;
     }
     new->nxt = NULL;
-    strcpy_s( new->tagname, sizeof( new->tagname ), tag );
+    strcpy_s( new->tagname, sizeof( new->tagname ), cwd );
     strlwr( new->tagname );
     new->count = 1;
 }
@@ -179,7 +179,7 @@ void    add_SCR_tag_research( char * tag )
 /*  print found SCR keywords and usage count                               */
 /***************************************************************************/
 
-void    print_SCR_tags_research( void )
+void    print_SCR_cwds_research( void )
 {
     taglist *   wk = scrkws;
     int32_t     cnt = 0;
@@ -199,7 +199,7 @@ void    print_SCR_tags_research( void )
 /*  free SCR keyword list                                                  */
 /***************************************************************************/
 
-void    free_SCR_tags_research( void )
+void    free_SCR_cwds_research( void )
 {
     taglist *   wk = scrkws;
     taglist *   wk1;

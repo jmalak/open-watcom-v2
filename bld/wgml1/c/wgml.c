@@ -874,8 +874,8 @@ int main( int argc, char * argv[] )
         print_GML_tags_research();
         free_GML_tags_research();
 
-        print_SCR_tags_research();
-        free_SCR_tags_research();
+        print_SCR_cwds_research();
+        free_SCR_cwds_research();
 
         print_macro_dict( macro_dict, true );
         print_ref_dict( fig_ref_dict, "FIGREF" );

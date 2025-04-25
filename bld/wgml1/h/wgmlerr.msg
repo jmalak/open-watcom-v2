@@ -417,7 +417,7 @@ pick( INFO_ATT_REQ,             "have not been specified",
 pick( INFO_ATT_REQ_NAME,        "%s",
                                 "%s" )
 
-pick( ERR_CW_UNRECOGNIZED,      "Unrecognized SCRIPT control word or macro .%s",
+pick( ERR_CWD_UNRECOGNIZED,     "Unrecognized SCRIPT control word or macro .%s",
                                 "Unrecognized SCRIPT control word or macro .%s" )
 
 pick( WNG_DC_OPT,               "Unimplemented .dc option %s",
@@ -465,7 +465,7 @@ pick( WNG_UNSUPP_LAY_ATT,       "Unsupported GML layout tag attribute: '%s'",
 pick( ERR_NESTED_TAG,           "Nested %s not supported",
                                 "Nested %s not supported" )
 
-pick( ERR_CW_TAG_X_IN_Y,        "%s cannot be in %s",
+pick( ERR_CWD_TAG_X_IN_Y,       "%s cannot be in %s",
                                 "%s cannot be in %s" )
 
 pick( INF_NESTED_BLOCKS1,       "Footnotes, figures, examples, floating blocks and floating keeps",
@@ -528,7 +528,7 @@ pick( ERR_REF_NOT_ALLOWED,      "Referencing not allowed for %s tag",
 pick( ERR_CHAR_ONLY,            "Only a single character is allowed",
                                 "Only a single character is allowed")
 
-pick( ERR_CW_NOT_CHAR,          "A single character or a two character hexadecimal value must be specified",
+pick( ERR_CWD_NOT_CHAR,         "A single character or a two character hexadecimal value must be specified",
                                 "A single character or a two character hexadecimal value must be specified")
 
 pick( ERR_DC_NOT_OFF,           "'OFF' is the only text value allowed",
