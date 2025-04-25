@@ -400,11 +400,11 @@ typedef enum {
     cw_o_t                              // control word produces output text
 } scrflags;
 
-typedef struct scrtag {
-    char            tagname[SCR_CWD_LENGTH + 2];
-    void            (*tagproc)( void );
-    scrflags        cwflags;
-} scrtag;
+typedef struct scr_cwd {
+    char            name[SCR_CWD_LENGTH + 2];
+    void            (*proc)( void );
+    scrflags        flags;
+} scr_cwd;
 
 /***************************************************************************/
 /*  GML tags    predefined                                                 */
