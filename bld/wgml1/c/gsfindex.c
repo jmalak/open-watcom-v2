@@ -223,10 +223,10 @@ condcode    scr_lpos( parm parms[MAX_FUN_PARMS], int parmcount, char **result, i
         }
     }
 
-    if( (hay_len == 0) ||               // null string nothing to do
-        (needle_len == 0) ||            // needle null nothing to do
-        (needle_len > hay_len) ||       // needle longer haystack
-        (n + needle_len > hay_len) ) {  // startpos + needlelen > haystack
+    if( (hay_len == 0)                  // null string nothing to do
+      || (needle_len == 0)              // needle null nothing to do
+      || (needle_len > hay_len)         // needle longer haystack
+      || (n + needle_len > hay_len) ) { // startpos + needlelen > haystack
                                         // ... match impossible
 
         **result = '0';                 // return index zero
@@ -235,13 +235,13 @@ condcode    scr_lpos( parm parms[MAX_FUN_PARMS], int parmcount, char **result, i
         return( pos );
     }
 
-    ph = phay.s + n;                      // startpos in haystack
+    ph = phay.s + n;                    // startpos in haystack
     pn = pneedle.s;
     index = 0;
 
     for( ph = phay.e - 1; ph >= phay.s + n ; ph-- ) {
         pn = pneedle.e - 1;
-        while( (*ph == *pn) && (pn >= pneedle.s)) {
+        while( (*ph == *pn) && (pn >= pneedle.s) ) {
             ph--;
             pn--;
         }

@@ -23,7 +23,7 @@ typedef struct taglist {
 
 static  taglist *   lay_tags = NULL;    // list of found gml layout tags
 static  taglist *   tags = NULL;        // list of found gml tags
-static  taglist *   scrkws = NULL;      // list of found scr keywords
+static  taglist *   scrcwds = NULL;     // list of found scr keywords
 static  taglist *   single_funcs = NULL;// list of found scr single letter fun
 static  taglist *   multi_funcs = NULL; // list of found scr multi letter fun
 
@@ -148,13 +148,13 @@ void    free_GML_tags_research( void )
 /*  add and/or count SCR keyword                                           */
 /***************************************************************************/
 
-void    add_SCR_cwd_research( char *cwd )
+void    add_SCR_cwd_research( char *cwdname )
 {
-    taglist *   wk = scrkws;
+    taglist *   wk = scrcwds;
     taglist *   new;
 
     while( wk ) {
-        if( stricmp( cwd, wk->tagname ) == 0 ) {
+        if( stricmp( cwdname, wk->tagname ) == 0 ) {
             wk->count++;
             return;
         }
@@ -165,12 +165,12 @@ void    add_SCR_cwd_research( char *cwd )
     }
     new = mem_alloc( sizeof( taglist ) );
     if( wk == NULL ) {
-        scrkws = new;
+        scrcwds = new;
     } else {
         wk->nxt = new;
     }
     new->nxt = NULL;
-    strcpy_s( new->tagname, sizeof( new->tagname ), cwd );
+    strcpy( new->tagname, cwdname );
     strlwr( new->tagname );
     new->count = 1;
 }
@@ -181,13 +181,13 @@ void    add_SCR_cwd_research( char *cwd )
 
 void    print_SCR_cwds_research( void )
 {
-    taglist *   wk = scrkws;
+    taglist *   wk = scrcwds;
     int32_t     cnt = 0;
     int32_t     cnt1 = 0;
 
     printf_research(
         "\nScript controlword / macro list sorted by first occurrence\n\n" );
-    for( wk = scrkws; wk != NULL; wk = wk->nxt ) {
+    for( wk = scrcwds; wk != NULL; wk = wk->nxt ) {
         printf_research("%6ld  .%s\n", wk->count, wk->tagname );
         cnt += wk->count;
         cnt1++;
@@ -201,7 +201,7 @@ void    print_SCR_cwds_research( void )
 
 void    free_SCR_cwds_research( void )
 {
-    taglist *   wk = scrkws;
+    taglist *   wk = scrcwds;
     taglist *   wk1;
 
     while( wk ) {

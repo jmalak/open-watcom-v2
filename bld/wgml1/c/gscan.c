@@ -54,16 +54,16 @@ static  const   gmltag  lay_tags[] = {
 /*    SCRIPT control words                                                 */
 /***************************************************************************/
 
-static  const   scrtag  script_cwds[] = {
+static const scr_cwd     scr_cwds[] = {
     #define picks( name, routine, flags) { #name, routine, flags },
     #define picklab( name, routine, flags) { #name, routine, flags },
     #include "gscrcws.h"
     #undef picklab
     #undef picks
-    { "  ", NULL, 0   }                 // end
+    { "  ", NULL, 0   }
 };
 
-#define SCR_CWDMAX  (sizeof( script_cwds ) / sizeof( script_cwds[0] ) - 1)
+#define SCR_CWDMAX  (sizeof( scr_cwds ) / sizeof( scr_cwds[0] ) - 1)
 
 #define SCR_CWD_LK_SIZE  (26 * 26)
 
@@ -79,11 +79,11 @@ static bool     scr_lkup_setup = false;
 /*  remaining control words as exceptions.                                 */
 /***************************************************************************/
 
-static void build_script_cw_lookup( void )
+static void build_cwd_lookup( void )
 {
     int             i;
     int             hash;
-    const scrtag    *cw;
+    const scr_cwd   *cwd;
 
     // pre-fill lookup table with invalid values
     memset( scr_lkup_tbl, 0, sizeof( scr_lkup_tbl ) );
@@ -92,18 +92,18 @@ static void build_script_cw_lookup( void )
     // the indices are offset by one so that zero turns into an invalid
     // index (-1) during lookup.
     for( i = 0; i <= SCR_CWDMAX; ++i ) {
-        cw = &script_cwds[i];
-        if( islower( cw->tagname[0] )
-          && islower( cw->tagname[1] ) ) {
-            hash = (cw->tagname[0] - 'a') * 26 + (cw->tagname[1] - 'a');
+        cwd = &scr_cwds[i];
+        if( islower( cwd->name[0] )
+          && islower( cwd->name[1] ) ) {
+            hash = (cwd->name[0] - 'a') * 26 + (cwd->name[1] - 'a');
             scr_lkup_tbl[hash] = i + 1;
-        } else if( cw->tagname[0] == 'h'
-          && cw->tagname[1] == '0' ) {
+        } else if( cwd->name[0] == 'h'
+          && cwd->name[1] == '0' ) {
             hash = ('h' - 'a') * 26 + ('z' - 'a');  // fake it as .HZ
             scr_lkup_tbl[hash] = i + 1;
             scr_cwd_hx = i;
-        } else if( cw->tagname[0] == '.'
-          && cw->tagname[1] == '.' ) {
+        } else if( cwd->name[0] == '.'
+          && cwd->name[1] == '.' ) {
             scr_cwd_label = i;   // the ... label
         } else {
             // .H1 to .H9 -- ignored here
@@ -113,24 +113,24 @@ static void build_script_cw_lookup( void )
 }
 
 
-static int find_script_cw( const char *str )
+static int find_cwd( const char *cwd )
 {
     int     hash;
     int     index = -1;
 
     if( !scr_lkup_setup )
-        build_script_cw_lookup();
+        build_cwd_lookup();
 
-    if( islower( str[0] )
-      && islower( str[1] ) ) {
-        hash  = (str[0] - 'a') * 26 + (str[1] - 'a');
+    if( islower( cwd[0] )
+      && islower( cwd[1] ) ) {
+        hash  = (cwd[0] - 'a') * 26 + (cwd[1] - 'a');
         index = scr_lkup_tbl[hash] - 1;
-    } else if( str[0] == '.'
-      && str[1] == '.' ) {
+    } else if( cwd[0] == '.'
+      && cwd[1] == '.' ) {
         index = scr_cwd_label;
-    } else if( str[0] == 'h'
-      && isdigit( str[1] ) ) {
-        index = scr_cwd_hx + str[1] - '0';
+    } else if( cwd[0] == 'h'
+      && isdigit( cwd[1] ) ) {
+        index = scr_cwd_hx + cwd[1] - '0';
     }
 
     return( index );
@@ -619,11 +619,11 @@ static void     scan_script( void )
             return;
         }
 
-        k = find_script_cw( token_buf );            // non-negative if valid
+        k = find_cwd( token_buf );            // non-negative if valid
         if( k >= 0 ) {
             if( !ProcFlags.layout
               && !ProcFlags.fb_document_done
-              && (script_cwds[k].cwflags & cw_o_t) ) {
+              && (scr_cwds[k].flags & cw_o_t) ) {
 
                 /********************************************************/
                 /* this is the first control word which produces output */
@@ -634,20 +634,20 @@ static void     scan_script( void )
                 start_doc_sect();
             }
             ProcFlags.CW_noblank = false;           // blank after CW is default
-            if( ProcFlags.literal ) {              // .li active
+            if( ProcFlags.literal ) {               // .li active
                 if( strcmp( token_buf, "li" ) == 0 ) {  // .li
                     ProcFlags.CW_noblank = (*p != ' ');
                     scan_start = p; // found, process
-                    script_cwds[k].tagproc();
+                    scr_cwds[k].proc();
                 }
             } else {
-                scan_start = p; // script controlword found, process
-                if( script_cwds[k].cwflags & cw_break ) {
+                scan_start = p;     // script controlword found, process
+                if( scr_cwds[k].flags & cw_break ) {
                     ProcFlags.force_pc = false;
-                    script_process_break();// output incomplete line, if any
+                    script_process_break(); // output incomplete line, if any
                 }
                 ProcFlags.CW_noblank = (*p != ' ');
-                script_cwds[k].tagproc();
+                scr_cwds[k].proc();
             }
         } else {
             xx_err_c( ERR_CWD_UNRECOGNIZED, token_buf );
