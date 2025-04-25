@@ -73,7 +73,7 @@ condcode    scr_insert( parm parms[MAX_FUN_PARMS], int parmcount, char **result,
             cc = getnum( &gn );
             if( cc != pos ) {
                 if( !ProcFlags.suppress_msg ) {
-                    xx_source_err_c( err_func_parm, "3 (startpos)" );
+                    xx_source_err_c( ERR_FUNC_PARM, "3 (startpos)" );
                 }
                 return( cc );
             }

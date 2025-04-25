@@ -405,14 +405,14 @@ char *get_member_name( FILE *fp, const char *fname, const char *in_name )
 
         /* File error, including premature eof. */
 
-        xx_simple_err_c( err_dev_lib_file, fname );
+        xx_simple_err_c( ERR_DEV_LIB_FILE, fname );
         break;
 
     case file_type_wrong_ver:
 
         /* File was created by a different version of gendev. */
 
-        xx_simple_err( err_wrong_gendev );
+        xx_simple_err( ERR_WRONG_GENDEV );
         break;
 
     case file_type_dev:
@@ -422,7 +422,7 @@ char *get_member_name( FILE *fp, const char *fname, const char *in_name )
 
         /* Wrong type of file: something is wrong with the device library. */
 
-        xx_simple_err_c( err_dev_lib_data, fname );
+        xx_simple_err_c( ERR_DEV_LIB_DATA, fname );
         break;
 
     default:

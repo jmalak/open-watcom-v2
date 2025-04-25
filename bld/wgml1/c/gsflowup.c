@@ -88,7 +88,7 @@ static condcode scr_lowup( parm parms[MAX_FUN_PARMS], int parmcount,
             cc = getnum( &gn );
             if( (cc != pos) || (gn.result > len) ) {
                 if( !ProcFlags.suppress_msg ) {
-                    xx_source_err_c( err_func_parm, "2 (startpos)" );
+                    xx_source_err_c( ERR_FUNC_PARM, "2 (startpos)" );
                 }
                 return( cc );
             }
@@ -102,7 +102,7 @@ static condcode scr_lowup( parm parms[MAX_FUN_PARMS], int parmcount,
             cc = getnum( &gn );
             if( (cc != pos) || (gn.result == 0) ) {
                 if( !ProcFlags.suppress_msg ) {
-                    xx_source_err_c( err_func_parm, "3 (length)" );
+                    xx_source_err_c( ERR_FUNC_PARM, "3 (length)" );
                 }
                 return( cc );
             }

@@ -1878,7 +1878,7 @@ void process_text( char * text, font_number font )
         if( (ProcFlags.doc_sect != doc_sect_titlep)
           && (ProcFlags.doc_sect != doc_sect_etitlep)
           && (ProcFlags.doc_sect != doc_sect_frontm) ) {
-            xx_line_err_c( err_doc_sec_expected_2, text );
+            xx_line_err_c( ERR_DOC_SEC_EXPECTED_2, text );
             return;
         }
     }
@@ -2363,7 +2363,7 @@ void process_text( char * text, font_number font )
                             }
                             if( count == o_count ) {
                                 if( t_line->first == NULL ) {    // prevents loop
-                                    xx_err( err_page_width_too_small );
+                                    xx_err( ERR_PAGE_WIDTH_TOO_SMALL );
                                 }
                             } else {                 // split n_chars with hyphenation
                                 // first attach n_chars to tline
@@ -2639,7 +2639,7 @@ void process_text( char * text, font_number font )
     if( t_line->first != NULL ) {           // something in the line
         if( ProcFlags.need_li_lp
           || ProcFlags.need_tag ) {   // no text allowed!
-            xx_err( err_tag_not_text );
+            xx_err( ERR_TAG_NOT_TEXT );
         }
     }
 

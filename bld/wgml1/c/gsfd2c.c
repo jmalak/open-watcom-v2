@@ -65,7 +65,7 @@ condcode    scr_d2c( parm parms[MAX_FUN_PARMS], int parmcount, char **result, in
         cc = getnum( &gn );
         if( (cc != pos) ) {
             if( !ProcFlags.suppress_msg ) {
-                xx_source_err_c( err_func_parm, "1 (number)" );
+                xx_source_err_c( ERR_FUNC_PARM, "1 (number)" );
             }
             return( cc );
         }

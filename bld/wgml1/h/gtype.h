@@ -680,10 +680,11 @@ typedef struct opt_font {
 /***************************************************************************/
 
 typedef enum msg_ids  {
-    #include "wgmlmsge.gh"              // as lowercase enums
+    #define pick( code, e_string, j_string )    code,
+    #include "wgmlerr.msg"
+    #include "wgml.msg"
+    #undef pick
 } msg_ids;
-
-#include "wgmlmsgs.gh"                  // as uppercase defines
 
 typedef enum {
     SEV_BANNER,

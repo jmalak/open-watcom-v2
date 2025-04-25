@@ -137,11 +137,11 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
                     refwk = find_refid( ix_ref_dict, refrefid );
                     if( refwk == NULL ) {   // refid not in dict
                         if( WgmlFlags.lastpass ) {// this is an error
-                            xx_line_err_cc( err_id_undefined, refrefid, attr_val.name );
+                            xx_line_err_cc( ERR_ID_UNDEFINED, refrefid, attr_val.name );
                         }
                     }
                 } else {                // not allowed for :I1 and :IHx
-                    xx_line_err_cc( err_ref_not_allowed, hxstring, attr_val.name );
+                    xx_line_err_cc( ERR_REF_NOT_ALLOWED, hxstring, attr_val.name );
                 }
                 if( ProcFlags.tag_end_found ) {
                     break;
@@ -210,7 +210,7 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
                     seeidwk = find_refid( ix_ref_dict, seerefid );
                     if( seeidwk == NULL ) {             // not in dict, this is an error
                         if( WgmlFlags.lastpass ) {    // during lastpass
-                            xx_line_err_cc( err_id_undefined, seerefid, attr_val.name );
+                            xx_line_err_cc( ERR_ID_UNDEFINED, seerefid, attr_val.name );
                         }
                     }
                 } else {                        // end-of-tag for Ix
@@ -252,11 +252,11 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
 
                     /* Groups are ignored, issue warning */
 
-                    xx_warn_c( wng_unsupp_att, "ix" );
+                    xx_warn_c( WNG_UNSUPP_ATT, "ix" );
 
                     if( (gn.result < 1)
                       || (gn.result > 9) ) { // out of range
-                        xx_line_err_c( err_struct_range, attr_val.name );
+                        xx_line_err_c( ERR_STRUCT_RANGE, attr_val.name );
                     }
                 }
                 if( ProcFlags.tag_end_found ) {
@@ -301,7 +301,7 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
 
     if( hx_lvl == 0 ) {                 // :IREF tag
         if( !refidseen ) {              // refid= missing
-            xx_err( err_att_missing );
+            xx_err( ERR_ATT_MISSING );
         }
     } else if( !refidseen ) {           // not required for refid
         if( hx_lvl == 1 ) {             // first level tag
@@ -309,13 +309,13 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
             ixhlvl[1] = false;          // second level not found
         } else if( hx_lvl == 2 ) {      // second level tag
             if( !ixhlvl[0] ) {          // first level must exist
-                xx_err_c( err_parent_undef, hxstring );
+                xx_err_c( ERR_PARENT_UNDEF, hxstring );
             } else {
                 ixhlvl[1] = true;       // record first level found
             }
         } else if( hx_lvl == 3 ) {      // third level tag
             if( !ixhlvl[1] ) {          // second level must exist
-                xx_err_c( err_parent_undef, hxstring );
+                xx_err_c( ERR_PARENT_UNDEF, hxstring );
             }
         }
     }
@@ -465,7 +465,7 @@ static void gml_ixxx_common( const gmltag * entry, unsigned hx_lvl )
             }
             if( WgmlFlags.lastpass ){         // last pass: add data
                 if( refwork == NULL ) {         // shouldn't happen
-                    xx_err_c( err_id_undefined, ixrefid );
+                    xx_err_c( ERR_ID_UNDEFINED, ixrefid );
                 } else {
                     refwork->u.ix.hblk = ixhwk;
                     refwork->u.ix.base = ixhtag[hx_lvl - 1];

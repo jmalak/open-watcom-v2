@@ -219,7 +219,7 @@ static void scan_gml( void )
     me = NULL;
     if( ge != NULL ) {                  // GML user defined Tag found
         if( ProcFlags.need_text ) {
-            xx_err( err_text_not_tag_cw );
+            xx_err( ERR_TEXT_NOT_TAG_CW );
         }
         *p = csave;
         if( ge->tagflags & tag_off ) {  // inactive, treat as comment
@@ -275,9 +275,9 @@ static void scan_gml( void )
                             // tag allowed everywhere
                             lay_tags[k].gmlproc( &lay_tags[k] );
                         } else if( rs_loc == banner_tag ) {
-                            xx_err_c( err_tag_expected, "eBANNER" );
+                            xx_err_c( ERR_TAG_EXPECTED, "eBANNER" );
                         } else {    // rs_loc == banreg_tag
-                            xx_err_c( err_tag_expected, "eBANREGION" );
+                            xx_err_c( ERR_TAG_EXPECTED, "eBANREGION" );
                         }
                         processed = true;
                         lay_ind = k;    // now process attributes if any
@@ -290,7 +290,7 @@ static void scan_gml( void )
                 for( k = 0; k < GML_TAGMAX; ++k ) {
                     if( toklen == gml_tags[k].taglen ) {
                         if( strcmp( gml_tags[k].tagname, tok_upper ) == 0 ) {
-                            xx_err_c( err_gml_in_lay, gml_tags[k].tagname );
+                            xx_err_c( ERR_GML_IN_LAY, gml_tags[k].tagname );
                         }
                     }
                 }
@@ -303,7 +303,7 @@ static void scan_gml( void )
                           && strcmp(tok_upper, "LAYOUT" ) == 0
                           && ProcFlags.fb_document_done  ) {
 
-                            xx_err( err_lay_too_late );
+                            xx_err( ERR_LAY_TOO_LATE );
                         }
                         *p = csave;
 
@@ -345,7 +345,7 @@ static void scan_gml( void )
                                 gml_tags[k].gmlproc( &gml_tags[k] );
                                 ProcFlags.need_ddhd = false;
                             } else {
-                                xx_err_c( err_tag_expected, "DDHD");
+                                xx_err_c( ERR_TAG_EXPECTED, "DDHD");
                             }
                         } else if( ProcFlags.need_dd ) {
                             if( (gml_tags[k].tagclass & index_tag) != 0 ) {
@@ -355,7 +355,7 @@ static void scan_gml( void )
                                 gml_tags[k].gmlproc( &gml_tags[k] );
                                 ProcFlags.need_dd = false;
                             } else {
-                                xx_err_c( err_tag_expected, "DD");
+                                xx_err_c( ERR_TAG_EXPECTED, "DD");
                             }
                         } else if( ProcFlags.need_gd ) {
                             if( (gml_tags[k].tagclass & index_tag) == 0 ) {
@@ -366,24 +366,24 @@ static void scan_gml( void )
                                 gml_tags[k].gmlproc( &gml_tags[k] );
                                 ProcFlags.need_gd = false;
                             } else {
-                                xx_err_c( err_tag_expected, "GD");
+                                xx_err_c( ERR_TAG_EXPECTED, "GD");
                             }
                         } else if( !nest_cb->in_list ) {
                             if( (gml_tags[k].tagclass & list_tag) == 0 ) {
                                 // tag is not a list tag
                                 gml_tags[k].gmlproc( &gml_tags[k] );
                             } else {
-                                xx_line_err_c( err_no_list, g_tok_start );
+                                xx_line_err_c( ERR_NO_LIST, g_tok_start );
                             }
                         } else if( ProcFlags.need_li_lp ) {
                             if( (gml_tags[k].tagclass & li_lp_tag) != 0 ) {
                                 // tag is LP or LI
                                 gml_tags[k].gmlproc( &gml_tags[k] );
                             } else {
-                                xx_nest_err( err_no_li_lp );
+                                xx_nest_err( ERR_NO_LI_LP );
                             }
                         } else if( ProcFlags.need_text ) {
-                            xx_err( err_text_not_tag_cw );
+                            xx_err( ERR_TEXT_NOT_TAG_CW );
                         } else if( rs_loc == 0 ) {
                             // no restrictions: do them all
                             gml_tags[k].gmlproc( &gml_tags[k] );
@@ -407,7 +407,7 @@ static void scan_gml( void )
                 for( k = 0; k < LAY_TAGMAX; ++k ) {
                     if( toklen == lay_tags[k].taglen ) {
                         if( strcmp( lay_tags[k].tagname, tok_upper ) == 0 ) {
-                            xx_err_c( err_lay_in_gml, lay_tags[k].tagname );
+                            xx_err_c( ERR_LAY_IN_GML, lay_tags[k].tagname );
                        }
                     }
                 }
@@ -474,7 +474,7 @@ static void     scan_script( void )
     int             k;
 
     if( ProcFlags.need_text ) {
-        xx_err( err_text_not_tag_cw );
+        xx_err( ERR_TEXT_NOT_TAG_CW );
     }
 
     cb = input_cbs;
@@ -650,7 +650,7 @@ static void     scan_script( void )
                 script_cwds[k].tagproc();
             }
         } else {
-            xx_err_c( err_cwd_unrecognized, token_buf );
+            xx_err_c( ERR_CWD_UNRECOGNIZED, token_buf );
         }
     }
     scan_start = scan_restart;
@@ -892,7 +892,7 @@ void    scan_line( void )
           && (scan_start < scan_stop) ) {
             if( (input_cbs->fmflags & II_research)
               && WgmlFlags.firstpass ) {
-                g_info_lm( inf_text_line, scan_start );
+                g_info_lm( INF_TEXT_LINE, scan_start );
             }
             if( ProcFlags.layout ) {    // LAYOUT active: should not happen
                 internal_err( __FILE__, __LINE__ );
@@ -960,7 +960,7 @@ void    scan_line( void )
         }
     } else if( (input_cbs->fmflags & II_research)
       && WgmlFlags.firstpass ) {
-        g_info_lm( inf_skip_line );     // show skipped line
+        g_info_lm( INF_SKIP_LINE );     // show skipped line
     }
     if( ProcFlags.literal ) {
         if( li_cnt < INT_MAX ) {        // we decrement, do not wait for .li OFF
@@ -1124,7 +1124,7 @@ char * get_text_line( char * p )
         }
 
         if( !tl_found ) {                   // no <text_line> found
-            xx_err( err_text_not_tag_cw );
+            xx_err( ERR_TEXT_NOT_TAG_CW );
         }
     }
 

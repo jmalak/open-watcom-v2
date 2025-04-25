@@ -80,7 +80,7 @@ condcode    scr_width( parm parms[MAX_FUN_PARMS], int parmcount, char **result, 
                 width = len;
                 break;
             default:
-                xx_source_err_c( err_func_parm, "2 (type)" );
+                xx_source_err_c( ERR_FUNC_PARM, "2 (type)" );
             }
         }
     } else {                            // default type c processing

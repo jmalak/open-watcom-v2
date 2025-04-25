@@ -68,12 +68,12 @@ void    gotarget_err( void )
     if( input_cbs->fmflags & II_tag_mac ) {
         if( gotargetno > 0 ) {
             uinttodec( gotargetno, linestr );
-            xx_err_cc( err_goto, linestr, input_cbs->s.m->mac->macname );
+            xx_err_cc( ERR_GOTO, linestr, input_cbs->s.m->mac->macname );
         } else {
-            xx_err_cc( err_goto, gotarget, input_cbs->s.m->mac->macname );
+            xx_err_cc( ERR_GOTO, gotarget, input_cbs->s.m->mac->macname );
         }
     } else {
-        xx_err_cc( err_goto, gotarget, input_cbs->s.f->filename );
+        xx_err_cc( ERR_GOTO, gotarget, input_cbs->s.f->filename );
     }
     gotargetno = 0;
     *gotarget = '\0';
@@ -177,7 +177,7 @@ void    scr_label( void )
 
     SkipSpaces( scan_start );       // may be ...LABEL or ...<blanks>LABEL, skip over blanks
     if( *scan_start == '\0'  ) {    // no label?
-        xx_source_err_c( err_missing_name, "" );
+        xx_source_err_c( ERR_MISSING_NAME, "" );
     } else {
 
         gn.arg.s = scan_start;
@@ -192,11 +192,11 @@ void    scr_label( void )
 
             if( input_cbs->fmflags & II_tag_mac ) {
                 if( gn.result != input_cbs->s.m->lineno ) {
-                    xx_source_err_c( err_label_line, gn.resultstr );
+                    xx_source_err_c( ERR_LABEL_LINE, gn.resultstr );
                 }
             } else {
                 if( gn.result != input_cbs->s.f->lineno ) {
-                    xx_source_err_c( err_label_line, gn.resultstr );
+                    xx_source_err_c( ERR_LABEL_LINE, gn.resultstr );
                 }
             }
 
@@ -204,7 +204,7 @@ void    scr_label( void )
                   // numeric macro label no need to store
             } else {
                 uinttodec( input_cbs->s.f->lineno, linestr );
-                xx_warn_info_cc( wng_label_num, inf_file_line, linestr, input_cbs->s.f->filename );
+                xx_warn_info_cc( WNG_LABEL_NUM, INF_FILE_LINE, linestr, input_cbs->s.f->filename );
             }
 
         } else {                        // no numeric label
@@ -213,7 +213,7 @@ void    scr_label( void )
                 char    labelname[LABEL_NAME_LENGTH + 1];
 
                 if( get_label_name( g_tok_start, labelname ) ) {
-                    xx_source_err_c( err_sym_long, labelname );
+                    xx_source_err_c( ERR_SYM_LONG, labelname );
                 }
 
                 if( input_cbs->fmflags & II_tag_mac ) {
@@ -223,7 +223,7 @@ void    scr_label( void )
                         // nothing to do
                     } else {
                         if( cc == neg ) {   // name with different lineno
-                            xx_source_err_c( err_label_dup, labelname );
+                            xx_source_err_c( ERR_LABEL_DUP, labelname );
                         } else {        // new label
                             lb              = mem_alloc( sizeof( labelcb ) );
                             memset( lb, 0, sizeof( labelcb ) );
@@ -239,7 +239,7 @@ void    scr_label( void )
                         // nothing to do
                     } else {
                         if( cc == neg ) {   // name with different lineno
-                            xx_source_err_c( err_label_dup, token_buf );
+                            xx_source_err_c( ERR_LABEL_DUP, token_buf );
                         } else {        // new label
 
                             lb              = mem_alloc( sizeof( labelcb ) );
@@ -252,7 +252,7 @@ void    scr_label( void )
                     }
                 }
             } else {
-                xx_source_err_c( err_missing_name, "" );
+                xx_source_err_c( ERR_MISSING_NAME, "" );
             }
         }
 
@@ -324,7 +324,7 @@ void    scr_go( void )
 
     cc = getarg();
     if( cc != pos ) {
-        xx_source_err_c( err_missing_name, "" );
+        xx_source_err_c( ERR_MISSING_NAME, "" );
     }
 
     gn.arg.s = g_tok_start;
@@ -345,7 +345,7 @@ void    scr_go( void )
         }
 
         if( gotargetno < 1 ) {
-            xx_source_err( err_label_zero );
+            xx_source_err( ERR_LABEL_ZERO );
         }
         if( input_cbs->fmflags & II_tag_mac ) {
             if( gotargetno <= input_cbs->s.m->lineno ) {
@@ -357,7 +357,7 @@ void    scr_go( void )
 
         gotargetno = 0;                 // no target lineno known
         if( arg_flen > LABEL_NAME_LENGTH ) {
-            xx_source_err_c( err_sym_long, g_tok_start );
+            xx_source_err_c( ERR_SYM_LONG, g_tok_start );
         }
         get_label_name( g_tok_start, gotarget );
         golb = find_label( gotarget );

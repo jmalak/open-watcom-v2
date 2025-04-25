@@ -132,7 +132,7 @@ static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], int parmcount,
         if( cc != pos
           || gn.result > len ) {
             if( !ProcFlags.suppress_msg ) {
-                xx_source_err_c( err_func_parm, "2 (startword)" );
+                xx_source_err_c( ERR_FUNC_PARM, "2 (startword)" );
             }
             return( cc );
         }
@@ -149,7 +149,7 @@ static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], int parmcount,
                 if( cc != pos
                   || gn.result == 0 ) {
                     if( !ProcFlags.suppress_msg ) {
-                        xx_source_err_c( err_func_parm, "3 (length)" );
+                        xx_source_err_c( ERR_FUNC_PARM, "3 (length)" );
                     }
                     return( cc );
                 }
@@ -357,7 +357,7 @@ condcode    scr_wordpos( parm parms[MAX_FUN_PARMS], int parmcount, char * * resu
             if( cc != pos
               || gn.result == 0 ) {
                 if( !ProcFlags.suppress_msg ) {
-                    xx_source_err_c( err_func_parm, "3 (startword)" );
+                    xx_source_err_c( ERR_FUNC_PARM, "3 (startword)" );
                 }
                 return( cc );
             }

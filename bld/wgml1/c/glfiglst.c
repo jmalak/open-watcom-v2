@@ -96,7 +96,7 @@ void    lay_figlist( const gmltag * entry )
                 switch( curr ) {
                 case e_left_adjust:
                     if( AttrFlags.left_adjust ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_space_unit( p, &lay_attr,
@@ -105,7 +105,7 @@ void    lay_figlist( const gmltag * entry )
                     break;
                 case e_right_adjust:
                     if( AttrFlags.right_adjust ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_space_unit( p, &lay_attr,
@@ -114,7 +114,7 @@ void    lay_figlist( const gmltag * entry )
                     break;
                 case e_skip:
                     if( AttrFlags.skip ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_space_unit( p, &lay_attr,
@@ -123,7 +123,7 @@ void    lay_figlist( const gmltag * entry )
                     break;
                 case e_spacing:
                     if( AttrFlags.spacing ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_spacing( p, &lay_attr, &layout_work.figlist.spacing );
@@ -131,7 +131,7 @@ void    lay_figlist( const gmltag * entry )
                     break;
                 case e_columns:
                     if( AttrFlags.columns ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_int8( p, &lay_attr, &layout_work.figlist.columns );
@@ -139,7 +139,7 @@ void    lay_figlist( const gmltag * entry )
                     break;
                 case e_fill_string:
                     if( AttrFlags.fill_string ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_xx_string( p, &lay_attr, layout_work.figlist.fill_string );
@@ -149,13 +149,13 @@ void    lay_figlist( const gmltag * entry )
                     internal_err( __FILE__, __LINE__ );
                 }
                 if( cvterr ) {          // there was an error
-                    xx_err( err_att_val_inv );
+                    xx_err( ERR_ATT_VAL_INV );
                 }
                 break;                  // break out of for loop
             }
         }
         if( cvterr < 0 ) {
-            xx_err( err_att_name_inv );
+            xx_err( ERR_ATT_NAME_INV );
         }
         cc = lay_attr_and_value( &lay_attr );            // get att with value
     }

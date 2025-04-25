@@ -37,12 +37,12 @@ static void usage( void )
     g_banner();
 
     kscreen = 0;
-    for( k = inf_use_start; k <= inf_use_end; k++ ) {
+    for( k = INF_USE_START; k <= INF_USE_END; k++ ) {
         g_info_lm( k );
         if( isatty( fileno( stdin ) ) ) {
             if( kscreen == 22 ) {
                 kscreen = 0;
-                g_info_lm( inf_pause );
+                g_info_lm( INF_PAUSE );
                 getchar();
             } else {
                 kscreen++;
@@ -427,12 +427,12 @@ static  void    proc_input( char * filename )
             split_attr_file( token_buf, attrwork, sizeof( attrwork ) );
 
             if( attrwork[0] ) {
-                xx_warn_cc( wng_fileattr_ignored, attrwork, token_buf );
+                xx_warn_cc( WNG_FILEATTR_IGNORED, attrwork, token_buf );
             }
             fp = search_file_in_dirs( token_buf, def_ext, alt_ext, ds_doc_spec );
             if( fp != NULL ) {
                 if( inc_level >= MAX_INC_DEPTH ) {
-                    xx_err_c( err_max_input_nesting, token_buf );
+                    xx_err_c( ERR_MAX_INPUT_NESTING, token_buf );
                 }
             } else {
                 main_file_err( token_buf );
@@ -450,7 +450,7 @@ static  void    proc_input( char * filename )
                 cb->fileattr[0] = '\0';
             }
             if( WgmlFlags.inclist ) {
-                g_info_lm( inf_curr_file, cb->filename );
+                g_info_lm( INF_CURR_FILE, cb->filename );
             }
             save_cb = input_cbs;
 
@@ -552,7 +552,7 @@ static  void    proc_input( char * filename )
                 if( ProcFlags.in_macro_define ) {
                     if( (input_cbs->fmflags & II_research)
                       && WgmlFlags.firstpass ) {
-                        g_info_lm( inf_skip_line );
+                        g_info_lm( INF_SKIP_LINE );
                     }
                     continue;           // skip processing
                 }
@@ -565,7 +565,7 @@ static  void    proc_input( char * filename )
                     }
                     if( (input_cbs->fmflags & II_research)
                       && WgmlFlags.firstpass ) {
-                        g_info_lm( inf_skip_line );
+                        g_info_lm( INF_SKIP_LINE );
                     }
                     set_if_then_do( ic );
                     test_process( ic );
@@ -613,13 +613,13 @@ static  void    proc_input( char * filename )
         if( input_cbs->fmflags & II_file ) {
             if( WgmlFlags.inclist
               && (save_cb != input_cbs) ) {
-                g_info_lm( inf_curr_file, input_cbs->s.f->filename );
+                g_info_lm( INF_CURR_FILE, input_cbs->s.f->filename );
                 save_cb = input_cbs;
             }
         } else {
             if( WgmlFlags.inclist
               && WgmlFlags.research ) {     // only when -r specified
-                g_info_lm( inf_curr_macro, input_cbs->s.m->mac->macname,
+                g_info_lm( INF_CURR_MACRO, input_cbs->s.m->mac->macname,
                                            input_cbs->s.m->mac->mac_file_name  );
             }
         }
@@ -639,7 +639,7 @@ static  void    print_stats( clock_t duration_ticks )
     ldiv_t          sec_frac;
     unsigned long   peak;
 
-    g_info_lm( inf_stat_0 );
+    g_info_lm( INF_STAT_0 );
 
     uinttodec( pass, linestr );
     if( pass == passes ) {
@@ -648,24 +648,24 @@ static  void    print_stats( clock_t duration_ticks )
         strcpy( linestr2, "of " );
         uinttodec( passes, linestr2 + 3 );
     }
-    g_info_lm( inf_stat_1, linestr, linestr2 );
+    g_info_lm( INF_STAT_1, linestr, linestr2 );
 
     uinttodec( max_inc_level, linestr );
-    g_info_lm( inf_stat_2, linestr );
+    g_info_lm( INF_STAT_2, linestr );
 
     uinttodec( err_count, linestr );
-    g_info_lm( inf_stat_3, linestr );
+    g_info_lm( INF_STAT_3, linestr );
 
     uinttodec( wng_count, linestr );
-    g_info_lm( inf_stat_4, linestr );
+    g_info_lm( INF_STAT_4, linestr );
 
     uinttodec( err_count ? 8 : wng_count ? 4 : 0, linestr );
-    g_info_lm( inf_stat_5, linestr );
+    g_info_lm( INF_STAT_5, linestr );
 
     peak = mem_get_peak_usage();
     if( peak ) {
         sprintf( linestr, "%lu", peak );
-        g_info_lm( inf_stat_6, linestr );
+        g_info_lm( INF_STAT_6, linestr );
     }
 
     // convert duration from clock ticks to HH:MM:SS.hh
@@ -674,7 +674,7 @@ static  void    print_stats( clock_t duration_ticks )
     sprintf( linestr, "%02u:%02u:%02u.%02u",
         (unsigned)hour_min.quot, (unsigned)hour_min.rem,
         (unsigned)( sec_frac.quot % 60 ), (unsigned)( sec_frac.rem / 10 ) );
-    g_info_lm( inf_stat_7, linestr );
+    g_info_lm( INF_STAT_7, linestr );
 }
 
 
@@ -780,7 +780,7 @@ int main( int argc, char * argv[] )
     cmdline = mem_alloc( cmdlen );
     _bgetcmd( cmdline, cmdlen );
 
-    g_info_research( inf_cmdline, cmdline );
+    g_info_research( INF_CMDLINE, cmdline );
 
     tok_count = proc_options( cmdline );
     init_sysparm( cmdline, banner1w( "Script/GML", _WGML_VERSION_ ) );
@@ -855,7 +855,7 @@ int main( int argc, char * argv[] )
             passcount = pass;
             if( !WgmlFlags.lastpass
               && (err_count > 0) ) {
-                g_info_lm( inf_error_stop, passes - pass > 1 ? "es" : "" );
+                g_info_lm( INF_ERROR_STOP, passes - pass > 1 ? "es" : "" );
                 break;                  // errors found stop now
             }
         }
@@ -864,10 +864,10 @@ int main( int argc, char * argv[] )
 
     } else {
         usage();
-        xx_simple_err( err_missing_mainfilename );
+        xx_simple_err( ERR_MISSING_MAINFILENAME );
     }
 
-    g_info_lm( inf_fmt_end );
+    g_info_lm( INF_FMT_END );
 
 
     if( WgmlFlags.research ) {

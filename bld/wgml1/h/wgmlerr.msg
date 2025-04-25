@@ -12,9 +12,6 @@
 pick( ERR_INTERN,               "Internal Error: File %s, Line %i",
                                 "Internal Error: File %s, Line %i" )
 
-pick( ERR_RES_NOT_FOUND,        "Resources not found",
-                                "Resources not found" )
-
 pick( ERR_STR_NOT_FOUND,        "Resourcestring not found",
                                 "Resourcestring not found" )
 

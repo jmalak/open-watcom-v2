@@ -62,17 +62,17 @@ void    gml_layout( const gmltag * entry )
 
     if( !ProcFlags.lay_specified ) {
         ProcFlags.lay_specified = true;
-        g_info_lm( inf_proc_lay );
+        g_info_lm( INF_PROC_LAY );
     }
 
     if( *p == '\0' || *p == '.' ) {
         if( ProcFlags.layout ) {        // nested layout
-            xx_err_c( err_nested_tag, entry->tagname );
+            xx_err_c( ERR_NESTED_TAG, entry->tagname );
         }
         ProcFlags.layout = true;
         return;
     } else {
-        xx_err_cc( err_extra_ignored, g_tok_start, p );
+        xx_err_cc( ERR_EXTRA_IGNORED, g_tok_start, p );
     }
     return;
 }
@@ -96,14 +96,14 @@ void    lay_elayout( const gmltag * entry )
 
     if( *p == '\0' || *p == '.' ) {
         if( !ProcFlags.layout ) {       // not in layout processing
-            xx_err_cc( err_no_lay, &(entry->tagname[1]), entry->tagname );
+            xx_err_cc( ERR_NO_LAY, &(entry->tagname[1]), entry->tagname );
         }
         ProcFlags.layout = false;
         ProcFlags.lay_xxx = el_zero;
 
         return;
     } else {
-        xx_err_cc( err_extra_ignored, g_tok_start, p );
+        xx_err_cc( ERR_EXTRA_IGNORED, g_tok_start, p );
     }
     return;
 }

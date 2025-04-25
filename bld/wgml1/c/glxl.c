@@ -551,7 +551,7 @@ void    lay_dl( const gmltag * entry )
                 switch( curr ) {
                 case e_level:
                     if( AttrFlags.level ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_int8( p, &lay_attr, &dl_layout->level );
@@ -559,7 +559,7 @@ void    lay_dl( const gmltag * entry )
                     break;
                 case e_left_indent:
                     if( AttrFlags.left_indent ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &dl_layout->left_indent );
@@ -567,7 +567,7 @@ void    lay_dl( const gmltag * entry )
                     break;
                 case e_right_indent:
                     if( AttrFlags.right_indent ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &dl_layout->right_indent );
@@ -575,7 +575,7 @@ void    lay_dl( const gmltag * entry )
                     break;
                 case e_pre_skip:
                     if( AttrFlags.pre_skip ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &dl_layout->pre_skip );
@@ -583,7 +583,7 @@ void    lay_dl( const gmltag * entry )
                     break;
                 case e_skip:
                     if( AttrFlags.skip ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &dl_layout->skip );
@@ -591,7 +591,7 @@ void    lay_dl( const gmltag * entry )
                     break;
                 case e_spacing:
                     if( AttrFlags.spacing ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_spacing( p, &lay_attr, &dl_layout->spacing );
@@ -599,7 +599,7 @@ void    lay_dl( const gmltag * entry )
                     break;
                 case e_post_skip:
                     if( AttrFlags.post_skip ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &dl_layout->post_skip );
@@ -607,7 +607,7 @@ void    lay_dl( const gmltag * entry )
                     break;
                 case e_align:
                     if( AttrFlags.align ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &dl_layout->align );
@@ -615,7 +615,7 @@ void    lay_dl( const gmltag * entry )
                     break;
                 case e_line_break:
                     if( AttrFlags.line_break ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_yes_no( p, &lay_attr, &dl_layout->line_break );
@@ -742,7 +742,7 @@ void    lay_gl( const gmltag * entry )
                 switch( curr ) {
                 case e_level:
                     if( AttrFlags.level ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_int8( p, &lay_attr, &gl_layout->level );
@@ -750,7 +750,7 @@ void    lay_gl( const gmltag * entry )
                     break;
                 case e_left_indent:
                     if( AttrFlags.left_indent ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &gl_layout->left_indent );
@@ -758,7 +758,7 @@ void    lay_gl( const gmltag * entry )
                     break;
                 case e_right_indent:
                     if( AttrFlags.right_indent ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &gl_layout->right_indent );
@@ -766,7 +766,7 @@ void    lay_gl( const gmltag * entry )
                     break;
                 case e_pre_skip:
                     if( AttrFlags.pre_skip ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &gl_layout->pre_skip );
@@ -774,7 +774,7 @@ void    lay_gl( const gmltag * entry )
                     break;
                 case e_skip:
                     if( AttrFlags.skip ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &gl_layout->skip );
@@ -782,7 +782,7 @@ void    lay_gl( const gmltag * entry )
                     break;
                 case e_spacing:
                     if( AttrFlags.spacing ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_spacing( p, &lay_attr, &gl_layout->spacing );
@@ -790,7 +790,7 @@ void    lay_gl( const gmltag * entry )
                     break;
                 case e_post_skip:
                     if( AttrFlags.post_skip ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &gl_layout->post_skip );
@@ -798,7 +798,7 @@ void    lay_gl( const gmltag * entry )
                     break;
                 case e_align:
                     if( AttrFlags.align ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &gl_layout->align );
@@ -806,7 +806,7 @@ void    lay_gl( const gmltag * entry )
                     break;
                 case e_delim:
                     if( AttrFlags.delim ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_char( p, &lay_attr, &gl_layout->delim );
@@ -935,7 +935,7 @@ void    lay_ol( const gmltag * entry )
                 switch( curr ) {
                 case e_level:
                     if( AttrFlags.level ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_int8( p, &lay_attr, &ol_layout->level );
@@ -943,7 +943,7 @@ void    lay_ol( const gmltag * entry )
                     break;
                 case e_left_indent:
                     if( AttrFlags.left_indent ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &ol_layout->left_indent );
@@ -951,7 +951,7 @@ void    lay_ol( const gmltag * entry )
                     break;
                 case e_right_indent:
                     if( AttrFlags.right_indent ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &ol_layout->right_indent );
@@ -959,7 +959,7 @@ void    lay_ol( const gmltag * entry )
                     break;
                 case e_pre_skip:
                     if( AttrFlags.pre_skip ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &ol_layout->pre_skip );
@@ -967,7 +967,7 @@ void    lay_ol( const gmltag * entry )
                     break;
                 case e_skip:
                     if( AttrFlags.skip ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &ol_layout->skip );
@@ -975,7 +975,7 @@ void    lay_ol( const gmltag * entry )
                     break;
                 case e_spacing:
                     if( AttrFlags.spacing ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_spacing( p, &lay_attr, &ol_layout->spacing );
@@ -983,7 +983,7 @@ void    lay_ol( const gmltag * entry )
                     break;
                 case e_post_skip:
                     if( AttrFlags.post_skip ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &ol_layout->post_skip );
@@ -991,7 +991,7 @@ void    lay_ol( const gmltag * entry )
                     break;
                 case e_font:
                     if( AttrFlags.font ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_font_number( p, &lay_attr, &ol_layout->font );
@@ -1002,7 +1002,7 @@ void    lay_ol( const gmltag * entry )
                     break;
                 case e_align:
                     if( AttrFlags.align ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &ol_layout->align );
@@ -1010,7 +1010,7 @@ void    lay_ol( const gmltag * entry )
                     break;
                 case e_number_style:
                     if( AttrFlags.number_style ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_number_style( p, &lay_attr, &ol_layout->number_style );
@@ -1018,7 +1018,7 @@ void    lay_ol( const gmltag * entry )
                     break;
                 case e_number_font:
                     if( AttrFlags.number_font ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_font_number( p, &lay_attr, &ol_layout->number_font );
@@ -1153,7 +1153,7 @@ void    lay_sl( const gmltag * entry )
                 switch( curr ) {
                 case e_level:
                     if( AttrFlags.level ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_int8( p, &lay_attr, &sl_layout->level );
@@ -1161,7 +1161,7 @@ void    lay_sl( const gmltag * entry )
                     break;
                 case e_left_indent:
                     if( AttrFlags.left_indent ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &sl_layout->left_indent );
@@ -1169,7 +1169,7 @@ void    lay_sl( const gmltag * entry )
                     break;
                 case e_right_indent:
                     if( AttrFlags.right_indent ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &sl_layout->right_indent );
@@ -1177,7 +1177,7 @@ void    lay_sl( const gmltag * entry )
                     break;
                 case e_pre_skip:
                     if( AttrFlags.pre_skip ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &sl_layout->pre_skip );
@@ -1185,7 +1185,7 @@ void    lay_sl( const gmltag * entry )
                     break;
                 case e_skip:
                     if( AttrFlags.skip ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &sl_layout->skip );
@@ -1193,7 +1193,7 @@ void    lay_sl( const gmltag * entry )
                     break;
                 case e_spacing:
                     if( AttrFlags.spacing ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_spacing( p, &lay_attr, &sl_layout->spacing );
@@ -1201,7 +1201,7 @@ void    lay_sl( const gmltag * entry )
                     break;
                 case e_post_skip:
                     if( AttrFlags.post_skip ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &sl_layout->post_skip );
@@ -1209,7 +1209,7 @@ void    lay_sl( const gmltag * entry )
                     break;
                 case e_font:
                     if( AttrFlags.font ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_font_number( p, &lay_attr, &sl_layout->font );
@@ -1338,7 +1338,7 @@ void    lay_ul( const gmltag * entry )
                 switch( curr ) {
                 case e_level:
                     if( AttrFlags.level ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_int8( p, &lay_attr, &ul_layout->level );
@@ -1346,7 +1346,7 @@ void    lay_ul( const gmltag * entry )
                     break;
                 case e_left_indent:
                     if( AttrFlags.left_indent ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &ul_layout->left_indent );
@@ -1354,7 +1354,7 @@ void    lay_ul( const gmltag * entry )
                     break;
                 case e_right_indent:
                     if( AttrFlags.right_indent ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &ul_layout->right_indent );
@@ -1362,7 +1362,7 @@ void    lay_ul( const gmltag * entry )
                     break;
                 case e_pre_skip:
                     if( AttrFlags.pre_skip ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &ul_layout->pre_skip );
@@ -1370,7 +1370,7 @@ void    lay_ul( const gmltag * entry )
                     break;
                 case e_skip:
                     if( AttrFlags.skip ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &ul_layout->skip );
@@ -1378,7 +1378,7 @@ void    lay_ul( const gmltag * entry )
                     break;
                 case e_spacing:
                     if( AttrFlags.spacing ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_spacing( p, &lay_attr, &ul_layout->spacing );
@@ -1386,7 +1386,7 @@ void    lay_ul( const gmltag * entry )
                     break;
                 case e_post_skip:
                     if( AttrFlags.post_skip ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &ul_layout->post_skip );
@@ -1394,7 +1394,7 @@ void    lay_ul( const gmltag * entry )
                     break;
                 case e_font:
                     if( AttrFlags.font ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_font_number( p, &lay_attr, &ul_layout->font );
@@ -1405,7 +1405,7 @@ void    lay_ul( const gmltag * entry )
                     break;
                 case e_align:
                     if( AttrFlags.align ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_space_unit( p, &lay_attr, &ul_layout->align );
@@ -1413,7 +1413,7 @@ void    lay_ul( const gmltag * entry )
                     break;
                 case e_bullet:
                     if( AttrFlags.bullet ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_char( p, &lay_attr, &ul_layout->bullet );
@@ -1421,7 +1421,7 @@ void    lay_ul( const gmltag * entry )
                     break;
                 case e_bullet_translate:
                     if( AttrFlags.bullet_translate ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_yes_no( p, &lay_attr, &ul_layout->bullet_translate );
@@ -1429,7 +1429,7 @@ void    lay_ul( const gmltag * entry )
                     break;
                 case e_bullet_font:
                     if( AttrFlags.bullet_font ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     i_font_number( p, &lay_attr, &ul_layout->bullet_font );

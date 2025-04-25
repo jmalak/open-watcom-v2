@@ -983,7 +983,7 @@ static void fill_column( doc_element * a_element )
         /* Error if first line will not fit on any page */
 
         if( ( cur_line->line_height + cur_line->units_spacing ) > old_max_depth ) {
-            xx_err( err_text_line_too_deep );
+            xx_err( ERR_TEXT_LINE_TOO_DEEP );
             break;
         }
 
@@ -2599,7 +2599,7 @@ bool split_element( doc_element * a_element, uint32_t req_depth )
         /* Error if first line will not fit on any page */
 
         if( ( cur_line->line_height + cur_line->units_spacing ) > old_max_depth ) {
-            xx_err( err_text_line_too_deep );
+            xx_err( ERR_TEXT_LINE_TOO_DEEP );
             break;
         }
 

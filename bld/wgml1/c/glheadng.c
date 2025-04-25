@@ -94,7 +94,7 @@ void    lay_heading( const gmltag * entry )
                 switch( curr ) {
                 case e_delim:
                     if( AttrFlags.delim ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_char( p, &lay_attr, &layout_work.heading.delim );
@@ -102,7 +102,7 @@ void    lay_heading( const gmltag * entry )
                     break;
                 case e_stop_eject:
                     if( AttrFlags.stop_eject ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_yes_no( p, &lay_attr,
@@ -111,7 +111,7 @@ void    lay_heading( const gmltag * entry )
                     break;
                 case e_para_indent:
                     if( AttrFlags.para_indent ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_yes_no( p, &lay_attr,
@@ -120,7 +120,7 @@ void    lay_heading( const gmltag * entry )
                     break;
                 case e_threshold:
                     if( AttrFlags.threshold ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_threshold( p, &lay_attr, &layout_work.heading.threshold );
@@ -128,7 +128,7 @@ void    lay_heading( const gmltag * entry )
                     break;
                 case e_max_group:
                     if( AttrFlags.max_group ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_int8( p, &lay_attr, &layout_work.heading.max_group );
@@ -138,13 +138,13 @@ void    lay_heading( const gmltag * entry )
                     internal_err( __FILE__, __LINE__ );
                 }
                 if( cvterr ) {          // there was an error
-                    xx_err( err_att_val_inv );
+                    xx_err( ERR_ATT_VAL_INV );
                 }
                 break;                  // break out of for loop
             }
         }
         if( cvterr < 0 ) {
-            xx_err( err_att_name_inv );
+            xx_err( ERR_ATT_NAME_INV );
         }
         cc = lay_attr_and_value( &lay_attr );            // get att with value
     }

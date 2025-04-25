@@ -122,7 +122,7 @@ static bool check_att_value( gaentry * ga, gtentry * ge, sym_dict_hdl loc_dict )
             } else {
                 if( gaval->valflags & val_length ) {
                     if( strlen( token_buf ) > gaval->a.length ) {
-                        xx_err( err_att_len_inv );  // value too long
+                        xx_err( ERR_ATT_LEN_INV );  // value too long
                         msg_done = true;
                     } else {
                         scan_err = false;
@@ -137,7 +137,7 @@ static bool check_att_value( gaentry * ga, gtentry * ge, sym_dict_hdl loc_dict )
                          no_subscript, local_var );
     } else {
         if( !msg_done ) {
-            xx_err_cc( err_att_val, token_buf, ga->attname );
+            xx_err_cc( ERR_ATT_VAL, token_buf, ga->attname );
         }
     }
     return( scan_err );
@@ -216,17 +216,17 @@ bool process_tag( gtentry * ge, mac_entry * me )
                     if( stricmp( ga->attname, token_buf ) == 0 ) {
                         ga->attflags |= att_proc_seen; // attribute specified
                         if( ga->attflags & att_auto ) {
-                            xx_line_err_cc( err_auto_att, token_buf, pa );
+                            xx_line_err_cc( ERR_AUTO_ATT, token_buf, pa );
                         }
 
                         if( is_space_tab_char( *p ) ) { // no whitespace allowed before '='
-                            xx_line_err_cc( err_no_att_val, token_buf, p );
+                            xx_line_err_cc( ERR_NO_ATT_VAL, token_buf, p );
                         }
 
                         /* no line end allowed before '=' except with TEXTLine */
                         if( (*p == '\0')
                           && !(ge->tagflags & tag_textline) ) {
-                            xx_line_err_cc( err_no_att_val, token_buf, p );
+                            xx_line_err_cc( ERR_NO_ATT_VAL, token_buf, p );
                         }
 
                         if( *p == '=' ) {   // value follows
@@ -234,7 +234,7 @@ bool process_tag( gtentry * ge, mac_entry * me )
                             p++;            // over =
 
                             if( is_space_tab_char( *p ) ) { // no whitespace allowed after '='
-                                xx_line_err_cc( err_no_att_val, token_buf, p );
+                                xx_line_err_cc( ERR_NO_ATT_VAL, token_buf, p );
                             }
 
                             ga->attflags |= att_proc_val;
@@ -284,11 +284,11 @@ bool process_tag( gtentry * ge, mac_entry * me )
                 }
                 if( ga == NULL ) {      // supposed attribute not found
                     p = pa;
-                    xx_line_warn_cc( wng_att_name, token_buf, pa );
+                    xx_line_warn_cc( WNG_ATT_NAME, token_buf, pa );
                 }
             } else {
                 if( *p != '\0' ) {
-                    xx_line_warn_cc( wng_att_name, p, pa );
+                    xx_line_warn_cc( WNG_ATT_NAME, p, pa );
                 }
             }
 
@@ -332,7 +332,7 @@ bool process_tag( gtentry * ge, mac_entry * me )
         SkipSpaces( p );
         if( (*p != '.')
           && (*p != '\0') ) {
-            xx_line_warn_cc( wng_att_name, p, p );
+            xx_line_warn_cc( WNG_ATT_NAME, p, p );
         }
         p = p2;                                 // restore value
     }
@@ -359,7 +359,7 @@ bool process_tag( gtentry * ge, mac_entry * me )
         /* If TEXTReqrd was used in defining the user-tag, this is an error */
 
         if( ge->tagflags & tag_textreq ) {  // text must be present
-            xx_line_err_cc( err_att_text_req, ge->tagname, p2 );
+            xx_line_err_cc( ERR_ATT_TEXT_REQ, ge->tagname, p2 );
         }
 
         /* Otherwise, the value of * will be an empty string */
@@ -369,7 +369,7 @@ bool process_tag( gtentry * ge, mac_entry * me )
         /* If TEXTError was used in defining the user-tag, this is an error */
 
         if( ge->tagflags & tag_texterr ) {  // no text allowed
-            xx_line_err_cc( err_att_text, ge->tagname, p );
+            xx_line_err_cc( ERR_ATT_TEXT, ge->tagname, p );
         }
 
         /* Otherwise, things get a bit complicated */

@@ -357,7 +357,7 @@ static void process_fo_ju( bool both , char *cwcurr )
             ProcFlags.justify = ju_on;
             scan_restart = pa + len;
         } else {
-            xx_line_err_cc( err_xx_opt, cwcurr, pa );
+            xx_line_err_cc( ERR_XX_OPT, cwcurr, pa );
         }
         break;
     case 3 :                            // only OFF valid
@@ -368,7 +368,7 @@ static void process_fo_ju( bool both , char *cwcurr )
             ProcFlags.justify = ju_off;
             scan_restart = pa + len;
         } else {
-            xx_line_err_cc( err_xx_opt, cwcurr, pa );
+            xx_line_err_cc( ERR_XX_OPT, cwcurr, pa );
         }
         break;
     case 4 :                            // Left or half valid
@@ -391,7 +391,7 @@ static void process_fo_ju( bool both , char *cwcurr )
                 ProcFlags.justify = ju_half;
                 scan_restart = pa + len;
             } else {
-                xx_line_err_cc( err_xx_opt, cwcurr, pa );
+                xx_line_err_cc( ERR_XX_OPT, cwcurr, pa );
             }
         }
         break;
@@ -403,7 +403,7 @@ static void process_fo_ju( bool both , char *cwcurr )
             ProcFlags.justify = ju_right;
             scan_restart = pa + len;
         } else {
-            xx_line_err_cc( err_xx_opt, cwcurr, pa );
+            xx_line_err_cc( ERR_XX_OPT, cwcurr, pa );
         }
         break;
     case 6 :                            // center or inside valid
@@ -422,7 +422,7 @@ static void process_fo_ju( bool both , char *cwcurr )
                 ProcFlags.justify = ju_inside;
                 scan_restart = pa + len;
             } else {
-                xx_line_err_cc( err_xx_opt, cwcurr, pa );
+                xx_line_err_cc( ERR_XX_OPT, cwcurr, pa );
             }
         }
         break;
@@ -434,11 +434,11 @@ static void process_fo_ju( bool both , char *cwcurr )
             ProcFlags.justify = ju_outside;
             scan_restart = pa + len;
         } else {
-            xx_line_err_cc( err_xx_opt, cwcurr, pa );
+            xx_line_err_cc( ERR_XX_OPT, cwcurr, pa );
         }
         break;
     default:
-        xx_line_err_cc( err_xx_opt, cwcurr, pa );
+        xx_line_err_cc( ERR_XX_OPT, cwcurr, pa );
     }
 
     /********************************************************/
@@ -580,7 +580,7 @@ void    scr_co( void )
             do_co_on();
             scan_restart = pa + len;
         } else {
-            xx_line_err_cc( err_xx_opt, cwcurr, pa );
+            xx_line_err_cc( ERR_XX_OPT, cwcurr, pa );
         }
         break;
     case 3 :                            // only OFF valid
@@ -588,11 +588,11 @@ void    scr_co( void )
             do_co_off();
             scan_restart = pa + len;
         } else {
-            xx_line_err_cc( err_xx_opt, cwcurr, pa );
+            xx_line_err_cc( ERR_XX_OPT, cwcurr, pa );
         }
         break;
     default:
-        xx_line_err_cc( err_xx_opt, cwcurr, pa );
+        xx_line_err_cc( ERR_XX_OPT, cwcurr, pa );
     }
     return;
 }

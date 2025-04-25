@@ -97,7 +97,7 @@ extern  void    gml_set( const gmltag * entry )
         }
         rc = add_symvar( working_dict, sym.name, token_buf, subscript, sym.flags );
     } else {
-        xx_err( err_att_missing );
+        xx_err( ERR_ATT_MISSING );
     }
 
     if( !ProcFlags.reprocess_line && *p != '\0' ) {

@@ -52,7 +52,7 @@ static char * get_ref_attributes( void )
                 } else if( strcmp( "no", attr_val.specval ) == 0 ) {
                     ref_page = false;
                 } else {
-                    xx_line_err_c( err_inv_att_val, attr_val.name );
+                    xx_line_err_c( ERR_INV_ATT_VAL, attr_val.name );
                 }
                 if( ProcFlags.tag_end_found ) {
                     break;
@@ -73,7 +73,7 @@ static char * get_ref_attributes( void )
         }
     }
     if( !refid_found ) {            // detect missing required attribute
-        xx_err( err_att_missing );
+        xx_err( ERR_ATT_MISSING );
         scan_start = scan_stop;
     }
     return( p );
@@ -168,7 +168,7 @@ void gml_figref( const gmltag * entry )
             if( passes == 1 ) {
                 fig_fwd_refs = init_fwd_ref( fig_fwd_refs, refid );
             } else {
-                xx_warn_c_info_c( wng_id_xxx, refid, inf_id_unknown, "figure" );
+                xx_warn_c_info_c( WNG_ID_XXX, refid, INF_ID_UNKNOWN, "figure" );
             }
         }
     }
@@ -306,7 +306,7 @@ void gml_hdref( const gmltag * entry )
             if( passes == 1 ) {
                 hd_fwd_refs = init_fwd_ref( hd_fwd_refs, refid );
             } else {
-                xx_warn_c_info_c( wng_id_xxx, refid, inf_id_unknown, "heading" );
+                xx_warn_c_info_c( WNG_ID_XXX, refid, INF_ID_UNKNOWN, "heading" );
             }
         }
     }
@@ -366,7 +366,7 @@ void gml_fnref( const gmltag * entry )
             if( passes == 1 ) {
                 fn_fwd_refs = init_fwd_ref( fn_fwd_refs, refid );
             } else {
-                xx_warn_c_info_c( wng_id_xxx, refid, inf_id_unknown, "footnote" );
+                xx_warn_c_info_c( WNG_ID_XXX, refid, INF_ID_UNKNOWN, "footnote" );
             }
         }
     }

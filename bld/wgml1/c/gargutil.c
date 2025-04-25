@@ -37,10 +37,10 @@ char parse_char( const char *p, size_t len )
                 c = c * 16 + my_toupper( p[1] ) - 'A' + 10;
             }
         } else {
-            xx_line_err_ci( err_cwd_not_char, p, len );
+            xx_line_err_ci( ERR_CWD_NOT_CHAR, p, len );
         }
     } else {
-        xx_line_err_ci( err_cwd_not_char, p, len );
+        xx_line_err_ci( ERR_CWD_NOT_CHAR, p, len );
     }
 
     return( c );

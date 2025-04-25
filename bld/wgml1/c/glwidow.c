@@ -64,7 +64,7 @@ void    lay_widow( const gmltag * entry )
                 switch( curr ) {
                 case e_threshold:
                     if( AttrFlags.threshold ) {
-                        xx_line_err_ci( err_att_dup, lay_attr.att_name,
+                        xx_line_err_ci( ERR_ATT_DUP, lay_attr.att_name,
                             lay_attr.val.name - lay_attr.att_name + lay_attr.val.len);
                     }
                     cvterr = i_threshold( p, &lay_attr, &layout_work.widow.threshold );
@@ -74,13 +74,13 @@ void    lay_widow( const gmltag * entry )
                     internal_err( __FILE__, __LINE__ );
                 }
                 if( cvterr ) {          // there was an error
-                    xx_err( err_att_val_inv );
+                    xx_err( ERR_ATT_VAL_INV );
                 }
                 break;                  // break out of for loop
             }
         }
         if( cvterr < 0 ) {
-            xx_err( err_att_name_inv );
+            xx_err( ERR_ATT_NAME_INV );
         }
         cc = lay_attr_and_value( &lay_attr );            // get att with value
     }

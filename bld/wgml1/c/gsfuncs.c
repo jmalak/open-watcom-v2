@@ -255,7 +255,7 @@ char *scr_multi_funcs( char *in, char *pstart, char **result, int32_t valsize )
     /* Missing ')' is only a problem if the function was found */
 
     if( p_level > 0 ) {      // at least one missing ')'
-        xx_line_err_c( err_func_parm_end, pret - 1 );
+        xx_line_err_c( ERR_FUNC_PARM_END, pret - 1 );
     }
 
     // collect the mandatory parm(s)
@@ -285,7 +285,7 @@ char *scr_multi_funcs( char *in, char *pstart, char **result, int32_t valsize )
     m = k + (k < fninfo->parm_cnt);// mandatory parm count
 
     if( m < fninfo->parm_cnt ) {
-        xx_line_err_c( err_func_parm_miss, pret - 1 );
+        xx_line_err_c( ERR_FUNC_PARM_MISS, pret - 1 );
     }
 
     // collect the optional parm(s)

@@ -185,7 +185,7 @@ void scr_ix( void )
 
         /* Position adjusted to avoid buffer overflow */
 
-        xx_line_err_cc( err_parm_missing, cwcurr, scan_start - 1 );
+        xx_line_err_cc( ERR_PARM_MISSING, cwcurr, scan_start - 1 );
         return;
     }
 
@@ -217,14 +217,14 @@ void scr_ix( void )
 
                 /* Structures are ignored, issue warning */
 
-                xx_warn_c( wng_unsupp_cw_opt, "structure" );
+                xx_warn_c( WNG_UNSUPP_CW_OPT, "structure" );
 
                 if( (gn.result < 1) || (gn.result > 9) ) { // out of range
-                    xx_line_err_c( err_struct_range, g_tok_start );
+                    xx_line_err_c( ERR_STRUCT_RANGE, g_tok_start );
                 }
                 cc = getarg();                  // get next operand
                 if( cc == omit || cc == quotes0 ) { // no operands
-                    xx_line_err_cc( err_parm_missing, cwcurr, g_tok_start );
+                    xx_line_err_cc( ERR_PARM_MISSING, cwcurr, g_tok_start );
                 }
             }
         } else {
@@ -238,13 +238,13 @@ void scr_ix( void )
                 /* Only DUMP/PURGE allowed in this position */
 
                 if( cc == omit || cc == quotes0 ) { // no operands
-                    xx_line_err_cc( err_parm_missing, cwcurr, g_tok_start );
+                    xx_line_err_cc( ERR_PARM_MISSING, cwcurr, g_tok_start );
                 } else if( (arg_flen == 4) && stricmp( g_tok_start, "DUMP" ) == 0 ) {
-                    xx_warn_c( wng_unsupp_cw_opt, "DUMP" );
+                    xx_warn_c( WNG_UNSUPP_CW_OPT, "DUMP" );
                 } else if( (arg_flen == 5) && stricmp( g_tok_start, "PURGE" ) == 0 ) {
-                    xx_warn_c( wng_unsupp_cw_opt, "PURGE" );
+                    xx_warn_c( WNG_UNSUPP_CW_OPT, "PURGE" );
                 } else {
-                    xx_line_err_c( err_bad_dp_value, g_tok_start );
+                    xx_line_err_c( ERR_BAD_DP_VALUE, g_tok_start );
                 }
                 cc = getarg();                  // get next operand
             }
@@ -295,7 +295,7 @@ void scr_ix( void )
     }
 
     if( (cc == pos) || (cc == quotes) ) {       // extra data on line
-        xx_line_err_c( err_extra_data, g_tok_start );
+        xx_line_err_c( ERR_EXTRA_DATA, g_tok_start );
     }
 
     ProcFlags.post_ix = true;           // records use of control word only if indexing is on

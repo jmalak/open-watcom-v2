@@ -435,7 +435,7 @@ static bool check_subscript( sub_index sub )
             char    linestr[MAX_L_AS_STR];
 
             sinttodec( sub, linestr );
-            xx_line_err_c( err_sub_out_of_range, linestr );
+            xx_line_err_c( ERR_SUB_OUT_OF_RANGE, linestr );
         }
     }
     return( true );
@@ -661,7 +661,7 @@ int add_symvar_addr( sym_dict_hdl dict, char * name, char * val,
             }
             break;
         default:
-            xx_line_err_c( err_logic_err, __FILE__ );
+            xx_line_err_c( ERR_LOGIC_ERR, __FILE__ );
         }
     }
     return( rc );

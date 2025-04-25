@@ -484,7 +484,7 @@ void gml_fig( const gmltag * entry )
                 } else if( strcmp( "top", attr_val.specval ) == 0 ) {
                     place = top_place;
                 } else {
-                    xx_line_err_c( err_inv_att_val, attr_val.name );
+                    xx_line_err_c( ERR_INV_ATT_VAL, attr_val.name );
                 }
                 if( ProcFlags.tag_end_found ) {
                     break;
@@ -506,7 +506,7 @@ void gml_fig( const gmltag * entry )
                     }
                     width = conv_hor_unit( &cur_su, g_curr_font );
                     if( width == 0 ) {
-                        xx_line_err_c( err_inv_width_fig_1, attr_val.name );
+                        xx_line_err_c( ERR_INV_WIDTH_FIG_1, attr_val.name );
                     }
                     width_seen = true;
                 }
@@ -608,7 +608,7 @@ void gml_fig( const gmltag * entry )
 
     if( width_seen ) {                  // width entered will be used
         if( width > max_width ) {
-            xx_line_err_c( err_inv_width_fig_3, attr_val.name );
+            xx_line_err_c( ERR_INV_WIDTH_FIG_3, attr_val.name );
         }
     } else {
         width = max_width;              // t_page.last_pane->col_width will be used
@@ -643,18 +643,18 @@ void gml_fig( const gmltag * entry )
     if( width > t_page.last_pane->col_width ) {
         if( (t_page.last_pane->col_count > 1)
           && (place != top_place) ) {
-            xx_line_err_c( err_inv_width_fig_2, attr_val.name );
+            xx_line_err_c( ERR_INV_WIDTH_FIG_2, attr_val.name );
         } else if( t_page.last_pane->col_count == 1 ) {
-            xx_line_err_c( err_inv_width_fig_3, attr_val.name );
+            xx_line_err_c( ERR_INV_WIDTH_FIG_3, attr_val.name );
         }
     }
 
     if( (t_page.cur_left >= t_page.max_width)
       || (t_page.cur_left >= g_page_right_org) ) {
         if( frame.type == none_frame ) {
-            xx_line_err_c( err_inv_margins_1, attr_val.name );
+            xx_line_err_c( ERR_INV_MARGINS_1, attr_val.name );
         } else {
-            xx_line_err_c( err_inv_margins_2, attr_val.name );
+            xx_line_err_c( ERR_INV_MARGINS_2, attr_val.name );
         }
     }
 
@@ -667,9 +667,9 @@ void gml_fig( const gmltag * entry )
 
     if( t_page.max_width < right_inset ) {
         if( frame.type == none_frame ) {
-            xx_line_err_c( err_inv_margins_1, attr_val.name );
+            xx_line_err_c( ERR_INV_MARGINS_1, attr_val.name );
         } else {
-            xx_line_err_c( err_inv_margins_2, attr_val.name );
+            xx_line_err_c( ERR_INV_MARGINS_2, attr_val.name );
         }
     } else {
         t_page.max_width -= right_inset;
@@ -772,7 +772,7 @@ void gml_efig( const gmltag * entry )
 
     if( *figrefid != '\0'
       && !figcap_done ) {  // FIG id requires FIGCAP
-        xx_err( err_fig_id_cap );
+        xx_err( ERR_FIG_ID_CAP );
     }
 
     /* Place the accumulated lines on the proper page */

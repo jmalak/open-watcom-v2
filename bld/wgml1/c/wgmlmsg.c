@@ -53,7 +53,7 @@ bool init_msgs( void )
         }
     }
     CloseResFile( &Instance );
-    xx_simple_err( err_res_not_found );
+    printf( "Resources not found\n" );
     return( false );
 #else
     Instance = GetModuleHandle( NULL );

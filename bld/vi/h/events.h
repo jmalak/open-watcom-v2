@@ -363,7 +363,7 @@ vi_pick( VI_KEY( SHIFT_F10 ),    InvalidKey,          InvalidKey,           Inva
 vi_pick( VI_KEY( ALT_F1 ),       InvalidKey,          InvalidKey,           Change,                  VIBITS(EVENT_OP,       1, 0, 0, 0, 0, 1), VIBITS(EVENT_MISC,     0, 0, 0, 0, 0, 0) )
 vi_pick( VI_KEY( ALT_F2 ),       InvalidKey,          InvalidKey,           Delete,                  VIBITS(EVENT_OP,       1, 0, 0, 0, 0, 1), VIBITS(EVENT_MISC,     0, 0, 0, 0, 0, 0) )
 vi_pick( VI_KEY( ALT_F3 ),       InvalidKey,          InvalidKey,           Yank,                    VIBITS(EVENT_OP,       1, 0, 0, 0, 0, 0), VIBITS(EVENT_MISC,     0, 0, 0, 0, 0, 0) )
-vi_pick( VI_KEY( ALT_F4 ),       InvalidKey,          InvalidKey,           ChangeCase,              VIBITS(EVENT_OP,       1, 0, 0, 0, 0, 1), VIBITS(EVENT_MISC,     0, 0, 0, 0, 0, 0) )
+vi_pick( VI_KEY( ALT_F4 ),       ChangeCase,          InvalidKey,           ChangeCase,              VIBITS(EVENT_OP,       1, 0, 0, 0, 0, 1), VIBITS(EVENT_MISC,     0, 0, 0, 0, 0, 0) )
 vi_pick( VI_KEY( ALT_F5 ),       InvalidKey,          InvalidKey,           Filter,                  VIBITS(EVENT_OP,       1, 0, 0, 0, 0, 1), VIBITS(EVENT_MISC,     0, 0, 0, 0, 0, 0) )
 vi_pick( VI_KEY( ALT_F6 ),       InvalidKey,          InvalidKey,           StartSuck,               VIBITS(EVENT_OP,       1, 0, 0, 0, 0, 1), VIBITS(EVENT_MISC,     0, 0, 0, 0, 0, 0) )
 vi_pick( VI_KEY( ALT_F7 ),       InvalidKey,          InvalidKey,           StartShove,              VIBITS(EVENT_OP,       1, 0, 0, 0, 0, 1), VIBITS(EVENT_MISC,     0, 0, 0, 0, 0, 0) )

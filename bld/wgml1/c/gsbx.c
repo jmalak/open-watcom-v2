@@ -2502,7 +2502,7 @@ void scr_bx( void )
     }
 
     if( *p != '\0' && (cur_op == bx_can) ) {    // CAN and DEL cannot have column lists
-        xx_line_err_c( err_too_many_ops, pa );
+        xx_line_err_c( ERR_TOO_MANY_OPS, pa );
     }
 
     /* Now for the box column list, if any */
@@ -2520,7 +2520,7 @@ void scr_bx( void )
             cur_temp->cols[cur_temp->current].v_ind = bx_v_down;
             if( cur_temp->current == 0 ) {
                 if( *p == '/' ) {
-                    xx_line_err_c( err_spc_not_valid, p );
+                    xx_line_err_c( ERR_SPC_NOT_VALID, p );
                 }
             } else if( *p == '/' ) {
                 cur_temp->next = alloc_box_col_set();
@@ -2533,7 +2533,7 @@ void scr_bx( void )
             if( !cw_val_to_su( &p, &boxcolwork ) ) {
                 boxcol_cur = conv_hor_unit( &boxcolwork, g_curr_font );
                 if( boxcol_cur <= 0 ) {
-                    xx_line_err_c( err_inv_box_pos, pa );
+                    xx_line_err_c( ERR_INV_BOX_POS, pa );
                 } else if( first_col ) {   // no prior column
                     first_col = false;
                 } else {
@@ -2541,7 +2541,7 @@ void scr_bx( void )
                         boxcol_cur += boxcol_prev;
                     }
                     if( boxcol_cur <= boxcol_prev ) {
-                        xx_line_err_c( err_box_bad_order, pa );
+                        xx_line_err_c( ERR_BOX_BAD_ORDER, pa );
                     }
                 }
                 if( boxcol_cur > 0 ) {        // treat as "+0" to minimize mischief
@@ -2549,7 +2549,7 @@ void scr_bx( void )
                 }
                 cur_temp->cols[cur_temp->current].col = boxcol_prev;
             } else {
-                xx_line_err_c( err_spc_not_valid, pa );
+                xx_line_err_c( ERR_SPC_NOT_VALID, pa );
             }
             SkipSpaces( p );
             cur_temp->current++;

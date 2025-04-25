@@ -46,7 +46,7 @@ gtentry *add_tag( tag_dict_hdl *dict, const char *tagname, const char *macname, 
 
     ge = find_tag( *dict, tagname );
     if( ge != NULL ) {
-        xx_source_err_c( err_tag_exist, tagname );
+        xx_source_err_c( ERR_TAG_EXIST, tagname );
     }
     ge = add_tag_dict( dict );
     strcpy( ge->tagname, tagname );

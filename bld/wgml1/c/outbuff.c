@@ -161,7 +161,7 @@ static void ob_insert_ps_text( const char *in_block, size_t count, font_number f
                             /* If it is too large to fit at all, report overflow. */
 
                             if( cur_trans->count > buffout.length ) {
-                                xx_simple_err_c( err_out_rec_size, dev_name );
+                                xx_simple_err_c( ERR_OUT_REC_SIZE, dev_name );
                             }
 
                             /* If it won't fit in the current buffer, finalize
@@ -394,7 +394,7 @@ static void ob_insert_ps_cmd_ot( const char *in_block, size_t count, font_number
                             /* If it is too large to fit at all, report overflow. */
 
                             if( cur_trans->count > buffout.length ) {
-                                xx_simple_err_c( err_out_rec_size, dev_name );
+                                xx_simple_err_c( ERR_OUT_REC_SIZE, dev_name );
                             }
 
                             /* If it won't fit, flush the buffer. */
@@ -483,7 +483,7 @@ static void ob_insert_ps_cmd_ot( const char *in_block, size_t count, font_number
                             /* If it is too large to fit at all, report overflow. */
 
                             if( cur_trans->count > buffout.length ) {
-                                xx_simple_err_c( err_out_rec_size, dev_name );
+                                xx_simple_err_c( ERR_OUT_REC_SIZE, dev_name );
                             }
 
                             if( (k + cur_trans->count) >= translated.length ) {
@@ -675,7 +675,7 @@ static void ob_insert_def_ot( const char *in_block, size_t count, font_number fo
                         /* If it is too large to fit at all, report overflow. */
 
                         if( cur_trans->count > buffout.length ) {
-                            xx_simple_err_c( err_out_rec_size, dev_name );
+                            xx_simple_err_c( ERR_OUT_REC_SIZE, dev_name );
                         }
 
                         /* If it won't fit in the current buffer, flush the buffer. */
@@ -1037,7 +1037,7 @@ void ob_binclude( binclude_element * in_el )
      * flush all data from output buffer
      */
     if( fwrite( buffout.text, 1, buffout.current, out_file_fp ) < buffout.current ) {
-        xx_simple_err_c( err_write_out_file, out_file );
+        xx_simple_err_c( ERR_WRITE_OUT_FILE, out_file );
     }
     buffout.current = 0;
 
@@ -1057,9 +1057,9 @@ void ob_binclude( binclude_element * in_el )
         }
     }
     if( rc == 1 ) {
-        xx_simple_err_cc( err_in_file, "BINCLUDE", in_el->filename );
+        xx_simple_err_cc( ERR_IN_FILE, "BINCLUDE", in_el->filename );
     } else if( rc == 2 ) {
-        xx_simple_err_c( err_write_out_file, out_file );
+        xx_simple_err_c( ERR_WRITE_OUT_FILE, out_file );
     }
 //    fclose( in_el->fp );
 }
@@ -1100,12 +1100,12 @@ void ob_oc( const char *text )
 void ob_flush( void )
 {
     if( fwrite( buffout.text, 1, buffout.current, out_file_fp ) < buffout.current ) {
-        xx_simple_err_c( err_write_out_file, out_file );
+        xx_simple_err_c( ERR_WRITE_OUT_FILE, out_file );
         return;
     }
     buffout.current = 0;
     if( fputs( TEXT_NL, out_file_fp ) == EOF ) {
-        xx_simple_err_c( err_write_out_file, out_file );
+        xx_simple_err_c( ERR_WRITE_OUT_FILE, out_file );
     }
 }
 
@@ -1162,9 +1162,9 @@ void ob_graphic( graphic_element * in_el )
         }
     }
     if( rc == 1 ) {
-        xx_simple_err_cc( err_in_file, "GRAPHIC", in_el->filename );
+        xx_simple_err_cc( ERR_IN_FILE, "GRAPHIC", in_el->filename );
     } else if( rc == 2 ) {
-        xx_simple_err_c( err_write_out_file, out_file );
+        xx_simple_err_c( ERR_WRITE_OUT_FILE, out_file );
     }
 //    fclose( in_el->fp );
 #undef GR_BEGIN_DOC
@@ -1311,7 +1311,7 @@ void ob_setup( void )
 
     if( ( my_tolower( out_file_attr[0] ) != 't' )
       || ( out_file_attr[1] != ':' ) ) {
-        xx_simple_err_c( err_rec_att_not_sup, out_file_attr );
+        xx_simple_err_c( ERR_REC_ATT_NOT_SUP, out_file_attr );
     }
 
     /* The rest of the record type must be numeric. */
@@ -1320,7 +1320,7 @@ void ob_setup( void )
 
     for( j = 2; j < strlen( out_file_attr ); j++ ) {
         if( !my_isdigit( out_file_attr[j] ) ) {
-            xx_simple_err_c( err_rec_att_bad_fmt, out_file_attr );
+            xx_simple_err_c( ERR_REC_ATT_BAD_FMT, out_file_attr );
         }
         count++;
     }
@@ -1337,7 +1337,7 @@ void ob_setup( void )
     buffout.current = 0;
     buffout.length = strtoul( &out_file_attr[2], NULL, 0 );
     if( errno == ERANGE ) {
-        xx_simple_err_i( err_out_rec_size2, UINT_MAX );
+        xx_simple_err_i( ERR_OUT_REC_SIZE2, UINT_MAX );
     }
     /*
      * add space for null terminator, but don't count it in length
@@ -1355,7 +1355,7 @@ void ob_setup( void )
 
     out_file_fp = fopen( out_file, "wb" );
     if( out_file_fp == NULL ) {
-        xx_simple_err_c( err_open_out_file, out_file );
+        xx_simple_err_c( ERR_OPEN_OUT_FILE, out_file );
     }
 
     /* Initialize tr_table. */
@@ -1390,7 +1390,7 @@ void ob_teardown( void )
 
     if( out_file_fp != NULL ) {
         if( fclose( out_file_fp ) ) {
-            xx_simple_err_c( err_close_out_file, out_file );
+            xx_simple_err_c( ERR_CLOSE_OUT_FILE, out_file );
         }
         out_file_fp = NULL;
     }

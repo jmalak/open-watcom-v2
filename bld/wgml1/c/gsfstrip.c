@@ -74,7 +74,7 @@ condcode    scr_strip( parm parms[MAX_FUN_PARMS], int parmcount, char **result, 
                 break;
             default:
                 if( !ProcFlags.suppress_msg ) {
-                    xx_source_err_c( err_func_parm, "2 (type)" );
+                    xx_source_err_c( ERR_FUNC_PARM, "2 (type)" );
                 }
                 return( neg );
                 break;

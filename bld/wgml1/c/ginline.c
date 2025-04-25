@@ -437,7 +437,7 @@ void gml_sf( const gmltag * entry )
         }
     }
     if( !font_seen ) {          // font is a required attribute
-        xx_line_err_c( err_att_missing, attr_val.name );
+        xx_line_err_c( ERR_ATT_MISSING, attr_val.name );
     }
 
     scan_start = scan_stop;

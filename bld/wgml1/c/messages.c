@@ -319,11 +319,11 @@ void file_mac_info( void )
         if( input_cbs->fmflags & II_tag_mac ) {
             uinttodec( input_cbs->s.m->lineno, linestr );
             uinttodec( input_cbs->s.m->mac->lineno, linemac );
-            g_info( err_inf_mac_def, linestr, input_cbs->s.m->mac->macname,
+            g_info( ERR_INF_MAC_DEF, linestr, input_cbs->s.m->mac->macname,
                     linemac, input_cbs->s.m->mac->mac_file_name);
         } else {
             uinttodec( input_cbs->s.f->lineno, linestr );
-            g_info( inf_file_line, linestr, input_cbs->s.f->filename );
+            g_info( INF_FILE_LINE, linestr, input_cbs->s.f->filename );
         }
     }
     show_include_stack();
@@ -346,33 +346,33 @@ void file_mac_info_nest( void )
         if( input_cbs->fmflags & II_tag_mac ) {
             uinttodec( input_cbs->s.m->lineno, linestr );
             uinttodec( input_cbs->s.m->mac->lineno, linemac );
-            g_info( err_inf_mac_def, linestr, input_cbs->s.m->mac->macname,
+            g_info( ERR_INF_MAC_DEF, linestr, input_cbs->s.m->mac->macname,
                     linemac, input_cbs->s.m->mac->mac_file_name);
         } else {
             uinttodec( input_cbs->s.f->lineno, linestr );
-            g_info( inf_file_line, linestr, input_cbs->s.f->filename );
+            g_info( INF_FILE_LINE, linestr, input_cbs->s.f->filename );
         }
 
-        g_info( err_tag_starting, str_tags[nest_cb->c_tag] );
+        g_info( ERR_TAG_STARTING, str_tags[nest_cb->c_tag] );
 
         nw = nest_cb->p_stack;
         while( nw != NULL ) {
             switch( nw->nest_flag & II_input ) {
             case II_file:
                 uinttodec( nw->lineno, linestr );
-                g_info( inf_file_line, linestr, nw->s.filename );
+                g_info( INF_FILE_LINE, linestr, nw->s.filename );
                 break;
             case II_tag:
-                g_info( err_inf_tag, nw->s.mt.tag_m->tagname );
+                g_info( ERR_INF_TAG, nw->s.mt.tag_m->tagname );
                 /* fall through */
             case II_macro:
                 uinttodec( nw->lineno, linestr );
                 uinttodec( nw->s.mt.m->lineno, linemac );
-                g_info( err_inf_mac_def, linestr, nw->s.mt.m->macname,
+                g_info( ERR_INF_MAC_DEF, linestr, nw->s.mt.m->macname,
                         linemac, nw->s.mt.m->mac_file_name);
                 break;
             default:
-                g_info( err_inc_unknown );
+                g_info( ERR_INC_UNKNOWN );
                 break;
             }
             nw = nw->prev;
@@ -393,7 +393,7 @@ void att_req_err( const char * tagname, const char * attname )  // for process_t
     const char    *   pa;
 
     err_count++;
-    g_err( err_att_req, tagname, attname );
+    g_err( ERR_ATT_REQ, tagname, attname );
     p = attname;
     SkipSpaces( p );    // start of first attribute name
     while( *p != '\0' ) {
@@ -404,10 +404,10 @@ void att_req_err( const char * tagname, const char * attname )  // for process_t
         len = p - pa;
         memcpy_s( one_name, len, pa, len );
         one_name[len] = '\0';
-        g_info( info_att_req_name, one_name );
+        g_info( INFO_ATT_REQ_NAME, one_name );
         SkipSpaces( p );    // start of next attribute name
     }
-    g_info( info_att_req );
+    g_info( INFO_ATT_REQ );
     file_mac_info();
     err_exit();
 }
@@ -418,23 +418,23 @@ void ban_reg_err( msg_ids num, banner_lay_tag * in_ban1, banner_lay_tag * in_ban
 // for finish_banners()
 {
     if( in_ban1 != NULL ) {
-        g_err( inf_ban_id, doc_sections[in_ban1->docsect].name, bf_places[in_ban1->place].name );
+        g_err( INF_BAN_ID, doc_sections[in_ban1->docsect].name, bf_places[in_ban1->place].name );
         if( in_ban2 != NULL ) {
-            g_info( inf_ban_id, doc_sections[in_ban2->docsect].name, bf_places[in_ban2->place].name );
+            g_info( INF_BAN_ID, doc_sections[in_ban2->docsect].name, bf_places[in_ban2->place].name );
         }
     } else if( in_ban2 != NULL ) {
-        g_err( inf_ban_id, doc_sections[in_ban2->docsect].name, bf_places[in_ban2->place].name );
+        g_err( INF_BAN_ID, doc_sections[in_ban2->docsect].name, bf_places[in_ban2->place].name );
     } else {
         internal_err( __FILE__, __LINE__ );
     }
 
     if( in_reg1 != NULL ) {
-        g_info( inf_reg_id, in_reg1->hoffset.su_txt, in_reg1->voffset.su_txt,
+        g_info( INF_REG_ID, in_reg1->hoffset.su_txt, in_reg1->voffset.su_txt,
                 in_reg1->indent.su_txt );
     }
 
     if( in_reg2 != NULL ) {
-        g_info( inf_reg_id, in_reg2->hoffset.su_txt, in_reg2->voffset.su_txt,
+        g_info( INF_REG_ID, in_reg2->hoffset.su_txt, in_reg2->voffset.su_txt,
                 in_reg2->indent.su_txt );
     }
 
@@ -446,27 +446,27 @@ void ban_reg_err( msg_ids num, banner_lay_tag * in_ban1, banner_lay_tag * in_ban
 void internal_err( const char * file, int line )    // utility function
 {
     err_count++;
-    g_err( err_intern, file, line );
+    g_err( ERR_INTERN, file, line );
     err_exit();
 }
 
 void list_level_err( const char * xl_tag, uint8_t xl_level )    // for finish_lists()
 {
     err_count++;
-    g_err( err_level_skipped, xl_tag );
-    g_info( info_level_skipped, xl_level );
+    g_err( ERR_LEVEL_SKIPPED, xl_tag );
+    g_info( INFO_LEVEL_SKIPPED, xl_level );
     file_mac_info();
     err_exit();
 }
 
 void main_file_err( const char * filename )
 {
-    g_err( err_input_file_not_found, filename );
+    g_err( ERR_INPUT_FILE_NOT_FOUND, filename );
     err_count++;
     if( inc_level > 0 ) {
         show_include_stack();
     } else {                // master file included from cmdline
-        g_info( inf_included, "cmdline" );
+        g_info( INF_INCLUDED, "cmdline" );
     }
     err_exit();
 }
@@ -478,10 +478,10 @@ void numb_err( void )                                           // for scr_pu()
     err_count++;
     if( input_cbs->fmflags & II_tag_mac ) {
         uinttodec( input_cbs->s.m->lineno, linestr );
-        g_err( err_pu_num, linestr, "macro", input_cbs->s.m->mac->macname );
+        g_err( ERR_PU_NUM, linestr, "macro", input_cbs->s.m->mac->macname );
     } else {
         uinttodec( input_cbs->s.f->lineno, linestr );
-        g_err( err_pu_num, linestr, "file", input_cbs->s.f->filename );
+        g_err( ERR_PU_NUM, linestr, "file", input_cbs->s.f->filename );
     }
     show_include_stack();
     err_exit();
@@ -492,14 +492,14 @@ void symbol_name_length_err( const char * symname )
     char    linestr[MAX_L_AS_STR];
 
     err_count++;
-    g_err( err_sym_long, symname );
-    g_info( inf_sym_10 );
+    g_err( ERR_SYM_LONG, symname );
+    g_info( INF_SYM_10 );
     if( input_cbs->fmflags & II_tag_mac ) {
         uinttodec( input_cbs->s.m->lineno, linestr );
-        g_info( inf_mac_line, linestr, input_cbs->s.m->mac->macname );
+        g_info( INF_MAC_LINE, linestr, input_cbs->s.m->mac->macname );
     } else {
         uinttodec( input_cbs->s.f->lineno, linestr );
-        g_info( inf_file_line, linestr, input_cbs->s.f->filename );
+        g_info( INF_FILE_LINE, linestr, input_cbs->s.f->filename );
     }
     file_mac_info();
     err_exit();
@@ -508,9 +508,9 @@ void val_parse_err( const char * pa, bool tag ) // for internal_to_su()
 {
     err_count++;
     if( tag ) {
-        g_err( err_inv_att_val );
+        g_err( ERR_INV_ATT_VAL );
     } else {
-        g_err( err_inv_cw_op_val );
+        g_err( ERR_INV_CW_OP_VAL );
     }
     file_mac_info();
     show_line_error( pa );
@@ -524,8 +524,8 @@ void val_parse_err( const char * pa, bool tag ) // for internal_to_su()
 
 void dup_id_err( const char * id, const char * context )
 {
-    g_err( wng_id_xxx, id );
-    g_info( inf_id_duplicate, context );
+    g_err( WNG_ID_XXX, id );
+    g_info( INF_ID_DUPLICATE, context );
     file_mac_info();
     err_count++;
     err_exit();
@@ -537,7 +537,7 @@ void dup_id_err( const char * id, const char * context )
 
 static void g_err_tag_common( const char *tagname, bool nest )
 {
-    g_err( err_tag_expected, tagname );
+    g_err( ERR_TAG_EXPECTED, tagname );
     if( nest ) {
         file_mac_info_nest();
     } else {
@@ -567,10 +567,10 @@ void g_err_if_int( void )
 
     if( input_cbs->fmflags & II_tag_mac ) {
         uinttodec( input_cbs->s.m->lineno, linestr );
-        g_err( err_if_intern, linestr, "macro", input_cbs->s.m->mac->macname );
+        g_err( ERR_IF_INTERN, linestr, "macro", input_cbs->s.m->mac->macname );
     } else {
         uinttodec( input_cbs->s.f->lineno, linestr );
-        g_err( err_if_intern, linestr, "file", input_cbs->s.f->filename );
+        g_err( ERR_IF_INTERN, linestr, "file", input_cbs->s.f->filename );
     }
     if( inc_level > 1 ) {
         show_include_stack();
@@ -587,10 +587,10 @@ void g_err_tag_mac( gtentry *ge )
 
     if( input_cbs->fmflags & II_tag_mac ) {
         uinttodec( input_cbs->s.m->lineno, linestr );
-        g_err( err_tag_macro, ge->macname, ge->tagname, linestr, "macro", input_cbs->s.m->mac->macname );
+        g_err( ERR_TAG_MACRO, ge->macname, ge->tagname, linestr, "macro", input_cbs->s.m->mac->macname );
     } else {
         uinttodec( input_cbs->s.f->lineno, linestr );
-        g_err( err_tag_macro, ge->macname, ge->tagname, linestr, "file", input_cbs->s.f->filename );
+        g_err( ERR_TAG_MACRO, ge->macname, ge->tagname, linestr, "file", input_cbs->s.f->filename );
     }
     if( inc_level > 0 ) {
         show_include_stack();
@@ -604,7 +604,7 @@ void g_err_tag_no( const char *tagname )
     char    tagn[TAG_NAME_LENGTH + 1];
 
     sprintf( tagn, "%c%s", GML_char, tagname );
-    g_err( err_tag_not_expected, tagn );
+    g_err( ERR_TAG_NOT_EXPECTED, tagn );
     file_mac_info_nest();
     err_count++;
     err_exit();
@@ -615,7 +615,7 @@ void g_err_tag_prec( const char *tagname )
     char    tagn[TAG_NAME_LENGTH + 1];
 
     sprintf( tagn, "%c%s", GML_char, tagname );
-    g_err( err_tag_preceding, tagn );
+    g_err( ERR_TAG_PRECEDING, tagn );
     file_mac_info();
     err_count++;
     err_exit();
@@ -645,8 +645,8 @@ void g_wng_hlevel( hdsrc hd_found, hdsrc hd_expected )
 {
     wng_count++;
     if( WgmlFlags.warning ) {
-        g_warn( wng_heading_level );
-        g_info( inf_heading_level, hd_nums[hd_found].tag, hd_nums[hd_expected].tag );
+        g_warn( WNG_HEADING_LEVEL );
+        g_info( INF_HEADING_LEVEL, hd_nums[hd_found].tag, hd_nums[hd_expected].tag );
         file_mac_info();
     }
     return;
@@ -655,9 +655,9 @@ void g_wng_hlevel( hdsrc hd_found, hdsrc hd_expected )
 void keep_nest_err( const char * arg1, const char * arg2 )
 {
     err_count++;
-    g_err( err_cwd_tag_x_in_y, arg1, arg2 );
-    g_info( inf_nested_blocks1 );
-    g_info( inf_nested_blocks2 );
+    g_err( ERR_CWD_TAG_X_IN_Y, arg1, arg2 );
+    g_info( INF_NESTED_BLOCKS1 );
+    g_info( INF_NESTED_BLOCKS2 );
     file_mac_info();
     err_exit();
 }
@@ -775,10 +775,10 @@ void xx_source_err( const msg_ids errid )
     g_err( errid );
     if( input_cbs->fmflags & II_tag_mac ) {
         uinttodec( input_cbs->s.m->lineno, linestr );
-        g_info( inf_mac_line, linestr, input_cbs->s.m->mac->macname );
+        g_info( INF_MAC_LINE, linestr, input_cbs->s.m->mac->macname );
     } else {
         uinttodec( input_cbs->s.f->lineno, linestr );
-        g_info( inf_file_line, linestr, input_cbs->s.f->filename );
+        g_info( INF_FILE_LINE, linestr, input_cbs->s.f->filename );
     }
     show_include_stack();
     err_count++;
@@ -792,10 +792,10 @@ void xx_source_err_c( const msg_ids errid, const char * arg )
     g_err( errid, arg );
     if( input_cbs->fmflags & II_tag_mac ) {
         uinttodec( input_cbs->s.m->lineno, linestr );
-        g_info( inf_mac_line, linestr, input_cbs->s.m->mac->macname );
+        g_info( INF_MAC_LINE, linestr, input_cbs->s.m->mac->macname );
     } else {
         uinttodec( input_cbs->s.f->lineno, linestr );
-        g_info( inf_file_line, linestr, input_cbs->s.f->filename );
+        g_info( INF_FILE_LINE, linestr, input_cbs->s.f->filename );
     }
     show_include_stack();
     err_count++;

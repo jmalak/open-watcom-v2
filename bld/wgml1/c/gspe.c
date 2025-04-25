@@ -76,7 +76,7 @@
 static  void    init_pe_line( int pe_count )
 {
     if( input_cbs->pe_cb.count > 0) {   // count >0 is switch for .pe active
-        xx_err( err_nested_pe );
+        xx_err( ERR_NESTED_PE );
         reset_pe_cb();                  // terminate active .pe
     } else {
         if( get_line( true ) ) {
@@ -137,30 +137,30 @@ void    scr_pe( void )
                 if( strnicmp( "ON", pa, 2 ) == 0 ) {
                     init_pe_line( INT_MAX );    // partial implementation (no nesting)
                 } else {
-                    xx_line_err_cc( err_xx_opt, cwcurr, pa );
+                    xx_line_err_cc( ERR_XX_OPT, cwcurr, pa );
                 }
                 break;
             case 3 :
                 if( strnicmp( "OFF", pa, 3 ) == 0 ) {
                     reset_pe_cb();              // partial implementation (no nesting)
                 } else {
-                    xx_line_err_cc( err_xx_opt, cwcurr, pa );
+                    xx_line_err_cc( ERR_XX_OPT, cwcurr, pa );
                 }
                 break;
             case 6 :
                 if( strnicmp( "DELETE", pa, 6 ) == 0 ) {
                     reset_pe_cb();              // partial implementation (no nesting)
                 } else {
-                    xx_line_err_cc( err_xx_opt, cwcurr, pa );
+                    xx_line_err_cc( ERR_XX_OPT, cwcurr, pa );
                 }
                 break;
             default:
-                xx_line_err_cc( err_xx_opt, cwcurr, pa );
+                xx_line_err_cc( ERR_XX_OPT, cwcurr, pa );
             }
         } else {
             scan_start = gn.arg.s;
             if( gn.result < 0 ) {
-                xx_line_err_c( err_val_neg, pa );
+                xx_line_err_c( ERR_VAL_NEG, pa );
             } else {
                 init_pe_line( gn.result );
             }

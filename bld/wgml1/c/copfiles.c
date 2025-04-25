@@ -263,14 +263,14 @@ static cop_device * get_cop_device( char const * in_name )
 
         /* File error, including premature eof. */
 
-        xx_simple_err_c( err_dev_data_file, try_file_name );
+        xx_simple_err_c( ERR_DEV_DATA_FILE, try_file_name );
         break;
 
     case file_type_wrong_ver:
 
         /* File was created by a different version of gendev. */
 
-        xx_simple_err( err_wrong_gendev );
+        xx_simple_err( ERR_WRONG_GENDEV );
         break;
 
     case file_type_dev:
@@ -285,7 +285,7 @@ static cop_device * get_cop_device( char const * in_name )
 
         /* Wrong type of file: something is wrong with the device library. */
 
-        xx_simple_err_c( err_dev_lib_data, try_file_name );
+        xx_simple_err_c( ERR_DEV_LIB_DATA, try_file_name );
         break;
 
         break;
@@ -335,14 +335,14 @@ static cop_driver * get_cop_driver( char const * in_name )
 
         /* File error, including premature eof. */
 
-        xx_simple_err_c( err_dev_lib_file, try_file_name );
+        xx_simple_err_c( ERR_DEV_LIB_FILE, try_file_name );
         break;
 
     case file_type_wrong_ver:
 
         /* File was created by a different version of gendev. */
 
-        xx_simple_err( err_wrong_gendev );
+        xx_simple_err( ERR_WRONG_GENDEV );
         break;
 
     case file_type_drv:
@@ -354,7 +354,7 @@ static cop_driver * get_cop_driver( char const * in_name )
     case file_type_fon:
     case file_type_unknown:
     case file_type_dir:
-        xx_simple_err_c( err_dev_lib_data, try_file_name );
+        xx_simple_err_c( ERR_DEV_LIB_DATA, try_file_name );
         break;
 
     default:
@@ -402,14 +402,14 @@ static cop_font * get_cop_font( char const * in_name )
 
         /* File error, including premature eof. */
 
-        xx_simple_err_c( err_dev_lib_file, try_file_name );
+        xx_simple_err_c( ERR_DEV_LIB_FILE, try_file_name );
         break;
 
     case file_type_wrong_ver:
 
         /* File was created by a different version of gendev. */
 
-        xx_simple_err( err_wrong_gendev );
+        xx_simple_err( ERR_WRONG_GENDEV );
         break;
 
     case file_type_fon:
@@ -421,7 +421,7 @@ static cop_font * get_cop_font( char const * in_name )
     case file_type_drv:
     case file_type_unknown:
     case file_type_dir:
-        xx_simple_err_c( err_dev_data_file, try_file_name );
+        xx_simple_err_c( ERR_DEV_DATA_FILE, try_file_name );
         break;
 
     default:
@@ -465,7 +465,7 @@ static cop_font * find_cop_font( char const * in_name )
     if( retval == NULL ) {
         retval = get_cop_font( in_name );
         if( retval == NULL ) {
-            xx_simple_err_c( err_dev_not_found, in_name );
+            xx_simple_err_c( ERR_DEV_NOT_FOUND, in_name );
         } else {
             retval->next_font = bin_fonts;
             bin_fonts = retval;
@@ -504,7 +504,7 @@ static device_font * find_dev_font( char const * in_name )
     }
 
     if( retval == NULL ) {
-        xx_simple_err_cc( err_block_not_found, "DEVICEFONT", in_name );
+        xx_simple_err_cc( ERR_BLOCK_NOT_FOUND, "DEVICEFONT", in_name );
     }
 
     return( retval );
@@ -539,7 +539,7 @@ static fontstyle_block * find_style( char const * in_name )
     }
 
     if( retval == NULL ) {
-        xx_simple_err_cc( err_block_not_found, "FONTSTYLE", in_name );
+        xx_simple_err_cc( ERR_BLOCK_NOT_FOUND, "FONTSTYLE", in_name );
     }
 
     return( retval );
@@ -574,7 +574,7 @@ static fontswitch_block * find_switch( char const * in_name )
     }
 
     if( retval == NULL ) {
-        xx_simple_err_cc( err_block_not_found, "FONTSWITCH", in_name );
+        xx_simple_err_cc( ERR_BLOCK_NOT_FOUND, "FONTSWITCH", in_name );
     }
 
     return( retval );
@@ -692,14 +692,14 @@ void cop_setup( void )
 
     /* Emit the expected message. */
 
-    g_info_lm( inf_proc_dev );
+    g_info_lm( INF_PROC_DEV );
 
     /* Process the device. */
 
     bin_device = get_cop_device( dev_name );
 
     if( bin_device == NULL ) {
-        xx_simple_err_cc( err_block_not_found, "DEVICE", dev_name );
+        xx_simple_err_cc( ERR_BLOCK_NOT_FOUND, "DEVICE", dev_name );
     }
 
     /* The value of horizontal_base_units cannot be "0". */
@@ -722,7 +722,7 @@ void cop_setup( void )
     bin_driver = get_cop_driver( bin_device->driver_name );
 
     if( bin_driver == NULL ) {
-        xx_simple_err_cc( err_block_not_found, "DRIVER", bin_device->driver_name );
+        xx_simple_err_cc( ERR_BLOCK_NOT_FOUND, "DRIVER", bin_device->driver_name );
     }
 
     /* Attribute x_positive in PAGEADDRESS cannot be "no", since horizontal
@@ -883,7 +883,7 @@ void cop_setup( void )
 
         if( (wgml_fonts[i].bin_font->scale_basis != 0) &&
                 (wgml_fonts[i].font_height == 0)) {
-            xx_simple_err_i( err_font_scaled, i );
+            xx_simple_err_i( ERR_FONT_SCALED, i );
         }
 
         compute_metrics( &wgml_fonts[i] );
@@ -923,7 +923,7 @@ void cop_setup( void )
 
         if( (wgml_fonts[i].bin_font->scale_basis != 0) &&
                 (wgml_fonts[i].font_height == 0)) {
-            xx_simple_err_i( err_font_opt_scaled, i );
+            xx_simple_err_i( ERR_FONT_OPT_SCALED, i );
         }
 
         compute_metrics( &wgml_fonts[i] );
@@ -963,7 +963,7 @@ void cop_setup( void )
 
             if( (wgml_fonts[i].bin_font->scale_basis != 0) &&
                     (wgml_fonts[i].font_height == 0)) {
-                xx_simple_err_i( err_font_scaled, i );
+                xx_simple_err_i( ERR_FONT_SCALED, i );
             }
 
             break;
@@ -1013,7 +1013,7 @@ void cop_setup( void )
 
             if( (wgml_fonts[i].bin_font->scale_basis != 0) &&
                     (wgml_fonts[i].font_height == 0)) {
-                xx_simple_err_i( err_font_scaled, i );
+                xx_simple_err_i( ERR_FONT_SCALED, i );
             }
         }
         if( bin_device->box.font_name != NULL ) {
@@ -1297,7 +1297,7 @@ void cop_ti_table( const char *p )
                         ProcFlags.in_trans = false;
                         in_esc = ' ';
                     } else if( len > 1 ) {  // hex digits are not allowed here
-                        xx_line_err_ci( err_char_only, pa, len );
+                        xx_line_err_ci( ERR_CHAR_ONLY, pa, len );
                     } else {
                         ProcFlags.in_trans = true;
                         in_esc = *pa;
@@ -1308,14 +1308,14 @@ void cop_ti_table( const char *p )
                     SkipNonSpaces( p );     // set char start
                     len = p - pa;
                     if( len > 0 ) {         // additional text not allowed
-                        xx_line_err_ci( err_char_only, pa, len );
+                        xx_line_err_ci( ERR_CHAR_ONLY, pa, len );
                     }
                     return;     // done if was ".ti set"
                 } else {
-                    xx_line_err_cci( err_xx_opt, cwcurr, pa, len );
+                    xx_line_err_cci( ERR_XX_OPT, cwcurr, pa, len );
                 }
             } else {
-                xx_line_err_cci( err_xx_opt, cwcurr, pa, len );
+                xx_line_err_cci( ERR_XX_OPT, cwcurr, pa, len );
             }
         }
 

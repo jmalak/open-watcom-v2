@@ -188,17 +188,17 @@ condcode    lay_attr_and_value( lay_att_val *lay_attr )
             return( omit );
         }
         if( lay_attr->att_len < 4 ) {       // attribute name length
-            xx_line_err_c( err_att_name_inv, pa );
+            xx_line_err_c( ERR_ATT_NAME_INV, pa );
         }
         SkipSpacesTabs( p );                // over WS to =
         if( *p == '=' ) {
             p++;
             SkipSpacesTabs( p );            // over WS to attribute value
             if( *p == '.' ) {               // final "." is end of tag
-                xx_line_err_c( err_att_val_missing, p );
+                xx_line_err_c( ERR_ATT_VAL_MISSING, p );
             }
         } else {                            // equals sign is required
-            xx_line_err_c( err_eq_missing, p );
+            xx_line_err_c( ERR_EQ_MISSING, p );
         }
 
         pa = p;
@@ -228,7 +228,7 @@ condcode    lay_attr_and_value( lay_att_val *lay_attr )
         if( lay_attr->val.len > 0 ) {       // attribute value length
             rc = pos;
         } else {
-            xx_line_err_c( err_att_val_missing, pa );
+            xx_line_err_c( ERR_ATT_VAL_MISSING, pa );
         }
 
         if( lay_attr->val.quoted != ' ' ) { // delimiters must be omitted for these externs
@@ -345,7 +345,7 @@ bool    i_case( char * p, lay_attr_i lay_attr, case_t * tm )
     } else if( strcmp( "upper", lay_attr->val.specval ) == 0 ) {
         *tm = case_upper;
     } else {
-        xx_line_err_c( err_inv_att_val, p );
+        xx_line_err_c( ERR_INV_ATT_VAL, p );
     }
     return( cvterr );
 }
@@ -480,7 +480,7 @@ bool    i_default_frame( char * p, lay_attr_i lay_attr, def_frame * tm )
         }
     }
     if( cvterr ) {
-        xx_line_err_c( err_inv_att_val, p );
+        xx_line_err_c( ERR_INV_ATT_VAL, p );
     }
     return( cvterr );
 
@@ -529,7 +529,7 @@ bool    i_docsect( char * p, lay_attr_i lay_attr, ban_docsect * tm )
         }
     }
     if( *tm == no_ban ) {
-        xx_line_err_c( err_inv_att_val, p );
+        xx_line_err_c( ERR_INV_ATT_VAL, p );
     }
     return( cvterr );
 }
@@ -564,7 +564,7 @@ bool    i_frame( char * p, lay_attr_i lay_attr, bool * tm )
     } else if( strcmp( "rule", lay_attr->val.specval ) == 0 ) {
         *tm = true;
     } else {
-        xx_line_err_c( err_inv_att_val, p );
+        xx_line_err_c( ERR_INV_ATT_VAL, p );
     }
     return( cvterr );
 
@@ -609,7 +609,7 @@ bool    i_int8( char * p, lay_attr_i lay_attr, int8_t * tm )
 
     wk = strtol( p, NULL, 10 );
     if( abs( wk ) > 255 ) {
-        xx_line_err_c( err_i_8, p );
+        xx_line_err_c( ERR_I_8, p );
     }
     *tm = wk;
     return( false );
@@ -631,7 +631,7 @@ bool    i_uint8( char * p, lay_attr_i lay_attr, uint8_t * tm )
 
     wk = strtol( p, NULL, 10 );
     if( abs( wk ) > 255 ) {
-        xx_line_err_c( err_i_8, p );
+        xx_line_err_c( ERR_I_8, p );
     }
     *tm = wk;
     return( false );
@@ -687,7 +687,7 @@ bool    i_number_form( char * p, lay_attr_i lay_attr, num_form * tm )
     } else if( strcmp( "new", lay_attr->val.specval ) == 0 ) {
         *tm = num_new;
     } else {
-        xx_line_err_c( err_inv_att_val, p );
+        xx_line_err_c( ERR_INV_ATT_VAL, p );
     }
     return( cvterr );
 }
@@ -781,7 +781,7 @@ bool    i_number_style( char * p, lay_attr_i lay_attr, num_style * tm )
     if( !cvterr ) {
         *tm = wk;
     } else {
-        xx_line_err_c( err_inv_att_val, p );
+        xx_line_err_c( ERR_INV_ATT_VAL, p );
     }
     return( cvterr );
 }
@@ -850,7 +850,7 @@ bool    i_page_eject( char * p, lay_attr_i lay_attr, page_ej * tm )
     } else if( strcmp( "even", lay_attr->val.specval ) == 0 ) {
         *tm = ej_even;
     } else {
-        xx_line_err_c( err_inv_att_val, p );
+        xx_line_err_c( ERR_INV_ATT_VAL, p );
     }
     return( cvterr );
 }
@@ -891,7 +891,7 @@ bool    i_page_position( char * p, lay_attr_i lay_attr, page_pos * tm )
       || strcmp( "center", lay_attr->val.specval ) == 0 ) {
         *tm = pos_center;
     } else {
-        xx_line_err_c( err_inv_att_val, p );
+        xx_line_err_c( ERR_INV_ATT_VAL, p );
     }
     return( cvterr );
 }
@@ -931,7 +931,7 @@ bool    i_place( char * p, lay_attr_i lay_attr, bf_place * tm )
         }
     }
     if( *tm == no_place ) {
-        xx_line_err_c( err_inv_att_val, p );
+        xx_line_err_c( ERR_INV_ATT_VAL, p );
     }
     return( cvterr );
 }
@@ -979,7 +979,7 @@ bool    i_pouring( char * p, lay_attr_i lay_attr, reg_pour * tm )
     } else if( strcmp( "head6", lay_attr->val.specval ) == 0 ) {
         *tm = head6_pour;
     } else {
-        xx_line_err_c( err_inv_att_val, p );
+        xx_line_err_c( ERR_INV_ATT_VAL, p );
     }
     return( cvterr );
 }
@@ -1048,7 +1048,7 @@ bool    i_spacing( char *p, lay_attr_i lay_attr, text_space *tm )
 
     wk = strtol( p, NULL, 10 );
     if( wk < 0 || wk > 255 ) {
-        xx_line_err_c( err_ui_8, p );
+        xx_line_err_c( ERR_UI_8, p );
     }
     *tm = wk;
     return( false );
@@ -1078,13 +1078,13 @@ bool    i_threshold( char * p, lay_attr_i lay_attr, uint16_t * tm )
     for( pa = p; isdigit( *pa ); pa++ )
         {;/* empty */}
     if( *pa ) {
-        xx_line_err_c( err_num_too_large, p );
+        xx_line_err_c( ERR_NUM_TOO_LARGE, p );
     }
     if( wk == 0 ) {
-        xx_line_err_c( err_num_zero, p );
+        xx_line_err_c( ERR_NUM_ZERO, p );
     }
     if( wk > 0x7fff ) {
-        xx_line_err_c( err_num_s16_neg, p );
+        xx_line_err_c( ERR_NUM_S16_NEG, p );
     }
     *tm = wk;
     return( false );
@@ -1114,7 +1114,7 @@ bool    i_xx_string( char * p, lay_attr_i lay_attr, xx_str * tm )
         strncpy( tm, lay_attr->val.name, lay_attr->val.len );
         tm[lay_attr->val.len] = '\0';
     } else {
-        xx_line_err_c( err_xx_string, p );
+        xx_line_err_c( ERR_XX_STRING, p );
     }
     return( cvterr );
 }
@@ -1152,7 +1152,7 @@ bool    i_yes_no( char * p, lay_attr_i lay_attr, bool * tm )
     } else if( strcmp( "yes", lay_attr->val.specval ) == 0 ) {
         *tm = true;
     } else {
-        xx_line_err_c( err_inv_att_val, p );
+        xx_line_err_c( ERR_INV_ATT_VAL, p );
     }
     return( cvterr );
 }

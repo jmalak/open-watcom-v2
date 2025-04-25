@@ -20,6 +20,7 @@ menuitem "&Open" "Edit file '%1'" edit %1
 menuitem ""
 menuitem "Cu&t" "Delete selected text to the clipboard" @ d 0
 menuitem "&Copy" "Copy selected text to the clipboard" @ y 0
+menuitem "T&oggle case" "Change case for selected text" execute \<ALT_F4>r
 menuitem ""
 menuitem "&Find" "Search current window for '%1'" execute \<CTRL_F2>%1\n
 menuitem "F&grep" "Search disk files for '%1'" fgrep "%1"

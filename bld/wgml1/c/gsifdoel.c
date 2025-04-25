@@ -414,10 +414,10 @@ void    scr_if( void )
 
         if( (cct1 == no)
           || (cct2 == no) ) {
-            xx_source_err( err_if_term );
+            xx_source_err( ERR_IF_TERM );
         }
         if( ccrelop != pos ) {
-            xx_source_err( err_if_relop );
+            xx_source_err( ERR_IF_RELOP );
         }
 
         // terms and operator ok now compare
@@ -435,7 +435,7 @@ void    scr_if( void )
                 cb->if_flags[cb->if_level].iftrue = false;  // cond not yet true
                 cb->if_flags[cb->if_level].iffalse = false; // cond not yet false
             } else {
-                xx_source_err( err_if_nesting );
+                xx_source_err( ERR_IF_NESTING );
             }
             totalcondition = ifcond;
         } else {
@@ -577,7 +577,7 @@ void    scr_th( void )
       || cb->if_flags[cb->if_level].ifthen
       || cb->if_flags[cb->if_level].ifelse
       || cb->if_flags[cb->if_level].ifdo ) {
-        xx_source_err( err_if_then );
+        xx_source_err( ERR_IF_THEN );
     }
     cb->if_flags[cb->if_level].iflast = false;
     cb->if_flags[cb->if_level].ifthen = true;
@@ -634,7 +634,7 @@ void    scr_el( void )
       || cb->if_flags[cb->if_level].ifthen
       || cb->if_flags[cb->if_level].ifelse
       || cb->if_flags[cb->if_level].ifdo ) {
-        xx_source_err( err_if_else );
+        xx_source_err( ERR_IF_ELSE );
     }
     cb->if_flags[cb->if_level].ifelse = true;
     ProcFlags.keep_ifstate = true;
@@ -686,7 +686,7 @@ void    scr_do( void )
             || cb->if_flags[cb->if_level].ifelse)
             || cb->if_flags[cb->if_level].ifdo ) {
 
-            xx_source_err( err_if_do );
+            xx_source_err( ERR_IF_DO );
         }
         cb->if_flags[cb->if_level].ifdo = true;
         cb->if_flags[cb->if_level].ifindo = true;
@@ -718,7 +718,7 @@ void    scr_do( void )
                   || cb->if_flags[cb->if_level].ifelse))
                   || !(cb->if_flags[cb->if_level].iftrue
                   || cb->if_flags[cb->if_level].iffalse) ) {
-                    xx_source_err( err_if_do_end );
+                    xx_source_err( ERR_IF_DO_END );
                 }
 
                 cb->if_flags[cb->if_level].ifindo = false;
@@ -734,7 +734,7 @@ void    scr_do( void )
             }
 #endif
         } else {
-            xx_source_err( err_if_do_fun );
+            xx_source_err( ERR_IF_DO_FUN );
         }
     }
     if( (input_cbs->fmflags & II_research)

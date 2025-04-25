@@ -419,7 +419,7 @@ void    scr_dm( void )
     cc = getarg();
 
     if( cc == omit ) {
-        xx_source_err( err_missing_name );
+        xx_source_err( ERR_MISSING_NAME );
     }
 
     /*
@@ -431,7 +431,7 @@ void    scr_dm( void )
     cc = getarg();
     if( cc == omit ) {                  // nothing found
         // SC--048 A control word parameter is missing
-        xx_source_err_c( err_mac_def_fun, macname1 );
+        xx_source_err_c( ERR_MAC_DEF_FUN, macname1 );
     }
 
     p    = scan_start;
@@ -451,7 +451,7 @@ void    scr_dm( void )
             g_tok_start--;    // for single line .dm /yy/xxy/.. back to sepchar
         }
         if( ProcFlags.in_macro_define ) {
-            xx_source_err_c( err_mac_def_nest, g_tok_start );
+            xx_source_err_c( ERR_MAC_DEF_NEST, g_tok_start );
         }
         ProcFlags.in_macro_define = 1;
 
@@ -486,12 +486,12 @@ void    scr_dm( void )
     if( compend
       && (ProcFlags.in_macro_define == 0 ) ) {
         // SC--003: A macro is not being defined
-        xx_source_err_c( err_mac_def_end, macname1 );
+        xx_source_err_c( ERR_MAC_DEF_END, macname1 );
     }
     if( compbegin
       && (ProcFlags.in_macro_define) ) {
         // SC--002 The control word parameter '%s' is invalid
-        xx_source_err_c( err_mac_def_nest, macname1 );
+        xx_source_err_c( ERR_MAC_DEF_NEST, macname1 );
     }
     *p  = save;
     if( compbegin ) {                   // start new macro define
@@ -536,18 +536,18 @@ void    scr_dm( void )
                         if( strcmp( macname1, macname2 ) ) {
                             // macro name from begin different from end
                             // SC--005 Macro '%s' is not being defined
-                            xx_source_err_c( err_mac_def_not, g_tok_start );
+                            xx_source_err_c( ERR_MAC_DEF_NOT, g_tok_start );
                         }
 
                         cc = getarg();
                         if( cc == omit ) {
                             // SC--048 A control word parameter is missing
-                            xx_source_err( err_mac_def_miss );
+                            xx_source_err( ERR_MAC_DEF_MISS );
                         }
                         get_macro_name( g_tok_start, macname2 );
                         if( strcmp( macname2, "end") ) {
                             // SC--002 The control word parameter '%s' is invalid
-                            xx_source_err_c( err_mac_def_inv, g_tok_start );
+                            xx_source_err_c( ERR_MAC_DEF_INV, g_tok_start );
                         }
                         compend = 1;
                         break;              // out of read loop
@@ -569,7 +569,7 @@ void    scr_dm( void )
         if( cb->s.f->flags & (FF_eof | FF_err) ) {
             // error SC--004 End of file reached
             // macro '%s' is still being defined
-            xx_source_err_c( err_mac_def_eof, macname1 );
+            xx_source_err_c( ERR_MAC_DEF_EOF, macname1 );
         }
     }                                   // end compbegin
 
@@ -596,10 +596,10 @@ void    scr_dm( void )
         if( (cb->fmflags & II_research)
           && WgmlFlags.firstpass ) {
             uinttodec( macro_line_count, linestr );
-            g_info( inf_mac_defined, macname1, linestr );
+            g_info( INF_MAC_DEFINED, macname1, linestr );
         }
     } else {
-        xx_source_err_c( err_mac_def_logic, macname1 );
+        xx_source_err_c( ERR_MAC_DEF_LOGIC, macname1 );
     }
     scan_restart = scan_stop;
     return;
@@ -731,7 +731,7 @@ void    scr_em( void )
     cc = getarg();
 
     if( cc == omit ) {
-        xx_source_err( err_mac_name_inv );
+        xx_source_err( ERR_MAC_NAME_INV );
     }
 
     if( *g_tok_start == SCR_char ) {      // possible macro name
@@ -747,7 +747,7 @@ void    scr_em( void )
     }
 
     if( me == NULL ) {                  // macro not specified or not defined
-        xx_source_err( err_mac_name_inv );
+        xx_source_err( ERR_MAC_NAME_INV );
     } else {
         split_input( buff2, g_tok_start, input_cbs->fmflags );    // stack line operand
     }

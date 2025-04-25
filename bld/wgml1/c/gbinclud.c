@@ -37,7 +37,7 @@ void    gml_binclude( const gmltag * entry )
     memset( &AttrFlags, 0, sizeof( AttrFlags ) );   // clear all attribute flags
     if( (ProcFlags.doc_sect < doc_sect_gdoc) ) {
         if( (ProcFlags.doc_sect_nxt < doc_sect_gdoc) ) {
-            xx_err_c( err_tag_before_gdoc, entry->tagname );
+            xx_err_c( ERR_TAG_BEFORE_GDOC, entry->tagname );
         }
     }
 
@@ -58,7 +58,7 @@ void    gml_binclude( const gmltag * entry )
             if( strcmp( "file", attname ) == 0 ) {
                 p = get_att_value( p, &attr_val );
                 if( AttrFlags.file ) {
-                    xx_line_err_ci( err_att_dup, pa, attr_val.name - pa);
+                    xx_line_err_ci( ERR_ATT_DUP, pa, attr_val.name - pa);
                 }
                 AttrFlags.file = true;
                 if( attr_val.name == NULL ) {
@@ -72,7 +72,7 @@ void    gml_binclude( const gmltag * entry )
                 if( (rt_buff[0] != '\0') ) {
                     has_rec_type = true;
                     if( rt_buff[0] != 't' ) {
-                        xx_warn( wng_rec_type_binclude );
+                        xx_warn( WNG_REC_TYPE_BINCLUDE );
                     }
                 }
                 if( ProcFlags.tag_end_found ) {
@@ -81,7 +81,7 @@ void    gml_binclude( const gmltag * entry )
             } else if( strcmp( "depth", attname ) == 0 ) {
                 p = get_att_value( p, &attr_val );
                 if( AttrFlags.depth ) {
-                    xx_line_err_ci( err_att_dup, pa, attr_val.name - pa);
+                    xx_line_err_ci( ERR_ATT_DUP, pa, attr_val.name - pa);
                 }
                 AttrFlags.depth = true;
                 if( attr_val.name == NULL ) {
@@ -92,7 +92,7 @@ void    gml_binclude( const gmltag * entry )
                 }
                 depth = conv_vert_unit( &depth_su, g_text_spacing, g_curr_font );
                 if( depth > t_page.max_depth ) {
-                    xx_line_err_c( err_inv_depth_binclude, attr_val.name );
+                    xx_line_err_c( ERR_INV_DEPTH_BINCLUDE, attr_val.name );
                 }
                 if( ProcFlags.tag_end_found ) {
                     break;
@@ -100,7 +100,7 @@ void    gml_binclude( const gmltag * entry )
             } else if( strcmp( "reposition", attname ) == 0 ) {
                 p = get_att_value( p, &attr_val );
                 if( AttrFlags.reposition ) {
-                    xx_line_err_ci( err_att_dup, pa, attr_val.name - pa);
+                    xx_line_err_ci( ERR_ATT_DUP, pa, attr_val.name - pa);
                 }
                 AttrFlags.reposition = true;
                 if( attr_val.name == NULL ) {
@@ -111,7 +111,7 @@ void    gml_binclude( const gmltag * entry )
                 } else if( strcmp( "end", attr_val.specval ) == 0 ) {
                     reposition = false; // device at proper position after insertion
                 } else {
-                    xx_line_err_c( err_inv_att_val, attr_val.name );
+                    xx_line_err_c( ERR_INV_ATT_VAL, attr_val.name );
                 }
                 if( ProcFlags.tag_end_found ) {
                     break;
@@ -126,7 +126,7 @@ void    gml_binclude( const gmltag * entry )
 
     // detect missing required attributes
     if( !AttrFlags.depth || !AttrFlags.file || !AttrFlags.reposition ) {
-        xx_err( err_att_missing );
+        xx_err( ERR_ATT_MISSING );
     }
 
     // only set up the doc_element if the file exists
@@ -150,17 +150,17 @@ void    gml_binclude( const gmltag * entry )
         cur_el->element.binc.filename = mem_strdup( try_file_name );
 
         if( WgmlFlags.inclist ) {
-            g_info_lm( inf_curr_file, cur_el->element.binc.filename );
+            g_info_lm( INF_CURR_FILE, cur_el->element.binc.filename );
             while( cb->fmflags & II_macro ) {                 // find prior file
                  cb = cb->prev;
             }
-            g_info_lm( inf_curr_file, cb->s.f->filename );
+            g_info_lm( INF_CURR_FILE, cb->s.f->filename );
         }
 
         insert_col_main( cur_el );
 
     } else {
-        xx_err_c( err_file_not_found, file );
+        xx_err_c( ERR_FILE_NOT_FOUND, file );
     }
 
     scan_start = scan_stop;             // skip following text

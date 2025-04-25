@@ -191,7 +191,7 @@ char * scan_sym( char * p, symvar * sym, sub_index * subscript, char * * result,
                         sym->flags |= subscripted;
                     } else {
                         if( !scan_err && !ProcFlags.suppress_msg ) {
-                            xx_line_err_c( err_sub_invalid, p );
+                            xx_line_err_c( ERR_SUB_INVALID, p );
                         }
                         scan_err = true;
                     }
@@ -277,7 +277,7 @@ void    scr_se( void )
     }
     if( *p == '\0' ) {
         if( !ProcFlags.suppress_msg ) {
-            xx_line_err_c( err_eq_expected, p);
+            xx_line_err_c( ERR_EQ_EXPECTED, p);
         }
         scan_err = true;
     }
@@ -330,7 +330,7 @@ void    scr_se( void )
                 rc = add_symvar( working_dict, sym.name, valstart, subscript, sym.flags );
             } else {                                        // matches wgml 4.0
                 if( !ProcFlags.suppress_msg ) {
-                    xx_line_err_c( err_eq_expected, p);
+                    xx_line_err_c( ERR_EQ_EXPECTED, p);
                 }
                 scan_err = true;
             }
@@ -342,7 +342,7 @@ void    scr_se( void )
             }
         } else {
             if( !ProcFlags.suppress_msg ) {
-                xx_warn_cc( wng_miss_inv_value, sym.name, p );
+                xx_warn_cc( WNG_MISS_INV_VALUE, sym.name, p );
             }
             scan_err = true;
         }

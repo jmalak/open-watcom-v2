@@ -13,6 +13,6 @@
 
 #define MSG_LANG_SPACING    13000
 
-#define MSG_BASE            0
+#define MSG_RC_BASE         0
 
-#include "wgmlmsgs.gh"
+#include "wgmlmsgs.grh"

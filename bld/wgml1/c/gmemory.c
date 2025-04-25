@@ -119,7 +119,7 @@ void *mem_alloc( size_t size )
     p = malloc( size );
 #endif
     if( p == NULL ) {
-        xx_simple_err( err_nomem_avail );
+        xx_simple_err( ERR_NOMEM_AVAIL );
     }
     return( p );
 }
@@ -138,7 +138,7 @@ void *mem_realloc( void * oldp, size_t size )
     p = realloc( oldp, size );
 #endif
     if( p == NULL ) {
-        xx_simple_err( err_nomem_avail );
+        xx_simple_err( ERR_NOMEM_AVAIL );
     }
     return( p );
 }
@@ -159,7 +159,7 @@ char *mem_strdup( const char *str )
     p = malloc( strlen( str ) + 1 );
 #endif
     if( p == NULL ) {
-        xx_simple_err( err_nomem_avail );
+        xx_simple_err( ERR_NOMEM_AVAIL );
     }
     return( strcpy( p, str ) );
 }

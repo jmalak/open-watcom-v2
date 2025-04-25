@@ -2103,7 +2103,7 @@ void    lay_convert( const gmltag * entry )
         }
     }
     if( *token_buf == '\0' ) {           // file name missing
-        xx_err( err_att_missing );
+        xx_err( ERR_ATT_MISSING );
     } else {
         put_layout( token_buf, &layout_work );
     }

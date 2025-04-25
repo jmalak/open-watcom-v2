@@ -255,12 +255,12 @@ static char * get_params( const char * scw_name ) {
             SkipSpaces( p );                        // find next argument, if any
             if( *p != '\0' ) {
                 if( cur_cmd == fbk_begin ) {        // begin does not allow another operand
-                    xx_line_warn_cc( wng_too_many_ops, scw_name, p );
+                    xx_line_warn_cc( WNG_TOO_MANY_OPS, scw_name, p );
                 } else {                            // both <n> and <0|w> are treated as space
                     pa = p;                         // values and ignored by wgml 4.0
                     if( !cw_val_to_su( &p, &fbk_su ) ) {
                         if( fbk_su.su_relative ) {
-                            xx_line_err_c( err_spc_not_valid, pa );
+                            xx_line_err_c( ERR_SPC_NOT_VALID, pa );
                         }
                     }
                 }
@@ -356,7 +356,7 @@ void scr_fb( void )
             restore_state( true );
             ProcFlags.force_pc = true;
         } else {
-            xx_line_err_c( err_no_fb_begin, p );
+            xx_line_err_c( ERR_NO_FB_BEGIN, p );
         }
         break;
     case fbk_dump :
@@ -367,7 +367,7 @@ void scr_fb( void )
         fb_blocks_out();
         break;
     case fbk_none :
-        xx_line_err_cc( err_no_operand, "FB", p - 1 );
+        xx_line_err_cc( ERR_NO_OPERAND, "FB", p - 1 );
         break;
     default:
         internal_err( __FILE__, __LINE__ );
@@ -464,7 +464,7 @@ void scr_fk( void )
             fk_blocks_out();
             restore_state( false );
         } else {
-            xx_line_err_c( err_no_fk_begin, p );
+            xx_line_err_c( ERR_NO_FK_BEGIN, p );
         }
         break;
     case fbk_dump :
@@ -472,7 +472,7 @@ void scr_fk( void )
         fk_blocks_out();
         break;
     case fbk_none :
-        xx_line_err_cc( err_no_operand, "FK", p - 1 );
+        xx_line_err_cc( ERR_NO_OPERAND, "FK", p - 1 );
         break;
     default:
         internal_err( __FILE__, __LINE__ );

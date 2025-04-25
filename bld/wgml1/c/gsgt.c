@@ -354,14 +354,14 @@ void    scr_gt( void )
 
     if( cc == omit ) {
         // no operands
-        xx_err_c( err_missing_name, "" );
+        xx_err_c( ERR_MISSING_NAME, "" );
     }
 
     p = g_tok_start;
 
     if( *p == '*' ) {                   // single * as tagname
         if( arg_flen > 1 ) {
-            xx_err( err_tag_name_inv );
+            xx_err( ERR_TAG_NAME_INV );
             return;
         }
         savetag = '*';         // remember for possible global delete / print
@@ -377,7 +377,7 @@ void    scr_gt( void )
         g_attname[0] = '*';
 
         if( get_tag_name( p, g_tagname ) ) {
-            xx_err( err_tag_name_inv );
+            xx_err( ERR_TAG_NAME_INV );
             return;
         }
     }
@@ -390,7 +390,7 @@ void    scr_gt( void )
     cc = getarg();
 
     if( cc == omit ) {
-        xx_err( err_tag_func_inv );
+        xx_err( ERR_TAG_FUNC_INV );
         return;
     }
 
@@ -432,7 +432,7 @@ void    scr_gt( void )
         break;
     }
     if( function == 0 ) {               // no valid function specified
-        xx_err( err_tag_func_inv );
+        xx_err( ERR_TAG_FUNC_INV );
         return;
     }
 
@@ -444,7 +444,7 @@ void    scr_gt( void )
 
     if( function == f_add || function == f_change ) {   // need macro name
         if( cc == omit ) {
-            xx_err( err_tag_mac_name );
+            xx_err( ERR_TAG_MAC_NAME );
             return;
         }
 
@@ -455,7 +455,7 @@ void    scr_gt( void )
         if( function == f_add ) {       // collect tag options
             cc = scan_tag_options( &tag_flags );
             if( cc != omit ) {          // not all processed error
-               xx_err( err_tag_opt_inv );
+               xx_err( ERR_TAG_OPT_INV );
             }
             g_tag_entry = add_tag( &tag_dict, g_tagname, macname, tag_flags );  // add to dictionary
             // if g_tag_entry is now NULL, error (+ msg) was output in add_tag
@@ -473,7 +473,7 @@ void    scr_gt( void )
     /***********************************************************************/
 
         if( cc != omit ) {
-            xx_err( err_tag_toomany );  // nothing more allowed
+            xx_err( ERR_TAG_TOOMANY );  // nothing more allowed
         }
 
         switch( function ) {

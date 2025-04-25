@@ -33,7 +33,7 @@ void    scr_dummy( void )
 
     scan_restart = scan_stop;
 
-    xx_warn_c( wng_unsupp_cw, cwcurr );
+    xx_warn_c( WNG_UNSUPP_CW, cwcurr );
 }
 
 
@@ -46,7 +46,7 @@ void    gml_dummy( const gmltag * entry )
 
     scan_start = scan_stop;
 
-    xx_warn_c( wng_unsupp_tag, entry->tagname );
+    xx_warn_c( WNG_UNSUPP_TAG, entry->tagname );
 }
 
 /***************************************************************************/
@@ -59,7 +59,7 @@ void    lay_dummy( const gmltag * entry )
     scan_start = scan_stop;
 
     if( WgmlFlags.firstpass ) {       // layout msg only in pass 1
-        xx_warn_c( wng_unsupp_lay, entry->tagname );
+        xx_warn_c( WNG_UNSUPP_LAY, entry->tagname );
     }
     eat_lay_sub_tag();                  // ignore any attribute / value
 }
