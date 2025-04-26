@@ -161,59 +161,51 @@ void set_overload( gtentry * in_gt )
 
 static void scan_gml( void )
 {
-    inputcb     *   cb;
-    char        *   p;
-    int             toklen;
+    inputcb         *cb;
+    char            *p;
     int             k;
-    char            csave;
     bool            processed;
-    gtentry     *   ge;                 // GML user tag entry
-    mac_entry   *   me;                 // script macro for processing GML tag
-    char            tok_upper[BUF_SIZE];
+    gtentry         *ge;                // GML user tag entry
+    mac_entry       *me;                // script macro for processing GML tag
+    int             taglen;
+    char            tagname[TAG_NAME_LENGTH + 1];
 
     cb = input_cbs;
 
-    p = scan_start + 1;
     g_tok_start = scan_start;
-    while( !IS_TAG_END( p ) && (*p != '\0') ) {   // search end of TAG
-        p++;
-    }
-    toklen = p - g_tok_start - 1;
+    p = get_tagname( scan_start + 1, tagname );
+    taglen = p - scan_start - 1;
 
     /* If the token is longer than the maximum allowed tag name length,
      * it cannot be a valid tag name. Get out now so we don't have to watch
      * for token name buffer overflows.
      */
-    if( toklen > TAG_NAME_LENGTH ) {
+    if( taglen > TAG_NAME_LENGTH || taglen == 0 ) {
         return;
     }
 
     scan_start = p;                      // store argument start address
-    csave = *p;
-    *p = '\0';
 
     if( WgmlFlags.firstpass
       && (cb->fmflags & II_research) ) {
-
-        if( IS_CMT_TAG( g_tok_start ) ) {   // quiet for :cmt.
-
+        if( strcmp( "CMT", tagname ) != 0 ) {   // quiet for :cmt.
             if( cb->fmflags & II_tag_mac ) {
                 printf_research( "L%d    %c%s tag found in macro %s(%d)\n\n",
-                                 inc_level, GML_char, g_tok_start + 1,
+                                 inc_level, GML_char, tagname,
                                  cb->s.m->mac->macname, cb->s.m->lineno );
             } else {
                 printf_research( "L%d    %c%s tag found in file %s(%d)\n\n",
-                                 inc_level, GML_char, g_tok_start + 1,
+                                 inc_level, GML_char, tagname,
                                  cb->s.f->filename, cb->s.f->lineno );
             }
         }
-        add_GML_tag_research( g_tok_start + 1 );
+        add_GML_tag_research( tagname );
     }
 
     if( ProcFlags.layout ) {
         ge = NULL;                      // no user tags within :LAYOUT
     } else {
-        ge = find_tag( tag_dict, g_tok_start + 1 );
+        ge = find_tag( tag_dict, tagname );
     }
     processed = false;
     me = NULL;
@@ -221,7 +213,6 @@ static void scan_gml( void )
         if( ProcFlags.need_text ) {
             xx_err( ERR_TEXT_NOT_TAG_CW );
         }
-        *p = csave;
         if( ge->tagflags & tag_off ) {  // inactive, treat as comment
             scan_start = scan_stop;
             return;
@@ -252,17 +243,10 @@ static void scan_gml( void )
     if( me != NULL ) {                  // usertag and coresponding macro ok
         processed = process_tag( ge, me );
     } else {
-        *p ='\0';
-        for( k = 0; k <= toklen; k++ ) {
-            tok_upper[k] = my_toupper( *(g_tok_start + 1 + k) );
-        }
-        tok_upper[k] = '\0';
-
         if( ProcFlags.layout ) {        // different tags within :LAYOUT
             for( k = 0; k < LAY_TAGMAX; ++k ) {
-                if( toklen == lay_tags[k].taglen ) {
-                    if( strcmp( lay_tags[k].tagname, tok_upper ) == 0 ) {
-                        *p = csave;
+                if( taglen == lay_tags[k].taglen ) {
+                    if( strcmp( lay_tags[k].tagname, tagname ) == 0 ) {
                         lay_ind = -1;   // process tag not attribute
 
                         if( rs_loc == 0 ) {
@@ -288,8 +272,8 @@ static void scan_gml( void )
             }
             if( !processed ) {          // check for gml only tag in :LAYOUT
                 for( k = 0; k < GML_TAGMAX; ++k ) {
-                    if( toklen == gml_tags[k].taglen ) {
-                        if( strcmp( gml_tags[k].tagname, tok_upper ) == 0 ) {
+                    if( taglen == gml_tags[k].taglen ) {
+                        if( strcmp( gml_tags[k].tagname, tagname ) == 0 ) {
                             xx_err_c( ERR_GML_IN_LAY, gml_tags[k].tagname );
                         }
                     }
@@ -297,15 +281,13 @@ static void scan_gml( void )
             }
         } else {                        // not within :LAYOUT
             for( k = 0; k < GML_TAGMAX; ++k ) {
-                if( toklen == gml_tags[k].taglen ) {
-                    if( strcmp( gml_tags[k].tagname, tok_upper ) == 0 ) {
+                if( taglen == gml_tags[k].taglen ) {
+                    if( strcmp( gml_tags[k].tagname, tagname ) == 0 ) {
                         if( WgmlFlags.firstpass
-                          && strcmp(tok_upper, "LAYOUT" ) == 0
+                          && strcmp( "LAYOUT", tagname ) == 0
                           && ProcFlags.fb_document_done  ) {
-
                             xx_err( ERR_LAY_TOO_LATE );
                         }
-                        *p = csave;
 
                         if( script_style.style != SCT_none ) {
                             scr_style_end();        // cancel BD, BI, US
@@ -324,7 +306,7 @@ static void scan_gml( void )
                         if( ((gml_tags[k].tagclass & ip_start_tag) == 0)
                           && ((gml_tags[k].tagclass & ip_end_tag) == 0)
                           && ((gml_tags[k].tagclass & index_tag) == 0)
-                          && strcmp( gml_tags[k].tagname, "SET") ) {
+                          && strcmp( "SET", tagname ) != 0 ) {
                             ProcFlags.force_pc = false;
                         }
 
@@ -373,7 +355,7 @@ static void scan_gml( void )
                                 // tag is not a list tag
                                 gml_tags[k].gmlproc( &gml_tags[k] );
                             } else {
-                                xx_line_err_c( ERR_NO_LIST, g_tok_start );
+                                xx_line_err_c( ERR_NO_LIST, tagname );
                             }
                         } else if( ProcFlags.need_li_lp ) {
                             if( (gml_tags[k].tagclass & li_lp_tag) != 0 ) {
@@ -395,7 +377,7 @@ static void scan_gml( void )
                             gml_tags[k].gmlproc( &gml_tags[k] );
                         } else {
                             start_doc_sect();   // if not already done
-                            g_err_tag_rsloc( rs_loc, g_tok_start );
+                            g_err_tag_rsloc( rs_loc, tagname );
                         }
                         processed = true;
                         SkipDot( scan_start );
@@ -405,17 +387,14 @@ static void scan_gml( void )
             }
             if( !processed ) {         // check for layout tag in normal text
                 for( k = 0; k < LAY_TAGMAX; ++k ) {
-                    if( toklen == lay_tags[k].taglen ) {
-                        if( strcmp( lay_tags[k].tagname, tok_upper ) == 0 ) {
+                    if( taglen == lay_tags[k].taglen ) {
+                        if( strcmp( lay_tags[k].tagname, tagname ) == 0 ) {
                             xx_err_c( ERR_LAY_IN_GML, lay_tags[k].tagname );
                        }
                     }
                 }
             }
         }
-    }
-    if( *p == '\0' ) {
-        *p = csave;
     }
     if( !processed ) {                  // treat as text
         scan_start = g_tok_start;

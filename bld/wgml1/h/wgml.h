@@ -69,13 +69,17 @@ extern  condcode    getarg( void );
 extern  condcode    getqst( void );
 extern  bool        is_quote_char( char c );
 extern  bool        is_function_char( char c );
-extern  bool        is_att_char( char c );
 extern  bool        is_id_char( char c );
 extern  bool        is_macro_char( char c );
 extern  bool        is_space_tab_char( char c );
 extern  bool        is_stop_char( char c );
 extern  bool        is_symbol_char( char c );
 extern  char        parse_char( const char *pa, size_t len );
+extern  bool        is_tag_char( char c );
+extern  bool        is_lay_att_char( char c );
+extern  bool        is_tag_att_char( char c );
+extern  char        *get_tagname( const char *p, char *tagname );
+extern  void        get_att_specval( att_val_type *attr_val );
 
 /* gbanner.c                            */
 extern  void        out_ban_bot( void );

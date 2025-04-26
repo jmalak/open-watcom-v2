@@ -135,6 +135,22 @@ void    eat_lay_sub_tag( void )
 /*  rc = omit if nothing found                                             */
 /***************************************************************************/
 
+static char *get_lay_attname( const char *p, lay_att_val *lay_attr )
+{
+    int     i;
+
+    lay_attr->att_name = (char *)p;
+    i = 0;
+    while( is_lay_att_char( *p ) ) {
+        if( i < LAY_ATT_NAME_LENGTH ) {
+            lay_attr->attname[i++] = my_tolower( *p );
+        }
+        p++;
+    }
+    lay_attr->attname[i] = '\0';
+    return( (char *)p );
+}
+
 condcode    lay_attr_and_value( lay_att_val *lay_attr )
 {
     char            *p;
@@ -148,102 +164,83 @@ condcode    lay_attr_and_value( lay_att_val *lay_attr )
 
     SkipSpacesTabs( p );                    // over WS to start of name
 
-    lay_attr->att_name = p;
-    lay_attr->att_len = 0;
-    lay_attr->val.name = NULL;
-    lay_attr->val.len = 0;
+    memset( lay_attr, 0, sizeof( *lay_attr ) );
     lay_attr->val.quoted = ' ';
-    lay_attr->val.specval[0] = '\0';
 
-    for(;;) {                               // loop until attribute/value pair or rescan line found
-        i = 0;
-        while( is_att_char( *p ) ) {
-            if( i < LAY_ATT_NAME_LENGTH ) {
-                lay_attr->attname[i++] = my_tolower( *p );
-            }
-            p++;
+    while( *(p = get_lay_attname( p, lay_attr )) == '\0' ) {                               // loop until attribute/value pair or rescan line found
+        if( input_cbs->fmflags & II_eof ) {
+            break;
         }
-        lay_attr->attname[i] = '\0';
-        if( *p == '\0' ) {                  // end of line: get new line
-            if( (input_cbs->fmflags & II_eof) == 0 ) {
-                if( get_line( true ) ) {    // next line for missing attribute
-                    process_line();
-                    scan_start = buff2;
-                    scan_stop  = buff2 + buff2_lg;
-                    if( (*scan_start == SCR_char)       // cw found: end-of-tag
-                      || (*scan_start == GML_char) ) {  // tag found: end-of-tag
-                        ProcFlags.reprocess_line = true;
-                        break;
-                    }
-                    p = scan_start;                 // new line is part of current tag
-                    SkipSpacesTabs( p );            // over WS to start of alleged attribute
-                    lay_attr->att_name = p;         // set for new line
-                    continue;
-                }
-            }
+        if( !get_line( true ) ) {    // next line for missing attribute
+            break;
         }
-        lay_attr->att_len = p - lay_attr->att_name;
-        if( *p == '.' ) {                   // end of tag
-            ProcFlags.tag_end_found = true;
-            return( omit );
+        process_line();
+        scan_start = buff2;
+        scan_stop  = buff2 + buff2_lg;
+        if( (*scan_start == SCR_char)       // cw found: end-of-tag
+          || (*scan_start == GML_char) ) {  // tag found: end-of-tag
+            ProcFlags.reprocess_line = true;
+            scan_start = p;
+            return( rc );
         }
-        if( lay_attr->att_len < 4 ) {       // attribute name length
-            xx_line_err_c( ERR_ATT_NAME_INV, pa );
-        }
-        SkipSpacesTabs( p );                // over WS to =
-        if( *p == '=' ) {
-            p++;
-            SkipSpacesTabs( p );            // over WS to attribute value
-            if( *p == '.' ) {               // final "." is end of tag
-                xx_line_err_c( ERR_ATT_VAL_MISSING, p );
-            }
-        } else {                            // equals sign is required
-            xx_line_err_c( ERR_EQ_MISSING, p );
-        }
-
-        pa = p;
-        lay_attr->val.name = p;             // delimiters must be included for error checking
-        if( is_quote_char( *p ) ) {
-            lay_attr->val.quoted = *p++;
-            while( *p != '\0' && *p != lay_attr->val.quoted ) {
-                p++;
-            }
-            if( *p != '\0' ) {
-                p++;                        // over terminating quote
-            }
-        } else {
-            while( *p != '\0' && *p != ' ' && *p != '.' ) {
-                p++;
-            }
-        }
-        lay_attr->val.len = p - lay_attr->val.name;
-
-        if( *p == '.' ) {                   // final "." is end of tag
-            ProcFlags.tag_end_found = true;
-            p++;
-        }
-        /*
-         * blank quoted value is valid, length check include quotes
-         */
-        if( lay_attr->val.len > 0 ) {       // attribute value length
-            rc = pos;
-        } else {
-            xx_line_err_c( ERR_ATT_VAL_MISSING, pa );
-        }
-
-        if( lay_attr->val.quoted != ' ' ) { // delimiters must be omitted for these externs
-            lay_attr->val.name++;
-            lay_attr->val.len -= 2;
-        }
-        for( i = 0; i < SPECVAL_LENGTH; i++ ) {
-            if( !is_id_char( lay_attr->val.name[i] ) )
-                break;
-            lay_attr->val.specval[i] = my_tolower( lay_attr->val.name[i] );
-        }
-        lay_attr->val.specval[i] = '\0';
-
-        break;                              // values found
+        p = scan_start;                 // new line is part of current tag
+        SkipSpacesTabs( p );            // over WS to start of alleged attribute
     }
+    lay_attr->att_len = p - lay_attr->att_name;
+    if( *p == '.' ) {                   // end of tag
+        ProcFlags.tag_end_found = true;
+        return( omit );
+    }
+    if( lay_attr->att_len < 4 ) {       // attribute name length
+        xx_line_err_c( ERR_ATT_NAME_INV, pa );
+    }
+    SkipSpacesTabs( p );                // over WS to =
+    if( *p == '=' ) {
+        p++;
+        SkipSpacesTabs( p );            // over WS to attribute value
+        if( *p == '.' ) {               // final "." is end of tag
+            xx_line_err_c( ERR_ATT_VAL_MISSING, p );
+        }
+    } else {                            // equals sign is required
+        xx_line_err_c( ERR_EQ_MISSING, p );
+    }
+
+    pa = p;
+    lay_attr->val.name = p;             // delimiters must be included for error checking
+    if( is_quote_char( *p ) ) {
+        lay_attr->val.quoted = *p++;
+        while( *p != '\0' && *p != lay_attr->val.quoted ) {
+            p++;
+        }
+        if( *p != '\0' ) {
+            p++;                        // over terminating quote
+        }
+    } else {
+        while( *p != '\0' && *p != ' ' && *p != '.' ) {
+            p++;
+        }
+    }
+    lay_attr->val.len = p - lay_attr->val.name;
+
+    if( *p == '.' ) {                   // final "." is end of tag
+        ProcFlags.tag_end_found = true;
+        p++;
+    }
+    /*
+     * blank quoted value is valid, length check include quotes
+     */
+    if( lay_attr->val.len > 0 ) {       // attribute value length
+        rc = pos;
+    } else {
+        xx_line_err_c( ERR_ATT_VAL_MISSING, pa );
+    }
+
+    if( lay_attr->val.quoted != ' ' ) { // delimiters must be omitted for these externs
+        lay_attr->val.name++;
+        lay_attr->val.len -= 2;
+    }
+    get_att_specval( &lay_attr->val );
+
     scan_start = p;
     return( rc );
 }

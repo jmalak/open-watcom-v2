@@ -147,8 +147,8 @@ void    lay_tochx( const gmltag * entry )
         err_count++;
     }
 
-    cc = lay_attr_and_value( &lay_attr );            // get att with value
-    while( cc == pos ) {
+    // get one att with value
+    while( (cc = lay_attr_and_value( &lay_attr )) == pos ) {
         cvterr = -1;
         for( k = 0, curr = tochx_att[k]; curr > 0; k++, curr = tochx_att[k] ) {
             if( strcmp( lay_att_names[curr], lay_attr.attname ) == 0 ) {
@@ -239,7 +239,6 @@ void    lay_tochx( const gmltag * entry )
         if( cvterr < 0 ) {
             xx_err( ERR_ATT_NAME_INV );
         }
-        cc = lay_attr_and_value( &lay_attr );            // get att with value
     }
     scan_start = scan_stop;
     return;

@@ -48,8 +48,8 @@ void    lay_titlep( const gmltag * entry )
     if( ProcFlags.lay_xxx != el_titlep ) {
         ProcFlags.lay_xxx = el_titlep;
     }
-    cc = lay_attr_and_value( &lay_attr );            // get att with value
-    while( cc == pos ) {
+    // get one att with value
+    while( (cc = lay_attr_and_value( &lay_attr )) == pos ) {
         cvterr = -1;
         for( k = 0, curr = titlep_att[k]; curr > 0; k++, curr = titlep_att[k] ) {
             if( strcmp( lay_att_names[curr], lay_attr.attname ) == 0 ) {
@@ -83,7 +83,6 @@ void    lay_titlep( const gmltag * entry )
         if( cvterr < 0 ) {
             xx_err( ERR_ATT_NAME_INV );
         }
-        cc = lay_attr_and_value( &lay_attr );            // get att with value
     }
     scan_start = scan_stop;
     return;

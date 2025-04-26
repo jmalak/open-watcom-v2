@@ -854,6 +854,21 @@ char *format_num( uint32_t n, char *r, size_t rsize, num_style ns )
 /*       unless, of course, it is                                          */
 /***************************************************************************/
 
+static char *get_tag_attname( const char *p, char *attname )
+{
+    int     i;
+
+    i = 0;
+    while( is_tag_att_char( *p ) ) {
+        if( i < TAG_ATT_NAME_LENGTH ) {
+            attname[i++] = my_tolower( *p );
+        }
+        p++;
+    }
+    attname[i] = '\0';
+    return( (char *)p );
+}
+
 char *get_att_name( char *p, char **orig, char *attname )
 {
     static char     buf[BUF_SIZE];
@@ -899,20 +914,23 @@ char *get_att_name( char *p, char **orig, char *attname )
             break;      // potential next attribute found
         }
     }
-    i = 0;
-    while( is_att_char( *p ) ) {
-        if( i < TAG_ATT_NAME_LENGTH )
-            attname[i++] = my_tolower( *p );
-        p++;
-    }
-    attname[i] = '\0';
-    return( p );
+    return( get_tag_attname( p, attname ) );
 }
 
 /***************************************************************************/
 /* get the attribute value and report tag-end ('.') if found               */
 /*     [<white space>]=[<white space>]<value>                              */
 /***************************************************************************/
+
+void get_att_specval( att_val_type *attr_val )
+{
+    int     i;
+
+    for( i = 0; i < SPECVAL_LENGTH && is_id_char( attr_val->name[i] ); i++) {
+        attr_val->specval[i] = my_tolower( attr_val->name[i] );
+    }
+    attr_val->specval[i] = '\0';
+}
 
 char *get_att_value( char *p, att_val_type *attr_val )
 {
@@ -969,16 +987,26 @@ char *get_att_value( char *p, att_val_type *attr_val )
         }
         attr_val->len = p - attr_val->name;
     }
-    for( i = 0; i < SPECVAL_LENGTH; i++ ) {
-        if( !is_id_char( attr_val->name[i] ) )
-            break;
-        attr_val->specval[i] = my_tolower( attr_val->name[i] );
-    }
-    attr_val->specval[i] = '\0';
+    get_att_specval( attr_val );
     if( *p == '.' ) {
         ProcFlags.tag_end_found = true;
     }
     return( p );
+}
+
+char *get_tagname( const char *p, char *tagname )
+{
+    int     i;
+
+    i = 0;
+    while( is_tag_char( *p ) ) {
+        if( i < TAG_NAME_LENGTH ) {
+            tagname[i++] = my_toupper( *p );
+        }
+        p++;
+    }
+    tagname[i] = '\0';
+    return( (char *)p );
 }
 
 /***************************************************************************/

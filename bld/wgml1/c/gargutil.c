@@ -246,14 +246,41 @@ condcode getqst( void )
 }
 
 /*
- * Test character as valid for a predefined attribute name
+ * Test character as valid for a GML Tag name
  */
 
-bool is_att_char( char c )
+bool is_tag_char( char c )
 {
     bool    test;
 
     test = my_isalnum( c );
+    return( test );
+}
+
+/*
+ * Test character as valid for a GML predefined attribute name
+ */
+
+bool is_tag_att_char( char c )
+{
+    bool    test;
+
+    test = my_isalnum( c );
+    if( !test ) {
+        test = ( c == '_' );
+    }
+    return( test );
+}
+
+/*
+ * Test character as valid for a Layout predefined attribute name
+ */
+
+bool is_lay_att_char( char c )
+{
+    bool    test;
+
+    test = my_isalpha( c );
     if( !test ) {
         test = ( c == '_' );
     }

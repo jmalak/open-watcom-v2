@@ -519,11 +519,11 @@ void    scr_ga( void )
     } else {
         saveatt = ' ';                      // no quick access
         g_att_entry = NULL;
-        for( k = 0; k < TAG_ATT_NAME_LENGTH && is_att_char( p[k] ); k++ ) {
+        for( k = 0; k < TAG_ATT_NAME_LENGTH && is_tag_att_char( p[k] ); k++ ) {
             g_attname[k] = my_tolower( p[k] );
         }
         g_attname[k] = '\0';
-        if( is_att_char( p[k] ) ) {
+        if( is_tag_att_char( p[k] ) ) {
             xx_err( ERR_ATT_NAME_INV );     // attname with too many chars
             cc = neg;
             return;

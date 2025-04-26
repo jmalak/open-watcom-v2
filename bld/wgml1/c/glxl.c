@@ -543,8 +543,8 @@ void    lay_dl( const gmltag * entry )
 
     /* Get the DL LAYOUT settings */
 
-    cc = lay_attr_and_value( &lay_attr );            // get att with value
-    while( cc == pos ) {
+    // get one att with value
+    while( (cc = lay_attr_and_value( &lay_attr )) == pos ) {
         for( k = 0, curr = dl_att[k]; curr > 0; k++, curr = dl_att[k] ) {
             if( strcmp( lay_att_names[curr], lay_attr.attname ) == 0 ) {
                 p = lay_attr.val.name;
@@ -627,7 +627,6 @@ void    lay_dl( const gmltag * entry )
                 break;                  // break out of for loop
             }
         }
-        cc = lay_attr_and_value( &lay_attr );            // get att with value
     }
 
     /* Now integrate the DL LAYOUT into the linked list */
@@ -734,8 +733,8 @@ void    lay_gl( const gmltag * entry )
 
     /* Get the GL LAYOUT settings */
 
-    cc = lay_attr_and_value( &lay_attr );            // get att with value
-    while( cc == pos ) {
+    // get one att with value
+    while( (cc = lay_attr_and_value( &lay_attr )) == pos ) {
         for( k = 0, curr = gl_att[k]; curr > 0; k++, curr = gl_att[k] ) {
             if( strcmp( lay_att_names[curr], lay_attr.attname ) == 0 ) {
                 p = lay_attr.val.name;
@@ -818,7 +817,6 @@ void    lay_gl( const gmltag * entry )
                 break;                  // break out of for loop
             }
         }
-        cc = lay_attr_and_value( &lay_attr );            // get att with value
     }
 
     /* Now integrate the GL LAYOUT into the linked list */
@@ -927,8 +925,8 @@ void    lay_ol( const gmltag * entry )
 
     /* Get the OL LAYOUT settings */
 
-    cc = lay_attr_and_value( &lay_attr );            // get att with value
-    while( cc == pos ) {
+    // get one att with value
+    while( (cc = lay_attr_and_value( &lay_attr )) == pos ) {
         for( k = 0, curr = ol_att[k]; curr > 0; k++, curr = ol_att[k] ) {
             if( strcmp( lay_att_names[curr], lay_attr.attname ) == 0 ) {
                 p = lay_attr.val.name;
@@ -1033,7 +1031,6 @@ void    lay_ol( const gmltag * entry )
                 break;                  // break out of for loop
             }
         }
-        cc = lay_attr_and_value( &lay_attr );            // get att with value
     }
 
     /* Now integrate the OL LAYOUT into the linked list */
@@ -1145,8 +1142,8 @@ void    lay_sl( const gmltag * entry )
 
     /* Get the SL LAYOUT settings */
 
-    cc = lay_attr_and_value( &lay_attr );            // get att with value
-    while( cc == pos ) {
+    // get one att with value
+    while( (cc = lay_attr_and_value( &lay_attr )) == pos ) {
         for( k = 0, curr = sl_att[k]; curr > 0; k++, curr = sl_att[k] ) {
             if( strcmp( lay_att_names[curr], lay_attr.attname ) == 0 ) {
                 p = lay_attr.val.name;
@@ -1224,7 +1221,6 @@ void    lay_sl( const gmltag * entry )
                 break;                  // break out of for loop
             }
         }
-        cc = lay_attr_and_value( &lay_attr );            // get att with value
     }
 
     /* Now integrate the SL LAYOUT into the linked list */
@@ -1330,8 +1326,8 @@ void    lay_ul( const gmltag * entry )
 
     /* Get the UL LAYOUT settings */
 
-    cc = lay_attr_and_value( &lay_attr );            // get att with value
-    while( cc == pos ) {
+    // get one att with value
+    while( (cc = lay_attr_and_value( &lay_attr )) == pos ) {
         for( k = 0, curr = ul_att[k]; curr > 0; k++, curr = ul_att[k] ) {
             if( strcmp( lay_att_names[curr], lay_attr.attname ) == 0 ) {
                 p = lay_attr.val.name;
@@ -1444,7 +1440,6 @@ void    lay_ul( const gmltag * entry )
                 break;                  // break out of for loop
             }
         }
-        cc = lay_attr_and_value( &lay_attr );            // get att with value
     }
 
     /* Now integrate the UL LAYOUT into the linked list */
