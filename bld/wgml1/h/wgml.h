@@ -78,6 +78,7 @@ extern  char        parse_char( const char *pa, size_t len );
 extern  bool        is_tag_char( char c );
 extern  bool        is_lay_att_char( char c );
 extern  bool        is_tag_att_char( char c );
+extern  bool        is_su_char( char c );
 extern  char        *get_tagname( const char *p, char *tagname );
 extern  void        get_att_specval( att_val_type *attr_val );
 
@@ -416,7 +417,7 @@ extern  bool        process_tag( struct gtentry *ge, mac_entry *me );
 /* gutil.c                              */
 extern  void        add_dt_space( void );
 extern  bool        att_val_to_su( su *spaceunit, bool pos, att_val_type *attr_val, bool specval );
-extern  bool        cw_val_to_su( char **scaninput, su *spaceunit );
+extern  bool        cw_val_to_su( const char **scaninput, su *spaceunit );
 extern  int32_t     conv_hor_unit( su *spaceunit, font_number font );
 extern  int32_t     conv_vert_unit( su *spaceunit, text_space text_spacing, font_number font );
 extern  num_style   find_pgnum_style( void );

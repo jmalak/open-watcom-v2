@@ -37,7 +37,7 @@
 #define MAX_INC_DEPTH       255         // max include level depth
 #define BUF_SIZE            512         // default buffersize for filecb e.a.
 #define MAX_FILE_ATTR       15          // max size for fileattr (T:xxxx)
-#define SCR_CWD_LENGTH       2           // script control word length
+#define SCR_CWD_LENGTH      2           // script control word length
 #define FUN_NAME_LENGTH     11          // &'function name max length
 #define MAX_PAREN           50          // max parenthesis nesting in &'functions
 
@@ -45,9 +45,11 @@
 #define VAL_LENGTH          10          // max length for attribute value
                                         // longer strings will be allocated
 
+#define MAX_SU_LENGTH       11          // length of space units in char format
+
 #define TAG_ATT_NAME_LENGTH 10          // gml tag attribute name max. length
 #define LAY_ATT_NAME_LENGTH 17          // layout attribute name max. length
-#define SPECVAL_LENGTH      10
+#define SPECVAL_LENGTH      MAX_SU_LENGTH
 
 #define ID_LEN              15          // length of refids wgml 4 gives a warning
                                         // for lengths > 7 but processes it
@@ -151,16 +153,14 @@ typedef enum space_units {
     SU_lay_extend            // additions before SU_lay_left please
 } space_units;
 
-#define MAX_SU_CHAR     12            // length of space units in char format
-
 typedef struct {
-    char        su_txt[MAX_SU_CHAR];    // space unit as entered in chars
-    int32_t     su_whole;               // integer part
-    int32_t     su_dec;                 // decimal part (if any)
-    int32_t     su_inch;                // value in inch with 4 decimals
-    int32_t     su_mm;                  // value in mm with 4 decimals
-    bool        su_relative;            // + - sign found
-    space_units su_u;                   // unit
+    char        su_txt[MAX_SU_LENGTH + 1];  // space unit as entered in chars
+    int32_t     su_whole;                   // integer part
+    int32_t     su_dec;                     // decimal part (if any)
+    int32_t     su_inch;                    // value in inch with 4 decimals
+    int32_t     su_mm;                      // value in mm with 4 decimals
+    bool        su_relative;                // + - sign found
+    space_units su_u;                       // unit
 } su;
 
 /***************************************************************************/

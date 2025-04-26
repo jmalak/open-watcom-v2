@@ -440,44 +440,25 @@ char * skip_to_quote( char *p, char quote )
 /***************************************************************************/
 static bool su_layout_special( su *in_su )
 {
-    bool        retval;
-    char        *ps;
-    int         wh;
-    int         wd;
-
-    ps = in_su->su_txt;
-    wh = 0;
-    wd = 0;
-
-    retval = true;
-    if( strnicmp( "left", ps, 4 ) == 0 ) {
+    if( strcmp( "left", in_su->su_txt ) == 0 ) {
         in_su->su_u = SU_lay_left;
-        strcpy( ps, "left" );
-    } else if( strnicmp( "right", ps, 5 ) == 0 ) {
+    } else if( strcmp( "right", in_su->su_txt ) == 0 ) {
         in_su->su_u = SU_lay_right;
-        strcpy( ps, "right" );
-    } else if( strnicmp( "center", ps, 6 ) == 0 ) {
+    } else if( strcmp( "center", in_su->su_txt ) == 0 ) {
         in_su->su_u = SU_lay_centre;
-        strcpy( ps, "center" );
-    } else if( strnicmp( "centre", ps, 6 ) == 0 ) {
+    } else if( strcmp( "centre", in_su->su_txt ) == 0 ) {
         in_su->su_u = SU_lay_centre;
-        strcpy( ps, "centre" );
-    } else if( strnicmp( "extend", ps, 6 ) == 0 ) {
+    } else if( strcmp( "extend", in_su->su_txt ) == 0 ) {
         in_su->su_u = SU_lay_extend;
-        strcpy( ps, "extend" );
     } else {
-        retval = false;
+        return( false );
     }
-
-    if( retval ) {
-        in_su->su_whole = 0;
-        in_su->su_dec   = 0;
-        in_su->su_inch  = 0;
-        in_su->su_mm    = 0;
-        in_su->su_relative = false;
-    }
-
-    return( retval );
+    in_su->su_whole    = 0;
+    in_su->su_dec      = 0;
+    in_su->su_inch     = 0;
+    in_su->su_mm       = 0;
+    in_su->su_relative = false;
+    return( true );
 }
 
 /***************************************************************************/
@@ -498,17 +479,16 @@ static bool su_layout_special( su *in_su )
 
 bool att_val_to_su( su *in_su, bool pos, att_val_type *attr_val, bool specval )
 {
-    char        *ps      = NULL; // destination for value text
+    char        *ps;        // destination for value text
     char        sign;
 
     ps = in_su->su_txt;
     *ps = '\0';
 
-    if( attr_val->len > MAX_SU_CHAR - 1 ) { // won't fit
+    if( attr_val->len > MAX_SU_LENGTH ) { // won't fit
         xx_line_err_c( ERR_INV_ATT_VAL, attr_val->name );
     }
-    strncpy( ps, attr_val->name, attr_val->len );
-    ps[attr_val->len] = '\0';
+    strcpy( ps, attr_val->specval );
 
     in_su->su_u = SU_undefined;
     if( *ps == '+' ) {                      // not allowed with tags
@@ -550,27 +530,33 @@ bool att_val_to_su( su *in_su, bool pos, att_val_type *attr_val, bool specval )
 /*            true on error (conversion error occurred)                    */
 /***************************************************************************/
 
-bool cw_val_to_su( char **scanp, su *in_su )
+bool cw_val_to_su( const char **scanp, su *in_su )
 {
-    char        *p       = NULL; // source of value text
-    char        *pa      = NULL; // start of value text
-    char        *ps      = NULL; // destination for value text
+    const char  *p;         // source of value text
+    const char  *pa;        // start of value text
+    const char  *pb;
+    char        *ps;        // destination for value text
     char        sign;
-    size_t      len;
+    int         len;
+    int         i;
+
+    ps = in_su->su_txt;
+    *ps = '\0';
 
     p = *scanp;
     pa = p;
-    ps = in_su->su_txt;
-    *ps = '\0';
-    SkipSpaces( p );            // just in case
+    SkipSpaces( p );                // just in case
+    pb = p;
     SkipNonSpaces( p );
-    len = p - pa;
-    *scanp = p;                 // report back value of p
-    if( len > MAX_SU_CHAR - 1 ) {
+    len = p - pb;
+    *scanp = p;                     // report back value of p
+    if( len > MAX_SU_LENGTH ) {
         xx_line_err_c( ERR_INV_CW_OP_VAL, pa );
     }
-    strncpy( ps, pa, len );
-    ps[len] = '\0';
+    for( i = 0; i < len; i++ ) {
+        ps[i] = my_tolower( pb[i] );
+    }
+    ps[i] = '\0';
 
     in_su->su_u = SU_undefined;
     if( *ps == '+'
@@ -579,7 +565,7 @@ bool cw_val_to_su( char **scanp, su *in_su )
         in_su->su_relative = true;  // value is added / subtracted from old value
     } else {
         sign = '+';
-        in_su->su_relative = false;         // value replaces old value
+        in_su->su_relative = false; // value replaces old value
     }
 
     if( su_expression( in_su ) )
@@ -608,41 +594,46 @@ bool cw_val_to_su( char **scanp, su *in_su )
 
 bool lay_init_su( const char *p, su *in_su )
 {
-    const char      *pa      = NULL; // start of value text
-    char            *ps      = NULL; // destination for value text
+    const char      *pa;    // start of value text
+    const char      *pb;
+    char            *ps;    // destination for value text
     char            sign;
-    size_t          len;
+    int             len;
+    int             i;
 
-    pa = p;
     ps = in_su->su_txt;
     *ps = '\0';
 
+    pa = p;
     SkipSpaces( p );                // just in case
+    pb = p;
     SkipNonSpaces( p );
-    len = p - pa;
+    len = p - pb;
 
-    if( len > MAX_SU_CHAR - 1 ) {   // won't fit
+    if( len > MAX_SU_LENGTH ) {     // won't fit
         xx_line_err_c( ERR_INV_ATT_VAL, pa );
     }
-    strncpy( ps, pa, len );
-    ps[len] = '\0';
+    for( i = 0; i < len; i++ ) {
+        ps[i] = my_tolower( pb[i] );
+    }
+    ps[i] = '\0';
 
     in_su->su_u = SU_undefined;
-    if( *ps == '+' ) {                      // not allowed with tags
+    if( *ps == '+' ) {              // not allowed with tags
         xx_line_err_c( ERR_INV_ATT_VAL, ps );
-    } else if( *ps == '-' ) {               // not relative, just negative
+    } else if( *ps == '-' ) {       // not relative, just negative
         sign = *ps;
         if( *(ps + 1) == '+'
-          || *(ps + 1) == '-' ) {  // only one sign is allowed
+          || *(ps + 1) == '-' ) {   // only one sign is allowed
             xx_line_err_c( ERR_INV_ATT_VAL, ps );
         }
     } else {
         sign = '+';
     }
-    if( *ps == '\0' ) {                     // value end reached, not valid
+    if( *ps == '\0' ) {             // value end reached, not valid
         xx_line_err_c( ERR_INV_ATT_VAL, ps );
     }
-    in_su->su_relative = false;                 // no relative positioning with tags
+    in_su->su_relative = false;     // no relative positioning with tags
 
     if( su_layout_special( in_su ) )
         return( false );
@@ -766,7 +757,7 @@ char *format_num( uint32_t n, char *r, size_t rsize, num_style ns )
     /*  Arbitrary limit Value 728 = 2 characters    extend if needed    TBD */
     /************************************************************************/
         if( n >= 27*27
-          || (n < 1) ) {   // only 2 letters supported
+          || (n < 1) ) {                // only 2 letters supported
             return( NULL );             // and numbers > zero
         }
         if( ns & a_style ) {
@@ -776,8 +767,8 @@ char *format_num( uint32_t n, char *r, size_t rsize, num_style ns )
         }
     }
     switch( ns & char1_style ) {
-    case a_style:                      // lower case alphabetic
-    case b_style:                      // UPPER case alphabetic
+    case a_style:                       // lower case alphabetic
+    case b_style:                       // UPPER case alphabetic
         a1 = n / 27;
         a2 = n % 27;
         if( a1 > 0 ) {
@@ -796,7 +787,7 @@ char *format_num( uint32_t n, char *r, size_t rsize, num_style ns )
             }
         }
         break;
-    case h_style:                      // arabic
+    case h_style:                       // arabic
         uinttodec( n, p );
         pos1 = strlen( p );
         pos += pos1;
@@ -805,7 +796,7 @@ char *format_num( uint32_t n, char *r, size_t rsize, num_style ns )
         }
         p += pos1;
         break;
-    case r_style:                      // lower case roman
+    case r_style:                       // lower case roman
         rp = int_to_roman( n, p, rsize - pos );
         if( rp == NULL ) {
             return( NULL );             // field overflow
@@ -813,7 +804,7 @@ char *format_num( uint32_t n, char *r, size_t rsize, num_style ns )
         pos1 = strlen( rp );
         p += pos1;
         break;
-    case c_style:                      // UPPER case roman
+    case c_style:                       // UPPER case roman
         rp = int_to_roman( n, p, rsize - pos );
         if( rp == NULL ) {
             return( NULL );             // field overflow
