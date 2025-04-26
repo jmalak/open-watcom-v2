@@ -403,8 +403,9 @@ bool check_realloc_line_buff( size_t len )
     size_t  size;
 
     if( len > line_buff.length ) {
+        size = line_buff.length;
         do {
-            size = line_buff.length * 2;
+            size *= 2;
         } while( len > size );
         /*
          * add space for null terminator, but don't count it in length
