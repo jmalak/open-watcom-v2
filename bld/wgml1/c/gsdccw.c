@@ -352,7 +352,7 @@ void    scr_dc( void )
             xx_line_warn_cc( WNG_DC_OPT, o_p, o_p );
         } else if( strnicmp( o_p, "TB", 2 ) == 0 ) {
             if( v_len == 0 ) {
-                c = 0x09;                       // default is 0x09
+                c = '\t';                       // default is '\t'
             } else if( v_len == 1 ) {
                 c = *v_p;
             } else if( v_len > 2 ) {
@@ -360,7 +360,7 @@ void    scr_dc( void )
                     if( strnicmp( v_p, "OFF", 3 ) ) {
                         xx_line_err_ci( ERR_DC_NOT_OFF, v_p, v_len );  // only OFF is valid
                     }
-                    c = 0x09;                   // OFF is 0x09
+                    c = '\t';                   // OFF is '\t'
                 } else {
                     xx_line_err_ci( ERR_DC_NOT_OFF, v_p, v_len );      // only OFF is valid
                 }

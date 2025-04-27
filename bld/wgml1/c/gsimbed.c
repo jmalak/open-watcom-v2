@@ -150,8 +150,8 @@ void    scr_im( void )
     if( (cc == pos) && (gn.result < 10) ) { // include SYSUSR0x.GML
 
         close_pu_file( gn.result );     // if still open
-        strcpy_s( token_buf, buf_size, "SYSUSR0" );
-        strcat_s( token_buf, buf_size, gn.resultstr );
+        strcpy( token_buf, "SYSUSR0" );
+        strcat( token_buf, gn.resultstr );
 
     } else {
         p = gn.arg.s;
@@ -167,7 +167,7 @@ void    scr_im( void )
             ++p;
         }
         *p = '\0';
-        strcpy_s( token_buf, buf_size, fnstart );
+        strcpy( token_buf, fnstart );
     }
 
     if( p < scan_stop ) {

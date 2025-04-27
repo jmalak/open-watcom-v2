@@ -38,7 +38,7 @@
 /*     &'width(AAA,X) ==> invalid 'type' operand                           */
 /***************************************************************************/
 
-condcode    scr_width( parm parms[MAX_FUN_PARMS], int parmcount, char **result, int32_t ressize )
+condcode    scr_width( parm parms[MAX_FUN_PARMS], int parmcount, char **result, int ressize )
 {
     tok_type        parm1;
     tok_type        parm2;

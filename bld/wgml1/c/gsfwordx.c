@@ -99,7 +99,7 @@ static bool cmpWord( tok_type *p1, tok_type *p2 )
 /***************************************************************************/
 
 static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], int parmcount,
-                                 char **result, int32_t ressize )
+                                 char **result, int ressize )
 {
     tok_type        parm1;
     char            *ptok;
@@ -218,7 +218,7 @@ static  condcode    scr_xx_word( parm parms[MAX_FUN_PARMS], int parmcount,
  *
  */
 
-condcode    scr_word( parm parms[MAX_FUN_PARMS], int parmcount, char * * result, int32_t ressize )
+condcode    scr_word( parm parms[MAX_FUN_PARMS], int parmcount, char * * result, int ressize )
 {
     is_word = true;
     return( scr_xx_word( parms, parmcount, result, ressize ) );
@@ -230,7 +230,7 @@ condcode    scr_word( parm parms[MAX_FUN_PARMS], int parmcount, char * * result,
  *
  */
 
-condcode    scr_subword( parm parms[MAX_FUN_PARMS], int parmcount, char * * result, int32_t ressize )
+condcode    scr_subword( parm parms[MAX_FUN_PARMS], int parmcount, char * * result, int ressize )
 {
     is_word = false;
     return( scr_xx_word( parms, parmcount, result, ressize ) );
@@ -246,7 +246,7 @@ condcode    scr_subword( parm parms[MAX_FUN_PARMS], int parmcount, char * * resu
 /*      &'words('cat dot',1) ==> too many operands                         */
 /***************************************************************************/
 
-condcode    scr_words( parm parms[MAX_FUN_PARMS], int parmcount, char * * result, int32_t ressize )
+condcode    scr_words( parm parms[MAX_FUN_PARMS], int parmcount, char * * result, int ressize )
 {
     tok_type        parm1;
     int             wc;
@@ -308,7 +308,7 @@ condcode    scr_words( parm parms[MAX_FUN_PARMS], int parmcount, char * * result
 /*      &'wordpos('The quick brown fox') ==> error, missing string         */
 /***************************************************************************/
 
-condcode    scr_wordpos( parm parms[MAX_FUN_PARMS], int parmcount, char * * result, int32_t ressize )
+condcode    scr_wordpos( parm parms[MAX_FUN_PARMS], int parmcount, char * * result, int ressize )
 {
     tok_type        phrase;
     tok_type        pstr;
@@ -456,7 +456,7 @@ condcode    scr_wordpos( parm parms[MAX_FUN_PARMS], int parmcount, char * * resu
  *
  ***************************************************************************/
 
-condcode    scr_find( parm parms[MAX_FUN_PARMS], int parmcount, char **result, int32_t ressize )
+condcode    scr_find( parm parms[MAX_FUN_PARMS], int parmcount, char **result, int ressize )
 {
     condcode        cc;
     int             index;

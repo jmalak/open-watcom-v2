@@ -1008,7 +1008,7 @@ static char *get_tag_attname( const char *p, char *attname )
 
 char *get_att_name( char *p, char **orig, char *attname )
 {
-    static char     buf[BUF_SIZE];
+    static char     buf[BUF_SIZE + 1];
 
     ProcFlags.tag_end_found = false;
     for(;;) {                           // loop until potential attribute/rescan line found

@@ -539,7 +539,7 @@ void    scr_ga( void )
         if( saveatt != '*' ) {          // no quickaccess for attribute
             gawk = NULL;
             for( gawk = g_tag_entry->attribs; gawk != NULL; gawk = gawk->next ) {
-                if( stricmp( g_attname, gawk->attname ) == 0 ) {
+                if( strcmp( g_attname, gawk->attname ) == 0 ) {
                     att_flags = gawk->attflags; // get possible uppercase option
                     break;
                 }
@@ -548,12 +548,10 @@ void    scr_ga( void )
             att_flags = g_att_entry->attflags;
         }
         cc = scan_att_optionsA( &att_flags );   // process options A
-
         if( cc != omit ) {
-
             cc = scan_att_optionsB( &val_flags, cc, &att_flags );// process option B
             if( cc != omit ) {
-                xx_err( ERR_TAG_TOOMANY );  // excess parameters
+                xx_err( ERR_TAG_TOOMANY );      // excess parameters
                 return;
             }
         }
@@ -564,7 +562,7 @@ void    scr_ga( void )
     /***********************************************************************/
     if( saveatt != '*' ) {              // no quickaccess for attribute
         for( g_att_entry = g_tag_entry->attribs; g_att_entry != NULL; g_att_entry = g_att_entry->next ) {
-            if( stricmp( g_attname, g_att_entry->attname ) == 0 ) {
+            if( strcmp( g_attname, g_att_entry->attname ) == 0 ) {
                 break;
             }
         }
@@ -589,8 +587,7 @@ void    scr_ga( void )
     } else {
         gavalentry  *   valwk;
 
-        for( valwk = g_att_entry->vals;  valwk != NULL;
-                                       valwk = valwk->next ) {
+        for( valwk = g_att_entry->vals; valwk != NULL; valwk = valwk->next ) {
             if( valwk->next == NULL ) {
                 break;                      // last entry found
             }

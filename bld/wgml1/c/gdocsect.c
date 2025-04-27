@@ -156,7 +156,7 @@ static void figlist_toc_tabs( char * fill, uint32_t size, bool setup )
         user_tabs.tabs[1].alignment = al_right;
 
     } else {                        // remove tabbing (restore to default)
-        tab_char = 0x09;
+        tab_char = '\t';
         add_to_sysdir( "$tb", tab_char );
         add_to_sysdir( "$tab", tab_char );
 

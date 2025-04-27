@@ -72,7 +72,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-condcode    scr_index( parm parms[MAX_FUN_PARMS], int parmcount, char **result, int32_t ressize )
+condcode    scr_index( parm parms[MAX_FUN_PARMS], int parmcount, char **result, int ressize )
 {
     tok_type        pneedle;
     tok_type        phay;
@@ -155,7 +155,7 @@ condcode    scr_index( parm parms[MAX_FUN_PARMS], int parmcount, char **result, 
  *
  */
 
-condcode    scr_pos( parm parms[MAX_FUN_PARMS], int parmcount, char **result, int32_t ressize )
+condcode    scr_pos( parm parms[MAX_FUN_PARMS], int parmcount, char **result, int ressize )
 {
     char        *pwk;
 
@@ -178,7 +178,7 @@ condcode    scr_pos( parm parms[MAX_FUN_PARMS], int parmcount, char **result, in
 /*  lastpos                                                                */
 /***************************************************************************/
 
-condcode    scr_lpos( parm parms[MAX_FUN_PARMS], int parmcount, char **result, int32_t ressize )
+condcode    scr_lpos( parm parms[MAX_FUN_PARMS], int parmcount, char **result, int ressize )
 {
     tok_type        pneedle;
     tok_type        phay;

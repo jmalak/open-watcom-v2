@@ -35,7 +35,7 @@
  *
  ***************************************************************************/
 
-condcode    scr_compare( parm parms[MAX_FUN_PARMS], int parmcount, char **result, int32_t ressize )
+condcode    scr_compare( parm parms[MAX_FUN_PARMS], int parmcount, char **result, int ressize )
 {
     tok_type        string1;
     tok_type        string2;

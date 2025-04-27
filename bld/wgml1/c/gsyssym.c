@@ -1338,7 +1338,7 @@ sym_dict_hdl    init_sys_dict( void )
 //  *sysspcondstr =
     syssu0.value = str[ju_on];
     syssys0.value = "DOS";
-    *systabstr       = *systbstr       = 0x09;
+    *systabstr       = *systbstr       = '\t';
     *(systabstr + 1) = *(systbstr + 1) = 0;
 //  *systermtstr =
     *systisetstr = ' ';

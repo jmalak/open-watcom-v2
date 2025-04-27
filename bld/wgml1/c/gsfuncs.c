@@ -48,10 +48,10 @@ static  char    * alloc_resbuf( inp_line ** in_wk )
     inp_line  * wk;
 
     if( *in_wk == NULL ) {
-        *in_wk =  mem_alloc( sizeof( inp_line ) + buf_size );
+        *in_wk =  mem_alloc( sizeof( inp_line ) + BUF_SIZE );
         (*in_wk)->next = NULL;
     } else {
-        wk = mem_alloc( sizeof( inp_line ) + buf_size );
+        wk = mem_alloc( sizeof( inp_line ) + BUF_SIZE );
         wk->next = *in_wk;
         *in_wk = wk;
     }
@@ -212,7 +212,7 @@ static const scrfunc *check_multiletter_func( const char *p, const char *pend )
 /*                   call corresponding function                           */
 /***************************************************************************/
 
-char *scr_multi_funcs( char *in, char *pstart, char **result, int32_t valsize )
+char *scr_multi_funcs( char *in, char *pstart, char **result, int ressize )
 {
     char            *p;              // points into input buffer
     char            *pend;           // points into resbuf
@@ -275,7 +275,7 @@ char *scr_multi_funcs( char *in, char *pstart, char **result, int32_t valsize )
         } else {
             parms[k].redo = false;
         }
-        parms[k].arg.e = p - 1;
+        parms[k].arg.e = p;
         parms[k + 1].arg.s = p + 1;
 
         if( p >= pend ) {
@@ -304,7 +304,7 @@ char *scr_multi_funcs( char *in, char *pstart, char **result, int32_t valsize )
             } else {
                 parms[m + k].redo = false;
             }
-            parms[m + k].arg.e = p - 1;
+            parms[m + k].arg.e = p;
             parms[m + k + 1].arg.s = p + 1;
 
             if( p >= pend ) {
@@ -322,12 +322,12 @@ char *scr_multi_funcs( char *in, char *pstart, char **result, int32_t valsize )
     for( k = 0; k < parmcount; k++ ) {
         while( parms[k].redo ) {
             resbuf = alloc_resbuf( &in_wk );
-            len = (parms[k].arg.e - parms[k].arg.s) + 1;
-            if( len > buf_size )
-                len = buf_size;
+            len = parms[k].arg.e - parms[k].arg.s;
+            if( len > BUF_SIZE )
+                len = BUF_SIZE;
             strncpy( resbuf, parms[k].arg.s, len );// copy parm
             resbuf[len] = '\0';
-            parms[k].arg.e = resbuf + len - 1;
+            parms[k].arg.e = resbuf + len;
             parms[k].arg.s = resbuf;
             if( (input_cbs->fmflags & II_research)
               && WgmlFlags.firstpass ) {
@@ -349,7 +349,7 @@ char *scr_multi_funcs( char *in, char *pstart, char **result, int32_t valsize )
                 parms[k].redo = false;
             }
 
-            parms[k].arg.e = resbuf + strlen( parms[k].arg.s ) - 1;
+            parms[k].arg.e = resbuf + strlen( parms[k].arg.s );
             if( (input_cbs->fmflags & II_research)
               && WgmlFlags.firstpass ) {
                 out_msg( " Function      parm %s return\n", resbuf );
@@ -359,7 +359,7 @@ char *scr_multi_funcs( char *in, char *pstart, char **result, int32_t valsize )
 
     ProcFlags.suppress_msg = multiletter_function;
 
-    cc = fninfo->fun( parms, parmcount, result, valsize );
+    cc = fninfo->fun( parms, parmcount, result, ressize );
 
     ProcFlags.suppress_msg = false;
 

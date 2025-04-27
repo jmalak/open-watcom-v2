@@ -130,7 +130,7 @@ void    scr_tb( void )
         SkipNonSpaces( p );                 // end tab char
         len = p - pa;
         if( len == 0 ) {
-            tab_char = 0x09;                // reset to default value
+            tab_char = '\t';                // reset to default value
         } else if( len == 1 ) {
             tab_char = *pa;                 // set to specified char
         } else {

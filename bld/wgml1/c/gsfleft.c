@@ -32,7 +32,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-condcode    scr_left( parm parms[MAX_FUN_PARMS], int parmcount, char **result, int32_t ressize )
+condcode    scr_left( parm parms[MAX_FUN_PARMS], int parmcount, char **result, int ressize )
 {
     tok_type        parm1;
     condcode        cc;

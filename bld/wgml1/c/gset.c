@@ -75,8 +75,8 @@ extern  void    gml_set( const gmltag * entry )
                     break;
                 }
                 value_found = true;
-                if( attr_val.len > buf_size - 1 )
-                    attr_val.len = buf_size - 1;
+                if( attr_val.len > BUF_SIZE )
+                    attr_val.len = BUF_SIZE;
                 strncpy( token_buf, attr_val.name, attr_val.len );
                 token_buf[attr_val.len] = '\0';
             } else if( strnicmp( token_buf, "delete", 6 ) == 0 ) {

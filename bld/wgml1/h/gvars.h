@@ -116,7 +116,6 @@ global  proc_flags      ProcFlags;      // processing flags
 
 global  attr_flags      AttrFlags;      // attribute flags
 
-global  size_t          buf_size;       // default buffer size
 global  char        *   token_buf;
 
 global char         *   workbuf;        // work for input buffer

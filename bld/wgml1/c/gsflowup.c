@@ -56,7 +56,7 @@
 /***************************************************************************/
 
 static condcode scr_lowup( parm parms[MAX_FUN_PARMS], int parmcount,
-                           char **result, int32_t ressize, bool upper )
+                           char **result, int ressize, bool upper )
 {
     tok_type        parm1;
     condcode        cc;
@@ -138,12 +138,12 @@ static condcode scr_lowup( parm parms[MAX_FUN_PARMS], int parmcount,
 }
 
 
-condcode    scr_lower( parm parms[MAX_FUN_PARMS], int parmcount, char * * result, int32_t ressize )
+condcode    scr_lower( parm parms[MAX_FUN_PARMS], int parmcount, char * * result, int ressize )
 {
     return( scr_lowup( parms, parmcount, result, ressize, 0 ) );
 }
 
-condcode    scr_upper( parm parms[MAX_FUN_PARMS], int parmcount, char * * result, int32_t ressize )
+condcode    scr_upper( parm parms[MAX_FUN_PARMS], int parmcount, char * * result, int ressize )
 {
     return( scr_lowup( parms, parmcount, result, ressize, 1 ) );
 }

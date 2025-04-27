@@ -355,7 +355,7 @@ static void get_macro_line( void )
 
         cb->flags          &= ~FF_eof;
         input_cbs->fmflags &= ~II_eof;
-        strcpy_s( buff2, buf_size, cb->macline->value );
+        strcpy( buff2, cb->macline->value );
         cb->macline         = cb->macline->next;
 
         if( input_cbs->fmflags & II_macro ) {   // not invoked by a user-defined tag
@@ -474,9 +474,9 @@ bool get_line( bool display_line )
                 }
                 while( 1 ) {                    // break when next line obtained or file ends
                     fgetpos( cb->fp, &cb->pos );// remember position for label
-                    p = fgets( buff2, buf_size, cb->fp );
+                    p = fgets( buff2, BUF_SIZE, cb->fp );
                     if( p != NULL ) {
-                        buff2[buf_size] = '\0'; /* ensure buff2 is always terminated */
+                        buff2[BUF_SIZE] = '\0'; /* ensure buff2 is always terminated */
                         if( cb->lineno >= cb->linemax ) {
                             input_cbs->fmflags |= II_eof;
                             cb->flags |= FF_eof;

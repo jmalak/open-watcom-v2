@@ -245,7 +245,7 @@ static void free_final_content( final_reg_content *final_content )
 
 static void content_reg( region_lay_tag * region )
 {
-    char            buf[BUF_SIZE];
+    char            buf[BUF_SIZE + 1];
     symsub      *   symsubval;
     int             k;
     int             rc;
@@ -257,8 +257,8 @@ static void content_reg( region_lay_tag * region )
             if( region->script_region[k].string == NULL
               || region->script_region[k].string[0] == '\0' )
                 continue;           // skip empty part
-            strncpy( buf, region->script_region[k].string, sizeof( buf ) - 1 );
-            buf[sizeof( buf ) - 1] = '\0';
+            strncpy( buf, region->script_region[k].string, BUF_SIZE );
+            buf[BUF_SIZE] = '\0';
             process_late_subst( buf );
             while( resolve_symvar_functions( buf, false ) ) {   // until all resolutions done
                 process_late_subst( buf );
@@ -274,8 +274,8 @@ static void content_reg( region_lay_tag * region )
     } else {    // not script format only normal string or keyword
         switch( region->contents.content_type ) {
         case string_content:
-            strncpy( buf, region->contents.string, sizeof( buf ) - 1 );
-            buf[sizeof( buf ) - 1] = '\0';
+            strncpy( buf, region->contents.string, BUF_SIZE );
+            buf[BUF_SIZE] = '\0';
             process_late_subst( buf );
             while( resolve_symvar_functions( buf, false ) ) {   // until all resolutions done
                 process_late_subst( buf );
@@ -284,8 +284,8 @@ static void content_reg( region_lay_tag * region )
         case author_content:
             rc = find_symvar( global_dict, "$author", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "author" );
             }
@@ -293,8 +293,8 @@ static void content_reg( region_lay_tag * region )
         case bothead_content:
             rc = find_symvar( global_dict, "$bothead", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$bothead" );
             }
@@ -303,13 +303,13 @@ static void content_reg( region_lay_tag * region )
             /* This matches what wgml 4.0 actually does */
             rc = find_symvar( global_dict, "date", no_subscript, &symsubval );
             if( rc == 2 ){  // tag DATE used
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {        // tag DATE not used
                 rc = find_symvar( global_dict, "$date", no_subscript, &symsubval );
                 if( rc == 2 ) {
-                    strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                    buf[sizeof( buf ) - 1] = '\0';
+                    strncpy( buf, symsubval->value, BUF_SIZE );
+                    buf[BUF_SIZE] = '\0';
                 } else {
                     strcpy( buf, "$date" );
                 }
@@ -318,8 +318,8 @@ static void content_reg( region_lay_tag * region )
         case docnum_content:
             rc = find_symvar( global_dict, "$docnum", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$docnum" );
             }
@@ -327,8 +327,8 @@ static void content_reg( region_lay_tag * region )
         case head0_content:
             rc = find_symvar( global_dict, "$head0", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$head0" );
             }
@@ -336,8 +336,8 @@ static void content_reg( region_lay_tag * region )
         case head1_content:
             rc = find_symvar( global_dict, "$head1", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$head1" );
             }
@@ -345,8 +345,8 @@ static void content_reg( region_lay_tag * region )
         case head2_content:
             rc = find_symvar( global_dict, "$head2", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$head2" );
             }
@@ -354,8 +354,8 @@ static void content_reg( region_lay_tag * region )
         case head3_content:
             rc = find_symvar( global_dict, "$head3", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$head3" );
             }
@@ -363,8 +363,8 @@ static void content_reg( region_lay_tag * region )
         case head4_content:
             rc = find_symvar( global_dict, "$head4", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$head4" );
             }
@@ -372,8 +372,8 @@ static void content_reg( region_lay_tag * region )
         case head5_content:
             rc = find_symvar( global_dict, "$head5", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$head5" );
             }
@@ -381,8 +381,8 @@ static void content_reg( region_lay_tag * region )
         case head6_content:
             rc = find_symvar( global_dict, "$head6", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$head6" );
             }
@@ -390,8 +390,8 @@ static void content_reg( region_lay_tag * region )
         case headnum0_content:
             rc = find_symvar( global_dict, "$hnum0", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$hnum0" );
             }
@@ -399,8 +399,8 @@ static void content_reg( region_lay_tag * region )
         case headnum1_content:
             rc = find_symvar( global_dict, "$hnum1", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$hnum1" );
             }
@@ -408,8 +408,8 @@ static void content_reg( region_lay_tag * region )
         case headnum2_content:
             rc = find_symvar( global_dict, "$hnum2", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$hnum2" );
             }
@@ -417,8 +417,8 @@ static void content_reg( region_lay_tag * region )
         case headnum3_content:
             rc = find_symvar( global_dict, "$hnum3", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$hnum3" );
             }
@@ -426,8 +426,8 @@ static void content_reg( region_lay_tag * region )
         case headnum4_content:
             rc = find_symvar( global_dict, "$hnum4", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$hnum4" );
             }
@@ -435,8 +435,8 @@ static void content_reg( region_lay_tag * region )
         case headnum5_content:
             rc = find_symvar( global_dict, "$hnum5", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$hnum5" );
             }
@@ -444,8 +444,8 @@ static void content_reg( region_lay_tag * region )
         case headnum6_content:
             rc = find_symvar( global_dict, "$hnum6", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$hnum6" );
             }
@@ -453,8 +453,8 @@ static void content_reg( region_lay_tag * region )
         case headtext0_content:
             rc = find_symvar( global_dict, "$htext0", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$htext0" );
             }
@@ -462,8 +462,8 @@ static void content_reg( region_lay_tag * region )
         case headtext1_content:
             rc = find_symvar( global_dict, "$htext1", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$htext1" );
             }
@@ -471,8 +471,8 @@ static void content_reg( region_lay_tag * region )
         case headtext2_content:
             rc = find_symvar( global_dict, "$htext2", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$htext2" );
             }
@@ -480,8 +480,8 @@ static void content_reg( region_lay_tag * region )
         case headtext3_content:
             rc = find_symvar( global_dict, "$htext3", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$htext3" );
             }
@@ -489,8 +489,8 @@ static void content_reg( region_lay_tag * region )
         case headtext4_content:
             rc = find_symvar( global_dict, "$htext4", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$htext4" );
             }
@@ -498,8 +498,8 @@ static void content_reg( region_lay_tag * region )
         case headtext5_content:
             rc = find_symvar( global_dict, "$htext5", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$htext5" );
             }
@@ -507,8 +507,8 @@ static void content_reg( region_lay_tag * region )
         case headtext6_content:
             rc = find_symvar( global_dict, "$htext6", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$htext6" );
             }
@@ -516,8 +516,8 @@ static void content_reg( region_lay_tag * region )
         case pgnuma_content:
             rc = find_symvar( global_dict, "$pgnuma", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$pgnuma" );
             }
@@ -525,8 +525,8 @@ static void content_reg( region_lay_tag * region )
         case pgnumad_content:
             rc = find_symvar( global_dict, "$pgnumad", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$pgnumad" );
             }
@@ -534,8 +534,8 @@ static void content_reg( region_lay_tag * region )
         case pgnumc_content:
             rc = find_symvar( global_dict, "$pgnumc", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$pgnumc" );
             }
@@ -543,8 +543,8 @@ static void content_reg( region_lay_tag * region )
         case pgnumcd_content:
             rc = find_symvar( global_dict, "$pgnumcd", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$pgnumcd" );
             }
@@ -552,8 +552,8 @@ static void content_reg( region_lay_tag * region )
         case pgnumr_content:
             rc = find_symvar( global_dict, "$pgnumr", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$pgnumr" );
             }
@@ -561,8 +561,8 @@ static void content_reg( region_lay_tag * region )
         case pgnumrd_content:
             rc = find_symvar( global_dict, "$pgnumrd", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$pgnumrd" );
             }
@@ -570,8 +570,8 @@ static void content_reg( region_lay_tag * region )
         case sec_content:
             rc = find_symvar( global_dict, "$sec", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$sec" );
             }
@@ -579,8 +579,8 @@ static void content_reg( region_lay_tag * region )
         case stitle_content:
             rc = find_symvar( global_dict, "$stitle", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$stitle" );
             }
@@ -588,8 +588,8 @@ static void content_reg( region_lay_tag * region )
         case title_content:
             rc = find_symvar( global_dict, "$title", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$title" );
             }
@@ -597,8 +597,8 @@ static void content_reg( region_lay_tag * region )
         case time_content:
             rc = find_symvar( global_dict, "$time", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$time" );
             }
@@ -606,8 +606,8 @@ static void content_reg( region_lay_tag * region )
         case tophead_content:
             rc = find_symvar( global_dict, "$tophead", no_subscript, &symsubval );
             if( rc == 2 ) {
-                strncpy( buf, symsubval->value, sizeof( buf ) - 1 );
-                buf[sizeof( buf ) - 1] = '\0';
+                strncpy( buf, symsubval->value, BUF_SIZE );
+                buf[BUF_SIZE] = '\0';
             } else {
                 strcpy( buf, "$tophead" );
             }

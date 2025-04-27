@@ -160,19 +160,16 @@ char * scan_sym( char * p, symvar * sym, sub_index * subscript, char * * result,
                     scan_err = true;
                 }
             } else {
-                char            *       pa;
-                char            *   *   ppval;
-                char                    valbuf[BUF_SIZE];
-                condcode                cc;
-                getnum_block            gn;
+                char            *pa;
+                char            valbuf[BUF_SIZE + 1];
+                condcode        cc;
+                getnum_block    gn;
 
-                memcpy_s( valbuf, buf_size, p, pend - p - 1 );
+                memcpy( valbuf, p, pend - p - 1 );
                 valbuf[pend - p - 1] = '\0';
-                pa = valbuf;
-                ppval = &pa;
-
                 ProcFlags.unresolved = false;
-                finalize_subscript( ppval, splittable );
+                pa = valbuf;
+                finalize_subscript( &pa, splittable );
                 if( ProcFlags.unresolved ) {
                     scan_err = true;
                 } else {

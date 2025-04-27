@@ -245,10 +245,10 @@ typedef enum {
 /***************************************************************************/
 
 typedef struct sym_list_entry {
-    struct sym_list_entry   *   prev;                   // next entry
-    char                        value[BUF_SIZE];        // value of attribute, function, or symbol
-    tok_type                    item;
-    slflags                     type;
+    struct sym_list_entry   *prev;                  // next entry
+    char                    value[BUF_SIZE + 1];    // value of attribute, function, or symbol
+    tok_type                item;
+    slflags                 type;
 } sym_list_entry;
 
 
@@ -283,7 +283,7 @@ typedef enum {
 
 /***************************************************************************/
 /*  List of (defined macro / input) lines                                  */
-/*    also used for in_buf_pool in this case fixed length buf_size         */
+/*    also used for in_buf_pool in this case fixed length BUF_SIZE         */
 /***************************************************************************/
 
 typedef struct inp_line {
@@ -631,7 +631,7 @@ typedef struct scrfunc {
     const   int         parm_cnt;                   // mandatory parms
     const   int         opt_parm_cnt;               // optional parms
     condcode            (*fun)( parm parms[MAX_FUN_PARMS], int parm_count,
-                                    char **ppval, int32_t valsize );
+                                    char **result, int ressize );
 } scrfunc;
 
 /***************************************************************************/

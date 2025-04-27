@@ -414,7 +414,7 @@ static  void    proc_input( char * filename )
     static inputcb  *save_cb;        // former input_cbs top entry
 
     ProcFlags.newLevelFile = 1;
-    strcpy_s( token_buf, buf_size, filename );
+    strcpy( token_buf, filename );
 
     cur_lay_file = lay_files;           // start each pass with same list
     for( ; ; ) {                        // as long as there is input
@@ -463,7 +463,7 @@ static  void    proc_input( char * filename )
 
             if( (cur_lay_file != NULL) ) {
                 tmp_lay_file = cur_lay_file;
-                strcpy_s( token_buf, buf_size, tmp_lay_file->layfn );
+                strcpy( token_buf, tmp_lay_file->layfn );
                 cur_lay_file = tmp_lay_file->next;
                 ProcFlags.newLevelFile = 1; // start a new include FILE level
                 continue;               // with cmdline    layout option file
@@ -605,7 +605,7 @@ static  void    proc_input( char * filename )
         }
         if( cur_lay_file != NULL ) {   // any more  LAYfiles
             tmp_lay_file = cur_lay_file;
-            strcpy_s( token_buf, buf_size, tmp_lay_file->layfn );
+            strcpy( token_buf, tmp_lay_file->layfn );
             cur_lay_file = tmp_lay_file->next;
             ProcFlags.newLevelFile = 1; // start a new include file level
             continue;                   // with cmdline layout option file
@@ -768,7 +768,7 @@ int main( int argc, char * argv[] )
 
     init_global_vars();
 
-    token_buf = mem_alloc( buf_size );
+    token_buf = mem_alloc( BUF_SIZE + 1 );
 
     // out_msg( "define enum %d %d\n", INF_CMDLINE, inf_cmdline );
 

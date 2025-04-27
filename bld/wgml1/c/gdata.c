@@ -95,7 +95,7 @@ void init_global_vars( void )
     g_hm                = 0;            // heading margin          &$hm
 
     in_esc              = ' ';
-    tab_char            = 0x09;
+    tab_char            = '\t';
 
 
     box_col_set_pool    = NULL;
@@ -225,9 +225,8 @@ void init_global_vars( void )
     research_from         = 0;
     research_to           = 0;
 
-    buf_size            = BUF_SIZE;
-    buff2               = mem_alloc( buf_size + 1 ); /* add space for additional terminator */
-    workbuf             = mem_alloc( buf_size + 1 ); /* add space for additional terminator */
+    buff2               = mem_alloc( BUF_SIZE + 1 ); /* add space for additional terminator */
+    workbuf             = mem_alloc( BUF_SIZE + 1 ); /* add space for additional terminator */
 
     post_space          = 0;
 
