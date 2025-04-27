@@ -1297,9 +1297,10 @@ void ob_insert_ps_text_start( void )
 
 void ob_setup( void )
 {
-    int         i;
-    size_t      j;
-    size_t      count;
+    int             i;
+    size_t          j;
+    size_t          count;
+    unsigned long   num;
 
     /* Finalize out_file and out_file_attr. */
 
@@ -1335,10 +1336,11 @@ void ob_setup( void )
     binc_buff.text = mem_alloc( binc_buff.length + 1 );
 
     buffout.current = 0;
-    buffout.length = strtoul( &out_file_attr[2], NULL, 0 );
-    if( errno == ERANGE ) {
+    num = strtoul( &out_file_attr[2], NULL, 0 );
+    if( errno == ERANGE || num > UINT_MAX ) {
         xx_simple_err_i( ERR_OUT_REC_SIZE2, UINT_MAX );
     }
+    buffout.length = (size_t)num;
     /*
      * add space for null terminator, but don't count it in length
      */

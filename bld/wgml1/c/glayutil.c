@@ -586,9 +586,15 @@ void    o_frame( FILE *fp, lay_attr_o lay_attr, const bool * tm )
 /***************************************************************************/
 bool    i_int32( char * p, lay_attr_i lay_attr, int32_t * tm )
 {
+    long    wk;
+
     (void)lay_attr;
 
-    *tm = strtol( p, NULL, 10 );
+    wk = strtol( p, NULL, 10 );
+    if( wk < INT_MIN || wk > INT_MAX ) {
+        xx_line_err_c( ERR_NUM_TOO_LARGE, p );
+    }
+    *tm = (int)wk;
     return( false );
 }
 
@@ -600,15 +606,15 @@ void    o_int32( FILE *fp, lay_attr_o lay_attr, const int32_t * tm )
 
 bool    i_int8( char * p, lay_attr_i lay_attr, int8_t * tm )
 {
-    int     wk;
+    long    wk;
 
     (void)lay_attr;
 
     wk = strtol( p, NULL, 10 );
-    if( abs( wk ) > 255 ) {
+    if( wk < INT8_MIN || wk > INT8_MAX ) {
         xx_line_err_c( ERR_I_8, p );
     }
-    *tm = wk;
+    *tm = (int8_t)wk;
     return( false );
 }
 
@@ -622,23 +628,23 @@ void    o_int8( FILE *fp, lay_attr_o lay_attr, const int8_t * tm )
 
 bool    i_uint8( char * p, lay_attr_i lay_attr, uint8_t * tm )
 {
-    int     wk;
+    long    wk;
 
     (void)lay_attr;
 
     wk = strtol( p, NULL, 10 );
-    if( abs( wk ) > 255 ) {
-        xx_line_err_c( ERR_I_8, p );
+    if( wk < 0 || wk > UINT8_MAX ) {
+        xx_line_err_c( ERR_UI_8, p );
     }
-    *tm = wk;
+    *tm = (uint8_t)wk;
     return( false );
 }
 
 void    o_uint8( FILE *fp, lay_attr_o lay_attr, const uint8_t * tm )
 {
-    int     wk = *tm;
+    unsigned    wk = *tm;
 
-    fprintf( fp, "        %s = %d\n", lay_att_names[lay_attr], wk );
+    fprintf( fp, "        %s = %u\n", lay_att_names[lay_attr], wk );
     return;
 }
 
@@ -648,24 +654,23 @@ void    o_uint8( FILE *fp, lay_attr_o lay_attr, const uint8_t * tm )
 /***************************************************************************/
 bool    i_font_number( char *p, lay_attr_i lay_attr, font_number *tm )
 {
-    char    *   pb;
-    size_t      len;
+    long    wk;
 
     (void)lay_attr;
 
-    pb = p;
-    len = 0;
-    while( *pb != '\0' && !is_space_tab_char( *pb ) && *pb != '.' ) {   // get length
-        len++;
-        pb++;
+    wk = strtol( p, NULL, 10 );
+    if( wk < 0 || wk > UINT8_MAX ) {
+        xx_line_err_c( ERR_UI_8, p );
     }
-    *tm = get_font_number( p, len );
+    *tm = (font_number)wk;
     return( false );
 }
 
 void    o_font_number( FILE *fp, lay_attr_o lay_attr, const font_number *tm )
 {
-    fprintf( fp, "        %s = %u\n", lay_att_names[lay_attr], (unsigned)*tm );
+    unsigned    wk = *tm;
+
+    fprintf( fp, "        %s = %u\n", lay_att_names[lay_attr], wk );
 }
 
 
@@ -1039,15 +1044,15 @@ void    o_space_unit( FILE *fp, lay_attr_o lay_attr, const su * tm )
 /***************************************************************************/
 bool    i_spacing( char *p, lay_attr_i lay_attr, text_space *tm )
 {
-    int     wk;
+    long    wk;
 
     (void)lay_attr;
 
     wk = strtol( p, NULL, 10 );
-    if( wk < 0 || wk > 255 ) {
+    if( wk < 0 || wk > UINT8_MAX ) {
         xx_line_err_c( ERR_UI_8, p );
     }
-    *tm = wk;
+    *tm = (text_space)wk;
     return( false );
 }
 
@@ -1066,7 +1071,7 @@ void    o_spacing( FILE *fp, lay_attr_o lay_attr, const text_space *tm )
 bool    i_threshold( char * p, lay_attr_i lay_attr, uint16_t * tm )
 {
     char        *pa;
-    int         wk;
+    long        wk;
 
     (void)lay_attr;
 
@@ -1074,16 +1079,16 @@ bool    i_threshold( char * p, lay_attr_i lay_attr, uint16_t * tm )
 
     for( pa = p; isdigit( *pa ); pa++ )
         {;/* empty */}
-    if( *pa ) {
+    if( *pa != '\0' || wk > UINT16_MAX ) {
         xx_line_err_c( ERR_NUM_TOO_LARGE, p );
+    }
+    if( wk < 0 ) {
+        xx_line_err_c( ERR_VAL_NEG, p );
     }
     if( wk == 0 ) {
         xx_line_err_c( ERR_NUM_ZERO, p );
     }
-    if( wk > 0x7fff ) {
-        xx_line_err_c( ERR_NUM_S16_NEG, p );
-    }
-    *tm = wk;
+    *tm = (uint16_t)wk;
     return( false );
 }
 
@@ -1091,7 +1096,7 @@ void    o_threshold( FILE *fp, lay_attr_o lay_attr, const uint16_t * tm )
 {
     unsigned wk = *tm;
 
-    fprintf( fp, "        %s = %d\n", lay_att_names[lay_attr], wk );
+    fprintf( fp, "        %s = %u\n", lay_att_names[lay_attr], wk );
     return;
 }
 

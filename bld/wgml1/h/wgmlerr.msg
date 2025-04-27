@@ -868,8 +868,8 @@ pick( INF_REG_ID,               "For region with hoffset = %s, voffset = %s, and
 
 /* Value Parsing Messages */
 
-pick( ERR_I_8,                  "The value entered must be in the range [-255, 255]",
-                                "The value entered must be in the range [-255, 255]" )
+pick( ERR_I_8,                  "The value entered must be in the range [-128, 127]",
+                                "The value entered must be in the range [-128, 127]" )
 
 pick( ERR_XX_STRING,            "The string given is too long",
                                 "The string given is too long" )
