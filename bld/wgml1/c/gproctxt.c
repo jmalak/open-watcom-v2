@@ -1852,7 +1852,7 @@ void process_text( char * text, font_number font )
     static      bool            keep_together   = true;     // set false when mult-part word is not to be treated as one word
     static      bool            spaces_at_start = false;    // record spaces at start of line with no text found
     static      bool            stop_fnd        = false;    // set true when prior n_chars ended with a stop
-    static      line_number     prev_lineno     = -1;
+    static      line_number     prev_lineno     = (line_number)-1;
     static      macrocb     *   prev_mac        = NULL;
     static      text_type       typ             = tx_norm;
     static      text_type       typn            = tx_norm;
@@ -2714,7 +2714,7 @@ void process_text( char * text, font_number font )
         }
     }
     if( input_cbs->fmflags & II_file ) {
-        prev_lineno = -1;
+        prev_lineno = (line_number)-1;
         prev_mac = NULL;
     } else {
         prev_lineno = input_cbs->s.m->lineno;

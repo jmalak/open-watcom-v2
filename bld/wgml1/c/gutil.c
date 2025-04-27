@@ -1173,7 +1173,7 @@ font_number get_font_number( char *value, size_t len )
 {
     char            *p;
     char            *pb;
-    uint32_t        wk;
+    long            wk;
 
     p = value;
     pb = p + len;
@@ -1187,7 +1187,7 @@ font_number get_font_number( char *value, size_t len )
     }
 
     wk = strtol( value, NULL, 10 );
-    if( wk > 255 ) {
+    if( wk < 0 || wk > 255 ) {
         wk = 0;
     }
     return( wk );

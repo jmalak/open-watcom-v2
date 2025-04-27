@@ -303,12 +303,14 @@ static  int evaluate( char **line, int *val )
                 }
             }
 
-            arg = strtol( str, &endptr, 10 );
-            if( (((arg == INT_MIN) || (arg == INT_MAX)) && errno == ERANGE)
+            {
+                long num = strtol( str, &endptr, 10 );
+                if( (((num <= INT_MIN) || (num >= INT_MAX)) && errno == ERANGE)
                  || (str == endptr) ) {
-                 return( not_ok );
+                    return( not_ok );
+                }
+                arg = (int)num;
             }
-
             push_val( arg );
 
             ptr += endptr - str;        // to the next unprocessed char

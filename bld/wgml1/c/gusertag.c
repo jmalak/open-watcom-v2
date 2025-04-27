@@ -83,7 +83,7 @@ static bool check_att_value( gaentry * ga, gtentry * ge, sym_dict_hdl loc_dict )
 {
     gavalentry  *   gaval;
     char        *   valp;
-    int             attval;
+    long            attval;
     bool            msg_done;
     int             rc;
 
