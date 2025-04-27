@@ -173,7 +173,7 @@ bool process_tag( gtentry * ge, mac_entry * me )
     /*  scan input for attributes and / or tag-text                        */
     /***********************************************************************/
 
-    p = g_tok_start + ge->tagnamelen + 1;    // over tagname
+    p = g_tok_start + ge->taglen + 1;    // over tagname
 
     if( ge->tagflags & tag_textline ) {
 

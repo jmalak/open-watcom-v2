@@ -163,15 +163,14 @@ static void split_input_var( char * buf, char * split_pos, char * part2, i_flags
 /***************************************************************************/
 static void split_at_GML_tag( void )
 {
-    char        *p;
-    char        *p2;
-    char        *pchar;
-    char        c;
-    gmltag      *gle = NULL;            // GML layout tag entry
-    gmltag      *gse = NULL;            // GML system tag entry
-    gtentry     *gue = NULL;            // GML user tag entry
-    int         taglen;
-    char        tagname[TAG_NAME_LENGTH + 1];
+    char            *p;
+    char            *p2;
+    char            *pchar;
+    const gmltag    *gle;            // GML layout tag entry
+    const gmltag    *gse;            // GML system tag entry
+    const gtentry   *gue;            // GML user tag entry
+    int             taglen;
+    char            tagname[TAG_NAME_LENGTH + 1];
 
     /***********************************************************************/
     /*  Look for GML tag start char(s) until a known tag is found          */
@@ -202,9 +201,9 @@ static void split_at_GML_tag( void )
             /***************************************************************/
             /* Verify valid user or system tag                             */
             /***************************************************************/
-            if( ( (gue = find_tag( tag_dict, tagname )) != NULL )
-              || ( (gse = (gmltag *)find_sys_tag( tagname, taglen )) != NULL )
-              || ( (gle = (gmltag *)find_lay_tag( tagname, taglen )) != NULL ) ) {
+            if( ( (gue = find_user_tag( tag_dict, tagname )) != NULL )
+              || ( (gse = find_sys_tag( tagname, taglen )) != NULL )
+              || ( (gle = find_lay_tag( tagname, taglen )) != NULL ) ) {
                 if( !input_cbs->fm_hh ) {
                     // remove spaces before tags at start of line in restricted sections
                     // in or just before LAYOUT tag

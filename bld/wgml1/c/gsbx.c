@@ -2428,12 +2428,12 @@ void eoc_bx_box( void ) {
 void scr_bx( void )
 {
     bool                first_col;
-    box_col_set     *   box_temp;
-    box_col_set     *   cur_temp;
-    box_col_set     *   prev_temp;
-    box_col_stack   *   stack_temp;
-    char            *   p;
-    char            *   pa;
+    box_col_set         *box_temp;
+    box_col_set         *cur_temp;
+    box_col_set         *prev_temp;
+    box_col_stack       *stack_temp;
+    const char          *p;
+    const char          *pa;
     uint32_t            box_col;
     uint32_t            cur_col;
     uint32_t            i;

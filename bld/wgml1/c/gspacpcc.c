@@ -243,8 +243,8 @@ static void scr_cc_cp_common( bool do_pa )
 {
     bool            scanerr;
     char            cwcurr[4];
-    char        *   pa;
-    char        *   p;
+    const char      *pa;
+    const char      *p;
     int             len;
     su              cpwork;
     int32_t         test_space;
@@ -285,7 +285,7 @@ static void scr_cc_cp_common( bool do_pa )
             }
         }
     }
-    scan_restart = p;
+    scan_restart = (char *)p;
     return;
 }
 

@@ -68,8 +68,8 @@ static  int32_t round_indent( su * work )
 
 void    scr_in( void )
 {
-    char        *   pa;
-    char        *   p;
+    const char      *pa;
+    const char      *p;
     int             len;
     char            cwcurr[4];
     bool            scanerr;
@@ -156,7 +156,7 @@ void    scr_in( void )
     }
     t_page.cur_width = t_page.cur_left;
 
-    scan_restart = p;
+    scan_restart = (char *)p;
     return;
 }
 

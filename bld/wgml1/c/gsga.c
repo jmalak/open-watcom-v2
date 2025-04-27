@@ -486,7 +486,7 @@ void    scr_ga( void )
             xx_err( ERR_TAG_NAME_INV );     // name contains invalid or too many chars
             return;
         }
-        g_tag_entry = find_tag( tag_dict, g_tagname );
+        g_tag_entry = find_user_tag( tag_dict, g_tagname );
         if( g_tag_entry == NULL ) {
             xx_err_c( ERR_USER_TAG, g_tagname );  // tagname not defined
         }

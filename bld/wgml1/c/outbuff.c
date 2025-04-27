@@ -1337,9 +1337,14 @@ void ob_setup( void )
 
     buffout.current = 0;
     num = strtoul( &out_file_attr[2], NULL, 0 );
-    if( errno == ERANGE || num > UINT_MAX ) {
+    if( errno == ERANGE ) {
         xx_simple_err_i( ERR_OUT_REC_SIZE2, UINT_MAX );
     }
+#if !defined( __WATCOMC__ ) && defined( __UNIX__ )
+    if( num > UINT_MAX ) {
+        xx_simple_err_i( ERR_OUT_REC_SIZE2, UINT_MAX );
+    }
+#endif
     buffout.length = (size_t)num;
     /*
      * add space for null terminator, but don't count it in length

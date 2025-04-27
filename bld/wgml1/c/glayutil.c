@@ -156,7 +156,6 @@ condcode    lay_attr_and_value( lay_att_val *lay_attr )
     char            *p;
     char            *pa;
     condcode        rc;
-    int             i;
 
     p = scan_start;
     pa = p;
@@ -591,9 +590,11 @@ bool    i_int32( char * p, lay_attr_i lay_attr, int32_t * tm )
     (void)lay_attr;
 
     wk = strtol( p, NULL, 10 );
+#if !defined( __WATCOMC__ ) && defined( __UNIX__ )
     if( wk < INT_MIN || wk > INT_MAX ) {
         xx_line_err_c( ERR_NUM_TOO_LARGE, p );
     }
+#endif
     *tm = (int)wk;
     return( false );
 }

@@ -24,7 +24,7 @@ tag_dict_hdl    init_tag_dict( void )
 }
 
 
-static gtentry  *add_tag_dict( tag_dict_hdl *dict )
+gtentry  *add_tag_dict( tag_dict_hdl *dict )
 {
     gtentry     *new;
 
@@ -32,46 +32,6 @@ static gtentry  *add_tag_dict( tag_dict_hdl *dict )
     new->next = *dict;
     *dict = new;
     return( new );
-}
-
-
-/***************************************************************************/
-/*  add_tag     add tag entry to dictionary                                */
-/*              if tag already defined then error                          */
-/***************************************************************************/
-
-gtentry *add_tag( tag_dict_hdl *dict, const char *tagname, const char *macname, const int flags )
-{
-    gtentry     *ge;
-
-    ge = find_tag( *dict, tagname );
-    if( ge != NULL ) {
-        xx_source_err_c( ERR_TAG_EXIST, tagname );
-    }
-    ge = add_tag_dict( dict );
-    strcpy( ge->tagname, tagname );
-    ge->tagnamelen = strlen( ge->tagname );
-    strcpy( ge->macname, macname );
-    ge->tagflags = flags;
-    ge->attribs = NULL;
-    ge->usecount = 0;
-    return( ge );
-}
-
-
-/***************************************************************************/
-/*  change_tag     change macro to execute in tag entry                    */
-/***************************************************************************/
-
-gtentry *change_tag( tag_dict_hdl dict, const char *tagname, const char *macname )
-{
-    gtentry     *ge;
-
-    ge = find_tag( dict, tagname );
-    if( ge != NULL ) {
-       strcpy( ge->macname, macname );
-    }
-    return( ge );
 }
 
 
@@ -155,7 +115,7 @@ void    free_tag_dict( tag_dict_hdl dict )
 /*  returns ptr to tag or NULL if not found                                */
 /***************************************************************************/
 
-gtentry     *find_tag( tag_dict_hdl dict, const char *tagname )
+gtentry     *find_user_tag( tag_dict_hdl dict, const char *tagname )
 {
     gtentry     *ge;
 

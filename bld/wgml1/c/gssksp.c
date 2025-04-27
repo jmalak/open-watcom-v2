@@ -27,8 +27,8 @@ static void sksp_common( void )
     bool            a_seen          = false;    // records use of operand A (or ABS)
     bool            c_seen          = false;    // records use of operand C (or COND)
     bool            scanerr         = false;
-    char        *   p;
-    char        *   pa;
+    const char      *p;
+    const char      *pa;
     size_t          len;
     su              spskwork;
     text_space      text_spacing;

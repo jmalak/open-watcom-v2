@@ -81,8 +81,6 @@ extern  bool        is_tag_att_char( char c );
 extern  bool        is_su_char( char c );
 extern  char        *get_tagname( const char *p, char *tagname );
 extern  void        get_att_specval( att_val_type *attr_val );
-extern  char        *get_tag_attname( const char *p, char *attname );
-extern  char        *get_lay_attname( const char *p, char *attname );
 
 /* gbanner.c                            */
 extern  void        out_ban_bot( void );
@@ -297,11 +295,10 @@ extern  void    eoc_bx_box( void );
 
 
 /* gscan.c                              */
-extern const gmltag *find_lay_tag( char *token, size_t toklen );
-extern const gmltag *find_sys_tag( char *token, size_t toklen );
+extern const gmltag *find_lay_tag( const char *token, size_t toklen );
+extern const gmltag *find_sys_tag( const char *token, size_t toklen );
 extern char         *get_text_line( char *p );
 extern bool         is_ip_tag( e_tags offset );
-extern void         set_overload( struct gtentry *in_gt );
 extern void         scan_line( void );
 extern void         set_if_then_do( ifcb *cb );
 extern condcode     test_process( ifcb *cb );
@@ -374,14 +371,13 @@ extern void         link_sym( sym_dict_hdl dict, symvar *sym );
 
 
 /* gtagdict.c                           */
-extern  struct gtentry  *add_tag( tag_dict_hdl *dict, const char *tagname, const char *macname, const int flags );
-extern  struct gtentry  *change_tag( tag_dict_hdl dict, const char *tagname, const char *macname );
 extern  tag_dict_hdl    init_tag_dict( void );
+extern  struct gtentry  *add_tag_dict( tag_dict_hdl *dict );
 extern  void            free_tag_dict( tag_dict_hdl dict );
 extern  struct gtentry  *free_tag( tag_dict_hdl *dict, struct gtentry *ge );
 extern  void            print_tag_dict( tag_dict_hdl dict );
 extern  void            print_tag_entry( struct gtentry *entry );
-extern  struct gtentry  *find_tag( tag_dict_hdl dict, const char *tagname );
+extern  struct gtentry  *find_user_tag( tag_dict_hdl dict, const char *tagname );
 
 /* gtxtpool.c                           */
 extern  void            add_single_text_chars_to_pool( text_chars *a_chars );

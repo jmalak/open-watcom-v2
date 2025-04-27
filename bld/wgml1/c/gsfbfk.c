@@ -225,8 +225,8 @@ static doc_el_group * do_split( void )
 /**************************************************************************/
 
 static char * get_params( const char * scw_name ) {
-    char            *   p;
-    char            *   pa;
+    const char          *p;
+    const char          *pa;
     size_t              len;
     su                  fbk_su;
 
@@ -267,7 +267,7 @@ static char * get_params( const char * scw_name ) {
             }
         }
     }
-    return( p );
+    return( (char *)p );
 }
 
 /**************************************************************************/

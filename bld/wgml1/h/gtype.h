@@ -455,7 +455,7 @@ typedef enum {
 
 typedef struct gmltag {
     char            tagname[TAG_NAME_LENGTH + 1];
-    size_t          taglen;
+    int             taglen;
     void            (*gmlproc)( const struct gmltag * entry );
     gmlflags        tagflags;
     locflags        taglocs;
@@ -554,7 +554,7 @@ typedef struct gtentry {
     struct gtentry  *   next;
     gaentry         *   attribs;        // list of attributes
     unsigned            usecount;
-    int                 tagnamelen;     // actual length of name
+    int                 taglen;         // actual length of name
     char                tagname[TAG_NAME_LENGTH + 1];
     char                macname[MAC_NAME_LENGTH + 2];   // macro to call
     gtflags             tagflags;
