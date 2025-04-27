@@ -15,6 +15,153 @@
 
 
 /***************************************************************************/
+/* return true if the character parameter is a string delimiter            */
+/***************************************************************************/
+
+bool is_quote_char( char c )
+{
+    if( c == s_q || c == d_q || c == slash || c == excl  || c == cent ||
+        ((c == l_q) && (c != CW_sep_char)) ||
+        c == not_c || c == vbar1 || c == vbar2 ) {
+        return( true );
+    } else {
+        return( false );
+    }
+}
+
+/*
+ * Test character as valid for a GML Tag name
+ */
+
+bool is_tag_char( char c )
+{
+    bool    test;
+
+    test = my_isalnum( c );
+    return( test );
+}
+
+/*
+ * Test character as valid for a GML predefined attribute name
+ */
+
+bool is_tag_att_char( char c )
+{
+    bool    test;
+
+    test = my_isalnum( c );
+    if( !test ) {
+        test = ( c == '_' );
+    }
+    return( test );
+}
+
+/*
+ * Test character as valid for a Layout predefined attribute name
+ */
+
+bool is_lay_att_char( char c )
+{
+    bool    test;
+
+    test = my_isalpha( c );
+    if( !test ) {
+        test = ( c == '_' );
+    }
+    return( test );
+}
+
+/*
+ * Test character as valid for a function name
+ */
+
+bool is_function_char( char c )
+{
+    bool    test;
+
+    test = my_isalnum( c );
+    return( test );
+}
+
+/*
+ * Test character as valid for an identifier name
+ */
+
+bool is_id_char( char c )
+{
+    bool    test;
+
+    test = my_isalnum( c );
+    return( test );
+}
+
+/*
+ * Test character as valid for an space unit value
+ */
+
+bool is_su_char( char c )
+{
+    bool    test;
+
+    test = my_isalnum( c );
+    if( !test ) {
+        test = ( c == '.' );
+    }
+    return( test );
+}
+
+/*
+ * Test character as valid for a macro name
+ */
+
+bool is_macro_char( char c )
+{
+    bool    test;
+
+    test = my_isalnum( c );
+    if( !test ) {
+        test = ( c == '@' ) || ( c == '#' ) || ( c == '$' ) || ( c == '_' );
+    }
+    return( test );
+}
+
+/*
+ * Test character as valid for a symbol name
+ */
+
+bool is_symbol_char( char c )
+{
+    bool    test;
+
+    test = my_isalnum( c );
+    if( !test ) {
+        test = ( c == '@' ) || ( c == '#' ) || ( c == '$' ) || ( c == '_' );
+    }
+    return( test );
+}
+
+/*
+ * Test character for a full stop character
+ */
+
+bool is_stop_char( char c )
+{
+    bool    test;
+
+    test = ( c == '.' ) || ( c == ':' ) || ( c == '!' ) || ( c == '?' );
+    return( test );
+}
+
+/*
+ * Test character for a space or tab character
+ */
+
+bool is_space_tab_char( char c )
+{
+    return( ( c == ' ' ) || ( c == '\t' ) );
+}
+
+/***************************************************************************/
 /*  parses in_su->su_txt to complete initialization of in_su               */
 /*  Notes:                                                                 */
 /*      att_val_to_su() uses this function to convert all values,          */
@@ -139,8 +286,7 @@ static const bool internal_to_su( su *in_su, bool tag, const char *base )
     pu = ps;
     for( i = 0; i < 2; i++ ) {                  // max two characters in unit
         if( my_isalpha( *ps ) ) {
-            unit[k++] = my_tolower( *ps );      // save Unit
-            ps++;
+            unit[k++] = *ps++;
         } else {
             break;
         }
@@ -620,18 +766,18 @@ bool lay_init_su( const char *p, su *in_su )
 
     in_su->su_u = SU_undefined;
     if( *ps == '+' ) {              // not allowed with tags
-        xx_line_err_c( ERR_INV_ATT_VAL, ps );
+        xx_line_err_c( ERR_INV_ATT_VAL, pa );
     } else if( *ps == '-' ) {       // not relative, just negative
         sign = *ps;
         if( *(ps + 1) == '+'
           || *(ps + 1) == '-' ) {   // only one sign is allowed
-            xx_line_err_c( ERR_INV_ATT_VAL, ps );
+            xx_line_err_c( ERR_INV_ATT_VAL, pa );
         }
     } else {
         sign = '+';
     }
     if( *ps == '\0' ) {             // value end reached, not valid
-        xx_line_err_c( ERR_INV_ATT_VAL, ps );
+        xx_line_err_c( ERR_INV_ATT_VAL, pa );
     }
     in_su->su_relative = false;     // no relative positioning with tags
 
@@ -863,7 +1009,6 @@ static char *get_tag_attname( const char *p, char *attname )
 char *get_att_name( char *p, char **orig, char *attname )
 {
     static char     buf[BUF_SIZE];
-    int             i;
 
     ProcFlags.tag_end_found = false;
     for(;;) {                           // loop until potential attribute/rescan line found
@@ -917,7 +1062,7 @@ void get_att_specval( att_val_type *attr_val )
 {
     int     i;
 
-    for( i = 0; i < SPECVAL_LENGTH && is_id_char( attr_val->name[i] ); i++) {
+    for( i = 0; i < SPECVAL_LENGTH && is_su_char( attr_val->name[i] ); i++) {
         attr_val->specval[i] = my_tolower( attr_val->name[i] );
     }
     attr_val->specval[i] = '\0';
@@ -925,8 +1070,6 @@ void get_att_specval( att_val_type *attr_val )
 
 char *get_att_value( char *p, att_val_type *attr_val )
 {
-    int         i;
-
     attr_val->name = NULL;
     attr_val->len = 0;
     attr_val->quoted = ' ';
