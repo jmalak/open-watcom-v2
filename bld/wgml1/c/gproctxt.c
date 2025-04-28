@@ -317,15 +317,8 @@ static text_chars * do_c_chars( text_chars *c_chars, text_chars *in_chars,
 
 static void do_fc_comp( void )
 {
-    bool        sub_sup;
     uint32_t    end_point;
     uint32_t    tot_shift;
-
-    if( t_line->last != NULL ) {
-        sub_sup = (t_line->last->type == tx_sub) || (t_line->last->type == tx_sup);
-    } else {
-        sub_sup = false;
-    }
 
     fill_width = wgml_fonts[g_curr_font].width_table[c_stop->fill_char];
     fill_count = t_page.cur_width / fill_width;
@@ -356,13 +349,8 @@ static void do_fc_comp( void )
                 tot_shift = (fill_start - gap_start) + ((c_stop->column + tab_col) - end_point);
                 fill_start += ((c_stop->column + tab_col) - end_point);
                 if( tot_shift >= fill_width ) {
-                    if( !sub_sup ) {
-                        fill_start -= fill_width;
-                        fill_count++;
-                    }
-                } else if( sub_sup ) {
-                    fill_start += fill_width;
-                    fill_count--;
+                    fill_start -= fill_width;
+                    fill_count++;
                 }
             }
         }
