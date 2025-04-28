@@ -219,7 +219,6 @@ static void scan_gml( void )
               && ge->overload ) {
                 me = NULL;
             }
-
         }
     }
     if( me != NULL ) {                  // usertag and coresponding macro ok
@@ -992,7 +991,7 @@ char *get_text_line( char *p )
     bool            text_found;
     char            *pa;
     gtentry         *ge;                // GML user tag entry
-    size_t          taglen;
+    int             taglen;
     char            tagname[TAG_NAME_LENGTH + 1];
 
     use_current = false;
@@ -1024,7 +1023,7 @@ char *get_text_line( char *p )
         if( *p != '\0' ) {              // text exists
             classify_record( *p );      // sets ProcFlags used below if appropriate
             if( ProcFlags.script_cw ) {
-                text_found = false;     // control word, macro, or whatever
+                xx_err( ERR_TEXT_NOT_TAG_CW );
             } else if( ProcFlags.gml_tag ) {
                 text_found = false;     // control word, macro, or whatever
                 pa = p++;               // skip GML prefix character
@@ -1044,17 +1043,12 @@ char *get_text_line( char *p )
                     } else {
                         ge = find_user_tag( tag_dict, tagname );
                     }
-                    if( ge == NULL
-                      && find_lay_tag( tagname, taglen ) == NULL
-                      && find_sys_tag( tagname, taglen ) == NULL ) {
-                        text_found = true;
+                    if( ge != NULL
+                      || find_lay_tag( tagname, taglen ) != NULL
+                      || find_sys_tag( tagname, taglen ) != NULL ) {
+                        xx_err( ERR_TEXT_NOT_TAG_CW );
                     }
                 }
-            } else {
-                text_found = true;
-            }
-            if( !text_found ) {                   // no <text_line> found
-                xx_err( ERR_TEXT_NOT_TAG_CW );
             }
         }
     }
