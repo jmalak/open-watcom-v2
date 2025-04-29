@@ -669,7 +669,7 @@ typedef struct getnum_block {
     char    *   argstop;
     char    *   errstart;
     char    *   first;
-    inr         length;
+    int         length;
     int         result;                 // result as long
     char        resultstr[12];          // result in char format (32-bit number)
     getnumrc    error;
