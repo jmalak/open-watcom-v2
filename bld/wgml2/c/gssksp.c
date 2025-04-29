@@ -31,6 +31,8 @@
 
 #include "wgml.h"
 
+#include "clibext.h"
+
 
 static  int32_t    vspace  = 0;                 // vertical space entered (vbus)
 

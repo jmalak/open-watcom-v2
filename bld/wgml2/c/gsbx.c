@@ -46,6 +46,8 @@
 
 #include "wgml.h"
 
+#include "clibext.h"
+
 
 /**************************************************************************/
 /* BOX generates the horizontal lines and initiates the vertical lines of */

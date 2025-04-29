@@ -28,7 +28,11 @@
 *
 ****************************************************************************/
 
+
 #include "wgml.h"
+
+#include "clibext.h"
+
 
 typedef enum {
     fbk_none,   // initial value
