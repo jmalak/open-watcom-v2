@@ -40,7 +40,7 @@ typedef struct option {
     char        *   option;             // the option
     short           optionLen;          // length of option
     short           minLength;          // minimum abbreviation
-    long            value;              // sometimes value to set option to
+    int             value;              // sometimes value to set option to
     void            (*function)( struct option *optentry );
     int             parmcount;          // expected number of parms
 } option;
@@ -61,7 +61,7 @@ static char     *   opt_scan_ptr;
 static cmd_tok  *   cmd_tokens[MAX_NESTING];
 static cmd_tok  *   sav_tokens[MAX_NESTING];
 static cmd_tok  *   tokennext;
-static long         opt_value;
+static int          opt_value;
 static unsigned     level;              // include level 0 = cmdline
 
 
@@ -226,9 +226,9 @@ static char * read_indirect_file( const char * filename )
 /***************************************************************************/
 /*  convert string to integer                                              */
 /***************************************************************************/
-static long get_num_value( const char * p )
+static int get_num_value( const char *p )
 {
-    long    value;
+    int     value;
 
     value = 0;
     for( ; my_isdigit( *p ); p++ ) {
@@ -947,7 +947,7 @@ static void set_from( option * opt )
     } else {
         p = tokennext->token;
         opt_value = get_num_value( p );
-        if( opt_value < 1 || opt_value >= LONG_MAX ) {
+        if( opt_value < 1 || opt_value >= INT_MAX ) {
             xx_simple_err_c( err_out_range, "from" );
         } else {
             print_from = opt_value;
@@ -1003,7 +1003,7 @@ static void set_to( option * opt )
     } else {
         p = tokennext->token;
         opt_value = get_num_value( p );
-        if( opt_value < 1 || opt_value >= LONG_MAX ) {
+        if( opt_value < 1 || opt_value >= INT_MAX ) {
             xx_simple_err_c( err_out_range, "to" );
         } else {
             print_to = opt_value;
@@ -1225,7 +1225,7 @@ static void set_research( option * opt )
         }
         ProcFlags.researchfile = true;  // only one file
         research_from = 1;
-        research_to = ULONG_MAX - 1;
+        research_to = UINT_MAX - 1;
 
         research_file_name[0] = '\0';   // no filename
         if( my_isalpha( *str ) ) {      // filename ?
