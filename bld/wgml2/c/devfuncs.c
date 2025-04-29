@@ -927,7 +927,7 @@ static void *df_wait( void )
         internal_err( __FILE__, __LINE__ );
     }
 
-    getch();
+    getchar();
     return( df_recordbreak_device() );
 }
 
