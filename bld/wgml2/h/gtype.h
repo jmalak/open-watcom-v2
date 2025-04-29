@@ -669,11 +669,11 @@ typedef struct getnum_block {
     char    *   argstop;
     char    *   errstart;
     char    *   first;
-    long        length;
-    long        result;                 // result as long
-    char        resultstr[12];          // result in char format
+    inr         length;
+    int         result;                 // result as long
+    char        resultstr[12];          // result in char format (32-bit number)
     getnumrc    error;
-    char        num_sign;              // remember absolute or relative value
+    char        num_sign;               // remember absolute or relative value
     condcode    cc;
 } getnum_block;
 

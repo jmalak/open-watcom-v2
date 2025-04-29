@@ -62,7 +62,7 @@ static  int     cvalue;                 // current argument stack ptr
 static  int     nparens;                // nesting level
 
 static  char    oper_stack[MAXOPER];    // operator stack
-static  long    value_stack[MAXTERM];   // argument stack
+static  int     value_stack[MAXTERM];   // argument stack
 static  int     ignore_blanks;
 
 
@@ -99,7 +99,7 @@ static  int get_prio_m1( void )
  * stack functions
  */
 
-static  int pop_val( long *arg )
+static  int pop_val( int *arg )
 {
     if( --cvalue < 0 ) {
         return( not_ok );
@@ -108,7 +108,7 @@ static  int pop_val( long *arg )
     return( ok );
 }
 
-static  void push_val( long arg )
+static  void push_val( int arg )
 {
     value_stack[cvalue++] = arg;
 }
@@ -137,8 +137,8 @@ static  void push_op( char op )
 
 static  int do_expr( void )
 {
-    long arg1;
-    long arg2;
+    int arg1;
+    int arg2;
     int op;
 
     if( not_ok == pop_op( &op ) ) {
@@ -273,9 +273,9 @@ static char *get_exp( const char *str )
     return tokbuf;
 }
 
-static  int evaluate( char **line, long *val )
+static  int evaluate( char **line, int *val )
 {
-    long        arg;
+    int         arg;
     char    *   ptr;
     char    *   str;
     char    *   endptr;
@@ -320,13 +320,18 @@ static  int evaluate( char **line, long *val )
                     break;
                 }
             }
+            {
+                long    num;
 
-            arg = strtol( str, &endptr, 10 );
-            if( (((arg == LONG_MIN) || (arg == LONG_MAX)) && errno == ERANGE)
-                 || (str == endptr) ) {
-                 return( not_ok );
+                num = strtol( str, &endptr, 10 );
+                if( (errno == ERANGE)
+                  || (num <= INT_MIN) 
+                  || (num >= INT_MAX) 
+                  || (str == endptr) ) {
+                    return( not_ok );
+                }
+                arg = num;
             }
-
             push_val( arg );
 
             ptr += endptr - str;        // to the next unprocessed char
@@ -428,8 +433,7 @@ condcode getnum( getnum_block *gn )
         gn->cc = notnum;
     } else {
         gn->argstart = a + 1;       // start for next scan
-        gn->length = sprintf_s( gn->resultstr, sizeof( gn->resultstr ), "%ld",
-                                gn->result );
+        gn->length = sprintf( gn->resultstr, "%d", gn->result );
         if( gn->result >= 0 ) {
             gn->cc = pos;
         } else {

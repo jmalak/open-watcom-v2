@@ -323,20 +323,20 @@ static bool su_expression( su * in_su )
     bool                retval  = true;
     char            *   p       = in_su->su_txt;
     condcode            cc;
-    getnum_block        value;
+    getnum_block        gn;
 
-    value.ignore_blanks = false;
-    value.argstart = p;
+    gn.ignore_blanks = false;
+    gn.argstart = p;
     while( *p != '\0' )
         p++;
-    value.argstop = p - 1;
-    cc = getnum( &value );
+    gn.argstop = p - 1;
+    cc = getnum( &gn );
 
     if( cc == notnum ) {
         retval = false;
     } else {
         in_su->su_u = SU_chars_lines;
-        in_su->su_whole = value.result;
+        in_su->su_whole = gn.result;
         in_su->su_dec = 0;
         in_su->su_inch = 0;
         in_su->su_mm = 0;
