@@ -30,6 +30,7 @@
 
 
 #include "wgml.h"
+#include <errno.h>
 
 
 /***************************************************************************/
@@ -84,9 +85,9 @@ static const bool internal_to_su( su *in_su, bool tag, const char *base )
     char        unit[4];
     int         i;
     ldiv_t      div;
-    long        k;
-    long        wh;
-    long        wd;
+    int         k;
+    int         wh;
+    int         wd;
     su      *   s;
 
     unit[3] = '\0';
@@ -465,8 +466,8 @@ static bool su_layout_special( su * in_su )
     bool        retval = true;
     char    *   ps;
     su      *   s;
-    long        wh;
-    long        wd;
+    int         wh;
+    int         wd;
     char        quote;
 
     s = in_su;
@@ -851,7 +852,7 @@ int32_t conv_vert_unit( su *s, text_space text_spacing, font_number font )
 /*  returns ptr to string or NULL if error                                 */
 /***************************************************************************/
 
-char * format_num( uint32_t n, char * r, size_t rsize, num_style ns )
+char *format_num( unsigned n, char *r, size_t rsize, num_style ns )
 {
     size_t      pos;
     size_t      pos1;
@@ -906,9 +907,7 @@ char * format_num( uint32_t n, char * r, size_t rsize, num_style ns )
         }
         break;
     case h_style :                      // arabic
-        ulongtodec( n, p );
-        pos1 = strlen( p );
-        pos += pos1;
+        pos += sprintf( p, "%u", n );
         if( pos >= rsize ) {
             return( NULL );             // result field overflow
         }
@@ -1244,9 +1243,9 @@ void g_keep_nest( const char * cw_tag ) {
 
 font_number get_font_number( char * value, size_t len )
 {
-    char        *   p;
-    char        *   pb;
-    uint32_t        wk;
+    char            *p;
+    char            *pb;
+    unsigned long   wk;
 
     p = value;
     pb = p + len;
@@ -1259,8 +1258,8 @@ font_number get_font_number( char * value, size_t len )
         xx_line_err_c( err_num_too_large, val_start );
     }
 
-    wk = strtol( value, NULL, 10 );
-    if( wk > 255 ) {
+    wk = strtoul( value, NULL, 10 );
+    if( errno == ERANGE || wk > 255 ) {
         wk = 0;
     }
     return( wk );
@@ -1333,11 +1332,11 @@ char * get_tag_value( char * p )
 /*  convert integer to roman digits                                        */
 /***************************************************************************/
 
-char * int_to_roman( uint32_t n, char * r, size_t rsize )
+char *int_to_roman( unsigned n, char *r, size_t rsize )
 {
     static const struct {
-        uint32_t    val;
-        uint32_t    val49;
+        unsigned    val;
+        unsigned    val49;
         char        ch;
         char        ch49;
     } i_2_r[] =

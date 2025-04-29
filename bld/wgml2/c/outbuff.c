@@ -1366,9 +1366,18 @@ void ob_setup( void )
     binc_buff.text = mem_alloc( binc_buff.length );
 
     buffout.current = 0;
-    buffout.length = strtoul( &out_file_attr[2], NULL, 0 );
-    if( errno == ERANGE ) {
-        xx_simple_err_i( err_out_rec_size2, ULONG_MAX );
+    {
+        unsigned long   num;
+
+        num = strtoul( &out_file_attr[2], NULL, 0 );
+#if !defined( __WATCOMC__ ) && defined( __UNIX__ )
+        if( errno == ERANGE || num > UINT_MAX ) {
+#else
+        if( errno == ERANGE ) {
+#endif
+            xx_simple_err_i( err_out_rec_size2, UINT_MAX );
+        }
+        buffout.length = num;
     }
     buffout.text = mem_alloc( buffout.length );
 

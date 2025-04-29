@@ -62,9 +62,9 @@
 typedef struct sym_dcp {
     symvar          *   first;          // first symbol in chain
     symvar      *   *   htbl;           // hash table
-    long                lookups;        // lookup counter
-    long                symbols;        // symbol counter
-    long                compares;       // strcmp counter
+    int                 lookups;        // lookup counter
+    int                 symbols;        // symbol counter
+    int                 compares;       // strcmp counter
     bool                local;          // local/global flag
 } sym_dcp;
 
@@ -459,7 +459,7 @@ static bool check_subscript( sub_index sub )
             // SC--076 Subscript index must be between -1000000 and 1000000
             char    linestr[MAX_L_AS_STR];
 
-            slongtodec( sub, linestr );
+            sprintf( linestr, "%d", sub );
             xx_line_err_c( err_sub_out_of_range, linestr );
         }
     }

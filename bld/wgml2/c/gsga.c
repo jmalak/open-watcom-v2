@@ -187,8 +187,8 @@
 
 
 static  char        stringval[VAL_LENGTH + 1];
-static  char    *   valptr;
-static  long        ranges[4];
+static  char        *valptr;
+static  int         ranges[4];
 
 
 /***************************************************************************/
@@ -324,8 +324,8 @@ static  condcode    scan_att_optionsB( gavalflags * val_flags, condcode cca,
             gn.argstart = scan_start;
             gn.argstop  = scan_stop;
             gn.ignore_blanks = false;
-            ranges[2] = LONG_MIN;
-            ranges[3] = LONG_MIN;
+            ranges[2] = INT_MIN;
+            ranges[3] = INT_MIN;
             for( k = 0; k < 4; k++ ) {  // scan max 4 numbers
 
                 cc = getnum( &gn );
@@ -358,7 +358,7 @@ static  condcode    scan_att_optionsB( gavalflags * val_flags, condcode cca,
                     return( cc );
                 }
             }
-            if( ranges[2] > LONG_MIN ) {
+            if( ranges[2] > INT_MIN ) {
                 *val_flags |= val_def;  // we have default
                 *att_flags |= att_def;  // we have default
             }
@@ -388,7 +388,7 @@ static  condcode    scan_att_optionsB( gavalflags * val_flags, condcode cca,
                 return( cc );
             } else {
                 scan_start = gn.argstart;
-                ranges [0] = gn.result;
+                ranges[0] = gn.result;
             }
         } else {
             cc = neg;

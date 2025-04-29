@@ -689,7 +689,7 @@ static  void    print_stats( clock_t duration_ticks )
 
         peak = mem_get_peak_usage();
         if( peak ) {
-            sprintf( numstr, "%lu", peak;
+            sprintf( numstr, "%lu", peak );
             g_info_lm( inf_stat_6, numstr );
         }
     }
