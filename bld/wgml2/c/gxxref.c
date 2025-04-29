@@ -138,7 +138,7 @@ void gml_figref( const gmltag * entry )
         page_found = false;
         ref_page = false;
     } else if( cur_re != NULL ) {
-        do_page = ((page + 1) != cur_re->u.ffh.entry->pageno);
+        do_page = ((g_page + 1) != cur_re->u.ffh.entry->pageno);
     }
 
     dp_len = strlen( def_page );
@@ -255,9 +255,9 @@ void gml_hdref( const gmltag * entry )
             t_depth += wgml_fonts[g_curr_font].line_height;
         }
         if( t_depth > t_page.max_depth ) {
-            do_page = ((page + 2 ) != cur_re->u.ffh.entry->pageno);
+            do_page = ((g_page + 2 ) != cur_re->u.ffh.entry->pageno);
         } else {
-            do_page = ((page + 1 ) != cur_re->u.ffh.entry->pageno);
+            do_page = ((g_page + 1 ) != cur_re->u.ffh.entry->pageno);
         }
     } else {
         do_page = true;

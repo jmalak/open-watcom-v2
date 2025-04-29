@@ -309,7 +309,7 @@ static void remove_indentation( void )
         }
         SkipSpaces( p );                            // skip blanks
         if( *p == CW_sep_char ) {
-            if( ProcFlags.CW_force_sep && (CW_sep_char != NULL) ) { // only if valid
+            if( ProcFlags.CW_force_sep && (CW_sep_char != '\0') ) { // only if valid
                 p++;                                // skip CW_sep_char
             }
         } else if( (*p == SCR_char) && (*(p + 1) == GML_char) ) {
@@ -744,9 +744,9 @@ static  void    init_pass( void )
     line_from   = 1;                  // processing line range Masterdocument
     line_to     = UINT_MAX - 1;
 
-    apage               = 0;            // absolute pageno 1 - n
-    page                = 0;            // current pageno (in body 1 - n)
-    line                = 0;            // current output lineno on page
+    g_apage             = 0;            // absolute pageno 1 - n
+    g_page              = 0;            // current pageno (in body 1 - n)
+    g_line              = 0;            // current output lineno on page
     post_space          = 0;
 
     init_tag_att();                     // reset last defined GML tag

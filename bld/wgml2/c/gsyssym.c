@@ -194,7 +194,7 @@ static void sysapagefun( symvar * e )   // absolute page
 {
     (void)e;
 
-    sprintf( sysapagestr, "%d", apage + 1 );   // to match wgml 4.0
+    sprintf( sysapagestr, "%d", g_apage + 1 );   // to match wgml 4.0
     return;
 }
 
@@ -640,7 +640,7 @@ static void syslinefun( symvar * e )    // current lineno on page
 {
     (void)e;
 
-    sprintf( syslinestr, "%d", line );
+    sprintf( syslinestr, "%d", g_line );
     return;
 }
 
@@ -733,7 +733,7 @@ static void syspagefun( symvar * e )    // pageno in body
 {
     (void)e;
 
-    sprintf( syspagestr, "%d", page );
+    sprintf( syspagestr, "%d", g_page );
     return;
 }
 
@@ -765,7 +765,7 @@ static void syspgnumafun( symvar * e )  // pagenumber
 {
     (void)e;
 
-    sprintf( syspgnumastr, "%d", page );
+    sprintf( syspgnumastr, "%d", g_page );
     return;
 }
 
@@ -773,7 +773,7 @@ static void syspgnumadfun( symvar * e ) // pagenumber.
 {
     (void)e;
 
-    sprintf( syspgnumadstr, "%d.", page );
+    sprintf( syspgnumadstr, "%d.", g_page );
     return;
 }
 
@@ -781,7 +781,7 @@ static void syspgnumcfun( symvar * e )  // roman page no UPPER
 {
     (void)e;
 
-    int_to_roman( page, syspgnumcstr, sizeof( syspgnumcstr ) );
+    int_to_roman( g_page, syspgnumcstr, sizeof( syspgnumcstr ) );
     strupr( syspgnumcstr );
     return;
 }
@@ -790,7 +790,7 @@ static void syspgnumcdfun( symvar * e ) // roman page no UPPER.
 {
     (void)e;
 
-    int_to_roman( page, syspgnumcdstr, sizeof( syspgnumcdstr ) );
+    int_to_roman( g_page, syspgnumcdstr, sizeof( syspgnumcdstr ) );
     strupr( syspgnumcdstr );
     strcat( syspgnumcdstr, "." );
     return;
@@ -800,7 +800,7 @@ static void syspgnumrfun( symvar * e ) // roman page no
 {
     (void)e;
 
-    int_to_roman( page, syspgnumrstr, sizeof( syspgnumrstr ) );
+    int_to_roman( g_page, syspgnumrstr, sizeof( syspgnumrstr ) );
     return;
 }
 
@@ -808,7 +808,7 @@ static void syspgnumrdfun( symvar * e ) // roman page no.
 {
     (void)e;
 
-    int_to_roman( page, syspgnumrdstr, sizeof( syspgnumrdstr ) );
+    int_to_roman( g_page, syspgnumrdstr, sizeof( syspgnumrdstr ) );
     strcat( syspgnumrdstr, "." );
     return;
 }
@@ -848,7 +848,7 @@ static void syspnfun( symvar * e )      // page no
 {
     (void)e;
 
-    sprintf( syspnstr, "%d", page );
+    sprintf( syspnstr, "%d", g_page );
     return;
 }
 
@@ -856,7 +856,7 @@ static void sysppagefun( symvar * e )   // page no
 {
     (void)e;
 
-    sprintf( sysppagestr, "%d", page );
+    sprintf( sysppagestr, "%d", g_page );
     return;
 }
 
@@ -957,7 +957,7 @@ static void sysseqnofun( symvar * e )   // seqno current input record
             l = input_cbs->s.m->lineno;
         }
     }
-    sprintf_s( e->sub_0->value, MAX_L_AS_STR, "%.8lu", l );
+    sprintf_s( e->sub_0->value, MAX_L_AS_STR, "%.8u", l );
     return;
 }
 

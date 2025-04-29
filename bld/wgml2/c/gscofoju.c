@@ -48,7 +48,7 @@ static void do_co_off( void )
     t_doc_el_group = cur_doc_el_group;
     return;
 }
-    
+
 /***************************************************************************/
 /*  reinsert the doc_elements from the block                               */
 /*  identify sub-blocks created with SK -1 or SK n, n > 0                  */
@@ -72,13 +72,13 @@ static void do_co_on( void )
     uint32_t            interval    = 0;    // interval between break_point values and between max_lines values
     uint32_t            max_start   = 0;    // first possible maximum line number
     uint32_t            max_lines   = 0;    // maximum line number
-    uint32_t            min_lines   = 0;    // minimum line number  
+    uint32_t            min_lines   = 0;    // minimum line number
     uint32_t            offset      = 0;    // offset from non-full first page
     uint32_t            page_line   = 0;    // current line number on current page
     uint32_t            start_page  = 0;    // apage on which block starts
     uint32_t            t_cur_line  = 0;    // current text line number
     uint32_t            t_line_tot  = 0;    // total text lines in block
-    uint32_t            threshold   = 0;    // threshold line number  
+    uint32_t            threshold   = 0;    // threshold line number
 
     /* must have text and it must have been started by CO OFF */
 
@@ -141,7 +141,7 @@ static void do_co_on( void )
                         last_group->last = last_group->last->next;
                     }
                     cur_el = cur_el->next;                  // detach from list
-                    last_group->last->next = NULL;                                
+                    last_group->last->next = NULL;
                     last_group->depth += last_group->last->blank_lines +
                                          last_group->last->subs_skip + last_group->last->depth;
                 }
@@ -177,7 +177,7 @@ static void do_co_on( void )
                         lpp = (t_page.max_depth - t_page.cur_depth
                               - cur_doc_el_group->first->subs_skip) / line_height;  // for first page
                     }
-                    start_page = apage;
+                    start_page = g_apage;
                     if( (cur_doc_el_group->first->type == el_text)
                             && ((cur_doc_el_group->first->top_skip == 0)
                                 || (t_page.cur_depth == 0)) ) {            // first line is text
@@ -269,7 +269,7 @@ static void do_co_on( void )
 
                         /* do setup only once and only on second output page */
 
-                        if( (apage == (start_page + 1)) && (page_line == 1) ) {
+                        if( (g_apage == (start_page + 1)) && (page_line == 1) ) {
                             lpp = t_page.max_depth / line_height;               // for empty page
                             if( (threshold < lpp) ) { // threshold must be at most lpp - 1
                                 interval = lpp + threshold + 2;
@@ -566,7 +566,7 @@ static void process_fo_ju( bool both , char *cwcurr )
 /*        differently                                                      */
 /*        each text line is assumed to be in its own doc_element           */
 /*        until the block is split, there is only one doc_el_group to be   */
-/*        processed                                                        */           
+/*        processed                                                        */
 /*        further work may be needed                                       */
 /***************************************************************************/
 

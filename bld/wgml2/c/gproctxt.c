@@ -1245,14 +1245,14 @@ void do_justify( uint32_t lm, uint32_t rm, text_line * line )
     }
     switch( ProcFlags.justify ) { // convert inside / outside to left / right
     case ju_inside :                    // depending on odd / even page
-        if( page & 1 ) {
+        if( g_page & 1 ) {
             just = ju_right;
         } else {
             just = ju_left;
         }
         break;
     case ju_outside :
-        if( page & 1 ) {
+        if( g_page & 1 ) {
             just = ju_left;
         } else {
             just = ju_right;

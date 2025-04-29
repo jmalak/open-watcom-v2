@@ -66,7 +66,7 @@ static void do_el_list_out( doc_element * in_element )
                 }
                 ob_binclude( &in_element->element.binc );
                 if( in_element->element.binc.eol_index != NULL ) {
-                    eol_index_page( in_element->element.binc.eol_index, page );
+                    eol_index_page( in_element->element.binc.eol_index, g_page );
                 }
             }
             break;
@@ -74,7 +74,7 @@ static void do_el_list_out( doc_element * in_element )
             if( GlobalFlags.lastpass ) {
                 fb_dbox( &in_element->element.dbox );
                 if( in_element->element.dbox.eol_index != NULL ) {
-                    eol_index_page( in_element->element.dbox.eol_index, page );
+                    eol_index_page( in_element->element.dbox.eol_index, g_page );
                 }
             }
             break;
@@ -84,7 +84,7 @@ static void do_el_list_out( doc_element * in_element )
                     ob_graphic( &in_element->element.graph );
                 }
                 if( in_element->element.graph.eol_index != NULL ) {
-                    eol_index_page( in_element->element.graph.eol_index, page );
+                    eol_index_page( in_element->element.graph.eol_index, g_page );
                 }
             }
             break;
@@ -92,14 +92,14 @@ static void do_el_list_out( doc_element * in_element )
             if( GlobalFlags.lastpass ) {
                 fb_hline( &in_element->element.hline );
                 if( in_element->element.hline.eol_index != NULL ) {
-                    eol_index_page( in_element->element.hline.eol_index, page );
+                    eol_index_page( in_element->element.hline.eol_index, g_page );
                 }
             }
             break;
         case el_text :
             if( in_element->element.text.entry != NULL ) {       // heading
                 out_head_page( in_element->element.text.entry,
-                               in_element->element.text.ref, page );
+                               in_element->element.text.ref, g_page );
             }
             if( GlobalFlags.lastpass ) {
                 ProcFlags.force_op = in_element->element.text.force_op;
@@ -108,7 +108,7 @@ static void do_el_list_out( doc_element * in_element )
                         cur_line != NULL; cur_line = cur_line->next ) {
                     fb_output_textline( cur_line );
                     if( cur_line->eol_index != NULL ) {
-                        eol_index_page( cur_line->eol_index, page );
+                        eol_index_page( cur_line->eol_index, g_page );
                     }
                     /* Set value for OC output (if all goes well) */
                     if( (in_element->next == NULL) && (cur_line->next == NULL) ) {
@@ -128,7 +128,7 @@ static void do_el_list_out( doc_element * in_element )
             if( GlobalFlags.lastpass ) {
                fb_vline( &in_element->element.vline );
                 if( in_element->element.vline.eol_index != NULL ) {
-                    eol_index_page( in_element->element.vline.eol_index, page );
+                    eol_index_page( in_element->element.vline.eol_index, g_page );
                 }
             }
             break;
@@ -136,7 +136,7 @@ static void do_el_list_out( doc_element * in_element )
             /* next element is positioned to skip the space */
             if( GlobalFlags.lastpass ) {
                 if( in_element->element.vspace.eol_index != NULL ) {
-                    eol_index_page( in_element->element.vspace.eol_index, page );
+                    eol_index_page( in_element->element.vspace.eol_index, g_page );
                 }
             }
             break;
@@ -1188,7 +1188,7 @@ static void update_column( void )
 #if 0
             /* kept in case actual criteria ever discovered */
             if( (t_page.cur_depth != 0) &&
-                    ((t_page.cur_depth + cur_group->depth) > t_page.max_depth) && 
+                    ((t_page.cur_depth + cur_group->depth) > t_page.max_depth) &&
                     ((cur_group->depth <= t_page.max_depth)) ) {
                 /* Put block in new column */
                 break;
@@ -1277,7 +1277,7 @@ static void update_column( void )
             /* if it is empty, then discard it and update n_page.fk_queue             */
             /* if it is not empty, the n_page.fk_queue contains the rest of the group */
             /**************************************************************************/
-            
+
             if( cur_group->depth == 0 ) {       // this is n_page.fk_queue
                 n_page.fk_queue = n_page.fk_queue->next;
                 if( n_page.fk_queue == NULL ) {
@@ -1366,7 +1366,7 @@ static void update_column( void )
                     n_page.last_col_main = n_page.col_main;
                     while( n_page.last_col_main->next != NULL ) {
                         n_page.last_col_main = n_page.last_col_main->next;
-                    }                            
+                    }
                     cur_el->next = NULL;
                     if( t_page.cur_col->main == NULL ) {
                         t_page.cur_col->main = cur_el;
@@ -1520,11 +1520,11 @@ void do_page_out( void )
 
     /* Set up for the new page */
 
-    if( apage && GlobalFlags.lastpass ) {   // don't do before first page
+    if( g_apage && GlobalFlags.lastpass ) {   // don't do before first page
        fb_document_page();                  // NEWPAGE is interpreted here
     }
-    apage++;
-    page++;
+    g_apage++;
+    g_page++;
 
     /****************************************************************/
     /*  test section to see if a kludge can be found for the        */
@@ -1562,7 +1562,7 @@ void do_page_out( void )
     /* Process any page-specific index items */
 
     if( t_page.eol_index != NULL ) {
-        eol_index_page( t_page.eol_index, page );
+        eol_index_page( t_page.eol_index, g_page );
     }
 
     /* Get the banner text into the proper sections */
@@ -1574,7 +1574,7 @@ void do_page_out( void )
 
     if( (t_page.top_banner != NULL) && (t_page.top_banner->by_line != NULL) ) {
         save_prev = g_prev_font;
-        out_ban_top();                      // resets g_prev_font for top banner 
+        out_ban_top();                      // resets g_prev_font for top banner
 
         /********************************************************************/
         /* Record g_prev_font for a GRAPHIC element                         */
@@ -2099,7 +2099,7 @@ void insert_col_main( doc_element * a_element )
                     a_element = t_page.last_col_main;
                     t_page.last_col_main = t_page.last_col_main->element.text.prev;
                     t_page.last_col_main->next = NULL;
-                }                                
+                }
                 page_full = true;
             } else {        // the entire element fits on the current page
                 if( t_page.cur_col->main == NULL ) {
@@ -2349,7 +2349,7 @@ void reset_bot_ban( void )
         old_depth = 0;
     }
 
-    t_page.bottom_banner = sect_ban_bot[!(page & 1)];
+    t_page.bottom_banner = sect_ban_bot[(g_page & 1) == 0];
 
     if( t_page.bottom_banner != NULL ) {
         bottom_depth = t_page.bottom_banner->ban_depth;
@@ -2385,7 +2385,7 @@ void reset_top_ban( void )
         old_depth = 0;
     }
 
-    t_page.top_banner = sect_ban_top[!(page & 1)];
+    t_page.top_banner = sect_ban_top[(g_page & 1) == 0];
 
     if( t_page.top_banner != NULL ) {
         top_depth = t_page.top_banner->ban_depth;

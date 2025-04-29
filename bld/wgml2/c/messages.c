@@ -59,7 +59,7 @@ void out_msg( const char *msg, ... )
     va_list args;
 
     va_start( args, msg );
-    vprintf_s( msg, args );
+    vprintf( msg, args );
     va_end( args );
 }
 
@@ -235,7 +235,7 @@ void out_msg_research( const char *msg, ... )
 
     if( GlobalFlags.research ) {
         va_start( args, msg );
-        vprintf_s( msg, args );
+        vprintf( msg, args );
         va_end( args );
     }
     return;

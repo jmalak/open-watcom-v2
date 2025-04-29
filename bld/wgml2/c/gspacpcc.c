@@ -49,12 +49,12 @@ static void do_output( bool do_pa )
 {
     uint32_t        cur_page;
 
-    cur_page = apage;
+    cur_page = g_apage;
     full_col_out();                 // t_page has content, but n_page does not
-    if( cur_page == apage ) {
+    if( cur_page == g_apage ) {
         do_page_out();              // excludes cases where t_page has contents
     }
-    if( do_pa || (cur_page != apage) ) {
+    if( do_pa || (cur_page != g_apage) ) {
         reset_t_page();
     }
     return;
@@ -149,7 +149,7 @@ void scr_pa( void )
         if( !strnicmp( "ODD", pa, 3 ) ) {
             last_page_out();
             reset_t_page();
-            if( (page & 1) ) {          // next page would be even
+            if( g_page & 1 ) {          // next page would be even
                 do_page_out();
                 reset_t_page();
             }
@@ -161,7 +161,7 @@ void scr_pa( void )
         if( !strnicmp( "EVEN", pa, 4 ) ) {
             last_page_out();
             reset_t_page();
-            if( !(page & 1) ) {         // next page would be odd
+            if( (g_page & 1) == 0 ) {         // next page would be odd
                 do_page_out();
                 reset_t_page();
             }

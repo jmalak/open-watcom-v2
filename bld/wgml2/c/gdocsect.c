@@ -1149,8 +1149,8 @@ static void document_new_position( void )
      * This handles documents starting with banners and text only.
      */
 
-    if( sect_ban_top[page & 1] != NULL ) {
-        top_reg = sect_ban_top[page & 1]->by_line->first;
+    if( sect_ban_top[g_page & 1] != NULL ) {
+        top_reg = sect_ban_top[g_page & 1]->by_line->first;
         if( bin_driver->y_positive == 0x00 ) {
             top_pos = t_page.page_top - top_reg->reg_depth;
         } else {
@@ -1350,7 +1350,7 @@ void start_doc_sect( void )
         document_new_position();        // page is now ready for output
         if( page_e == ej_even ) {
             do_page_out();              // apage since first page is odd
-            page = 0;                   // restart page for first text page
+            g_page = 0;                 // restart page for first text page
             ProcFlags.page_ejected = true;
         }
     } else if( page_e == ej_no ) {
@@ -1363,7 +1363,7 @@ void start_doc_sect( void )
         ProcFlags.page_ejected = true;  // only first section has nothing to output
 
         if( page_e == ej_odd ) {
-            if( (page & 1) ) {          // first page will be odd
+            if( g_page & 1 ) {          // first page will be odd
                 if( clear_banners ) {   // emit blank page: no banners
                     t_page.top_banner = NULL;
                     t_page.bottom_banner = NULL;
@@ -1371,7 +1371,7 @@ void start_doc_sect( void )
                 do_page_out();          // emit blank page
             }
         } else if( page_e == ej_even ) {
-            if( !(page & 1) ) {         // first page will be even
+            if( (g_page & 1) == 0 ) {   // first page will be even
                 if( clear_banners ) {   // emit blank page: no banners
                     t_page.top_banner = NULL;
                     t_page.bottom_banner = NULL;
@@ -1396,7 +1396,7 @@ void start_doc_sect( void )
     t_page.panes->col_count = page_c;   // implicitly accomodates only one pane
     set_cols( t_page.panes );           // will need to be updated if multiple panes activated
     if( page_r ) {
-        page = 0;
+        g_page = 0;
     }
     g_text_spacing = page_s;
 

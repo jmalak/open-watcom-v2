@@ -173,7 +173,7 @@ void scr_ix( void )
 
     static char     cwcurr[4] = {" ix"};// control word string for errmsg
 
-    if( input_cbs->fmflags & II_tag_mac ) {   // ensure next line is valid 
+    if( input_cbs->fmflags & II_tag_mac ) {   // ensure next line is valid
         input_cbs->s.m->ix_seen = true;     // records use of control word, even if indexing is off
     }
 
@@ -191,7 +191,7 @@ void scr_ix( void )
 
     find_symvar( sys_dict, "$pix", no_subscript, &dictval);
     pix_char = *(dictval->value);
-    wkpage = page + 1;                  // predicted number of current page
+    wkpage = g_page + 1;                  // predicted number of current page
 
     p = scan_start;
 

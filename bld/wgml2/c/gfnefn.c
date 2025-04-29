@@ -150,8 +150,8 @@ void gml_fn( const gmltag * entry )
             }
         }
     } else {
-        if( (page + 1) != fn_entry->pageno ) {  // page number changed
-            fn_entry->pageno = page + 1;
+        if( (g_page + 1) != fn_entry->pageno ) {  // page number changed
+            fn_entry->pageno = g_page + 1;
             if( GlobalFlags.lastpass ) {        // last pass only
                 if( strlen( id ) > 0 ) {        // FN id exists
                     fn_fwd_refs = init_fwd_ref( fn_fwd_refs, id );

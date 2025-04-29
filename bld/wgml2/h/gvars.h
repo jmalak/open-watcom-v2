@@ -115,9 +115,9 @@ global  su              bind_even;      // Bind value for even pages
 global  int             passes;         // Max no of document passes
 global  int             pass;           // current document pass no
 
-global  uint32_t        apage;          // current absolute pageno &$apage
-global  uint32_t        page;           // current document pageno &$page
-global  line_number     line;           // current output lineno   &$line
+global  uint32_t        g_apage;        // current absolute pageno &$apage
+global  uint32_t        g_page;         // current document pageno &$page
+global  line_number     g_line;         // current output lineno   &$line
 global  int32_t         lcmax;          // remaining lines on page initial
 
 global  int32_t         hm;             // heading margin          &$hm

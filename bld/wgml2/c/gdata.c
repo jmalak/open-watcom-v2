@@ -106,9 +106,9 @@ void init_global_vars( void )
 
     passes              = 1;            // default number of passes
 
-    apage               = 0;            // absolute pageno 1 - n
-    page                = 0;            // current pageno (in body 1 - n)
-    line                = 0;            // current output lineno on page
+    g_apage             = 0;            // absolute pageno 1 - n
+    g_page              = 0;            // current pageno (in body 1 - n)
+    g_line              = 0;            // current output lineno on page
     g_curr_font         = FONT0;
     g_prev_font         = FONT0;
     tm                  = 0;            // top margin              &$tm

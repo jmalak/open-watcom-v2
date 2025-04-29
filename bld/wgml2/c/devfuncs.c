@@ -1061,7 +1061,7 @@ static void *df_page_width( void )
 
 static void *df_pages( void )
 {
-    return( (void *)apage );
+    return( (void *)g_apage );
 }
 
 /* Function df_tab_width().

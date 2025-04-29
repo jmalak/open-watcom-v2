@@ -939,7 +939,7 @@ void gml_efig( const gmltag * entry )
                     }
                 }
             }
-            page_pred = page + 1;            // set to page of bottom of FIG
+            page_pred = g_page + 1;         // set to page of bottom of FIG
             add_doc_el_group_to_pool( cur_doc_el_group );
             cur_doc_el_group = NULL;
         } else {
@@ -1021,7 +1021,7 @@ void gml_efig( const gmltag * entry )
             /*    functions and update_column()/update_t_page())        */
             /************************************************************/
 
-            page_pred = page + 1;            // set to current page
+            page_pred = g_page + 1;         // set to current page
             while( cur_group != NULL ) {
                 page_pred++;                // set to future page
                 cur_group = cur_group->next;
@@ -1034,7 +1034,7 @@ void gml_efig( const gmltag * entry )
             /* copied                                                   */
             /************************************************************/
 
-            if( (page_pred > (page + 1)) && (place == top_place) ) {
+            if( (page_pred > (g_page + 1)) && (place == top_place) ) {
                 cur_doc_el_group->post_skip = raw_p_skip;
             }
         }

@@ -387,14 +387,14 @@ void gen_heading( char * h_text, char * id, hdsrc hn_lvl, hdsrc hds_lvl )
                     old_bot_depth = 0;
                 }
 
-                if( sect_ban_top[!(page & 1)] != NULL ) {
-                    top_depth = sect_ban_top[!(page & 1)]->ban_depth;
+                if( sect_ban_top[(g_page & 1) == 0] != NULL ) {
+                    top_depth = sect_ban_top[(g_page & 1) == 0]->ban_depth;
                 } else {
                     top_depth = 0;
                 }
 
-                if( sect_ban_bot[!(page & 1)] != NULL ) {
-                    bot_depth = sect_ban_bot[!(page & 1)]->ban_depth;
+                if( sect_ban_bot[(g_page & 1) == 0] != NULL ) {
+                    bot_depth = sect_ban_bot[(g_page & 1) == 0]->ban_depth;
                 } else {
                     bot_depth = 0;
                 }
@@ -444,7 +444,7 @@ void gen_heading( char * h_text, char * id, hdsrc hn_lvl, hdsrc hds_lvl )
                     } else if( top_depth < old_top_depth ) {
                         t_page.max_depth += (old_top_depth - top_depth);
                     }
-                    t_page.top_banner = sect_ban_top[!(page & 1)];
+                    t_page.top_banner = sect_ban_top[(g_page & 1) == 0];
 
                     if( bot_depth > 0 ) {
                         if( bin_driver->y_positive == 0x00 ) {
@@ -461,7 +461,7 @@ void gen_heading( char * h_text, char * id, hdsrc hn_lvl, hdsrc hds_lvl )
                     } else if( bot_depth  < old_bot_depth ) {
                         max_depth += (old_bot_depth - bot_depth );
                     }
-                    t_page.bottom_banner = sect_ban_bot[!(page & 1)];
+                    t_page.bottom_banner = sect_ban_bot[(g_page & 1) == 0];
                 }
             }
 
@@ -693,10 +693,10 @@ static void gml_hx_common( const gmltag * entry, hdsrc hn_lvl )
             do_page_out();
             reset_t_page();
         }
-        if( (layout_work.hx.hx_head[hds_lvl].page_eject == ej_odd) && (page & 1) ) {
+        if( (layout_work.hx.hx_head[hds_lvl].page_eject == ej_odd) && (g_page & 1) ) {
             do_page_out();              // next page would be even
             reset_t_page();
-        } else if( (layout_work.hx.hx_head[hds_lvl].page_eject == ej_even) && !(page & 1) ) {
+        } else if( (layout_work.hx.hx_head[hds_lvl].page_eject == ej_even) && ((g_page & 1) == 0) ) {
             do_page_out();              // next page would be odd
             reset_t_page();
         }
