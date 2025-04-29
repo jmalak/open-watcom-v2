@@ -604,9 +604,12 @@ void    o_frame( FILE * f, lay_att curr, const bool * tm )
 /***************************************************************************/
 bool    i_int32( char * p, lay_att curr, int32_t * tm )
 {
+    long    wk;
+
     (void)curr;
 
-    *tm = strtol( p, NULL, 10 );
+    wk = strtol( p, NULL, 10 );
+    *tm = wk;
     return( false );
 }
 
