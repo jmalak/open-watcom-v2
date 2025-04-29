@@ -183,7 +183,7 @@ void    scr_label( void )
             if( input_cbs->fmflags & II_tag_mac ) {
                   // numeric macro label no need to store
             } else {
-                ulongtodec( input_cbs->s.f->lineno, linestr );
+                sprintf( linestr, "%d", input_cbs->s.f->lineno );
                 xx_warn_info_cc( wng_label_num, inf_file_line, linestr, input_cbs->s.f->filename );
             }
 

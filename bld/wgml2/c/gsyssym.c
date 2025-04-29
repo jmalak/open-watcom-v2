@@ -194,7 +194,7 @@ static void sysapagefun( symvar * e )   // absolute page
 {
     (void)e;
 
-    ulongtodec( apage + 1, sysapagestr );   // to match wgml 4.0
+    sprintf( sysapagestr, "%d", apage + 1 );   // to match wgml 4.0
     return;
 }
 
@@ -214,7 +214,7 @@ static void sysbmfun( symvar * e )
 {
     (void)e;
 
-    ulongtodec( bm, sysbmstr );
+    sprintf( sysbmstr, "%d", bm );
     return;
 }
 
@@ -252,7 +252,7 @@ static void syscdfun( symvar * e )      // column count
 {
     (void)e;
 
-    ulongtodec( g_cd, syscdstr );
+    sprintf( syscdstr, "%d", g_cd );
     return;
 }
 
@@ -272,7 +272,7 @@ static void sysclfun( symvar * e )      // column length
 {
     (void)e;
 
-    ulongtodec( g_cl, sysclstr );
+    sprintf( sysclstr, "%d", g_cl );
     return;
 }
 
@@ -316,7 +316,7 @@ static void syscpifun( symvar * e )     // cpi chars per inch
 {
     (void)e;
 
-    ulongtodec( CPI, syscpistr );
+    sprintf( syscpistr, "%d", CPI );
     return;
 }
 
@@ -402,7 +402,7 @@ static void sysflnestfun( symvar * e )  // include level file/macro
 {
     (void)e;
 
-    ulongtodec( inc_level, sysflneststr );
+    sprintf( sysflneststr, "%d", inc_level );
     return;
 }
 
@@ -410,7 +410,7 @@ static void sysfmfun( symvar * e )
 {
     (void)e;
 
-    ulongtodec( fm, sysfmstr );
+    sprintf( sysfmstr, "%d", fm );
     return;
 }
 
@@ -462,7 +462,7 @@ static void sysfnumfun( symvar * e )// lineno of current input file not macro
             l = wk->s.f->lineno;
         }
     }
-    ulongtodec( l, e->sub_0->value );
+    sprintf( e->sub_0->value, "%d", l );
     return;
 }
 
@@ -482,7 +482,7 @@ static void sysgutterfun( symvar * e )  // gutter
 {
     (void)e;
 
-    ulongtodec( g_gutter, sysgutterstr );
+    sprintf( sysgutterstr, "%d", g_gutter );
     return;
 }
 
@@ -496,7 +496,7 @@ static void syshmfun( symvar * e )
 {
     (void)e;
 
-    ulongtodec( hm, syshmstr );
+    sprintf( syshmstr, "%d", hm );
     return;
 }
 
@@ -540,7 +540,7 @@ static void syshyphfun( symvar * e )
 
 static void sysinfun( symvar * e )      // .in indent value
 {
-    int32_t t_indent;                   // needed to make correction below
+    int     t_indent;                   // needed to make correction below
 
     (void)e;
 
@@ -548,14 +548,12 @@ static void sysinfun( symvar * e )      // .in indent value
     if( ((t_page.cur_left * CPI) - (t_indent * g_resh)) > (g_resh / 2) ) {  // rounding check
         t_indent++;
     }
-
-    slongtodec( t_indent, sysinstr );   // in chars
-    return;
+    sprintf( sysinstr, "%d", t_indent );
 }
 
 static void sysinrfun( symvar * e )     // .in indentr indent right value
 {
-    int32_t t_indent;                   // needed to make correction below
+    int     t_indent;                   // needed to make correction below
 
     (void)e;
 
@@ -563,9 +561,7 @@ static void sysinrfun( symvar * e )     // .in indentr indent right value
     if( ((t_page.max_width *CPI) - (t_indent * g_resh)) > (g_resh / 2) ) {  // rounding check
         t_indent++;
     }
-
-    slongtodec( t_indent, sysinrstr ); // in chars
-    return;
+    sprintf( sysinrstr, "%d", t_indent );
 }
 
 static void sysirfun( symvar * e )
@@ -622,7 +618,7 @@ static void syslcfun( symvar * e )      // remaining lines in column
         net_depth -= t_line->line_height;
     }
     column_lines = (net_depth * LPI) / g_resv;
-    ulongtodec( column_lines, syslcstr );
+    sprintf( syslcstr, "%d", column_lines );
     return;
 }
 
@@ -644,7 +640,7 @@ static void syslinefun( symvar * e )    // current lineno on page
 {
     (void)e;
 
-    ulongtodec( line, syslinestr );
+    sprintf( syslinestr, "%d", line );
     return;
 }
 
@@ -652,7 +648,7 @@ static void sysllfun( symvar * e )
 {
     (void)e;
 
-    ulongtodec( g_ll, sysllstr );
+    sprintf( sysllstr, "%d", g_ll );
     return;
 }
 
@@ -669,7 +665,7 @@ static void syslnumfun( symvar * e )  // lineno of current input file / macro
             l = input_cbs->s.m->lineno;
         }
     }
-    ulongtodec( l, e->sub_0->value );
+    sprintf( e->sub_0->value, "%d", l );
     return;
 }
 
@@ -737,7 +733,7 @@ static void syspagefun( symvar * e )    // pageno in body
 {
     (void)e;
 
-    ulongtodec( page, syspagestr );
+    sprintf( syspagestr, "%d", page );
     return;
 }
 
@@ -745,7 +741,7 @@ static void syspagedfun( symvar * e )   // page depth
 {
     (void)e;
 
-    ulongtodec( g_page_depth, syspagedstr );
+    sprintf( syspagedstr, "%d", g_page_depth );
     return;
 }
 
@@ -753,7 +749,7 @@ static void syspagelmfun( symvar * e )  // page left margin
 {
     (void)e;
 
-    ulongtodec( lm, syspagelmstr );
+    sprintf( syspagelmstr, "%d", lm );
     return;
 }
 
@@ -761,7 +757,7 @@ static void syspagermfun( symvar * e )  // page right margin
 {
     (void)e;
 
-    ulongtodec( rm, syspagermstr );
+    sprintf( syspagermstr, "%d", rm );
     return;
 }
 
@@ -769,7 +765,7 @@ static void syspgnumafun( symvar * e )  // pagenumber
 {
     (void)e;
 
-    ulongtodec( page, syspgnumastr );
+    sprintf( syspgnumastr, "%d", page );
     return;
 }
 
@@ -777,8 +773,7 @@ static void syspgnumadfun( symvar * e ) // pagenumber.
 {
     (void)e;
 
-    ulongtodec( page, syspgnumadstr );
-    strcat( syspgnumadstr, "." );
+    sprintf( syspgnumadstr, "%d.", page );
     return;
 }
 
@@ -839,7 +834,7 @@ static void sysplfun( symvar * e )
     (void)e;
 
     column_lines = (t_page.max_depth * LPI) / g_resv;
-    ulongtodec( column_lines, sysplstr );
+    sprintf( sysplstr, "%d", column_lines );
     return;
 }
 
@@ -853,7 +848,7 @@ static void syspnfun( symvar * e )      // page no
 {
     (void)e;
 
-    ulongtodec( page, syspnstr );
+    sprintf( syspnstr, "%d", page );
     return;
 }
 
@@ -861,7 +856,7 @@ static void sysppagefun( symvar * e )   // page no
 {
     (void)e;
 
-    ulongtodec( page, sysppagestr );
+    sprintf( sysppagestr, "%d", page );
     return;
 }
 
@@ -913,7 +908,7 @@ static void sysreshfun( symvar * e )    // horiz base units
 {
     (void)e;
 
-    ulongtodec( g_resh, sysreshstr );
+    sprintf( sysreshstr, "%d", g_resh );
     return;
 }
 
@@ -921,7 +916,7 @@ static void sysresvfun( symvar * e )    // vert base units
 {
     (void)e;
 
-    ulongtodec( g_resv, sysresvstr );
+    sprintf( sysresvstr, "%d", g_resv );
     return;
 }
 
@@ -1022,7 +1017,7 @@ static void systmfun( symvar * e )
 {
     (void)e;
 
-    ulongtodec( tm, systmstr );
+    sprintf( systmstr, "%d", tm );
     return;
 }
 

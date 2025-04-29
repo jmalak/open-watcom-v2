@@ -563,13 +563,13 @@ void show_include_stack( void )
 
     if( input_cbs != NULL ) {
         if( input_cbs->fmflags & II_tag_mac ) {
-            ulongtodec( input_cbs->s.m->lineno, linestr );
-            ulongtodec( input_cbs->s.m->mac->lineno, linemac );
+            sprintf( linestr, "%d", input_cbs->s.m->lineno );
+            sprintf( linemac, "%d", input_cbs->s.m->mac->lineno );
             g_info( err_inf_mac_def, linestr, input_cbs->s.m->mac->name,
                     linemac, input_cbs->s.m->mac->mac_file_name);
-//      } else {
-//          ulongtodec( input_cbs->s.f->lineno, linestr );
-//          g_info( inf_file_line, linestr, input_cbs->s.f->filename );
+//        } else {
+//            sprintf( linestr, "%d", input_cbs->s.f->lineno );
+//            g_info( inf_file_line, linestr, input_cbs->s.f->filename );
         }
         ip = input_cbs->prev;
     } else {
@@ -579,15 +579,15 @@ void show_include_stack( void )
     while( ip != NULL ) {
         switch( ip->fmflags & II_input ) {
         case    II_file:
-            ulongtodec( ip->s.f->lineno, linestr );
+            sprintf( linestr, "%d", ip->s.f->lineno );
             g_info( err_inf_line_file, linestr, ip->s.f->filename );
             break;
         case    II_tag :
             g_info( err_inf_tag, ip->s.m->tag->name );
             // fallthrough
         case    II_macro :
-            ulongtodec( ip->s.m->lineno, linestr );
-            ulongtodec( ip->s.m->mac->lineno, linemac );
+            sprintf( linestr, "%d", ip->s.m->lineno );
+            sprintf( linemac, "%d", ip->s.m->mac->lineno );
             g_info( err_inf_mac_def, linestr, ip->s.m->mac->name,
                     linemac, ip->s.m->mac->mac_file_name);
             break;

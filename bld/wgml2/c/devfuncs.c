@@ -1919,7 +1919,7 @@ static void *df_decimal( void )
 {
     void            *value;
     parameters      my_parameters;
-    long            first;
+    int             first;
 
     /* Extract parameter offset. */
 
@@ -1928,12 +1928,12 @@ static void *df_decimal( void )
     /* Now get the parameter. */
 
     current_df_data.current = current_df_data.base + my_parameters.first;
-    first = (long)(intptr_t)process_parameter();
+    first = (int)(intptr_t)process_parameter();
 
     /* Convert and return the value. */
 
     value = mem_alloc( 12 );
-    slongtodec( first, value );
+    sprintf( value, "%d", first );
     return( value );
 }
 
@@ -2045,7 +2045,7 @@ static void *df_hex( void )
 {
     void            *value;
     parameters      my_parameters;
-    unsigned long   first;
+    unsigned        first;
 
     /* Extract parameter offset. */
 
@@ -2054,12 +2054,12 @@ static void *df_hex( void )
     /* Now get the parameter. */
 
     current_df_data.current = current_df_data.base + my_parameters.first;
-    first = (unsigned long)(uintptr_t)process_parameter();
+    first = (unsigned)(uintptr_t)process_parameter();
 
     /* Convert and return a pointer to the parameter */
 
     value = mem_alloc( 9 );
-    ulongtohex( first, value );
+    sprintf( value, "%x", first );
     return( value );
 }
 

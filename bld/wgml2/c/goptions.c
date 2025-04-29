@@ -389,7 +389,7 @@ static void set_cpinch( option * opt )
         } else {
             CPI = opt_value;
         }
-        slongtodec( CPI, wkstring );
+        sprintf( wkstring, "%d", CPI );
         add_symvar( global_dict, "$cpi", wkstring, no_subscript, 0 );
         tokennext = tokennext->nxt;
     }
@@ -417,10 +417,10 @@ static void set_lpinch( option * opt )
         } else {
             LPI = opt_value;
         }
-    /*    LPI (in contrast to CPI) is not stored as global symbol
-     *  slongtodec( LPI, wkstring );
-     *  add_symvar( global_dict, "$lpi", wkstring, no_subscript, 0 );
-     */
+        /*    LPI (in contrast to CPI) is not stored as global symbol
+         *  sprintf( wkstring, "%d", LPI );
+         *  add_symvar( global_dict, "$lpi", wkstring, no_subscript, 0 );
+         */
         tokennext = tokennext->nxt;
     }
 }
@@ -922,8 +922,8 @@ static void set_passes( option * opt )
         p = tokennext->token;
         opt_value = get_num_value( p );
         if( opt_value < 1 || opt_value > MAX_PASSES ) {
-            ulongtodec( MAX_PASSES, linestr );
-            ulongtodec( opt_value, linestr2 );
+            sprintf( linestr, "%d", MAX_PASSES );
+            sprintf( linestr2, "%d", opt_value );
             xx_simple_err_cc( err_passes_value, linestr, linestr2 );
         } else {
             passes = opt_value;
@@ -1741,7 +1741,7 @@ int proc_options( char * string )
         }
     }
     tokcount = split_tokens( s_after_dq );
-    ulongtodec( tokcount, linestr );
+    sprintf( linestr, "%d", tokcount );
     g_info_research( inf_cmdline_tok_cnt, linestr );
 
     tok = cmd_tokens[level];
@@ -1797,8 +1797,8 @@ int proc_options( char * string )
     }
     if( print_to < print_from  ) {
         g_banner();
-        ulongtodec( print_from, linestr );
-        ulongtodec( print_to, linestr2 );
+        sprintf( linestr, "%d", print_from );
+        sprintf( linestr2, "%d", print_to );
         xx_simple_err_cc( err_inv_page_range, linestr, linestr2 );
     }
     return( tokcount );

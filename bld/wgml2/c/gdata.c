@@ -424,5 +424,5 @@ void init_pass_data( void )
 
     new_file_parms = NULL;      // set for initial file
 
-    CONT_char           = CONT_CHAR_DEFAULT;    // CONT start char 
+    CONT_char   = CONT_CHAR_DEFAULT;    // CONT start char
 }

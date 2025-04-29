@@ -82,7 +82,7 @@ static char *verify_sym( char * p )
             }
         }
     }
-        
+
     return( pa );
 }
 
@@ -539,14 +539,14 @@ void    scr_dm( void )
                 p++;
 
                 /****************************************************************/
-                /* although ".." is used with DM in the OW Docs, '.'" is not    */ 
-                /* constructs like "..'" ".'." have yet to be explored          */ 
+                /* although ".." is used with DM in the OW Docs, '.'" is not    */
+                /* constructs like "..'" ".'." have yet to be explored          */
                 /****************************************************************/
 
                 if( (*p == SCR_char)  || (*p == '\'') ) {
                     p++;                        // over ".." or ".'"
                 }
-                while( len < MAC_NAME_LENGTH ) { 
+                while( len < MAC_NAME_LENGTH ) {
                     if( is_space_tab_char( *p ) || (*p == '\0') ) { // largest possible macro/cw
                         break;
                     }
@@ -628,7 +628,7 @@ void    scr_dm( void )
         add_macro_entry( macro_dict, me );
 
         if( (cb->fmflags & II_research) && GlobalFlags.firstpass ) {
-            ulongtodec( macro_line_count, linestr );
+            sprintf( linestr, "%d", macro_line_count );
             g_info( inf_mac_defined, macname, linestr );
         }
     } else {

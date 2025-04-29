@@ -665,10 +665,10 @@ typedef enum {
 
 typedef struct getnum_block {
     int         ignore_blanks;          // 1 if blanks are ignored
-    char    *   argstart;
-    char    *   argstop;
-    char    *   errstart;
-    char    *   first;
+    char        *argstart;
+    char        *argstop;
+    char        *errstart;
+    char        *first;
     int         length;
     int         result;                 // result as long
     char        resultstr[12];          // result in char format (32-bit number)

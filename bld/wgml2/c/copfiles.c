@@ -134,7 +134,7 @@ static uint32_t scale_basis_to_horizontal_base_units( uint32_t in_units, wgml_fo
 static void compute_metrics( wgml_font * in_font )
 {
     uint32_t    glyph_height;
-    uint32_t    height;
+    unsigned    height;
     uint32_t    shift_height;
 
     /* Compute the default character width. */
@@ -231,7 +231,7 @@ static void compute_metrics( wgml_font * in_font )
         if( (height % 7200) > 0 ) shift_height++;
 
         height = (shift_height * 3 ) / 10;
-        ulongtodec( height, in_font->shift_height );
+        sprintf( in_font->shift_height, "%d", height );
         in_font->shift_count = strnlen_s( in_font->shift_height, 4 );
     }
 

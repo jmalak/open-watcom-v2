@@ -240,7 +240,7 @@ static  void    del_input_cb_entry( void )
 //      if( wk->if_cb->if_level > 0 ) {
 //          char    linestr[MAX_L_AS_STR];
 //
-//          ulongtodec( wk->if_cb->if_level, linestr );
+//          sprintf( linestr, "%d", wk->if_cb->if_level );
 //          xx_err_c( err_if_level, linestr );
 //      }
         mem_free( wk->if_cb );
@@ -510,7 +510,7 @@ static  void    proc_input( char * filename )
                     ProcFlags.goto_active = false;
                     if( input_cbs->fmflags & II_tag_mac ) {
                         if( gotargetno > 0 ) {
-                            ulongtodec( gotargetno, linestr );
+                            sprintf( linestr, "%d", gotargetno );
                             xx_err_cc( err_goto, linestr, input_cbs->s.m->mac->name );
                         } else {
                             xx_err_cc( err_goto, gotarget, input_cbs->s.m->mac->name );
@@ -662,25 +662,24 @@ static  void    print_stats( clock_t duration_ticks )
 
     g_info_lm( inf_stat_0 );
 
-    ulongtodec( pass, linestr );
+    sprintf( linestr, "%d", pass );
     if( pass == passes ) {
         linestr2[0] = '\0';
     } else {
-        strcpy( linestr2, "of " );
-        ulongtodec( passes, linestr2 + 3 );
+        sprintf( linestr2, "of %d", passes );
     }
     g_info_lm( inf_stat_1, linestr, linestr2 );
 
-    ulongtodec( max_inc_level, linestr );
+    sprintf( linestr, "%d", max_inc_level );
     g_info_lm( inf_stat_2, linestr );
 
-    ulongtodec( err_count, linestr );
+    sprintf( linestr, "%d", err_count );
     g_info_lm( inf_stat_3, linestr );
 
-    ulongtodec( wng_count, linestr );
+    sprintf( linestr, "%d", wng_count );
     g_info_lm( inf_stat_4, linestr );
 
-    ulongtodec( err_count ? 8 : wng_count ? 4 : 0, linestr );
+    sprintf( linestr, "%d", err_count ? 8 : wng_count ? 4 : 0 );
     g_info_lm( inf_stat_5, linestr );
 
     {
@@ -697,8 +696,8 @@ static  void    print_stats( clock_t duration_ticks )
     // convert duration from clock ticks to HH:MM:SS.hh
     hour_min = ldiv( duration_ticks / CLOCKS_PER_SEC / 60L, 60L );
     sec_frac  = ldiv( duration_ticks, CLOCKS_PER_SEC );
-    sprintf_s( linestr, sizeof( linestr ), "%02lu:%02lu:%02lu.%02lu\0",
-        hour_min.quot, hour_min.rem, sec_frac.quot % 60, sec_frac.rem / 10 );
+    sprintf( linestr, "%02d:%02d:%02d.%02d\0",
+        (int)hour_min.quot, (int)hour_min.rem, (int)(sec_frac.quot % 60), (int)(sec_frac.rem / 10) );
     g_info_lm( inf_stat_7, linestr );
 }
 
@@ -819,7 +818,7 @@ int main( int argc, char * argv[] )
 
         rc = find_symvar( sys_dict, "$passof", no_subscript, &passofval );
         rc = find_symvar( sys_dict, "$passno", no_subscript, &passnoval );
-        ulongtodec( passes, passofval->value );  // fill no of passes
+        sprintf( passofval->value, "%d", passes ); // fill no of passes
 
         set_default_extension( master_fname );  // make this extension first choice
 
@@ -842,7 +841,7 @@ int main( int argc, char * argv[] )
         for( pass = 1; pass <= passes; pass++ ) {
 
             init_pass();
-            ulongtodec( pass, passnoval->value );    // fill current passno
+            sprintf( passnoval->value, "%d", pass );    // fill current passno
 
             if( passes > 1 ) {
                 g_info_lm( INF_PASS_1, passnoval->value, passofval->value,

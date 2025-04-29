@@ -78,7 +78,7 @@ cdsay .
 [ INCLUDE "<OWROOT>/bld/browser/dlgprs/builder.ctl" ]
 # Build help compilers and tools
 [ IFDEF <OWNEWWGML> 1 ]
-[ INCLUDE "<OWROOT>/bld/wgml/builder.ctl" ]
+[ INCLUDE "<OWROOT>/bld/wgml2/builder.ctl" ]
 [ ENDIF ]
 [ INCLUDE "<OWROOT>/bld/hcdos/builder.ctl" ]
 [ INCLUDE "<OWROOT>/bld/hcwin/builder.ctl" ]
