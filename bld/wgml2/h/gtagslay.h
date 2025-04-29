@@ -34,9 +34,7 @@
 *    other tags for example :abstract are defined differently
 ****************************************************************************/
 
-#ifndef pick
-    #error macro pick not defined
-#endif
+
 //      tagname      tagname  routinename     gmlflags locflags
 // upper case        length
 
@@ -124,5 +122,3 @@
   pick( UL,           2,      lay_ul,         0, 0 )
   pick( WIDOW,        5,      lay_widow,      0, 0 )
   pick( XMP,          3,      lay_xmp,        0, 0 )
-
-#undef  pick

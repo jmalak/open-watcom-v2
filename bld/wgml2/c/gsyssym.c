@@ -48,12 +48,20 @@
 #define pickl( var, flag )      pickk( var, flag )
 #define pickk( var, flag ) static symvar sys( var );
 #include "gsyssym.h"
+#undef pickk
+#undef pickl
+#undef pickc
+#undef picka
 
 #define picka( var, flag )      pickk( var, flag )
 #define pickc( var, flag )      pickk( var, flag )
 #define pickl( var, flag )      pickk( var, flag )
 #define pickk( var, flag ) static symsub sys0( var );
 #include "gsyssym.h"
+#undef pickk
+#undef pickl
+#undef pickc
+#undef picka
 
 /***************************************************************************/
 /*  declare the access functions for system variables                      */
@@ -64,6 +72,10 @@
 #define pickk( var, flag )      pickl( var, flag )
 #define pickl( var, flag ) static void sysf( var )( symvar * entry );
 #include "gsyssym.h"
+#undef pickl
+#undef pickk
+#undef pickc
+#undef picka
 
 /***************************************************************************/
 /*  define char strings to hold the values of some system variables        */
@@ -74,6 +86,10 @@
 #define pickc( var, flag ) static char syss( var )[2];              // for single char values as string
 #define pickl( var, flag ) static char syss( var )[MAX_L_AS_STR];   // for long as string and sysbxchar
 #include "gsyssym.h"
+#undef pickl
+#undef pickc
+#undef pickk
+#undef picka
 
 /***************************************************************************/
 /*  define the dictionary for the system variables                         */
@@ -86,22 +102,23 @@
 /***************************************************************************/
 
 #define pickc( var, flag )      pickl( var, flag )
-
 #define pickl( var, flag )              \
         static symvar sys( var ) = {    \
             NULL, "$" #var, 0L, 0L, NULL, &sys0( var ), sysf( var ), flag }; \
         static symsub sys0( var ) = { NULL, &sys( var ), no_subscript, syss( var ) };
-
 #define picka( var, flag )              \
         static symvar sys( var ) = {    \
             NULL, "$" #var, 0L, 0L, NULL, &sys0( var ), NULL, flag }; \
         static symsub sys0( var ) = { NULL, &sys( var ), no_subscript, NULL };
-
 #define pickk( var, flag )              \
         static symvar sys( var ) = {    \
             NULL, "$" #var, 0L, 0L, NULL, &sys0( var ), sysf( var ), flag }; \
         static symsub sys0( var ) = { NULL, &sys( var ), no_subscript, NULL };
 #include "gsyssym.h"
+#undef pickk
+#undef picka
+#undef pickl
+#undef pickc
 
 
 /***************************************************************************/
@@ -1213,6 +1230,10 @@ void    init_sys_dict( symdict * * dict )
 #define pickk( var, flag )    pickl( var, flag )
 #define pickl( var, flag )    link_sym( *dict, &sys( var ) );
 #include "gsyssym.h"
+#undef pickl
+#undef pickk
+#undef pickc
+#undef picka
 
     init_date_time();                   // set up predefned global
     init_predefined_symbols();          // variables

@@ -45,9 +45,10 @@
 /*    SCR multi letter functions                                           */
 /***************************************************************************/
 
-static  const   scrfunc scr_functions[] = {
+static const scrfunc    scr_functions[] = {
     #define pick( name, length, parms, optparms, routine )  { #name, length, parms, optparms, routine },
     #include "gsfuncs.h"
+    #undef pick
     { " ", 0, 0, 0, NULL }              // end
 };
 
@@ -102,7 +103,7 @@ static  char    * find_end_of_parm( char * pchar, char * pend )
     test_for_quote = true;
     c = '\0';
     cm1 = '\0';
-    for(  ; *pchar != '\0' ; pchar++ ) {
+    for( ; *pchar != '\0' ; ) {
         cm2 = cm1;
         cm1 = c;
         c = *pchar;
@@ -117,9 +118,7 @@ static  char    * find_end_of_parm( char * pchar, char * pend )
             multiletter_function = false;       // multiletter_function is static, reset
             pchar++;                            // over "'"
             pchar = find_end_of_parm( pchar, pend );
-            if( *pchar == ',' ) {                // end of parm
-                break;
-            }
+            continue;
         } else {
             if( instring[paren_level] ) {
                 if( c == quotechar[paren_level] ) {
@@ -175,6 +174,7 @@ static  char    * find_end_of_parm( char * pchar, char * pend )
         if( finished || (pchar >= pend)) {
             break;
         }
+        pchar++;
     }
     return( pchar );
 }

@@ -1840,6 +1840,10 @@ void process_text( char * text, font_number font )
     static      text_type       typ             = tx_norm;
     static      text_type       typn            = tx_norm;
 
+    if( ProcFlags.doc_sect < doc_sect_gdoc ) {
+        return;
+    }
+
     /********************************************************************/
     /*  we need a started section for text output                       */
     /*  note: ProcFlags.doc_sect will be doc_sect_body                  */

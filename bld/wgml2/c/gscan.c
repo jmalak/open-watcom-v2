@@ -36,9 +36,10 @@
 /*    GML tags                                                             */
 /***************************************************************************/
 
-static  const   gmltag  gml_tags[] = {
+static const gmltag     gml_tags[] = {
     #define pickg( name, length, routine, gmlflags, locflags, classflags ) { #name, length, routine, gmlflags, locflags, classflags },
     #include "gtags.h"
+    #undef pickg
     { "   ", 0, NULL, 0, 0 }            // end
 };
 
@@ -48,9 +49,10 @@ static  const   gmltag  gml_tags[] = {
 /*    GML layout tags                                                      */
 /***************************************************************************/
 
-static  const   gmltag  lay_tags[] = {
+static const gmltag     lay_tags[] = {
     #define pick( name, length, routine, gmlflags, locflags ) { #name, length, routine, gmlflags, locflags },
     #include "gtagslay.h"
+    #undef pick
     { "   ", 0, NULL, 0, 0 }            // end
 
 };
@@ -62,10 +64,12 @@ static  const   gmltag  lay_tags[] = {
 /*    SCRIPT control words                                                 */
 /***************************************************************************/
 
-static  const   scrtag  scr_kwds[] = {
+static const scrtag     scr_kwds[] = {
     #define picks( name, routine, flags) { #name, routine, flags },
     #define picklab( name, routine, flags) { #name, routine, flags },
     #include "gscrcws.h"
+    #undef picklab
+    #undef picks
     { "  ", NULL, 0   }                 // end
 };
 
@@ -139,20 +143,7 @@ static int find_scr_cw( const char *str )
 
 void set_overload( gtentry * in_gt )
 {
-    int     k;
-    uint8_t len;        // user tag name max length is 15
-
-    in_gt->overload = false;
-    len = strlen( in_gt->name );
-    for( k = 0; k < GML_TAGMAX; ++k ) {
-        if( len == gml_tags[k].taglen ) {
-            if( !strcmpi( gml_tags[k].tagname, in_gt->name ) ) {
-                in_gt->overload = true;
-                break;
-            }
-        }
-    }
-    return;
+    in_gt->overload = ( find_sys_tag( in_gt->name, strlen( in_gt->name ) ) != NULL );
 }
 
 /***************************************************************************/
@@ -161,15 +152,16 @@ void set_overload( gtentry * in_gt )
 
 static void scan_gml( void )
 {
-    inputcb     *   cb;
-    char        *   p;
+    inputcb         *cb;
+    char            *p;
     int             toklen;
     int             k;
     char            csave;
     bool            processed;
-    gtentry     *   ge;                 // GML user tag entry
-    mac_entry   *   me;                 // script macro for processing GML tag
+    gtentry         *ge;                // GML user tag entry
+    mac_entry       *me;                // script macro for processing GML tag
     char            tok_upper[BUF_SIZE];
+    const gmltag    *tag;
 
     cb = input_cbs;
 
@@ -212,7 +204,7 @@ static void scan_gml( void )
     if( ProcFlags.layout ) {
         ge = NULL;                      // no user tags within :LAYOUT
     } else {
-        ge = find_tag( &tag_dict, tok_start + 1 );
+        ge = find_user_tag( &tag_dict, tok_start + 1 );
     }
     processed = false;
     me = NULL;
@@ -257,158 +249,133 @@ static void scan_gml( void )
         tok_upper[k] = '\0';
 
         if( ProcFlags.layout ) {        // different tags within :LAYOUT
-            for( k = 0; k < LAY_TAGMAX; ++k ) {
-                if( toklen == lay_tags[k].taglen ) {
-                    if( !strcmp( lay_tags[k].tagname, tok_upper ) ) {
-                        *p = csave;
-                        lay_ind = -1;   // process tag not attribute
+            tag = find_lay_tag( tok_upper, toklen );
+            if( tag != NULL ) {
+                *p = csave;
+                lay_ind = -1;   // process tag not attribute
 
-                        if( rs_loc == 0 ) {
-                            // no restrictions: do them all
-                            lay_tags[k].gmlproc( &lay_tags[k] );
-                        } else if( (lay_tags[k].taglocs & rs_loc) != 0 ) {
-                            // tag allowed in this restricted location
-                            lay_tags[k].gmlproc( &lay_tags[k] );
-                        } else if( (lay_tags[k].tagflags & tag_is_general) != 0 ) {
-                            // tag allowed everywhere
-                            lay_tags[k].gmlproc( &lay_tags[k] );
-                        } else if( rs_loc == banner_tag ) {
-                            xx_err_c( err_tag_expected, "eBANNER" );
-                        } else {    // rs_loc == banreg_tag
-                            xx_err_c( err_tag_expected, "eBANREGION" );
-                        }
-                        processed = true;
-                        lay_ind = k;    // now process attributes if any
-                        SkipDot( scan_start );
-                        break;
-                    }
+                if( rs_loc == 0 ) {
+                    // no restrictions: do them all
+                    tag->gmlproc( tag );
+                } else if( tag->taglocs & rs_loc ) {
+                    // tag allowed in this restricted location
+                    tag->gmlproc( tag );
+                } else if( (tag->tagflags & tag_is_general) != 0 ) {
+                    // tag allowed everywhere
+                    tag->gmlproc( tag );
+                } else if( rs_loc == banner_tag ) {
+                    xx_err_c( err_tag_expected, "eBANNER" );
+                } else {    // rs_loc == banreg_tag
+                    xx_err_c( err_tag_expected, "eBANREGION" );
                 }
-            }
-            if( !processed ) {          // check for gml only tag in :LAYOUT
-                for( k = 0; k < GML_TAGMAX; ++k ) {
-                    if( toklen == gml_tags[k].taglen ) {
-                        if( !strcmp( gml_tags[k].tagname, tok_upper ) ) {
-                            xx_err_c( err_gml_in_lay, gml_tags[k].tagname );
-                        }
-                    }
-                }
+                processed = true;
+                lay_ind = k;    // now process attributes if any
+                SkipDot( scan_start );
+            } else if( find_sys_tag( tok_upper, toklen ) != NULL ) {
+                xx_err_c( err_gml_in_lay, tok_upper );
             }
         } else {                        // not within :LAYOUT
-            for( k = 0; k < GML_TAGMAX; ++k ) {
-                if( toklen == gml_tags[k].taglen ) {
-                    if( !strcmp( gml_tags[k].tagname, tok_upper ) ) {
-                        if( GlobalFlags.firstpass &&
-                            !strcmp(tok_upper, "LAYOUT" ) &&
-                            ProcFlags.fb_document_done  ) {
-
-                            xx_err( err_lay_too_late );
-                        }
-                        *p = csave;
-
-                        if( script_style.style != SCT_none ) {
-                            scr_style_end();        // cancel BD, BI, US
-                        }
-
-                        ProcFlags.need_tag = false;
-
-                        /*******************************************************************/
-                        /*  When text occurs after certain blocks, it is processed as if   */
-                        /*  it were preceded by tag PC. This is cancelled when a tag comes */
-                        /*  before the text, but not if the tag starts or ends an inline   */
-                        /*  phrase or is an index tag (I1, I2, I3, IH1, IH2, IH3) or is    */
-                        /*  tag SET.                                                       */
-                        /*******************************************************************/
-
-                        if( ((gml_tags[k].tagclass & ip_start_tag) == 0) &&
-                                ((gml_tags[k].tagclass & ip_end_tag) == 0) &&
-                                ((gml_tags[k].tagclass & index_tag) == 0) &&
-                                strcmp( gml_tags[k].tagname, "SET") ) {
-                            ProcFlags.force_pc = false;
-                        }
-
-                        /*******************************************************************/
-                        /*  The Procflags must be cleared to prevent the error from being  */
-                        /*  reported for every tag until the proper end tag is found.      */
-                        /*  If the number of errors reported is limited at some point,     */
-                        /*  then those lines can be removed.                               */
-                        /*  The index tags (I1, I2, I3, IH1, IH2, IH3) are exceptions      */
-                        /*******************************************************************/
-
-                        if( ProcFlags.need_ddhd ) {
-                            if( (gml_tags[k].tagclass & index_tag) != 0 ) {
-                                // tag is index tag
-                                gml_tags[k].gmlproc( &gml_tags[k] );
-                            } else if( (gml_tags[k].tagclass & def_tag) != 0 ) {
-                                // tag is DD, DDHD or GD
-                                gml_tags[k].gmlproc( &gml_tags[k] );
-                                ProcFlags.need_ddhd = false;
-                            } else {
-                                xx_err_c( err_tag_expected, "DDHD");
-                            }
-                        } else if( ProcFlags.need_dd ) {
-                            if( (gml_tags[k].tagclass & index_tag) != 0 ) {
-                                // tag is index tag
-                                gml_tags[k].gmlproc( &gml_tags[k] );
-                            } else if( (gml_tags[k].tagclass & def_tag) != 0 ) {                                    // tag is DD, DDHD or GD
-                                gml_tags[k].gmlproc( &gml_tags[k] );
-                                ProcFlags.need_dd = false;
-                            } else {
-                                xx_err_c( err_tag_expected, "DD");
-                            }
-                        } else if( ProcFlags.need_gd ) {
-                            if( (gml_tags[k].tagclass & index_tag) == 0 ) {
-                                // tag is index tag
-                                gml_tags[k].gmlproc( &gml_tags[k] );
-                            } else if( (gml_tags[k].tagclass & def_tag) != 0 ) {                                    // tag is DD, DDHD or GD
-                                // tag is DD, DDHD or GD
-                                gml_tags[k].gmlproc( &gml_tags[k] );
-                                ProcFlags.need_gd = false;
-                            } else {
-                                xx_err_c( err_tag_expected, "GD");
-                            }
-                        } else if( !nest_cb->in_list ) {
-                            if( (gml_tags[k].tagclass & list_tag) == 0 ) {
-                                // tag is not a list tag
-                                gml_tags[k].gmlproc( &gml_tags[k] );
-                            } else {
-                                xx_line_err_c( err_no_list, tok_start );
-                            }
-                        } else if( ProcFlags.need_li_lp ) {
-                            if( (gml_tags[k].tagclass & li_lp_tag) != 0 ) {
-                                // tag is LP or LI
-                                gml_tags[k].gmlproc( &gml_tags[k] );
-                            } else {
-                                xx_nest_err( err_no_li_lp );
-                            }
-                        } else if( ProcFlags.need_text ) {
-                            xx_err( err_text_not_tag_cw );
-                        } else if( rs_loc == 0 ) {
-                            // no restrictions: do them all
-                            gml_tags[k].gmlproc( &gml_tags[k] );
-                        } else if( (gml_tags[k].taglocs & rs_loc) != 0 ) {
-                            // tag allowed in this restricted location
-                            gml_tags[k].gmlproc( &gml_tags[k] );
-                        } else if( (gml_tags[k].tagflags & tag_is_general) != 0 ) {
-                            // tag allowed everywhere
-                            gml_tags[k].gmlproc( &gml_tags[k] );
-                        } else {
-                            start_doc_sect();   // if not already done
-                            g_err_tag_rsloc( rs_loc, tok_start );
-                        }
-                        processed = true;
-                        SkipDot( scan_start );
-                        break;
-                    }
+            tag = find_sys_tag( tok_upper, toklen );
+            if( tag != NULL ) {
+                if( GlobalFlags.firstpass
+                  && strcmp(tok_upper, "LAYOUT" ) == 0
+                  && ProcFlags.fb_document_done ) {
+                    xx_err( err_lay_too_late );
                 }
-            }
-            if( !processed ) {         // check for layout tag in normal text
-                for( k = 0; k < LAY_TAGMAX; ++k ) {
-                    if( toklen == lay_tags[k].taglen ) {
-                        if( !strcmp( lay_tags[k].tagname, tok_upper ) ) {
-                            xx_err_c( err_lay_in_gml, lay_tags[k].tagname );
-                       }
-                    }
+                *p = csave;
+
+                if( script_style.style != SCT_none ) {
+                    scr_style_end();        // cancel BD, BI, US
                 }
+
+                ProcFlags.need_tag = false;
+
+                /*******************************************************************/
+                /*  When text occurs after certain blocks, it is processed as if   */
+                /*  it were preceded by tag PC. This is cancelled when a tag comes */
+                /*  before the text, but not if the tag starts or ends an inline   */
+                /*  phrase or is an index tag (I1, I2, I3, IH1, IH2, IH3) or is    */
+                /*  tag SET.                                                       */
+                /*******************************************************************/
+
+                if( (tag->tagclass & (ip_start_tag | ip_end_tag | index_tag)) == 0
+                  && strcmp( tag->tagname, "SET") ) {
+                    ProcFlags.force_pc = false;
+                }
+
+                /*******************************************************************/
+                /*  The Procflags must be cleared to prevent the error from being  */
+                /*  reported for every tag until the proper end tag is found.      */
+                /*  If the number of errors reported is limited at some point,     */
+                /*  then those lines can be removed.                               */
+                /*  The index tags (I1, I2, I3, IH1, IH2, IH3) are exceptions      */
+                /*******************************************************************/
+
+                if( ProcFlags.need_ddhd ) {
+                    if( tag->tagclass & index_tag ) {
+                        // tag is index tag
+                        tag->gmlproc( tag );
+                    } else if( tag->tagclass & def_tag ) {
+                        // tag is DD, DDHD or GD
+                        tag->gmlproc( tag );
+                        ProcFlags.need_ddhd = false;
+                    } else {
+                        xx_err_c( err_tag_expected, "DDHD");
+                    }
+                } else if( ProcFlags.need_dd ) {
+                    if( tag->tagclass & index_tag ) {
+                        // tag is index tag
+                        tag->gmlproc( tag );
+                    } else if( tag->tagclass & def_tag ) {                                    // tag is DD, DDHD or GD
+                        tag->gmlproc( tag );
+                        ProcFlags.need_dd = false;
+                    } else {
+                        xx_err_c( err_tag_expected, "DD");
+                    }
+                } else if( ProcFlags.need_gd ) {
+                    if( (tag->tagclass & index_tag) == 0 ) {
+                        // tag is index tag
+                        tag->gmlproc( tag );
+                    } else if( tag->tagclass & def_tag ) {                                    // tag is DD, DDHD or GD
+                        // tag is DD, DDHD or GD
+                        tag->gmlproc( tag );
+                        ProcFlags.need_gd = false;
+                    } else {
+                        xx_err_c( err_tag_expected, "GD");
+                    }
+                } else if( !nest_cb->in_list ) {
+                    if( (tag->tagclass & list_tag) == 0 ) {
+                        // tag is not a list tag
+                        tag->gmlproc( tag );
+                    } else {
+                        xx_line_err_c( err_no_list, tok_start );
+                    }
+                } else if( ProcFlags.need_li_lp ) {
+                    if( tag->tagclass & li_lp_tag ) {
+                        // tag is LP or LI
+                        tag->gmlproc( tag );
+                    } else {
+                        xx_nest_err( err_no_li_lp );
+                    }
+                } else if( ProcFlags.need_text ) {
+                    xx_err( err_text_not_tag_cw );
+                } else if( rs_loc == 0 ) {
+                    // no restrictions: do them all
+                    tag->gmlproc( tag );
+                } else if( tag->taglocs & rs_loc ) {
+                    // tag allowed in this restricted location
+                    tag->gmlproc( tag );
+                } else if( tag->tagflags & tag_is_general ) {
+                    // tag allowed everywhere
+                    tag->gmlproc( tag );
+                } else {
+                    start_doc_sect();   // if not already done
+                    g_err_tag_rsloc( rs_loc, tok_start );
+                }
+                processed = true;
+                SkipDot( scan_start );
+            } else if( find_lay_tag( tok_upper, toklen ) != NULL ) {
+                xx_err_c( err_lay_in_gml, tok_upper );
             }
         }
     }
@@ -613,8 +580,9 @@ static void     scan_script( void )
 
         k = find_scr_cw( token_buf );               // non-negative if valid
         if( k >= 0 ) {
-            if( !ProcFlags.layout && !ProcFlags.fb_document_done
-                                    && (scr_kwds[k].cwflags & cw_o_t) ) {
+            if( !ProcFlags.layout
+              && !ProcFlags.fb_document_done
+              && (scr_kwds[k].cwflags & cw_o_t) ) {
 
                 /********************************************************/
                 /* this is the first control word which produces output */
@@ -815,7 +783,7 @@ void set_if_then_do( ifcb * cb )
         if( (*pb == SCR_char)  || (*pb == '\'') ) {
             pb++;                       // over ".." or ".'"
         }
-        while( len < MAC_NAME_LENGTH ) { 
+        while( len < MAC_NAME_LENGTH ) {
             if( is_space_tab_char( *pb ) || (*pb == '\0') ) { // largest possible macro/cw
                 break;
             }
@@ -961,7 +929,7 @@ void    scan_line( void )
 /*  return ptr to entry if found, else NULL                                */
 /***************************************************************************/
 
-const gmltag * find_sys_tag( char * token, size_t toklen )
+const gmltag *find_sys_tag( char *token, size_t toklen )
 {
     int k;
 
@@ -982,7 +950,7 @@ const gmltag * find_sys_tag( char * token, size_t toklen )
 /*  return ptr to entry if found, else NULL                                */
 /***************************************************************************/
 
-const gmltag * find_lay_tag( char * token, size_t toklen )
+const gmltag *find_lay_tag( char *token, size_t toklen )
 {
     int k;
 
@@ -1006,12 +974,12 @@ const gmltag * find_lay_tag( char * token, size_t toklen )
 /*        adjustment                                                       */
 /***************************************************************************/
 
-bool is_ip_tag( e_tags offset )
+bool is_ip_tag( e_tags tag )
 {
-    if( (offset < t_NONE) || (offset >= t_MAX) ) {  // catch invalid offset values
+    if( (tag < t_NONE) || (tag >= t_MAX) ) {  // catch invalid offset values
         internal_err( __FILE__, __LINE__ );
-    } else if( offset != t_NONE ) {                 // t_NONE is valid, but is not an ip_start_tag
-        return( gml_tags[offset - 1].tagclass & ip_start_tag );
+    } else if( tag != t_NONE ) {                 // t_NONE is valid, but is not an ip_start_tag
+        return( gml_tags[tag - 1].tagclass & ip_start_tag );
     }
     return( false );                                // not found
 }
@@ -1028,13 +996,11 @@ bool is_ip_tag( e_tags offset )
 
 char * get_text_line( char * p )
 {
-    bool            use_current                     = false;
-    bool            tl_found                        = true;
-    char        *   tok_start                       = NULL;
+    bool            use_current = false;
+    char            *tok_start = NULL;
     char            tok_txt[TAG_NAME_LENGTH + 1];
-    int             k;
-    gtentry     *   ge;                                         // GML user tag entry
-    size_t          toklen                          = 0;
+    gtentry         *ge;                                        // GML user tag entry
+    size_t          toklen;
 
     if( !ProcFlags.reprocess_line  ) {  // still on last line of tag
         SkipSpaces( p );                // skip initial spaces
@@ -1064,7 +1030,7 @@ char * get_text_line( char * p )
         if( *p != '\0' ) {              // text exists
             classify_record( *p );      // sets ProcFlags used below if appropriate
             if( ProcFlags.scr_cw) {
-                tl_found = false;       // control word, macro, or whatever
+                xx_err( err_text_not_tag_cw );  // control word, macro, or whatever
             } else if( ProcFlags.gml_tag ) {
                 p++;
                 tok_start = p;
@@ -1078,35 +1044,15 @@ char * get_text_line( char * p )
                     if( ProcFlags.layout ) {
                         ge = NULL;                  // no user tags within :LAYOUT
                     } else {
-                        ge = find_tag( &tag_dict, tok_start + 1 );
+                        ge = find_user_tag( &tag_dict, tok_txt );
                     }
-                    if( ge != NULL ) {
-                        tl_found = false;           // user defined tag found
-                    } else {
-                        strupr( tok_txt );
-                        for( k = 0; k < LAY_TAGMAX; ++k ) {
-                            if( toklen == lay_tags[k].taglen ) {
-                                if( !strcmp( lay_tags[k].tagname, tok_txt ) ) {
-                                    tl_found = false;   // layout tag found
-                                }
-                            }
-                        }
-                        if( tl_found ) {
-                            for( k = 0; k < GML_TAGMAX; ++k ) {
-                                if( toklen == gml_tags[k].taglen ) {
-                                    if( !strcmp( gml_tags[k].tagname, tok_txt ) ) {
-                                        tl_found = false;   // normal tag found
-                                    }
-                                }
-                            }
-                        }
+                    if( ge != NULL
+                      || find_lay_tag( tok_txt, toklen ) != NULL
+                      || find_sys_tag( tok_txt, toklen ) != NULL ) {
+                        xx_err( err_text_not_tag_cw );  // control word, macro, or whatever
                     }
                 }
             }
-        }
-
-        if( !tl_found ) {                   // no <text_line> found
-            xx_err( err_text_not_tag_cw );
         }
     }
 

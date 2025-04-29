@@ -30,9 +30,7 @@
 *   as these are not used in the OW doc build system
 ****************************************************************************/
 
-#ifndef pick
-    #error macro pick not defined
-#endif
+
 //                                 additional
 //      function  name  mandatory  optional
 //      name     length   parmcount     routine name
@@ -76,5 +74,5 @@
   pick( wordpos,     7,   2,      1,    scr_wordpos    )
   pick( words,       5,   1,      0,    scr_words      )
 
-#undef  pick
-
+  pick( compare,     7,   2,      1,    scr_compare    )
+  pick( find,        4,   2,      0,    scr_find       )

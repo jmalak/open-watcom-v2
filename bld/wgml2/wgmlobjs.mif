@@ -135,6 +135,7 @@ scr_objs =  &
         gsfbfk.obj   &
         gsfc2d.obj   &
         gsfc2x.obj   &
+        gsfcmp.obj   &
         gsfd2c.obj   &
         gsfdelst.obj &
         gsfindex.obj &

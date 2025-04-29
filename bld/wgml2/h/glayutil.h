@@ -29,9 +29,7 @@
 *                    to be completed                                TBD
 ****************************************************************************/
 
-#ifndef pick
-    #error macro pick not defined
-#endif
+
 //      attribute                 routinename           result type
 //      name               input            output
 
@@ -122,5 +120,3 @@
 //pick( xx_string,         i_xx_string,     o_xx_string,     xx_str          )
 
 //pick( dummy_max,         NULL,            NULL,            int )// dummy entry
-
-#undef  pick

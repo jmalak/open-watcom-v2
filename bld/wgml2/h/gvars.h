@@ -316,9 +316,12 @@ global char str_tags[t_MAX + 1][10]
     { "NONE" },
     #define pickg( name, length, routine, gmlflags, locflags, classflags )  { #name },
     #include "gtags.h"
+    #undef pickg
 //    #define picklab( name, routine, flags )  extern void routine( void );
 //    #define picks( name, routine, flags )  extern void routine( void );
 //    #include "gscrcws.h" TBD
+//    #undef picks
+//    #undef picklab
     { "MAX" }
 }
 #endif

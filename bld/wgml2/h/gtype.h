@@ -886,9 +886,12 @@ typedef enum e_tags {
     t_NONE,
     #define pickg( name, length, routine, gmlflags, locflags, classname )  t_##name,
     #include "gtags.h"
+    #undef pickg
 //    #define picklab( name, routine, flags )  t_label,
 //    #define picks( name, routine, flags )  t_##name,
 //    #include "gscrcws.h" TBD
+//    #undef picks
+//    #undef picklab
     t_MAX                               // the last one for range check
 } e_tags;
 
@@ -1165,7 +1168,7 @@ typedef struct {
     struct  doc_element *   prev;       // only used with headings
     struct  ffh_entry   *   entry;      // only used with headings
     struct  ref_entry   *   ref;        // only used with headings
-            text_line   *   first;      
+            text_line   *   first;
             bool            bx_h_done;  // bx has added ascenders to the line
             bool            force_op;   // forces overprint at top of page
             bool            overprint;  // placement avoids padding warning
@@ -1509,7 +1512,7 @@ typedef enum {
     ffh_fn          =    2, // FN entry
     ffh_hn          =    4, // heading entry
     ffh_figcap      =    8, // FIGCAP used -- even if there is no text
-    ffh_prefix      =   16, // use heading prefix                  
+    ffh_prefix      =   16, // use heading prefix
 } ffhflags;
 
 typedef struct ffh_entry {
@@ -1662,7 +1665,7 @@ typedef struct proc_flags {
     unsigned        CW_force_sep        : 1;// scr cw line was indented and separator must be recognized
     unsigned        CW_noblank          : 1;// no blank between CW/macro and first operand
     unsigned        CW_sep_ignore       : 1;// ignore scr cw separator
-    unsigned        indented_text       : 1;// text was indented      
+    unsigned        indented_text       : 1;// text was indented
     unsigned        in_macro_define     : 1;// macro definition active
     unsigned        suppress_msg        : 1;// suppress error msg (during scanning)
     unsigned        blanks_allowed      : 1;// blanks allowed (during scanning)

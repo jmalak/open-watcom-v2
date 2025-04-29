@@ -524,21 +524,21 @@ void    scr_gt( void )
             if( savetag == '*' ) {
                 print_tag_dict( tag_dict );
             } else {
-                print_tag_entry( find_tag( &tag_dict, tagname ) );
+                print_tag_entry( find_user_tag( &tag_dict, tagname ) );
             }
             break;
         case f_delete :
             if( savetag == '*' ) {
                 free_tag_dict( &tag_dict );
             } else {
-                free_tag( &tag_dict, find_tag( &tag_dict, tagname ) );
+                free_tag( &tag_dict, find_user_tag( &tag_dict, tagname ) );
             }
             break;
         case f_off :
             if( savetag == '*' && tag_entry != NULL ) {// off for last defined
                 tag_entry->tagflags |= tag_off;
             } else {
-                wk = find_tag( &tag_dict, tagname );
+                wk = find_user_tag( &tag_dict, tagname );
                 if( wk != NULL ) {
                     wk->tagflags |= tag_off;
                 }
@@ -548,7 +548,7 @@ void    scr_gt( void )
             if( savetag == '*' && tag_entry != NULL ) {// on for last defined
                 tag_entry->tagflags |= tag_off;
             } else {
-                wk = find_tag( &tag_dict, tagname );
+                wk = find_user_tag( &tag_dict, tagname );
                 if( wk != NULL ) {
                     wk->tagflags &= ~tag_off;
                 }

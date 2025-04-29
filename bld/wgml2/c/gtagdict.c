@@ -54,7 +54,7 @@ gtentry *   add_tag( gtentry * * dict, const char * name, const char * mac,
     gtentry     *   ge;
     gtentry     *   wk;
 
-    wk = find_tag( dict, name );
+    wk = find_user_tag( dict, name );
     if( wk != NULL ) {
         xx_source_err_c( err_tag_exist, name );
     }
@@ -84,7 +84,7 @@ gtentry *   change_tag( gtentry * * dict, const char * name, const char * mac )
     gtentry     *   ge = NULL;
 
     if( *dict != NULL ) {
-        ge = find_tag( dict, name );
+        ge = find_user_tag( dict, name );
         if( ge != NULL ) {
            strcpy_s( ge->macname, sizeof( ge->macname ), mac );
         }
@@ -175,12 +175,12 @@ void    free_tag_dict( gtentry * * dict )
 /*  returns ptr to tag or NULL if not found                                */
 /***************************************************************************/
 
-gtentry     *   find_tag( gtentry * * dict, const char * name )
+gtentry     *find_user_tag( gtentry * * dict, const char * name )
 {
-    gtentry     *   wk;
+    gtentry     *wk;
 
     for( wk = *dict; wk != NULL; wk = wk->next ) {
-        if( !stricmp( wk->name, name ) ) {
+        if( stricmp( wk->name, name ) == 0 ) {
             break;
         }
     }

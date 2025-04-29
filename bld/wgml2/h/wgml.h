@@ -391,7 +391,7 @@ extern  void        free_tag_dict( gtentry * * dict );
 extern  gtentry *   free_tag( gtentry * * dict, gtentry * ge );
 extern  void        print_tag_dict( gtentry * dict );
 extern  void        print_tag_entry( gtentry * entry );
-extern  gtentry *   find_tag( gtentry * * dict, char const * name );
+extern  gtentry     *find_user_tag( gtentry * * dict, char const * name );
 
 /* gtxtpool.c                           */
 extern  void                add_single_text_chars_to_pool( text_chars * a_chars );
@@ -544,6 +544,7 @@ extern  void    show_include_stack( void );
 
 #define pickg( name, length, routine, gmlflags, locflags, classflags )  extern void routine( const gmltag * entry );
 #include "gtags.h"
+#undef pickg
 
 /*
  * prototypes for the layout tag processing routines
@@ -551,6 +552,7 @@ extern  void    show_include_stack( void );
 
 #define pick( name, length, routine, gmlflags, locflags )  extern void routine( const gmltag * entry );
 #include "gtagslay.h"
+#undef pick
 
 /*
  * prototypes for the layout tag attribute processing routines
@@ -559,10 +561,12 @@ extern  void    show_include_stack( void );
 /*          for input scanning              */
 #define pick( name, funci, funco, restype )     extern  bool    funci( char * buf, lay_att attr, restype * result );
 #include "glayutil.h"
+#undef pick
 
 /*          for output via :convert tag     */
 #define pick( name, funci, funco, restype )     extern  void    funco( FILE * f, lay_att attr, const restype * in );
 #include "glayutil.h"
+#undef pick
 
 /*
  * prototypes for the script control word processing routines
@@ -571,6 +575,8 @@ extern  void    show_include_stack( void );
 #define picklab( name, routine, flags )  extern void routine( void );
 #define picks( name, routine, flags )  extern void routine( void );
 #include "gscrcws.h"
+#undef picks
+#undef picklab
 
 /*
  * prototypes for the script string function routines , ie. &'substr( ,..
@@ -579,6 +585,7 @@ extern  void    show_include_stack( void );
 #define pick( name, length, mand_parms, opt_parms, routine ) \
     extern condcode routine( parm parms[MAX_FUN_PARMS], size_t parm_count, char * * ppval, int32_t valsize );
 #include "gsfuncs.h"
+#undef pick
 
 
 #ifdef  __cplusplus
