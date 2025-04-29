@@ -29,7 +29,11 @@
 *   see comment in wgml.c
 ****************************************************************************/
 
+
 #include "wgml.h"
+
+#include "clibext.h"
+
 
 static  bool        sym_space;          // compiler workaround
 

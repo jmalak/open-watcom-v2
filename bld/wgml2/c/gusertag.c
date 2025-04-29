@@ -32,6 +32,8 @@
 
 #include "wgml.h"
 
+#include "clibext.h"
+
 
 /***************************************************************************/
 /*  clear and set the relevant attribute parametercheck flags              */

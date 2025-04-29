@@ -31,6 +31,8 @@
 
 #include "wgml.h"
 
+#include "clibext.h"
+
 
 /***************************************************************************/
 /*                     several  attributes  with only font as value        */
@@ -103,7 +105,7 @@ void    lay_xx( const gmltag * entry )
                 switch( curr ) {
                 case   e_font:
                     if( AttrFlags.font ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_font_number( p, curr, fontptr );

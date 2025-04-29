@@ -32,7 +32,9 @@
 ****************************************************************************/
 
 
-#include    "wgml.h"
+#include "wgml.h"
+
+#include "clibext.h"
 
 
 static  char    *       double_q    = "\""; // string for output of '"'

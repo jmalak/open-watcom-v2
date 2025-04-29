@@ -38,6 +38,8 @@
 
 #include "wgml.h"
 
+#include "clibext.h"
+
 
 /**************************************************************************/
 /* PERFORM processes the remainder of the current physical input line (if */

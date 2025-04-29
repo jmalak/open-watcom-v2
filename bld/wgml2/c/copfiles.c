@@ -71,6 +71,9 @@
 #include "devfuncs.h"
 #include "outbuff.h"
 
+#include "clibext.h"
+
+
 /* Static data. */
 
 static cop_font        *   bin_fonts;       // binary fonts being used (linked list)
@@ -803,13 +806,13 @@ void cop_setup( void )
 
     /* Set ProcFlags.ps_device to "true" if the driver name begins with "ps" or "PS". */
 
-    if( !_strnicmp( bin_device->driver_name, "ps", 2 ) ) {
+    if( !strnicmp( bin_device->driver_name, "ps", 2 ) ) {
         ProcFlags.ps_device = true;
     }
 
     /* Set ProcFlags.wh_device to "true" if the driver name begins with "whelp" or "WHELP". */
 
-    if( !_strnicmp( bin_device->driver_name, "whelp", 5 ) ) {
+    if( !strnicmp( bin_device->driver_name, "whelp", 5 ) ) {
         ProcFlags.wh_device = true;
     }
 

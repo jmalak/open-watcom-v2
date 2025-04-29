@@ -32,7 +32,9 @@
 ****************************************************************************/
 
 
-#include    "wgml.h"
+#include "wgml.h"
+
+#include "clibext.h"
 
 
 static  font_number     tt_font     = 0;    // font number to be replaced with "0"

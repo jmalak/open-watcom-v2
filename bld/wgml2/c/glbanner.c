@@ -31,6 +31,8 @@
 
 #include "wgml.h"
 
+#include "clibext.h"
+
 
 banner_lay_tag  *   curr_ban;       // also needed for glbanreg.c
 banner_lay_tag  *   del_ban;        // ... banner to be deleted

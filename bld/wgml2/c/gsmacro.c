@@ -40,6 +40,8 @@
 
 #include "wgml.h"
 
+#include "clibext.h"
+
 
 /*****************************************************************************/
 /* verify that p points to a <symbol>=<value> pair                           */

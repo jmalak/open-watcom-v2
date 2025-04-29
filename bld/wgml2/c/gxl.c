@@ -35,7 +35,9 @@
 ****************************************************************************/
 
 
-#include    "wgml.h"
+#include "wgml.h"
+
+#include "clibext.h"
 
 
 static  bool        ddhd_done       = false;

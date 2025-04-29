@@ -31,6 +31,8 @@
 
 #include "wgml.h"
 
+#include "clibext.h"
+
 
 /***************************************************************************/
 /*  init_tag_dict   initialize dictionary pointer                          */

@@ -29,7 +29,9 @@
 ****************************************************************************/
 
 
-#include    "wgml.h"
+#include "wgml.h"
+
+#include "clibext.h"
 
 
 static  bool    ref_page        = false;

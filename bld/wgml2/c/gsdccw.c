@@ -33,6 +33,8 @@
 
 #include "wgml.h"
 
+#include "clibext.h"
+
 
 /***************************************************************************/
 /* DEFINE CHARACTER defines  characters of special meaning  when found in  */
@@ -333,7 +335,7 @@ void    scr_dc( void )
         xx_line_err_cc( err_parm_missing, "DC", o_p );
     } else if( o_len == 1 ) {           // option malformed
         xx_line_err_cc( err_parm_invalid, o_p, o_p );
-    } else if( o_len == 2 ) {           // BS CW LB LI PS RB TB TI 
+    } else if( o_len == 2 ) {           // BS CW LB LI PS RB TB TI
         if( !strnicmp( o_p, "BS", 2 ) ) {
             xx_line_warn_cc( wng_dc_opt, o_p, o_p );
             scan_restart = v_p + v_len;
@@ -398,7 +400,7 @@ void    scr_dc( void )
         } else {
             xx_line_err_cc( err_parm_invalid, o_p, o_p );  // option invalid
         }
-    } else if( o_len == 3 ) {           // GML IXB IXI IXJ MCS PIX SUB SUP 
+    } else if( o_len == 3 ) {           // GML IXB IXI IXJ MCS PIX SUB SUP
         if( !strnicmp( o_p, "GML", 3 ) ) {
             if( v_len == 0 ) {
                 c = ' ';                        // default is blank

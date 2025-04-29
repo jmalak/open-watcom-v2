@@ -33,6 +33,9 @@
 
 #include "wgml.h"
 
+#include "clibext.h"
+
+
 static  bool            concat_save;            // for ProcFlags.concat
 static  char            id[ID_LEN];             // FIG attribute used by eFIG
 static  group_type      sav_group_type;         // save prior group type

@@ -35,6 +35,8 @@
 
 #include "wgml.h"
 
+#include "clibext.h"
+
 
 static char  const      stryes[] =  { "yes" };
 static char  const      strno[]  =  { "no" };

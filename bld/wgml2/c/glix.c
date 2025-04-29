@@ -31,6 +31,8 @@
 
 #include "wgml.h"
 
+#include "clibext.h"
+
 
 /***************************************************************************/
 /*   :I1 - :I3 attributes                                                  */
@@ -162,7 +164,7 @@ void    lay_ix( const gmltag * entry )
                 switch( curr ) {
                 case   e_pre_skip:
                     if( AttrFlags.pre_skip ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_space_unit( p, curr,
@@ -171,7 +173,7 @@ void    lay_ix( const gmltag * entry )
                     break;
                 case   e_post_skip:
                     if( AttrFlags.post_skip ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_space_unit( p, curr,
@@ -180,7 +182,7 @@ void    lay_ix( const gmltag * entry )
                     break;
                 case   e_skip:
                     if( AttrFlags.skip ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_space_unit( p, curr,
@@ -189,7 +191,7 @@ void    lay_ix( const gmltag * entry )
                     break;
                 case   e_font:
                     if( AttrFlags.font ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_font_number( p, curr, &layout_work.ix[ix_l].font );
@@ -200,7 +202,7 @@ void    lay_ix( const gmltag * entry )
                     break;
                 case   e_indent:
                     if( AttrFlags.indent ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_space_unit( p, curr,
@@ -209,7 +211,7 @@ void    lay_ix( const gmltag * entry )
                     break;
                 case   e_wrap_indent:
                     if( AttrFlags.wrap_indent ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_space_unit( p, curr,
@@ -218,7 +220,7 @@ void    lay_ix( const gmltag * entry )
                     break;
                 case   e_index_delim:
                     if( AttrFlags.index_delim ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_xx_string( p, curr,
@@ -227,7 +229,7 @@ void    lay_ix( const gmltag * entry )
                     break;
                 case   e_string_font:
                     if( AttrFlags.string_font ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     if( ix_l < 2 ) {

@@ -32,6 +32,8 @@
 #include "wgml.h"
 #include <errno.h>
 
+#include "clibext.h"
+
 
 /***************************************************************************/
 /*  parses in_su->su_txt to complete initialization of in_su               */

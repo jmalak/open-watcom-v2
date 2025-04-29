@@ -31,6 +31,8 @@
 
 #include "wgml.h"
 
+#include "clibext.h"
+
 
 /***************************************************************************/
 /*   :Hx    attributes                                                     */
@@ -252,7 +254,7 @@ void    lay_hx( const gmltag * entry )
                 switch( curr ) {
                 case   e_group:
                     if( AttrFlags.group ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_int8( p, curr, &l_group );
@@ -260,7 +262,7 @@ void    lay_hx( const gmltag * entry )
                     break;
                 case   e_indent:
                     if( AttrFlags.indent ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_space_unit( p, curr,
@@ -269,7 +271,7 @@ void    lay_hx( const gmltag * entry )
                     break;
                 case   e_pre_top_skip:
                     if( AttrFlags.pre_top_skip ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_space_unit( p, curr, &layout_work.hx.hx_sect[hx_l].pre_top_skip );
@@ -277,7 +279,7 @@ void    lay_hx( const gmltag * entry )
                     break;
                 case   e_pre_skip:
                     if( AttrFlags.pre_skip ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_space_unit( p, curr, &layout_work.hx.hx_head[hx_l].pre_skip );
@@ -285,7 +287,7 @@ void    lay_hx( const gmltag * entry )
                     break;
                 case   e_post_skip:
                     if( AttrFlags.post_skip ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_space_unit( p, curr, &layout_work.hx.hx_sect[hx_l].post_skip );
@@ -293,7 +295,7 @@ void    lay_hx( const gmltag * entry )
                     break;
                 case   e_spacing:
                     if( AttrFlags.spacing ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_spacing( p, curr, &layout_work.hx.hx_sect[hx_l].spacing );
@@ -301,7 +303,7 @@ void    lay_hx( const gmltag * entry )
                     break;
                 case   e_font:
                     if( AttrFlags.font ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_font_number( p, curr, &layout_work.hx.hx_sect[hx_l].text_font );
@@ -312,7 +314,7 @@ void    lay_hx( const gmltag * entry )
                     break;
                 case   e_number_font:
                     if( AttrFlags.number_font ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_font_number( p, curr, &layout_work.hx.hx_head[hx_l].number_font );
@@ -323,7 +325,7 @@ void    lay_hx( const gmltag * entry )
                     break;
                 case   e_number_form:
                     if( AttrFlags.number_form ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_number_form( p, curr, &layout_work.hx.hx_head[hx_l].number_form );
@@ -331,7 +333,7 @@ void    lay_hx( const gmltag * entry )
                     break;
                 case   e_page_position:
                     if( AttrFlags.page_position ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_page_position( p, curr, &layout_work.hx.hx_head[hx_l].line_position );
@@ -339,7 +341,7 @@ void    lay_hx( const gmltag * entry )
                     break;
                 case   e_number_style:
                     if( AttrFlags.number_style ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_number_style( p, curr, &layout_work.hx.hx_head[hx_l].number_style );
@@ -347,7 +349,7 @@ void    lay_hx( const gmltag * entry )
                     break;
                 case   e_page_eject:
                     if( AttrFlags.page_eject ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_page_eject( p, curr, &layout_work.hx.hx_head[hx_l].page_eject );
@@ -355,7 +357,7 @@ void    lay_hx( const gmltag * entry )
                     break;
                 case   e_line_break:
                     if( AttrFlags.line_break ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_yes_no( p, curr, &layout_work.hx.hx_head[hx_l].line_break );
@@ -363,7 +365,7 @@ void    lay_hx( const gmltag * entry )
                     break;
                 case   e_display_heading:
                     if( AttrFlags.display_heading ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_yes_no( p, curr, &layout_work.hx.hx_head[hx_l].display_heading );
@@ -371,7 +373,7 @@ void    lay_hx( const gmltag * entry )
                     break;
                 case   e_number_reset:
                     if( AttrFlags.number_reset ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_yes_no( p, curr, &layout_work.hx.hx_head[hx_l].number_reset );
@@ -379,7 +381,7 @@ void    lay_hx( const gmltag * entry )
                     break;
                 case   e_case:
                     if( AttrFlags.case_a ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_case( p, curr, &layout_work.hx.hx_head[hx_l].hd_case );
@@ -387,7 +389,7 @@ void    lay_hx( const gmltag * entry )
                     break;
                 case   e_align:
                     if( AttrFlags.align ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_space_unit( p, curr, &layout_work.hx.hx_head[hx_l].align );

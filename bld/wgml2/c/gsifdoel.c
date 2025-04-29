@@ -32,6 +32,8 @@
 
 #include "wgml.h"
 
+#include "clibext.h"
+
 
 /***************************************************************************/
 /*  for evaluation term in .if control word                                */

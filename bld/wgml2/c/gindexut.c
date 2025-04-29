@@ -33,6 +33,8 @@
 
 #include "wgml.h"
 
+#include "clibext.h"
+
 
 /***************************************************************************/
 /*  find an index item number reference in index_dict                      */

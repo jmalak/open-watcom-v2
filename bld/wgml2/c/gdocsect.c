@@ -30,7 +30,9 @@
 ****************************************************************************/
 
 
-#include    "wgml.h"
+#include "wgml.h"
+
+#include "clibext.h"
 
 
 #define CHAR_FRAME_LEN 5    // works for monospaced fonts with char width 1

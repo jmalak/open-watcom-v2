@@ -32,6 +32,8 @@
 
 #include "wgml.h"
 
+#include "clibext.h"
+
 
 /***************************************************************************/
 /* Layout attributes as character strings                                  */

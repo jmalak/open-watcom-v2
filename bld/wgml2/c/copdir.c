@@ -39,6 +39,9 @@
 #include "copdir.h"
 #include "cophdr.h"
 
+#include "clibext.h"
+
+
 /* Global function definitions. */
 
 /* Function get_compact_entry().

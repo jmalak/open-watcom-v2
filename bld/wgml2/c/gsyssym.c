@@ -957,7 +957,7 @@ static void sysseqnofun( symvar * e )   // seqno current input record
             l = input_cbs->s.m->lineno;
         }
     }
-    sprintf_s( e->sub_0->value, MAX_L_AS_STR, "%.8u", l );
+    sprintf( e->sub_0->value, "%.8u", l );
     return;
 }
 

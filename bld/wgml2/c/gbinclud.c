@@ -29,7 +29,9 @@
 ****************************************************************************/
 
 
-#include    "wgml.h"
+#include "wgml.h"
+
+#include "clibext.h"
 
 
 /***************************************************************************/
@@ -75,7 +77,7 @@ void    gml_binclude( const gmltag * entry )
                 p += 4;
                 p = get_value( p );
                 if( AttrFlags.file ) {
-                    xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                    xx_line_err_ci( err_att_dup, g_att_val.att_name,
                         g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                 }
                 AttrFlags.file = true;
@@ -102,7 +104,7 @@ void    gml_binclude( const gmltag * entry )
                 p += 5;
                 p = get_value( p );
                 if( AttrFlags.depth ) {
-                    xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                    xx_line_err_ci( err_att_dup, g_att_val.att_name,
                         g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                 }
                 AttrFlags.depth = true;
@@ -123,7 +125,7 @@ void    gml_binclude( const gmltag * entry )
                 p += 10;
                 p = get_value( p );
                 if( AttrFlags.reposition ) {
-                    xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                    xx_line_err_ci( err_att_dup, g_att_val.att_name,
                         g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                 }
                 AttrFlags.reposition = true;

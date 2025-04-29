@@ -527,7 +527,7 @@ static void g_err_tag_common( const char * tag, bool nest )
 {
     char    tagn[TAG_NAME_LENGTH + 1];
 
-    sprintf_s( tagn, TAG_NAME_LENGTH + 1, "%s", tag );
+    sprintf( tagn, "%s", tag );
     g_err( err_tag_expected, tagn );
     if( nest ) {
         file_mac_info_nest();
@@ -574,9 +574,9 @@ void g_err_tag_rsloc( locflags inloc, const char * pa )
 
 void g_err_tag_no( const char * tag )
 {
-    char    tagn[TAG_NAME_LENGTH + 1];
+    char    tagn[TAG_NAME_LENGTH + 1 + 1];
 
-    sprintf_s( tagn, TAG_NAME_LENGTH + 1, "%c%s", GML_char, tag );
+    sprintf( tagn, "%c%s", GML_char, tag );
     g_err( err_tag_not_expected, tagn );
     file_mac_info_nest();
     err_count++;
@@ -585,9 +585,9 @@ void g_err_tag_no( const char * tag )
 
 void g_err_tag_prec( const char * tag )
 {
-    char    tagn[TAG_NAME_LENGTH + 1];
+    char    tagn[TAG_NAME_LENGTH + 1 + 1];
 
-    sprintf_s( tagn, TAG_NAME_LENGTH + 1, "%c%s", GML_char, tag );
+    sprintf( tagn, "%c%s", GML_char, tag );
     g_err( err_tag_preceding, tagn );
     file_mac_info();
     err_count++;

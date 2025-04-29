@@ -31,6 +31,8 @@
 
 #include "wgml.h"
 
+#include "clibext.h"
+
 
 /***************************************************************************/
 /*   :TOCHx    attributes                                                     */
@@ -175,7 +177,7 @@ void    lay_tochx( const gmltag * entry )
                 switch( curr ) {
                 case   e_group:
                     if( AttrFlags.group ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_int8( p, curr, &layout_work.tochx[hx_l].group );
@@ -183,7 +185,7 @@ void    lay_tochx( const gmltag * entry )
                     break;
                 case   e_indent:
                     if( AttrFlags.indent ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_space_unit( p, curr,
@@ -192,7 +194,7 @@ void    lay_tochx( const gmltag * entry )
                     break;
                 case   e_skip:
                     if( AttrFlags.skip ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_space_unit( p, curr,
@@ -201,7 +203,7 @@ void    lay_tochx( const gmltag * entry )
                     break;
                 case   e_pre_skip:
                     if( AttrFlags.pre_skip ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_space_unit( p, curr,
@@ -210,7 +212,7 @@ void    lay_tochx( const gmltag * entry )
                     break;
                 case   e_post_skip:
                     if( AttrFlags.post_skip ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_space_unit( p, curr,
@@ -219,7 +221,7 @@ void    lay_tochx( const gmltag * entry )
                     break;
                 case   e_font:
                     if( AttrFlags.font ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_font_number( p, curr, &layout_work.tochx[hx_l].font );
@@ -230,7 +232,7 @@ void    lay_tochx( const gmltag * entry )
                     break;
                 case   e_align:
                     if( AttrFlags.align ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_space_unit( p, curr,
@@ -239,7 +241,7 @@ void    lay_tochx( const gmltag * entry )
                     break;
                 case   e_display_in_toc:
                     if( AttrFlags.display_in_toc ) {
-                        xx_line_err_ci( err_att_dup, g_att_val.att_name, 
+                        xx_line_err_ci( err_att_dup, g_att_val.att_name,
                             g_att_val.val_name - g_att_val.att_name + g_att_val.val_len);
                     }
                     cvterr = i_yes_no( p, curr,

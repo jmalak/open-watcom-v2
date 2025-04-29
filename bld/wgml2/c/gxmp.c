@@ -29,7 +29,9 @@
 ****************************************************************************/
 
 
-#include    "wgml.h"
+#include "wgml.h"
+
+#include "clibext.h"
 
 
 static  bool        concat_save;            // for ProcFlags.concat

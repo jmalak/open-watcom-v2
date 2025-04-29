@@ -40,6 +40,8 @@
 
 #include "wgml.h"
 
+#include "clibext.h"
+
 
 /***************************************************************************/
 /*    SCR multi letter functions                                           */
