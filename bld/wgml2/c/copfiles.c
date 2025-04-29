@@ -277,7 +277,7 @@ static cop_device * get_cop_device( char const * in_name )
 
     /* Acquire the file, if it exists. */
 
-    if( !search_file_in_dirs( in_name, "", "", ds_bin_lib ) ) {
+    if( search_file_in_dirs( in_name, "", "", ds_bin_lib ) == NULL ) {
         return( out_device );
     }
 
@@ -353,7 +353,7 @@ static cop_driver * get_cop_driver( char const * in_name )
 
     /* Acquire the file, if it exists. */
 
-    if( !search_file_in_dirs( in_name, "", "", ds_bin_lib ) ) {
+    if( search_file_in_dirs( in_name, "", "", ds_bin_lib ) == NULL ) {
         return( out_driver );
     }
 
@@ -429,7 +429,7 @@ static cop_font * get_cop_font( char const * in_name )
 
     /* Acquire the file, if it exists. */
 
-    if( !search_file_in_dirs( in_name, "", "", ds_bin_lib ) ) {
+    if( search_file_in_dirs( in_name, "", "", ds_bin_lib ) == NULL ) {
         return( out_font );
     }
 

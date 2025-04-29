@@ -446,7 +446,7 @@ static  void    proc_input( char * filename )
             if( attrwork[0] ) {
                 xx_warn_cc( wng_fileattr_ignored, attrwork, token_buf );
             }
-            if( search_file_in_dirs( token_buf, def_ext, alt_ext, ds_doc_spec ) ) {
+            if( search_file_in_dirs( token_buf, def_ext, alt_ext, ds_doc_spec ) != NULL ) {
                 if( inc_level >= MAX_INC_DEPTH ) {
                     xx_err_c( err_max_input_nesting, token_buf );
                 }

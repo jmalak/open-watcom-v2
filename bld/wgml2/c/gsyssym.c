@@ -214,7 +214,7 @@ static void sysbmfun( symvar * e )
 {
     (void)e;
 
-    sprintf( sysbmstr, "%d", bm );
+    sprintf( sysbmstr, "%d", g_bm );
     return;
 }
 
@@ -410,7 +410,7 @@ static void sysfmfun( symvar * e )
 {
     (void)e;
 
-    sprintf( sysfmstr, "%d", fm );
+    sprintf( sysfmstr, "%d", g_fm );
     return;
 }
 
@@ -496,7 +496,7 @@ static void syshmfun( symvar * e )
 {
     (void)e;
 
-    sprintf( syshmstr, "%d", hm );
+    sprintf( syshmstr, "%d", g_hm );
     return;
 }
 
@@ -749,7 +749,7 @@ static void syspagelmfun( symvar * e )  // page left margin
 {
     (void)e;
 
-    sprintf( syspagelmstr, "%d", lm );
+    sprintf( syspagelmstr, "%d", g_lm );
     return;
 }
 
@@ -757,7 +757,7 @@ static void syspagermfun( symvar * e )  // page right margin
 {
     (void)e;
 
-    sprintf( syspagermstr, "%d", rm );
+    sprintf( syspagermstr, "%d", g_rm );
     return;
 }
 
@@ -1017,7 +1017,7 @@ static void systmfun( symvar * e )
 {
     (void)e;
 
-    sprintf( systmstr, "%d", tm );
+    sprintf( systmstr, "%d", g_tm );
     return;
 }
 

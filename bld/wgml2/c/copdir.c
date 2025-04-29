@@ -25,8 +25,6 @@
 *  ========================================================================
 *
 * Description:  Implements the external functions declared in cfdir.h:
-*                   get_compact_entry()
-*                   get_extended_entry()
 *                   get_member_name()
 *
 * Note:         The Wiki should be consulted for any term whose meaning is
@@ -41,6 +39,26 @@
 
 #include "clibext.h"
 
+
+#define DEFINED_NAME_MAX 78     // Per documentation, max length of a defined name.
+
+/* Struct declaration. */
+
+/*
+ * To hold the data from either the CompactDirEntry struct or the
+ * ExtendedDirEntry struct, since, in either case, only these two fields are used.
+ */
+typedef struct {
+    char    defined_name[DEFINED_NAME_MAX + 1];
+    char    member_name[_MAX_PATH];
+} directory_entry;
+
+/* Enum declaration. */
+
+typedef enum {
+    valid_entry,        // Both defined_name and member_name were found.
+    not_valid_entry     // The entry was not valid.
+} entry_found;
 
 /* Global function definitions. */
 
@@ -65,7 +83,7 @@
  *      A file error may have occurred if not_valid_entry is returned.
  */
 
-entry_found get_compact_entry( FILE * in_file, directory_entry * entry )
+static entry_found get_compact_entry( FILE * in_file, directory_entry * entry )
 {
     uint8_t count;
 
@@ -131,7 +149,7 @@ entry_found get_compact_entry( FILE * in_file, directory_entry * entry )
  *      A file error may have occurred even if valid_entry is returned.
  */
 
-entry_found get_extended_entry( FILE * in_file, directory_entry * entry )
+static entry_found get_extended_entry( FILE * in_file, directory_entry * entry )
 {
     uint8_t count;
 
@@ -191,11 +209,11 @@ entry_found get_extended_entry( FILE * in_file, directory_entry * entry )
  * is found, returns the corresponding member name.
  *
  * Parameter:
+ *      fp contains the FILE * for the directory file.
  *      in_name points to the defined name to match.
  *
  * Globals Used:
  *      try_file_name contains the name of the directory file.
- *      try_fp contains the FILE * for the directory file.
  *
  * Returns:
  *      on success, the corresponding member name.
@@ -205,9 +223,9 @@ entry_found get_extended_entry( FILE * in_file, directory_entry * entry )
  *      the comparison is not case-sensitive for compatability with wgml 4.0.
  */
 
-char * get_member_name( char const * in_name )
+char *get_member_name( FILE *fp, const char *fname, const char *in_name )
 {
-    char    *       member_name     = NULL;
+    char            *member_name = NULL;
     cop_file_type   file_type;
     directory_entry current_entry;
     entry_found     entry_status;
@@ -216,13 +234,13 @@ char * get_member_name( char const * in_name )
 
     /* See if in_name is found in try_file_name. */
 
-    file_type = parse_header( try_fp );
+    file_type = parse_header( fp );
     switch( file_type ) {
     case file_error:
 
         /* File error, including premature eof. */
 
-        xx_simple_err_c( err_dev_lib_file, try_file_name );
+        xx_simple_err_c( err_dev_lib_file, fname );
         break;
 
     case not_se_v4_1:
@@ -237,17 +255,17 @@ char * get_member_name( char const * in_name )
 
         /* Wrong type of file: something is wrong with the device library. */
 
-        xx_simple_err_c( err_dev_lib_data, try_file_name );
+        xx_simple_err_c( err_dev_lib_data, fname );
         break;
 
     case dir_v4_1_se:
 
-        /* try_fp was a same-endian version 4.1 directory file. */
+        /* fp was a same-endian version 4.1 directory file. */
 
         /* Skip the number of entries. */
 
-        fseek( try_fp, sizeof( uint32_t ), SEEK_CUR );
-        if( ferror( try_fp ) || feof( try_fp ) ) {
+        fseek( fp, sizeof( uint32_t ), SEEK_CUR );
+        if( ferror( fp ) || feof( fp ) ) {
             break;
         }
 
@@ -258,11 +276,11 @@ char * get_member_name( char const * in_name )
              * ExtendedDirEntry.
              */
 
-            fread( &entry_type, sizeof( entry_type ), 1, try_fp );
+            fread( &entry_type, sizeof( entry_type ), 1, fp );
 
             /* Exit the loop when the final entry has been processed. */
 
-            if( feof( try_fp ) || ferror( try_fp ) ) {
+            if( feof( fp ) || ferror( fp ) ) {
                 break;
             }
 
@@ -285,11 +303,11 @@ char * get_member_name( char const * in_name )
                      * metatype has already been read.
                      */
 
-                    fread( &entry_type, sizeof( entry_type ), 1, try_fp );
+                    fread( &entry_type, sizeof( entry_type ), 1, fp );
 
                     /* Exit the loop when the final entry has been processed. */
 
-                    if( feof( try_fp ) || ferror( try_fp ) ) {
+                    if( feof( fp ) || ferror( fp ) ) {
                         break;
                     }
 
@@ -316,7 +334,7 @@ char * get_member_name( char const * in_name )
 
                         /* For any type, check the defined name. */
 
-                        entry_status = get_extended_entry( try_fp, &current_entry );
+                        entry_status = get_extended_entry( fp, &current_entry );
                         switch( entry_status ) {
                         case valid_entry:
 
@@ -361,7 +379,7 @@ char * get_member_name( char const * in_name )
 
                 /* For any type, check the defined name. */
 
-                entry_status = get_compact_entry( try_fp, &current_entry );
+                entry_status = get_compact_entry( fp, &current_entry );
                 switch( entry_status ) {
 
                 case valid_entry:
@@ -409,7 +427,7 @@ char * get_member_name( char const * in_name )
         break;
     }
 
-    return( member_name );
+    return( NULL );
 }
 
 

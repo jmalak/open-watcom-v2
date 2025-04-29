@@ -364,7 +364,7 @@ void    print_tag_entry( gtentry * wk )
         find++;
         flags >>= 1;
     }
-    out_msg( "tag:  %-16.16s tagcount=%d macro=%s %s\n", wk->name,
+    out_msg( "tag:  %-16.16s tagcount=%u macro=%s %s\n", wk->name,
              wk->usecount, wk->macname, opt );
     for( gawk = wk->attribs; gawk != NULL; gawk = gawk->next ) {
         print_att_entry( gawk );

@@ -111,10 +111,10 @@ void init_global_vars( void )
     g_line              = 0;            // current output lineno on page
     g_curr_font         = FONT0;
     g_prev_font         = FONT0;
-    tm                  = 0;            // top margin              &$tm
-    bm                  = 0;            // bottom margin           &$bm
-    fm                  = 0;            // footing margin          &$fm
-    hm                  = 0;            // heading margin          &$hm
+    g_tm                = 0;            // top margin              &$tm
+    g_bm                = 0;            // bottom margin           &$bm
+    g_fm                = 0;            // footing margin          &$fm
+    g_hm                = 0;            // heading margin          &$hm
 
     in_esc              = ' ';
     tab_char            = 0x09;
@@ -393,10 +393,10 @@ void init_pass_data( void )
         }
     }
 
-    tm = (bin_device->vertical_base_units * 6 ) / LPI;  // top margin &systm
-    bm = tm;                                            // bottom margin &sysbm
-    hm = bin_device->vertical_base_units / LPI;         // heading margin &syshm
-    fm = hm;                                            // footing margin &sysfm
+    g_tm = (bin_device->vertical_base_units * 6 ) / LPI;    // top margin &systm
+    g_bm = g_tm;                                            // bottom margin &sysbm
+    g_hm = bin_device->vertical_base_units / LPI;           // heading margin &syshm
+    g_fm = g_hm;                                            // footing margin &sysfm
 
     g_indent    = 0;
     g_indentr   = 0;

@@ -156,7 +156,7 @@ void    gml_binclude( const gmltag * entry )
     }
 
     // only set up the doc_element if the file exists
-    if( search_file_in_dirs( file, "", "", ds_doc_spec ) ) {
+    if( search_file_in_dirs( file, "", "", ds_doc_spec ) != NULL ) {
         if( depth == 0 ) {
             cur_el = alloc_doc_el(  el_binc );
         } else {

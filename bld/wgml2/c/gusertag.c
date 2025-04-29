@@ -442,7 +442,7 @@ bool process_tag( gtentry * ge, mac_entry * me )
 
     rc = add_symvar( loc_dict, "_tag", ge->name, no_subscript, local_var );
     ge->usecount++;
-    sprintf( longwork, "%d", ge->usecount );
+    sprintf( longwork, "%u", ge->usecount );
     rc = add_symvar( loc_dict, "_n", longwork, no_subscript, local_var );
 
     add_macro_cb_entry( me, ge );   // prepare GML macro as input

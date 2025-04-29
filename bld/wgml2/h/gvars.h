@@ -120,14 +120,14 @@ global  uint32_t        g_page;         // current document pageno &$page
 global  line_number     g_line;         // current output lineno   &$line
 global  int32_t         lcmax;          // remaining lines on page initial
 
-global  int32_t         hm;             // heading margin          &$hm
-global  int32_t         tm;             // top margin              &$tm
+global  int32_t         g_hm;           // heading margin          &$hm
+global  int32_t         g_tm;           // top margin              &$tm
 
-global  int32_t         bm;             // bottom margin           &$bm
-global  int32_t         fm;             // footing margin          &$fm
+global  int32_t         g_bm;           // bottom margin           &$bm
+global  int32_t         g_fm;           // footing margin          &$fm
 
-global  int32_t         lm;             // left margin             &$pagelm
-global  int32_t         rm;             // right margin            &$pagerm
+global  int32_t         g_lm;           // left margin             &$pagelm
+global  int32_t         g_rm;           // right margin            &$pagerm
 
 global symdict_hdl      global_dict;    // global symbol dictionary
 global symdict_hdl      sys_dict;       // global system symbol dictionary

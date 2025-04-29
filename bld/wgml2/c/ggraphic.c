@@ -219,7 +219,7 @@ void    gml_graphic( const gmltag * entry )
     set_skip_vars( NULL, NULL, NULL, 1, g_curr_font );
 
    // only set up the doc_element if the file exists
-    if( search_file_in_dirs( file, "", "", ds_doc_spec ) ) {
+    if( search_file_in_dirs( file, "", "", ds_doc_spec ) != NULL ) {
         cur_el = init_doc_el( el_graph, depth );
         cur_el->element.graph.cur_left = t_page.cur_left;
         cur_el->element.graph.depth = depth;
