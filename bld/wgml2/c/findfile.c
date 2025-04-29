@@ -347,7 +347,7 @@ static int try_open( char * prefix, char * filename )
 {
     FILE    *   fp;
     char        buff[FILENAME_MAX];
-    errno_t     erc;
+    int         erc;
     size_t      filename_length;
 
     /* Prevent buffer overflow. */
@@ -423,7 +423,7 @@ static int try_open( char * prefix, char * filename )
 
 void ff_setup( void )
 {
-    errno_t rc;
+    int     rc;
     size_t  gmlinc_length;
     size_t  gmllib_length;
     size_t  max_length;

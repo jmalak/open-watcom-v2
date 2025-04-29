@@ -524,7 +524,7 @@ extern  bool    get_msg( msg_ids resourceid, char *buffer, size_t buflen );
 
 
 /* wgmlsupp.c                           */
-extern  bool    free_resources( errno_t in_errno );
+extern  bool    free_resources( int in_errno );
 extern  void    free_some_mem( void );
 extern  void    g_banner( void );
 // extern  char  * get_filename_full_path( char * buff, char const * name, size_t max );

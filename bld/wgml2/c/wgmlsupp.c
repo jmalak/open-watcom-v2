@@ -138,8 +138,8 @@ static bool free_inc_fp( void )
 static void reopen_inc_fp( filecb *cb )
 {
     int         rc;
-    errno_t     erc;
-    errno_t     erc2;
+    int         erc;
+    int         erc2;
 
     if( ! cb->flags & FF_open ) {
         for( ;; ) {
@@ -168,7 +168,7 @@ static void reopen_inc_fp( filecb *cb )
 /*  Report resource exhaustion: may eventually try to correct the problem  */
 /***************************************************************************/
 
-bool free_resources( errno_t in_errno )
+bool free_resources( int in_errno )
 {
     if( in_errno == ENOMEM ) xx_simple_err( err_no_memory );
     else xx_simple_err( err_no_handles );

@@ -71,9 +71,9 @@ void    close_all_pu_files( void )
 /*  open  workfile n if not yet done                                       */
 /***************************************************************************/
 
-static  errno_t open_pu_file( int n )
+static int  open_pu_file( int n )
 {
-    errno_t         erc = 0;
+    int             erc = 0;
     static  char    filename[20] = "sysusr0x.gml";
 
     if( n > 0 && n < 10 ) {
