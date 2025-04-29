@@ -696,7 +696,7 @@ static  void    print_stats( clock_t duration_ticks )
     // convert duration from clock ticks to HH:MM:SS.hh
     hour_min = ldiv( duration_ticks / CLOCKS_PER_SEC / 60L, 60L );
     sec_frac  = ldiv( duration_ticks, CLOCKS_PER_SEC );
-    sprintf( linestr, "%02d:%02d:%02d.%02d\0",
+    sprintf( linestr, "%02d:%02d:%02d.%02d",
         (int)hour_min.quot, (int)hour_min.rem, (int)(sec_frac.quot % 60), (int)(sec_frac.rem / 10) );
     g_info_lm( inf_stat_7, linestr );
 }
