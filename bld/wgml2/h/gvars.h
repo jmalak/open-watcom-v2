@@ -157,7 +157,7 @@ global gtentry      *tag_entry;         // ... entry in tag_dict
 global char         attname[ATT_NAME_LENGTH + 1];// last defined GML attribute
 global gaentry      *att_entry;         // ... entry in tag_dict
 
-global line_number  li_cnt;             // remaining count for .li processing
+global int          li_cnt;             // remaining count for .li processing
 
 global uint8_t      in_esc;             // input escape char from .ti
 
