@@ -74,7 +74,7 @@ static void sksp_common( void )
                 SkipNonSpaces( pa );
                 len = pa - p;
                 if( !a_seen && (len <= 3) ) {
-                    if( !memicmp( p, "abs", len ) ) {   // wgml 4.0 matches 'a', 'ab', 'abs' only
+                    if( strnicmp( "abs", p, len ) == 0 ) {   // wgml 4.0 matches 'a', 'ab', 'abs' only
                         a_seen = true;
                         p = pa;
                         text_spacing = 1;               // forced to single spacing if A (ABS)
@@ -83,7 +83,7 @@ static void sksp_common( void )
                 }
 
                 if( !c_seen && (len <= 4) ) {
-                    if( !memicmp( p, "cond", len ) ) {  // wgml 4.0 matches 'c', 'co', 'con', 'cond' only
+                    if( strnicmp( "cond", p, len ) == 0 ) {  // wgml 4.0 matches 'c', 'co', 'con', 'cond' only
                         c_seen = true;
                         p = pa;
                         continue;

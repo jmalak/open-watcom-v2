@@ -142,7 +142,7 @@ void    scr_tb( void )
     SkipNonSpaces( p );                     // token end
     len = p - pa;
 
-    if( (len == 3) &&  !memicmp( pa , "set", len ) ) {
+    if( (len == 3) && strnicmp( "set", pa, len ) == 0 ) {
         SkipSpaces( p );                    // tab char
         pa = p;
         SkipNonSpaces( p );                 // end tab char

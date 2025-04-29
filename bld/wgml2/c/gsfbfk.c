@@ -259,11 +259,11 @@ static char * get_params( const char * scw_name ) {
         /* Identify the first operand */
 
         cur_cmd = fbk_none;
-        if( (len == 3) && !memicmp( pa , "end", len ) ) {
+        if( (len == 3) && strnicmp( "end", pa , len ) == 0 ) {
             cur_cmd = fbk_end;
-        } else if( (len == 4) && !memicmp( pa , "dump", len ) ) {
+        } else if( (len == 4) && strnicmp( "dump", pa , len ) == 0 ) {
             cur_cmd = fbk_dump;
-        } else if( (len == 5) && !memicmp( pa , "begin", len ) ) {
+        } else if( (len == 5) && strnicmp( "begin", pa , len ) == 0 ) {
             cur_cmd = fbk_begin;
         }
 

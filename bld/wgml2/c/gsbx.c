@@ -2523,19 +2523,19 @@ void scr_bx( void )
     /* Identify any non-numeric operand */
 
     cur_op = bx_none;
-    if( (len == 2) && !memicmp( pa , "on", len ) ) {
+    if( (len == 2) && strnicmp( "on", pa , len ) == 0 ) {
         cur_op = bx_on;
     } else if( len == 3 ) {
-        if( !memicmp( pa , "can", len ) || !memicmp( pa , "del", len ) ) {
+        if( strnicmp( "can", pa , len ) == 0 || strnicmp( "del", pa , len ) == 0 ) {
             cur_op = bx_can;
-        } else if( !memicmp( pa , "new", len ) ) {
+        } else if( strnicmp( "new", pa , len ) == 0 ) {
             cur_op = bx_new;
-        } else if( !memicmp( pa , "off", len ) ) {
+        } else if( strnicmp( "off", pa , len ) == 0 ) {
             cur_op = bx_off;
-        } else if( !memicmp( pa , "set", len ) ) {
+        } else if( strnicmp( "set", pa , len ) == 0 ) {
             cur_op = bx_set;
         }
-    } else if( (len == 4) && !memicmp( pa , "char", len ) ) {
+    } else if( (len == 4) && strnicmp( "char", pa , len ) == 0 ) {
         scan_restart = scan_stop + 1;
         return;
     }
