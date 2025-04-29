@@ -1216,14 +1216,14 @@ void    init_sysparm( char * cmdline, char * banner )
 /*                 change very often                                       */
 /***************************************************************************/
 
-void    init_sys_dict( symdict * * dict )
+void    init_sys_dict( symdict_hdl *pdict )
 {
-    init_dict( dict );
+    init_dict( pdict );
 
 #define picka( var, flag )    pickl( var, flag )
 #define pickc( var, flag )    pickl( var, flag )
 #define pickk( var, flag )    pickl( var, flag )
-#define pickl( var, flag )    link_sym( *dict, &sys( var ) );
+#define pickl( var, flag )    link_sym( *pdict, &sys( var ) );
 #include "gsyssym.h"
 #undef pickl
 #undef pickk

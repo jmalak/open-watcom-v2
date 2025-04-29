@@ -129,8 +129,8 @@ global  int32_t         fm;             // footing margin          &$fm
 global  int32_t         lm;             // left margin             &$pagelm
 global  int32_t         rm;             // right margin            &$pagerm
 
-global  symdict     *   global_dict;    // global symbol dictionary
-global  symdict     *   sys_dict;       // global system symbol dictionary
+global symdict_hdl      global_dict;    // global symbol dictionary
+global symdict_hdl      sys_dict;       // global system symbol dictionary
 global  mac_dict    *   macro_dict;     // macro dictionary
 global  gtentry     *   tag_dict;       // user tag dictionary
 

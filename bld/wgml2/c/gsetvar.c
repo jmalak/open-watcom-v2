@@ -272,7 +272,7 @@ void    scr_se( void )
     sub_index       subscript;
     symsub      *   symsubval;
     symvar          sym;
-    symdict     *   working_dict;
+    symdict_hdl     working_dict;
     size_t          len;
 
     subscript = no_subscript;                       // not subscripted

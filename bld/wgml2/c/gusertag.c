@@ -53,7 +53,7 @@ static gaflags set_att_proc_flags( gaflags attflags )
 /***************************************************************************/
 /*  add attribute default values to dict                                   */
 /***************************************************************************/
-static void add_defaults_to_dict( gtentry * ge, symdict * dict )
+static void add_defaults_to_dict( gtentry * ge, symdict_hdl dict )
 {
     gaentry     *   ga;
     gavalentry  *   gaval;
@@ -97,7 +97,7 @@ static void add_defaults_to_dict( gtentry * ge, symdict * dict )
 /*  check the attribute value against restrictions                         */
 /***************************************************************************/
 
-static bool check_att_value( gaentry * ga, gtentry * ge, symdict * loc_dict )
+static bool check_att_value( gaentry * ga, gtentry * ge, symdict_hdl loc_dict )
 {
     gavalentry  *   gaval;
     char        *   valp;
@@ -181,7 +181,7 @@ bool process_tag( gtentry * ge, mac_entry * me )
     inp_line    *   pline;
     int             rc;
     size_t          len;
-    symdict     *   loc_dict;   // for preparing local vars
+    symdict_hdl     loc_dict;   // for preparing local vars
 
     processed = true;           // return value, always true
     init_dict( &loc_dict );
