@@ -76,8 +76,8 @@ global  char            ampchar;        // symbol substitution/attribute/functio
 
 global  char        *   master_fname;   // Primary input file name
 global  char        *   master_fname_attr;// Primary input file name attributes
-global  ulong           print_from;     // first page to print
-global  ulong           print_to;       // last page to print
+global  line_number     print_from;     // first page to print
+global  line_number     print_to;       // last page to print
 global  char        *   dev_name;       // device defined_name
 global  opt_font    *   opt_fonts;      // option FONT parameters (linked list)
 
@@ -153,13 +153,13 @@ global size_t           buff2_lg;       // input buffer used length
 
 // the following to manage .gt * and .ga * * syntax
 global char         tagname[TAG_NAME_LENGTH + 1];// last defined GML tag name
-global gtentry  *   tag_entry;          // ... entry in tag_dict
+global gtentry      *tag_entry;         // ... entry in tag_dict
 global char         attname[ATT_NAME_LENGTH + 1];// last defined GML attribute
-global gaentry  *   att_entry;          // ... entry in tag_dict
+global gaentry      *att_entry;         // ... entry in tag_dict
 
-global  long        li_cnt;             // remaining count for .li processing
+global line_number  li_cnt;             // remaining count for .li processing
 
-global  uint8_t     in_esc;             // input escape char from .ti
+global uint8_t      in_esc;             // input escape char from .ti
 
 
 // file block support

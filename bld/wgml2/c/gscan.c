@@ -914,7 +914,7 @@ void    scan_line( void )
         g_info_lm( inf_skip_line );     // show skipped line
     }
     if( ProcFlags.literal ) {
-        if( li_cnt < LONG_MAX ) {   // we decrement, do not wait for .li OFF
+        if( li_cnt < INT_MAX ) {   // we decrement, do not wait for .li OFF
             if( li_cnt-- <= 0 ) {
                 ProcFlags.literal = false;
             }
