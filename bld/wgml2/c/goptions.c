@@ -31,6 +31,10 @@
 
 #include <fcntl.h>
 #include "wgml.h"
+#include "wio.h"
+
+#include "clibext.h"
+
 
 typedef struct option {
     char        *   option;             // the option

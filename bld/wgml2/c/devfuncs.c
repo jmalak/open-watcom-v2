@@ -174,7 +174,6 @@
 ****************************************************************************/
 
 
-#include <conio.h>
 #include "wgml.h"
 #include "devfuncs.h"
 #include "outbuff.h"
