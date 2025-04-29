@@ -737,9 +737,7 @@ static void gen_index( void )
                     cur_width += str_count;
                 }
                 if( cur_width < frame_line_len ) {          // text not full yet
-                    memcpy_s( &frame_line_1[cur_width], frame_line_len - cur_width,
-                              layout_work.ixhead.frame.string,
-                              frame_line_len - cur_width );
+                    strncpy( &frame_line_1[cur_width], layout_work.ixhead.frame.string, frame_line_len - cur_width );
                 }
                 frame_line_1[frame_line_len] = '\0';
             }

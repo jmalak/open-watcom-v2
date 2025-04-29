@@ -96,12 +96,10 @@ extern  void    gml_set( const gmltag * entry )
                     break;
                 }
                 value_found = true;
-                memcpy_s( token_buf, buf_size, val_start, val_len );
-                if( val_len < buf_size ) {
-                    token_buf[val_len] = '\0';
-                } else {
-                    token_buf[buf_size - 1] = '\0';
-                }
+                if( val_len > buf_size - 1 )
+                    val_len = buf_size - 1;
+                strncpy( token_buf, val_start, val_len );
+                token_buf[val_len] = '\0';
             } else if( !strnicmp( token_buf, "delete", 6 ) ) {
                 p += 6;
                 sym.flags |= deleted;

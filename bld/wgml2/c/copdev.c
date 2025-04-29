@@ -997,7 +997,7 @@ cop_device * parse_device( FILE * in_file )
                         *byte_ptr = (uint16_array[i] & 0x00ff);
                     } else {
                         ++translation_start;
-                        memcpy_s( byte_ptr, size, translation_start, size );
+                        memcpy( byte_ptr, translation_start, size );
                     }
                 }
             }
@@ -1263,7 +1263,7 @@ cop_device * parse_device( FILE * in_file )
         pause_ptr->text = OUT_DEV_CUR_OFF();
 
         byte_ptr = OUT_DEV_CUR_PTR();
-        memcpy_s( byte_ptr, size, cop_functions->code_blocks[j].text, size );
+        memcpy( byte_ptr, cop_functions->code_blocks[j].text, size );
         OUT_DEV_ADD_OFF( size );
     }
 
@@ -1362,7 +1362,7 @@ cop_device * parse_device( FILE * in_file )
         pause_ptr->text = OUT_DEV_CUR_OFF();
 
         byte_ptr = OUT_DEV_CUR_PTR();
-        memcpy_s( byte_ptr, size, cop_functions->code_blocks[j].text, size );
+        memcpy( byte_ptr, cop_functions->code_blocks[j].text, size );
         OUT_DEV_ADD_OFF( size );
     }
 
@@ -1461,7 +1461,7 @@ cop_device * parse_device( FILE * in_file )
         pause_ptr->text = OUT_DEV_CUR_OFF();
 
         byte_ptr = OUT_DEV_CUR_PTR();
-        memcpy_s( byte_ptr, size, cop_functions->code_blocks[j].text, size );
+        memcpy( byte_ptr, cop_functions->code_blocks[j].text, size );
         OUT_DEV_ADD_OFF( size );
     }
 
@@ -1560,7 +1560,7 @@ cop_device * parse_device( FILE * in_file )
         pause_ptr->text = OUT_DEV_CUR_OFF();
 
         byte_ptr = OUT_DEV_CUR_PTR();
-        memcpy_s( byte_ptr, size, cop_functions->code_blocks[j].text, size );
+        memcpy( byte_ptr, cop_functions->code_blocks[j].text, size );
         OUT_DEV_ADD_OFF( size );
     }
 
@@ -1871,7 +1871,7 @@ cop_device * parse_device( FILE * in_file )
             pause_ptr->text = OUT_DEV_CUR_OFF();
 
             byte_ptr = OUT_DEV_CUR_PTR();
-            memcpy_s( byte_ptr, size, cop_functions->code_blocks[j].text, size );
+            memcpy( byte_ptr, cop_functions->code_blocks[j].text, size );
             OUT_DEV_ADD_OFF( size );
         }
     }

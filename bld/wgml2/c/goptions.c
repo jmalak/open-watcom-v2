@@ -336,7 +336,7 @@ static void set_bind( option * opt )
         if( scanerr ) {
             xx_simple_err_cc( err_miss_inv_opt_value, opt->option, tokennext->token );
         } else {
-            memcpy_s( &bind_odd, sizeof( bind_odd), &bindwork, sizeof( bindwork ) );
+            memcpy( &bind_odd, &bindwork, sizeof( bind_odd) );
 
             out_msg_research( "\tbind odd  value %lii (%limm) '%s' %li %li \n",
                      bind_odd.su_inch, bind_odd.su_mm, bind_odd.su_txt,
@@ -346,8 +346,7 @@ static void set_bind( option * opt )
             if( tokennext == NULL || tokennext->bol ||
                 tokennext->token[0] == '(' || is_option() ) {
 
-                memcpy_s( &bind_even, sizeof( bind_even), &bind_odd,
-                          sizeof( bind_odd ) );  // use bind_odd
+                memcpy( &bind_even, &bind_odd, sizeof( bind_even ) );  // use bind_odd
             } else {
                 val_start = tokennext->token;
                 val_len = tokennext->toklen;
@@ -855,9 +854,8 @@ static void set_layout( option * opt )
     } else {
         len = tokennext->toklen;
         laywk = mem_alloc( sizeof( laystack ) + len );
-
-        memcpy_s( laywk->layfn, len + 1, tokennext->token, len );
-        *(laywk->layfn + len) = '\0';
+        strncpy( laywk->layfn, tokennext->token, len );
+        laywk->layfn[len] = '\0';
         laywk->next = NULL;
 
         split_attr_file( laywk->layfn, attrwork, sizeof( attrwork ) );
@@ -888,9 +886,8 @@ static void set_outfile( option * opt )
     } else {
         len = tokennext->toklen;
         out_file = mem_alloc( len + 1 );
-
-        memcpy_s( out_file, len + 1, tokennext->token, len );
-        *(out_file + len) = '\0';
+        strncpy( out_file, tokennext->token, len );
+        out_file[len] = '\0';
 
         split_attr_file( out_file, attrwork, sizeof( attrwork ) );
         if( attrwork[0] ) {
@@ -1682,7 +1679,7 @@ static cmd_tok * process_master_filename( cmd_tok * tok )
 
     len = tok->toklen;
     p = mem_alloc( len + 1 );
-    memcpy_s( p, len + 1, tok->token, len );
+    strncpy( p, tok->token, len );
     p[len] = '\0';
     g_info_research( inf_recognized_xxx, "document source file", p );
     strip_quotes( p );

@@ -86,7 +86,7 @@ code_block *get_code_blocks( const char **current, uint16_t count, const char *b
             *current += 1;
         }
 
-        memcpy_s( &out_block[i].designator, 1, *current, 1 );
+        memcpy( &out_block[i].designator, *current, 1 );
         *current += 1;
 
         /* Skip the cb05_flag and the lp_flag. */
@@ -99,7 +99,7 @@ code_block *get_code_blocks( const char **current, uint16_t count, const char *b
             *current += 1;
         }
 
-        memcpy_s( &out_block[i].line_pass, 2, *current, 2 );
+        memcpy( &out_block[i].line_pass, *current, 2 );
         *current += 2;
 
         /* Get the count, shifting it if necessary */
@@ -108,7 +108,7 @@ code_block *get_code_blocks( const char **current, uint16_t count, const char *b
             *current += 1;
         }
 
-        memcpy_s( &out_block[i].count, 2, *current, 2 );
+        memcpy( &out_block[i].count, *current, 2 );
         *current += 2;
 
         /* Set function, which is the pointer to the actual compiled code. */
@@ -253,7 +253,7 @@ functions_block *parse_functions_block( const char **current, const char *base )
 
     /* Get the number of CodeBlocks. */
 
-    memcpy_s( &code_count, 2, *current, 2 );
+    memcpy( &code_count, *current, 2 );
     *current += 2;
 
     /* Allocate the out_block. */

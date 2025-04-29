@@ -1019,7 +1019,7 @@ void    do_layout_end_processing( void )
                 txt_cnt--;
                 spc_cnt++;
             }
-            memcpy_s( layout_work.note.text, txt_cnt, layout_work.note.string, txt_cnt );
+            strncpy( layout_work.note.text, layout_work.note.string, txt_cnt );
             layout_work.note.text[txt_cnt] = '\0';
             memset( layout_work.note.spaces, ' ', spc_cnt );
             layout_work.note.spaces[spc_cnt] = '\0';

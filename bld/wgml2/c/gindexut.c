@@ -283,7 +283,7 @@ void find_create_ix_e_entry( ix_h_blk * ixhwork, char * ref, size_t len,
             strcpy_s( ixewk->prt_text, seeidwork->prt_term_len + 1, seeidwork->prt_term );
         }
         ixewk->u.pageref.page_text = mem_alloc( len + 1);
-        memcpy_s( ixewk->u.pageref.page_text, len + 1, ref, len );
+        strncpy( ixewk->u.pageref.page_text, ref, len );
         ixewk->u.pageref.page_text[len] = '\0';
         ixewk->u.pageref.page_text_len = len;
 
@@ -436,7 +436,7 @@ ix_h_blk * find_create_ix_h_entry( ix_h_blk * ixhwork, ix_h_blk * ixhbase,
         ixhwk->ix_lvl = lvl;
         ixhwk->ix_term_len = txtlen;
         ixhwk->ix_term = mem_alloc( txtlen + 1);
-        memcpy_s( ixhwk->ix_term, txtlen + 1, txt, txtlen );
+        strncpy( ixhwk->ix_term, txt, txtlen );
         ixhwk->ix_term[txtlen] = '\0';
         if( printtxt != NULL ) {
             ixhwk->prt_term_len = printtxtlen;

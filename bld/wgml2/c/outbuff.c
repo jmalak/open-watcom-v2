@@ -190,8 +190,7 @@ static void ob_insert_ps_text( const char *in_block, size_t count, font_number f
 
                             /* At this point, it is known that it will fit. */
 
-                            memcpy_s( &buffout.text[buffout.current],
-                                cur_trans->count, cur_trans->data, cur_trans->count );
+                            memcpy( &buffout.text[buffout.current], cur_trans->data, cur_trans->count );
                             buffout.current += cur_trans->count;
                         }
                     }
@@ -287,8 +286,7 @@ static void ob_insert_ps_cmd( const char *in_block, size_t count )
 
             /* Copy up the token and any initial space characters. */
 
-            memcpy_s( &buffout.text[buffout.current], tkn_end - spc_start,
-                      &in_block[spc_start], tkn_end - spc_start );
+            memcpy( &buffout.text[buffout.current], &in_block[spc_start], tkn_end - spc_start );
             buffout.current += tkn_end - spc_start;
             text_count -= tkn_end - spc_start;
             current = tkn_end;
@@ -309,8 +307,7 @@ static void ob_insert_ps_cmd( const char *in_block, size_t count )
     /* Insert any remaining text. */
 
     if( text_count > 0 ) {
-        memcpy_s( &buffout.text[buffout.current], text_count,
-                  &in_block[current], text_count );
+        memcpy( &buffout.text[buffout.current], &in_block[current], text_count );
         buffout.current += text_count;
     }
 
@@ -421,8 +418,7 @@ static void ob_insert_ps_cmd_ot( const char *in_block, size_t count, font_number
 
                             /* At this point, it is known that it will fit. */
 
-                            memcpy_s( &buffout.text[buffout.current],
-                                cur_trans->count, cur_trans->data, cur_trans->count );
+                            memcpy( &buffout.text[buffout.current], cur_trans->data, cur_trans->count );
                             buffout.current += cur_trans->count;
                         }
                     }
@@ -505,8 +501,7 @@ static void ob_insert_ps_cmd_ot( const char *in_block, size_t count, font_number
                                 translated.text = mem_realloc( translated.text, translated.length );
                             }
 
-                            memcpy_s( &translated.text[k], cur_trans->count,
-                                      cur_trans->data, cur_trans->count );
+                            memcpy( &translated.text[k], cur_trans->data, cur_trans->count );
                             k += cur_trans->count;
                         }
                     }
@@ -544,8 +539,7 @@ static void ob_insert_ps_cmd_ot( const char *in_block, size_t count, font_number
 
         /* Now insert the translated token into the buffer. */
 
-        memcpy_s( &buffout.text[buffout.current], translated.current,
-                  translated.text, translated.current );
+        memcpy( &buffout.text[buffout.current], translated.text, translated.current );
         buffout.current += translated.current;
         text_count -= translated.current;
     }
@@ -587,8 +581,7 @@ static void ob_insert_def( const char *in_block, size_t count )
         if( text_count <= difference )
             break;
 
-        memcpy_s( &buffout.text[buffout.current], difference,
-                  &in_block[current], difference );
+        memcpy( &buffout.text[buffout.current], &in_block[current], difference );
         buffout.current += difference;
         current += difference;
         text_count -= difference;
@@ -598,8 +591,7 @@ static void ob_insert_def( const char *in_block, size_t count )
     /* Insert any remaining text. */
 
     if( text_count > 0 ) {
-        memcpy_s( &buffout.text[buffout.current], text_count,
-                  &in_block[current], text_count );
+        memcpy( &buffout.text[buffout.current], &in_block[current], text_count );
         buffout.current += text_count;
     }
 
@@ -701,8 +693,7 @@ static void ob_insert_def_ot( const char *in_block, size_t count, font_number fo
 
                         /* At this point, it is known that it will fit. */
 
-                        memcpy_s( &buffout.text[buffout.current],
-                        cur_trans->count, cur_trans->data, cur_trans->count );
+                        memcpy( &buffout.text[buffout.current], cur_trans->data, cur_trans->count );
                         buffout.current += cur_trans->count;
                     }
                 }
@@ -924,7 +915,7 @@ static void set_out_file_attr( void )
 
                 len -= 1;
                 out_file_attr = mem_alloc( len );
-                memcpy_s( out_file_attr, len, &bin_driver->rec_spec[1], len - 1 );
+                strncpy( out_file_attr, &bin_driver->rec_spec[1], len - 1 );
                 out_file_attr[len - 1] = '\0';
             }
         } else {

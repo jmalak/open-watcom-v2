@@ -84,12 +84,10 @@ void    gml_binclude( const gmltag * entry )
                 if( g_att_val.val_name == NULL ) {
                     break;
                 }
-                memcpy_s( file, FILENAME_MAX, g_att_val.val_name, g_att_val.val_len );
-                if( g_att_val.val_len < FILENAME_MAX ) {
-                    file[g_att_val.val_len] = '\0';
-                } else {
-                    file[FILENAME_MAX - 1] = '\0';
-                }
+                if( g_att_val.val_len > _MAX_PATH - 1 )
+                    g_att_val.val_len = _MAX_PATH - 1;
+                strncpy( file, g_att_val.val_name, g_att_val.val_len );
+                file[g_att_val.val_len] = '\0';
                 split_attr_file( file, rt_buff, MAX_FILE_ATTR );
                 if( (rt_buff[0] != '\0') ) {
                     has_rec_type = true;

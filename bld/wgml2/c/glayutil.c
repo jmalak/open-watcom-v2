@@ -439,7 +439,7 @@ bool    i_content( char * p, lay_att curr, content * tm )
         len = pa - p;
         if( len >= str_size )
             len = str_size;                     // truncate to allowed length
-        memcpy( tm->string, p, len );
+        strncpy( tm->string, p, len );
         tm->string[len] = '\0';
     }
     return( cvterr );
@@ -618,7 +618,7 @@ bool    i_int32( char * p, lay_att curr, int32_t * tm )
 void    o_int32( FILE *fp, lay_att curr, const int32_t * tm )
 {
 
-    fprintf( fp, "        %s = %ld\n", att_names[curr], *tm );
+    fprintf( fp, "        %s = %d\n", att_names[curr], *tm );
     return;
 }
 
@@ -1115,8 +1115,8 @@ bool    i_xx_string( char * p, lay_att curr, xx_str * tm )
 
     cvterr = false;
     if( (val_start != NULL) && (val_len < str_size) ) {
-        memcpy_s( tm, str_size, val_start, val_len );
-        *(tm + val_len) = '\0';
+        strncpy( tm, val_start, val_len );
+        tm[val_len] = '\0';
     } else {
         xx_line_err_c( err_xx_string, p );
     }

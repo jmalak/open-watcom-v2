@@ -266,8 +266,7 @@ static void err_exit( void ) {
         print_sym_dict( sys_dict );
     }
     out_msg( "\nWGML has ended prematurely\n" );
-    flushall();                         // TBD
-    fcloseall();                        // TBD
+    fflush( NULL );                     // TBD
     if( environment ) {
         longjmp( *environment, 1 );
     }
@@ -289,7 +288,7 @@ static void show_line_error_len( const char * pa, size_t len )
     }
     cnt = pa - buff2 + len;
     buf = mem_alloc( cnt + 1 );
-    memcpy( buf, buff2, cnt );
+    strncpy( buf, buff2, cnt );
     buf[cnt] = '\0';
     out_msg( "%s\n", buf );
     // number of characters before the offending input + "*" at start of offending input
@@ -407,7 +406,7 @@ void att_req_err( const char * tagname, const char * attname )  // for process_t
             p++;
         }
         len = p - pa;
-        memcpy_s( one_name, len, pa, len );
+        strncpy( one_name, pa, len );
         one_name[len] = '\0';
         g_info( info_att_req_name, one_name );
         SkipSpaces( p );    // start of next attribute name

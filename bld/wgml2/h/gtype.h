@@ -170,8 +170,8 @@ typedef struct {
 /***************************************************************************/
 
 typedef enum {
-    min_subscript = -1000000L,          // smallest valid subscript
-    max_subscript =  1000000L,          // largest  valid subscript
+    min_subscript = -1000000,           // smallest valid subscript
+    max_subscript =  1000000,           // largest  valid subscript
     // the rest must be outside of range min_subscript,max_subscript
     no_subscript  = 0x11223344,         // value if not subscripted
     neg_subscript = 0x22334454,         // negative subscripts (*-)
@@ -212,8 +212,8 @@ typedef struct symsub {
 typedef struct symvar {
     struct symvar   *   next;           // next base entry
     char                name[SYM_NAME_LENGTH + 2];
-    long                last_auto_inc;// last autoincremented subscript value
-    long                subscript_used; // count of used subscripts
+    int                 last_auto_inc;  // last autoincremented subscript value
+    int                 subscript_used; // count of used subscripts
     symsub          *   subscripts;     // subscript entries
     symsub          *   sub_0;          // special subscript 0 entry
     void                (*varfunc)( struct symvar * e );// access function
@@ -523,8 +523,8 @@ typedef enum gavalflags {
 typedef struct gavalentry {
     struct gavalentry   *   next;
     union a {
-       size_t   length;           // possible max length of (character) value
-       long     range[4]; // min, max, default omitted, default without value
+       size_t   length;                 // possible max length of (character) value
+       int      range[4];               // min, max, default omitted, default without value
        char     value[VAL_LENGTH + 1];  // string value if short enough
        char *   valptr;                 // ... else allocated
     } a;

@@ -99,13 +99,13 @@ text_chars * alloc_text_chars( const char * text, size_t cnt, font_number font )
     curr->f_switch = fs_norm;
     curr->width = 0;
     if( text != NULL ) {                   // text supplied
-        memcpy_s( curr->text, cnt + 1, text, cnt ); // yes copy text
+        strncpy( curr->text, text, cnt ); // yes copy text
         curr->count = cnt;              // set current size
     } else {
         curr->count = 0;                // init current size
-        curr->text[0] = 0;
+        curr->text[0] = '\0';
     }
-    curr->text[cnt] = 0;
+    curr->text[cnt] = '\0';
 
     return( curr );
 }

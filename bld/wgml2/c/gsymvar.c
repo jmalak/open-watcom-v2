@@ -484,14 +484,14 @@ static bool add_symvar_sub( symvar * var, char * val, sub_index sub, symsub * * 
             var->subscript_used++;
                                              /* update special sub 0 entry */
 #if 0
-            sprintf( sub_cnt, "%ld", var->subscript_used );
+            sprintf( sub_cnt, "%d", var->subscript_used );
             if( strlen( var->sub_0->value ) < strlen( sub_cnt ) ) {// need more room
                 var->sub_0->value = mem_realloc( var->sub_0->value,
                                                  strlen( sub_cnt ) + 1 );
             }
             strcpy_s( var->sub_0->value, strlen( sub_cnt ) + 1, sub_cnt );
 #else
-            sprintf( var->sub_0->value, "%ld", var->subscript_used );  // TBD
+            sprintf( var->sub_0->value, "%d", var->subscript_used );  // TBD
 #endif
 
             var->flags |= subscripted;

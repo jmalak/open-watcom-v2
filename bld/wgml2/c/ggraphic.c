@@ -86,12 +86,10 @@ void    gml_graphic( const gmltag * entry )
                     break;
                 }
                 file_found = true;
-                memcpy_s( file, FILENAME_MAX, val_start, val_len );
-                if( val_len < FILENAME_MAX ) {
-                    file[val_len] = '\0';
-                } else {
-                    file[FILENAME_MAX - 1] = '\0';
-                }
+                if( val_len > _MAX_PATH - 1 )
+                    val_len = _MAX_PATH - 1;
+                strncpy( file, val_start, val_len );
+                file[val_len] = '\0';
                 split_attr_file( file, rt_buff, sizeof( rt_buff ) );
                 if( (rt_buff[0] != '\0') ) {
                     xx_warn( wng_rec_type_graphic );

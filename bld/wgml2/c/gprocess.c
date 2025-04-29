@@ -250,7 +250,7 @@ static void split_at_GML_tag( void )
                         p = buff2;
                         SkipSpacesTabs( p );
                         if( p == pchar ) {  // only leading blanks
-                            memmove_s( buff2, buf_size, pchar, buf_size - (p - buff2) );
+                            memmove( buff2, pchar, buf_size - (p - buff2) + 1 );
                             buff2_lg = strlen( buff2 ); // new length
                             pchar = strchr( buff2 + 1, GML_char );  // try next GMLchar
                             continue;       // dummy split done try again

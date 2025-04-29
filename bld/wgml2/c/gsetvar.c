@@ -183,9 +183,13 @@ char * scan_sym( char * p, symvar * sym, sub_index * subscript, char * * result,
                 char                    valbuf[BUF_SIZE];
                 condcode                cc;
                 getnum_block            gn;
+                size_t                  len;
 
-                memcpy_s( valbuf, buf_size, p, pend - p - 1 );
-                valbuf[pend - p - 1] = '\0';
+                len = pend - p - 1;
+                if( len > buf_size - 1 )
+                    len = buf_size - 1;
+                strncpy( valbuf, p, len );
+                valbuf[len] = '\0';
                 pa = valbuf;
                 ppval = &pa;
 

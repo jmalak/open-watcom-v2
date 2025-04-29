@@ -305,8 +305,7 @@ static void insert_frame_line( void )
                 cur_width += strlen( frame.string );
             }
             if( cur_width < line_buff.current ) {       // text not full yet
-                memcpy_s( &line_buff.text[cur_width], line_buff.current - cur_width,
-                    frame.string, line_buff.current - cur_width );
+                strncpy( &line_buff.text[cur_width], frame.string, line_buff.current - cur_width );
             }
             line_buff.text[line_buff.current] = '\0';
         }
@@ -475,12 +474,10 @@ void gml_fig( const gmltag * entry )
                     frame.type = char_frame;
                 }
                 if( frame.type == char_frame ) {
-                    memcpy_s( frame.string, str_size, val_start, val_len );
-                    if( val_len < str_size ) {
-                        frame.string[val_len] = '\0';
-                    } else {
-                        frame.string[str_size - 1] = '\0';
-                    }
+                    if( val_len > str_size - 1 )
+                        val_len = str_size - 1;
+                    strncpy( frame.string, val_start, val_len );
+                    frame.string[val_len] = '\0';
                     if( frame.string[0] == '\0' ) {
                         frame.type = none;      // treat null string as "none"
                     }

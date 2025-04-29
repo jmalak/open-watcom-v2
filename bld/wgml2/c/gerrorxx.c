@@ -53,7 +53,7 @@ static void show_line_error_len( const char * pa, size_t len )
     msg_indent = 0;
     cnt = pa - buff2 + len;
     buf = mem_alloc( cnt + 1 );
-    memcpy( buf, buff2, cnt );
+    strncpy( buf, buff2, cnt );
     buf[cnt] = '\0';
     out_msg( "%s\n", buf );
     // number of characters before the offending input + "*" at start of offending input

@@ -136,14 +136,14 @@ static cop_driver *parse_finish_block( cop_driver *in_driver, const char **curre
 
     /* Get the designator. */
 
-    memcpy_s( &designator, 1, *current, 1 );
+    memcpy( &designator, *current, 1 );
     (*current)++;
 
     /* Process the FinishBlock. */
 
     switch( designator ) {
     case 0x01 :
-        memcpy_s( &count, sizeof( count ), *current, sizeof( count ) );
+        memcpy( &count, *current, sizeof( count ) );
         *current += sizeof( count );
         if( count == 0x0000 ) break;
 
@@ -180,7 +180,7 @@ static cop_driver *parse_finish_block( cop_driver *in_driver, const char **curre
         code_text_ptr->text = IN_DRV_CUR_OFF();
 
         text_ptr = IN_DRV_CUR_PTR();
-        memcpy_s( text_ptr, size, cop_codeblocks[0].text, size );
+        memcpy( text_ptr, cop_codeblocks[0].text, size );
         IN_DRV_ADD_OFF( size );
 
         mem_free( cop_codeblocks );
@@ -188,7 +188,7 @@ static cop_driver *parse_finish_block( cop_driver *in_driver, const char **curre
 
         return( in_driver );
     case 0x02 :
-        memcpy_s( &count, sizeof( count ), *current, sizeof( count ) );
+        memcpy( &count, *current, sizeof( count ) );
         *current += sizeof( count );
         if( count == 0 ) break;
 
@@ -226,7 +226,7 @@ static cop_driver *parse_finish_block( cop_driver *in_driver, const char **curre
         code_text_ptr->text = IN_DRV_CUR_OFF();
 
         text_ptr = IN_DRV_CUR_PTR();
-        memcpy_s( text_ptr, size, cop_codeblocks[0].text, size );
+        memcpy( text_ptr, cop_codeblocks[0].text, size );
         IN_DRV_ADD_OFF( size );
 
         mem_free( cop_codeblocks );
@@ -421,7 +421,7 @@ static cop_driver *parse_font_style( FILE *in_file, cop_driver *in_driver,
 
     /* Get the number of CodeBlocks, which can be 0. */
 
-    memcpy_s( &count16, sizeof( count16 ), *current, sizeof( count16 ) );
+    memcpy( &count16, *current, sizeof( count16 ) );
     *current += sizeof( count16 );
 
     /* If the count is 0, we are done: the P-buffer is empty. */
@@ -477,7 +477,7 @@ static cop_driver *parse_font_style( FILE *in_file, cop_driver *in_driver,
             code_text_ptr->text = IN_DRV_CUR_OFF();
 
             text_ptr = IN_DRV_CUR_PTR();
-            memcpy_s( text_ptr, size, cop_codeblocks[i].text, size );
+            memcpy( text_ptr, cop_codeblocks[i].text, size );
             IN_DRV_ADD_OFF( size );
 
             break;
@@ -513,7 +513,7 @@ static cop_driver *parse_font_style( FILE *in_file, cop_driver *in_driver,
             code_text_ptr->text = IN_DRV_CUR_OFF();
 
             text_ptr = IN_DRV_CUR_PTR();
-            memcpy_s( text_ptr, size, cop_codeblocks[i].text, size );
+            memcpy( text_ptr, cop_codeblocks[i].text, size );
             IN_DRV_ADD_OFF( size );
 
             break;
@@ -559,7 +559,7 @@ static cop_driver *parse_font_style( FILE *in_file, cop_driver *in_driver,
             code_text_ptr->text = IN_DRV_CUR_OFF();
 
             text_ptr = IN_DRV_CUR_PTR();
-            memcpy_s( text_ptr, size, cop_codeblocks[i].text, size );
+            memcpy( text_ptr, cop_codeblocks[i].text, size );
             IN_DRV_ADD_OFF( size );
 
             break;
@@ -605,7 +605,7 @@ static cop_driver *parse_font_style( FILE *in_file, cop_driver *in_driver,
             code_text_ptr->text = IN_DRV_CUR_OFF();
 
             text_ptr = IN_DRV_CUR_PTR();
-            memcpy_s( text_ptr, size, cop_codeblocks[i].text, size );
+            memcpy( text_ptr, cop_codeblocks[i].text, size );
             IN_DRV_ADD_OFF( size );
 
             break;
@@ -651,7 +651,7 @@ static cop_driver *parse_font_style( FILE *in_file, cop_driver *in_driver,
             code_text_ptr->text = IN_DRV_CUR_OFF();
 
             text_ptr = IN_DRV_CUR_PTR();
-            memcpy_s( text_ptr, size, cop_codeblocks[i].text, size );
+            memcpy( text_ptr, cop_codeblocks[i].text, size );
             IN_DRV_ADD_OFF( size );
 
             break;
@@ -697,7 +697,7 @@ static cop_driver *parse_font_style( FILE *in_file, cop_driver *in_driver,
             code_text_ptr->text = IN_DRV_CUR_OFF();
 
             text_ptr = IN_DRV_CUR_PTR();
-            memcpy_s( text_ptr, size, cop_codeblocks[i].text, size );
+            memcpy( text_ptr, cop_codeblocks[i].text, size );
             IN_DRV_ADD_OFF( size );
 
             break;
@@ -743,7 +743,7 @@ static cop_driver *parse_font_style( FILE *in_file, cop_driver *in_driver,
             code_text_ptr->text = IN_DRV_CUR_OFF();
 
             text_ptr = IN_DRV_CUR_PTR();
-            memcpy_s( text_ptr, size, cop_codeblocks[i].text, size );
+            memcpy( text_ptr, cop_codeblocks[i].text, size );
             IN_DRV_ADD_OFF( size );
 
             break;
@@ -801,14 +801,14 @@ static cop_driver *parse_init_block( cop_driver *in_driver, const char **current
 
     /* Get the designator. */
 
-    memcpy_s( &designator, 1, *current, 1 );
+    memcpy( &designator, *current, 1 );
     (*current)++;
 
     /* Process the InitBlock. */
 
     switch( designator ) {
     case 0x01 :
-        memcpy_s( &count, sizeof( count ), *current, sizeof( count ) );
+        memcpy( &count, *current, sizeof( count ) );
         *current += sizeof( count );
         if( count == 0 ) {
             mem_free( in_driver );
@@ -873,7 +873,7 @@ static cop_driver *parse_init_block( cop_driver *in_driver, const char **current
             init_text_ptr[i].text = IN_DRV_CUR_OFF();
 
             text_ptr = IN_DRV_CUR_PTR();
-            memcpy_s( text_ptr, size, cop_codeblocks[i].text, size );
+            memcpy( text_ptr, cop_codeblocks[i].text, size );
             IN_DRV_ADD_OFF( size );
         }
 
@@ -882,7 +882,7 @@ static cop_driver *parse_init_block( cop_driver *in_driver, const char **current
 
         break;
     case 0x02 :
-        memcpy_s( &count, sizeof( count ), *current, sizeof( count ) );
+        memcpy( &count, *current, sizeof( count ) );
         *current += sizeof( count );
         if( count == 0 ) {
             mem_free( in_driver );
@@ -947,7 +947,7 @@ static cop_driver *parse_init_block( cop_driver *in_driver, const char **current
             init_text_ptr[i].text = IN_DRV_CUR_OFF();
 
             text_ptr = IN_DRV_CUR_PTR();
-            memcpy_s( text_ptr, size, cop_codeblocks[i].text, size );
+            memcpy( text_ptr, cop_codeblocks[i].text, size );
             IN_DRV_ADD_OFF( size );
         }
 
@@ -1175,7 +1175,7 @@ cop_driver * parse_driver( FILE * in_file )
 
     /* Get the number of InitBlocks. */
 
-    memcpy_s( &count16, sizeof( count16 ), current, sizeof( count16 ) );
+    memcpy( &count16, current, sizeof( count16 ) );
     current += sizeof( count16 );
 
     out_driver->inits.start = NULL;
@@ -1235,7 +1235,7 @@ cop_driver * parse_driver( FILE * in_file )
 
     /* Get the number of FinishBlocks. */
 
-    memcpy_s( &count16, sizeof( count16 ), current, sizeof( count16 ) );
+    memcpy( &count16, current, sizeof( count16 ) );
     current += sizeof( count16 );
 
     out_driver->finishes.end = NULL;
@@ -1295,8 +1295,7 @@ cop_driver * parse_driver( FILE * in_file )
 
     /* Get the number of NewlineBlocks */
 
-    memcpy_s( &out_driver->newlines.count, sizeof( out_driver->newlines.count ),
-              current, sizeof( out_driver->newlines.count ) );
+    memcpy( &out_driver->newlines.count, current, sizeof( out_driver->newlines.count ) );
     current += sizeof( out_driver->newlines.count );
 
     /* Add the newline_block structs. */
@@ -1316,13 +1315,12 @@ cop_driver * parse_driver( FILE * in_file )
 
         /* Get the advance for the current NewlineBlock. */
 
-        memcpy_s( &newline_block_ptr[i].advance, sizeof( newline_block_ptr[i].advance ),
-                    current, sizeof( newline_block_ptr[i].advance ) );
+        memcpy( &newline_block_ptr[i].advance, current, sizeof( newline_block_ptr[i].advance ) );
         current += sizeof( newline_block_ptr[i].advance );
 
         /* Get the number of CodeBlocks, and verify that it is 0x01. */
 
-        memcpy_s( &count16, sizeof( count16 ), current, sizeof( count16 ) );
+        memcpy( &count16, current, sizeof( count16 ) );
         current += sizeof( count16 );
 
         if( count16 != 0x0001 ) {
@@ -1364,7 +1362,7 @@ cop_driver * parse_driver( FILE * in_file )
         newline_block_ptr[i].text = OUT_DRV_CUR_OFF();
 
         text_ptr = OUT_DRV_CUR_PTR();
-        memcpy_s( text_ptr, size, cop_codeblocks->text, size );
+        memcpy( text_ptr, cop_codeblocks->text, size );
         OUT_DRV_ADD_OFF( size );
 
         mem_free(cop_codeblocks);
@@ -1391,7 +1389,7 @@ cop_driver * parse_driver( FILE * in_file )
 
     /* Get the count and verify that it is 0. */
 
-    memcpy_s( &count16, sizeof( count16 ), current, sizeof( count16 ) );
+    memcpy( &count16, current, sizeof( count16 ) );
     current += sizeof( count16 );
 
     if( count16 != 0x0000 ) {
@@ -1439,7 +1437,7 @@ cop_driver * parse_driver( FILE * in_file )
     out_driver->newpage.text = OUT_DRV_CUR_OFF();
 
     text_ptr = OUT_DRV_CUR_PTR();
-    memcpy_s( text_ptr, size, cop_functions->code_blocks->text, size );
+    memcpy( text_ptr, cop_functions->code_blocks->text, size );
     OUT_DRV_ADD_OFF( size );
 
     mem_free( cop_functions->code_blocks );
@@ -1476,7 +1474,7 @@ cop_driver * parse_driver( FILE * in_file )
         out_driver->htab.text = OUT_DRV_CUR_OFF();
 
         text_ptr = OUT_DRV_CUR_PTR();
-        memcpy_s( text_ptr, size, cop_functions->code_blocks->text, size );
+        memcpy( text_ptr, cop_functions->code_blocks->text, size );
         OUT_DRV_ADD_OFF( size );
         break;
     default :
@@ -1510,8 +1508,7 @@ cop_driver * parse_driver( FILE * in_file )
 
     /* This block is optional: a count of 0 is allowed. */
 
-    memcpy_s( &out_driver->fontswitches.count, sizeof( out_driver->fontswitches.count ),
-                current, sizeof( out_driver->fontswitches.count ) );
+    memcpy( &out_driver->fontswitches.count, current, sizeof( out_driver->fontswitches.count ) );
     current += sizeof( out_driver->fontswitches.count );
 
     if( out_driver->fontswitches.count == 0x0000 ) {
@@ -1564,7 +1561,7 @@ cop_driver * parse_driver( FILE * in_file )
 
             /* Process some of the 21 flags. */
 
-            memcpy_s( &the_flags, sizeof( the_flags ), current, sizeof( the_flags ) );
+            memcpy( &the_flags, current, sizeof( the_flags ) );
             current += sizeof( the_flags );
 
             /* Set do_always to true or false per the Wiki. The device
@@ -1592,7 +1589,7 @@ cop_driver * parse_driver( FILE * in_file )
 
             /* Get the number of CodeBlocks; only 1 or 2 is valid. */
 
-            memcpy_s( &count16, sizeof( count16 ), current, sizeof( count16 ) );
+            memcpy( &count16, current, sizeof( count16 ) );
             current += sizeof( count16 );
 
             if( (count16 == 0x00) || (count16 > 0x02) ) {
@@ -1647,7 +1644,7 @@ cop_driver * parse_driver( FILE * in_file )
                         code_text_ptr->text = OUT_DRV_CUR_OFF();
 
                         text_ptr = OUT_DRV_CUR_PTR();
-                        memcpy_s( text_ptr, size, cop_codeblocks[j].text, size );
+                        memcpy( text_ptr, cop_codeblocks[j].text, size );
                         OUT_DRV_ADD_OFF( size );
 
                         break;
@@ -1677,7 +1674,7 @@ cop_driver * parse_driver( FILE * in_file )
                         code_text_ptr->text = OUT_DRV_CUR_OFF();
 
                         text_ptr = OUT_DRV_CUR_PTR();
-                        memcpy_s( text_ptr, size, cop_codeblocks[j].text, size );
+                        memcpy( text_ptr, cop_codeblocks[j].text, size );
                         OUT_DRV_ADD_OFF( size );
                         break;
                     default:
@@ -1871,7 +1868,7 @@ cop_driver * parse_driver( FILE * in_file )
         out_driver->absoluteaddress.text = OUT_DRV_CUR_OFF();
 
         text_ptr = OUT_DRV_CUR_PTR();
-        memcpy_s( text_ptr, size, cop_functions->code_blocks->text, size );
+        memcpy( text_ptr, cop_functions->code_blocks->text, size );
         OUT_DRV_ADD_OFF( size );
         break;
     default:
@@ -1923,7 +1920,7 @@ cop_driver * parse_driver( FILE * in_file )
         out_driver->hline.text = OUT_DRV_CUR_OFF();
 
         text_ptr = OUT_DRV_CUR_PTR();
-        memcpy_s( text_ptr, size, cop_functions->code_blocks->text, size );
+        memcpy( text_ptr, cop_functions->code_blocks->text, size );
         OUT_DRV_ADD_OFF( size );
         break;
     default:
@@ -2031,7 +2028,7 @@ cop_driver * parse_driver( FILE * in_file )
         out_driver->vline.text = OUT_DRV_CUR_OFF();
 
         text_ptr = OUT_DRV_CUR_PTR();
-        memcpy_s( text_ptr, size, cop_functions->code_blocks->text, size );
+        memcpy( text_ptr, cop_functions->code_blocks->text, size );
         OUT_DRV_ADD_OFF( size );
         break;
     default:
@@ -2142,7 +2139,7 @@ cop_driver * parse_driver( FILE * in_file )
         out_driver->dbox.text = OUT_DRV_CUR_OFF();
 
         text_ptr = OUT_DRV_CUR_PTR();
-        memcpy_s( text_ptr, size, cop_functions->code_blocks->text, size );
+        memcpy( text_ptr, cop_functions->code_blocks->text, size );
         OUT_DRV_ADD_OFF( size );
         break;
     default:

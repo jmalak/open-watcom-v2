@@ -662,7 +662,7 @@ cop_font * parse_font( FILE * in_file, char const * in_name )
                         *byte_ptr = (uint16_array[i] & 0x00ff);
                     } else {
                         ++translation_start;
-                        memcpy_s( byte_ptr, size, translation_start, size );
+                        memcpy( byte_ptr, translation_start, size );
                     }
                 }
             }
