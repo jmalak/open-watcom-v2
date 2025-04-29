@@ -101,7 +101,6 @@ static bool check_att_value( gaentry * ga, gtentry * ge, symdict * loc_dict )
 {
     gavalentry  *   gaval;
     char        *   valp;
-    long            attval;
     bool            msg_done;
     int             rc;
 
@@ -130,6 +129,8 @@ static bool check_att_value( gaentry * ga, gtentry * ge, symdict * loc_dict )
             }
         } else {
             if( gaval->valflags & val_range ) {
+                long    attval;
+
                 attval = strtol( token_buf, NULL, 10 );
                 if( attval < gaval->a.range[0] ||
                     attval > gaval->a.range[1]  ) {
