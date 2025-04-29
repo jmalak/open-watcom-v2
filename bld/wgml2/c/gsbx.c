@@ -36,7 +36,7 @@
 *       eoc_bx_box()            end-of-column for boxes drawn with BX
 *       eoc_char_device()       end-of-column for character devices
 *       eoc_line_device()       end-of-column for line devices
-*       merge_lines()           merge cur_line and/or prev_line into box_line
+*       merge_lines()           merge g_cur_line and/or g_prev_line into box_line
 *       resize_box_cols()       resize a box_col_set.cols member
 *       scr_bx()                parse BX line and use other functions to perform
 *                                   the required actions
@@ -276,8 +276,8 @@ static void box_blank_lines( uint32_t lines )
                 cur_blank->last = cur_chars;
             }
             cur_blank->line_height = def_height;
-            if( cur_op == bx_eoc ) {            // eoc uses prev_line
-                cur_hline = prev_line;
+            if( cur_op == bx_eoc ) {            // eoc uses g_prev_line
+                cur_hline = g_prev_line;
             } else {
                 cur_hline = box_line->first;
             }
@@ -362,8 +362,8 @@ static void box_char_element( doc_element * cur_el ) {
         if( cur_text != NULL ) {
             while( cur_text != NULL ) {
                 cur_chars = cur_text->first;
-                if( cur_op == bx_eoc ) {            // eoc uses prev_line
-                    cur_hline = prev_line;
+                if( cur_op == bx_eoc ) {            // eoc uses g_prev_line
+                    cur_hline = g_prev_line;
                 } else {
                     cur_hline = box_line->first;
                 }
@@ -1431,7 +1431,7 @@ static void do_line_device( void )
     /*   box_line must have at least one column             */
     /* and                                                  */
     /*   at least one of these conditions must be true:     */
-    /*       the BX had a column list (cur_line has at      */
+    /*       the BX had a column list (g_cur_line has at    */
     /*       least one column) and there was a prior BX     */
     /*       line                                           */
     /*     or                                               */
@@ -1744,7 +1744,7 @@ static void eoc_line_device( void ) {
 
     if( (box_depth + max_depth) > hl_depth ) {
         box_depth += max_depth - hl_depth;              // finalize current page box_depth
-        cur_hline = prev_line;
+        cur_hline = g_prev_line;
         while( cur_hline != NULL ) {                    // iterate over all horizontal lines
             if( cur_hline == box_line->first ) {
                 box_draw_vlines( cur_hline, max_depth - hl_depth, 0, st_none );
@@ -1760,12 +1760,12 @@ static void eoc_line_device( void ) {
 
 
 /***************************************************************************/
-/*  merge prev_line and/or cur_line into box_line->first                   */
+/*  merge g_prev_line and/or g_cur_line into box_line->first                 */
 /***************************************************************************/
 
 static void merge_lines( void )
 {
-    bool            inner_box   = false;    // true if any columns are marked "out" after prev_line is preprocessed
+    bool            inner_box   = false;    // true if any columns are marked "out" after g_prev_line is preprocessed
     bool            off_multi   = false;    // true for operand OFF when a multi-column segment has been encounterd
     bool            on_gap      = false;    // true if operand ON actually caused a gap
     box_col_set *   box_temp;
@@ -1776,15 +1776,15 @@ static void merge_lines( void )
     uint32_t        cur_col;
     uint32_t        prev_col;
 
-    if( prev_line == NULL ) {
+    if( g_prev_line == NULL ) {
         eoc_save = NULL;
     } else {
 
-        /* Save original prev_line for use if the box is split between columns */
+        /* Save original g_prev_line for use if the box is split between columns */
 
         cur_temp = alloc_box_col_set();
         eoc_save = cur_temp;
-        prev_temp = prev_line;
+        prev_temp = g_prev_line;
         while( cur_temp->length < prev_temp->current) {
             resize_box_cols( cur_temp );
         }
@@ -1812,7 +1812,7 @@ static void merge_lines( void )
 
         /* Convert "down" and "new" columns */
 
-        prev_temp = prev_line;
+        prev_temp = g_prev_line;
         while( prev_temp != NULL ) {
             for( prev_col = 0; prev_col < prev_temp->current; prev_col++ ) {
                 if( prev_temp->cols[prev_col].v_ind == bx_v_down ) {
@@ -1829,8 +1829,8 @@ static void merge_lines( void )
             /* Convert "both" and "split" columns to "up" if they do not continue */
 
             if( (cur_op == bx_none) || (cur_op == bx_on) ) {
-                cur_temp = cur_line;
-                prev_temp = prev_line;
+                cur_temp = g_cur_line;
+                prev_temp = g_prev_line;
                 while( prev_temp != NULL ) {
                     for( prev_col = 0; prev_col < prev_temp->current; prev_col++ ) {
                         if( (prev_temp->cols[prev_col].v_ind == bx_v_both)
@@ -1856,8 +1856,8 @@ static void merge_lines( void )
             /* Identify and mark "new" and "out" columns if appropriate */
 
             if( ((cur_op == bx_new) || (cur_op == bx_set) || (box_line->next != NULL)) ) {
-                cur_temp = cur_line;
-                prev_temp = prev_line;
+                cur_temp = g_cur_line;
+                prev_temp = g_prev_line;
                 cur_col = 0;
                 prev_col = 0;
                 while( prev_temp != NULL ) {
@@ -1904,15 +1904,15 @@ static void merge_lines( void )
         }
     }
 
-    if( (prev_line == NULL) && (cur_line == NULL) ) {
+    if( (g_prev_line == NULL) && (g_cur_line == NULL) ) {
         /* This might be an error if only possible for degenerate cases */
         internal_err( __FILE__, __LINE__ );
-    } else if( prev_line == NULL ) {    // cur_line becomes box_line->first
-        box_line->first = cur_line;
-        cur_line = NULL;
-    } else if( cur_line == NULL ) {     // prev_line becomes box_line->first
+    } else if( g_prev_line == NULL ) {    // g_cur_line becomes box_line->first
+        box_line->first = g_cur_line;
+        g_cur_line = NULL;
+    } else if( g_cur_line == NULL ) {     // g_prev_line becomes box_line->first
         if( cur_op == bx_none ) {
-            prev_temp = prev_line;
+            prev_temp = g_prev_line;
             while( prev_temp != NULL ) {
                 for( prev_col = 0; prev_col < prev_temp->current; prev_col++ ) {
                     if( (prev_temp->cols[prev_col].v_ind != bx_v_hid) &&
@@ -1924,7 +1924,7 @@ static void merge_lines( void )
                 prev_temp = prev_temp->next;
             }
         } else if( (cur_op == bx_can) || (cur_op == bx_off) ) {
-            prev_temp = prev_line;
+            prev_temp = g_prev_line;
             while( prev_temp != NULL ) {
                 for( prev_col = 0; prev_col < prev_temp->current; prev_col++ ) {
                     if( (prev_temp->cols[prev_col].v_ind != bx_v_hid)
@@ -1937,19 +1937,19 @@ static void merge_lines( void )
                 prev_temp = prev_temp->next;
             }
         }
-        box_line->first = prev_line;
-        prev_line = NULL;
+        box_line->first = g_prev_line;
+        g_prev_line = NULL;
 
-    } else {        // both cur_line & prev_line have entries
+    } else {        // both g_cur_line & g_prev_line have entries
         box_col = 0;
         cur_col = 0;
         prev_col = 0;
         box_temp = alloc_box_col_set(); // initialize box_line->first
-        cur_temp = cur_line;
+        cur_temp = g_cur_line;
         if( (cur_op == bx_off) && (cur_temp->current > 1) ) {
             off_multi = true;
         }
-        prev_temp = prev_line;
+        prev_temp = g_prev_line;
         box_line->first = box_temp;
 
         /* If there is a head, copy it to box_line->first */
@@ -2187,7 +2187,7 @@ static void merge_lines( void )
         /* Now process the rest of the line, including the tail */
 
         while( (cur_temp != NULL) || (prev_temp != NULL) ) {
-            if( cur_temp == NULL ) {    // only prev_line has columns
+            if( cur_temp == NULL ) {    // only g_prev_line has columns
                 while( prev_temp != NULL ) {
                     while( prev_col < prev_temp->current ) {
                         box_temp->cols[box_col].col = prev_temp->cols[prev_col].col;
@@ -2221,7 +2221,7 @@ static void merge_lines( void )
                         }
                     }
                 }
-            } else if( prev_temp == NULL ) {    // only cur_line has columns
+            } else if( prev_temp == NULL ) {    // only g_cur_line has columns
                 while( cur_temp != NULL ) {
                     while( cur_col < cur_temp->current ) {
                         box_temp->cols[box_col].col = cur_temp->cols[cur_col].col;
@@ -2274,7 +2274,7 @@ static void merge_lines( void )
                     if( prev_col == prev_temp->current ) {  // end of segment
                         if( (box_col > 0) ) {               // segment must have a column
                             if( ((cur_op == bx_off) && (prev_temp->next == NULL)
-                                && (prev_temp != prev_line))
+                                && (prev_temp != g_prev_line))
                                 || (on_gap && ((cur_op == bx_on)
                 && ((cur_temp->current == 1) || (cur_col < cur_temp->current - 1)))) ) {
                                 box_temp->next = alloc_box_col_set();
@@ -2310,7 +2310,7 @@ static void merge_lines( void )
                     if( cur_col == cur_temp->current ) {    // end of segment or of inner box
                         if( (box_col > 0) ) {               // segment must have a column
                             if( ((cur_op == bx_off) && (cur_temp->next == NULL)
-                                    && (cur_temp != cur_line))
+                                    && (cur_temp != g_cur_line))
                                 || ((cur_op == bx_new) || (cur_op == bx_set))
                                 || (on_gap && (cur_op == bx_on)
                 && ((prev_temp->current == 1) || (prev_col < prev_temp->current - 1))) ) {
@@ -2350,7 +2350,7 @@ static void merge_lines( void )
                     if( cur_col == cur_temp->current ) {  // end of segment
                         if( box_col > 0 ) {                 // segment must have a column
                             if( ((cur_op == bx_off) && (cur_temp->next == NULL)
-                                    && (cur_temp != cur_line))
+                                    && (cur_temp != g_cur_line))
                                 || ((cur_op == bx_new) || (cur_op == bx_set))
                                     || (on_gap && (cur_op == bx_on)) ) {
                                 box_temp->next = alloc_box_col_set();
@@ -2375,7 +2375,7 @@ static void merge_lines( void )
                     } else if( prev_col == prev_temp->current ) {  // end of segment
                         if( (box_col > 0) ) {               // segment must have a column
                             if( ((cur_op == bx_off) && (prev_temp->next == NULL)
-                                && (prev_temp != prev_line))
+                                && (prev_temp != g_prev_line))
                                     || (on_gap && (cur_op == bx_on)) ) {
                                 box_temp->next = alloc_box_col_set();
                                 box_temp = box_temp->next;
@@ -2393,7 +2393,7 @@ static void merge_lines( void )
         if( box_temp->current == 0 ) {     // final segment might be empty
             cur_temp = box_temp;           // detach & return to pool
             if( cur_temp == box_line->first ) {   // first segment, box_linw is empty
-                prev_line = NULL;
+                g_prev_line = NULL;
             } else {                        // find preceding segment
                 box_temp = box_line->first;
                 while( box_temp->next->next != NULL ) {
@@ -2405,17 +2405,17 @@ static void merge_lines( void )
         }
     }
 
-    /* Restore original prev_line for use if the box is split between columns */
+    /* Restore original g_prev_line for use if the box is split between columns */
 
-    if( prev_line != NULL ) {
-        add_box_col_set_to_pool( prev_line  );
-        prev_line = NULL;
+    if( g_prev_line != NULL ) {
+        add_box_col_set_to_pool( g_prev_line  );
+        g_prev_line = NULL;
     }
-    prev_line = eoc_save;
+    g_prev_line = eoc_save;
 
-    if( cur_line != NULL ) {
-        add_box_col_set_to_pool( cur_line );
-        cur_line = NULL;
+    if( g_cur_line != NULL ) {
+        add_box_col_set_to_pool( g_cur_line );
+        g_cur_line = NULL;
     }
 
     return;
@@ -2503,7 +2503,7 @@ void scr_bx( void )
         first_doc_el = true;            // mark first doc element in box
     }
     sk_font = g_prev_font;              // default value; may differ from bx_font
-    
+
     skips_done = false;
 
     if( ProcFlags.in_bx_box && (t_doc_el_group != NULL) ) {
@@ -2560,7 +2560,7 @@ void scr_bx( void )
     if( *p != '\0' ) {
         ProcFlags.box_cols_cur = true;      // box column list found
         cur_temp = alloc_box_col_set();
-        cur_line = cur_temp;
+        g_cur_line = cur_temp;
         first_col = true;                   // first column not yet found
         boxcol_prev = 0;
         while( *p != '\0' ) {
@@ -2614,13 +2614,13 @@ void scr_bx( void )
     switch( cur_op ) {
     case bx_new :
     case bx_set :                   // modify stack first
-       if( prev_line != NULL ) {    // add prev_line to stack
+       if( g_prev_line != NULL ) {  // add g_prev_line to stack
 
             /* set up first box_line->next member in box_temp */
 
             box_temp = alloc_box_col_set();
             box_line->first = box_temp;
-            prev_temp = prev_line;
+            prev_temp = g_prev_line;
             while( box_temp->length < prev_temp->length) {
                 resize_box_cols( box_temp );
             }
@@ -2692,9 +2692,9 @@ void scr_bx( void )
         }
     }
 
-    if( prev_line != NULL ) {
-        add_box_col_set_to_pool( prev_line );
-        prev_line = NULL;
+    if( g_prev_line != NULL ) {
+        add_box_col_set_to_pool( g_prev_line );
+        g_prev_line = NULL;
     }
 
     if( (cur_op == bx_off) || (cur_op == bx_can)
@@ -2774,17 +2774,17 @@ void scr_bx( void )
         /********************************************************************/
         /* box_line->first is often the boundary between two boxes, one of  */
         /*   which is being closed and the other of which is being opened.  */
-        /*   During the copy to prev_line, the columns unique to the box    */
+        /*   During the copy to g_prev_line, the columns unique to the box  */
         /*   being closed should be removed, any empty segments skipped,    */
-        /*   and any "rebreak" segments restored in prev_line.              */
+        /*   and any "rebreak" segments restored in g_prev_line.            */
         /* NOTE: this is needed to retain the "out" columns, that is, the   */
         /*   columns of the outer box which must be drawn when the current  */
         /*   inner box is closed.                                           */
         /********************************************************************/
 
         box_temp = box_line->first;
-        prev_line = alloc_box_col_set();
-        prev_temp = prev_line;
+        g_prev_line = alloc_box_col_set();
+        prev_temp = g_prev_line;
         prev_col = 0;
         while( box_temp != NULL ) {
             while( prev_temp->length < box_temp->current) {
@@ -2796,7 +2796,7 @@ void scr_bx( void )
                     prev_temp->cols[prev_col].depth = box_temp->cols[box_col].depth;
                     prev_temp->cols[prev_col].v_ind = box_temp->cols[box_col].v_ind;
                     prev_temp->current++;
-                    if( box_temp->cols[box_col].rebreak ) {         // prev_line new segment
+                    if( box_temp->cols[box_col].rebreak ) {         // g_prev_line new segment
                         prev_temp->cols[prev_col].rebreak = false;
                         prev_temp->next = alloc_box_col_set();
                         prev_temp = prev_temp->next;
@@ -2824,10 +2824,10 @@ void scr_bx( void )
 
         if( prev_temp->current == 0 ) {     // final segment might be empty
             cur_temp = prev_temp;           // detach & return to pool
-            if( cur_temp == prev_line ) {   // first segment, prev_line is empty
-                prev_line = NULL;
+            if( cur_temp == g_prev_line ) { // first segment, g_prev_line is empty
+                g_prev_line = NULL;
             } else {                        // find preceding segment
-                prev_temp = prev_line;
+                prev_temp = g_prev_line;
                 while( prev_temp->next->next != NULL ) {
                     prev_temp = prev_temp->next;
                 }

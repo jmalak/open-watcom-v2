@@ -261,7 +261,7 @@ static void initialize_directory_list( char const * in_path_list,
             xx_simple_err_c( err_path_max, local_list.directories[i] );
             local_list.directories[i] = NULL;
         } else {
-            byte_count += strnlen_s( local_list.directories[i], FILENAME_MAX );
+            byte_count += strlen( local_list.directories[i] );
         }
     }
 
@@ -347,13 +347,11 @@ static int try_open( char * prefix, char * filename )
 {
     FILE    *   fp;
     char        buff[FILENAME_MAX];
-    int         erc;
     size_t      filename_length;
 
     /* Prevent buffer overflow. */
 
-    filename_length = strnlen_s( prefix, FILENAME_MAX ) +
-                      strnlen_s( filename, FILENAME_MAX ) + 1;
+    filename_length = strlen( prefix ) + strlen( filename ) + 1;
     if( filename_length > FILENAME_MAX ) {
         xx_simple_err_cc( err_file_max, prefix, filename );
         return(0);
@@ -379,18 +377,18 @@ static int try_open( char * prefix, char * filename )
     /* Try to open the file. Return 0 on failure. */
 
     for( ;; ) {
-        erc = fopen_s( &fp, buff, "rb" );
+        fp = fopen( buff, "rb" );
 #if defined( __UNIX__ )
-        if( erc == 0 ) {
+        if( fp != NULL ) {
             break;
         }
         strlwr( buff );                 // for the sake of linux try again with lower case filename
-        erc = fopen_s( &fp, buff, "rb" );
-        if( erc == 0 ) {
+        fp = fopen( buff, "rb" );
+        if( fp != NULL ) {
             break;
         }
 #else       // DOS, OS/2, Windows
-        if( erc == 0 ) {
+        if( fp != NULL ) {
             strlwr( buff );             // to match wgml 4.0
             break;
         }
@@ -625,7 +623,7 @@ int search_file_in_dirs( const char *filename, const char *defext, const char *a
 
     /* Ensure filename will fit into buff. */
 
-    if( strnlen_s( filename, FILENAME_MAX ) == FILENAME_MAX ) {
+    if( strlen( filename ) >= FILENAME_MAX ) {
         xx_simple_err_c( err_file_max, filename );
         return( 0 );
     }
@@ -654,7 +652,7 @@ int search_file_in_dirs( const char *filename, const char *defext, const char *a
          */
 
         if( *fn_ext == '\0' ) {
-            if( strnlen_s( filename, FILENAME_MAX ) + 4 == FILENAME_MAX ) {
+            if( strlen( filename ) + 4 >= FILENAME_MAX ) {
                 switch( sequence ) {
                 case ds_opt_file:
                     xx_simple_err_cc( err_file_max, filename, ".opt" );
@@ -677,16 +675,16 @@ int search_file_in_dirs( const char *filename, const char *defext, const char *a
 
         /* Capture the bare filename length and the longest extension's length */
 
-        fn_length = strnlen_s( fn_name, FILENAME_MAX );
+        fn_length = strlen( fn_name );
         max_ext_len = 3;    // for literal extensions used above
-        if( strnlen_s( defext, FILENAME_MAX ) > max_ext_len ) {
-            max_ext_len = strnlen_s( defext, FILENAME_MAX );
+        if( strlen( defext ) > max_ext_len ) {
+            max_ext_len = strlen( defext );
         }
-        if( strnlen_s( altext, FILENAME_MAX ) > max_ext_len ) {
-            max_ext_len = strnlen_s( altext, FILENAME_MAX );
+        if( strlen( altext ) > max_ext_len ) {
+            max_ext_len = strlen( altext );
         }
-        if( strnlen_s( fn_ext, FILENAME_MAX ) > max_ext_len ) {
-            max_ext_len = strnlen_s( fn_ext, FILENAME_MAX );
+        if( strlen( fn_ext ) > max_ext_len ) {
+            max_ext_len = strlen( fn_ext );
         }
 
     }
@@ -788,7 +786,7 @@ int search_file_in_dirs( const char *filename, const char *defext, const char *a
 
                     /* Construct primary_file and open it normally. */
 
-                    member_length = strnlen_s( member_name, FILENAME_MAX );
+                    member_length = strlen( member_name );
                     if( memchr( member_name, '.', member_length ) == NULL ) {
 
                         /* Avoid buffer overflow from member_name. */

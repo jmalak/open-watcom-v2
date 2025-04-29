@@ -478,7 +478,7 @@ void gml_fig( const gmltag * entry )
                     } else {
                         frame.string[str_size - 1] = '\0';
                     }
-                    if( strnlen_s( frame.string, str_size ) == 0 ) {
+                    if( frame.string[0] == '\0' ) {
                         frame.type = none;      // treat null string as "none"
                     }
                 } else {                        // blank any existing frame.string value

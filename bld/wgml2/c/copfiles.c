@@ -231,8 +231,16 @@ static void compute_metrics( wgml_font * in_font )
         if( (height % 7200) > 0 ) shift_height++;
 
         height = (shift_height * 3 ) / 10;
-        sprintf( in_font->shift_height, "%d", height );
-        in_font->shift_count = strnlen_s( in_font->shift_height, 4 );
+        {
+            char    numstr[6];
+            int     len;
+
+            if( height > 9999 )
+                height = 9999;
+            len = sprintf( numstr, "%u", height );
+            strncpy( in_font->shift_height, numstr, len );
+            in_font->shift_count = len;
+        }
     }
 
     return;

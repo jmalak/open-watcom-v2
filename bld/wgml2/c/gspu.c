@@ -44,11 +44,11 @@ static FILE * workfile[9] =           // support for 9 workfiles SYSUSR0x.GML
 
 void    close_pu_file( int n )
 {
-    if( n > 0 && n < 10 ) {
-        if( workfile[n - 1] != NULL ) {
-            fclose( workfile[n - 1] );
-            workfile[n - 1] = NULL;
-        }
+    FILE    *fp;
+
+    fp = workfile[n - 1];
+    if( fp != NULL ) {
+        fclose( fp );
     }
 }
 
@@ -71,18 +71,18 @@ void    close_all_pu_files( void )
 /*  open  workfile n if not yet done                                       */
 /***************************************************************************/
 
-static int  open_pu_file( int n )
+static FILE     *open_pu_file( int n )
 {
-    int             erc = 0;
+    FILE            *fp;
     static  char    filename[20] = "sysusr0x.gml";
 
-    if( n > 0 && n < 10 ) {
-        if( workfile[n - 1] == NULL ) {   // not yet open
-            filename[7] = '0' + n;
-            erc = fopen_s( &workfile[n - 1], filename, "uwt" );
-        }
+    fp = workfile[n - 1];
+    if( fp == NULL ) {   // not yet open
+        filename[7] = '0' + n;
+        fp = fopen( filename, "wt" );
+        workfile[n - 1] = fp;
     }
-    return( erc );
+    return( fp );
 }
 
 
@@ -128,12 +128,13 @@ static int  open_pu_file( int n )
 
 void    scr_pu( void )
 {
-    char        *   p;
-    char        *   pa;
+    char            *p;
+    char            *pa;
     condcode        cc;                 // result code
     getnum_block    gn;
     int             len;
-    int             workn;
+    int             fno;
+    FILE            *fp;
 
     p = scan_start;
     SkipSpaces( p );                    // next word start
@@ -142,7 +143,7 @@ void    scr_pu( void )
     len = p - pa;
 
     if( len == 0 ) {                    // omitted
-        workn = 1;                      // "1" is default
+        fno = 1;                        // "1" is default
     } else {
 
         gn.argstart = pa;
@@ -154,24 +155,23 @@ void    scr_pu( void )
             if( (len > 1) || (cc !=pos)  || (*pa < '1') || (*pa > '9') ) {
                 numb_err();
             }
-            workn = *pa - '0';          // workfile specified
+            fno = *pa - '0';            // workfile specified
             pa++;
             SkipSpaces( pa );           // next word start
         } else {
-            workn = 1;                  // workfile not given, "1" is default
+            fno = 1;                    // workfile not given, "1" is default
         }
     }
     scan_restart = scan_stop + 1;       // do here because returns below all need it
 
     if( *pa == '\0' ) {                 // no text follows
-        close_pu_file( workn );
+        close_pu_file( fno );
         return;
     }
-
-    open_pu_file( workn );              // open if not already done
-    fputs( pa, workfile[workn - 1] );
-    fputc( '\n', workfile[workn - 1] );
-
-    return;
+    fp = open_pu_file( fno );           // get or open if not already done
+    if( fp != NULL ) {
+        fputs( pa, fp );
+        fputc( '\n', fp );
+    }
 }
 

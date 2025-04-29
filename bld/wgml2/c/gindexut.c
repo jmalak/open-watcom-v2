@@ -410,14 +410,17 @@ ix_h_blk * find_create_ix_h_entry( ix_h_blk * ixhwork, ix_h_blk * ixhbase,
 
         if( printtxt != NULL ) {
             if( ixhwork->prt_term == NULL ) {
+                ixhwork->prt_term_len = printtxtlen;
                 ixhwork->prt_term = mem_alloc( printtxtlen + 1 );
-                strcpy_s( ixhwork->prt_term, printtxtlen + 1, printtxt );
-            } else if( printtxtlen > ixhwork->prt_term_len ) {
+                strcpy( ixhwork->prt_term, printtxt );
+            } else if( ixhwork->prt_term_len < printtxtlen ) {
                 ixhwork->prt_term_len = printtxtlen;
                 ixhwork->prt_term = mem_realloc( ixhwork->prt_term, printtxtlen + 1 );
-                strcpy_s( ixhwork->prt_term, printtxtlen + 1, printtxt );
-            } else if( (printtxtlen == 0) || (strcmp( printtxt, ixhwork->prt_term )) ) {
-                strcpy_s( ixhwork->prt_term, printtxtlen + 1, printtxt );
+                strcpy( ixhwork->prt_term, printtxt );
+            } else if( printtxtlen == 0 ) {
+                ixhwork->prt_term[0] = '\0';
+            } else if( ixhwork->prt_term != printtxt ) {
+                strcpy( ixhwork->prt_term, printtxt );
             }
         }
     } else {                            // create block

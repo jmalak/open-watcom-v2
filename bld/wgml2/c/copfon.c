@@ -191,7 +191,7 @@ cop_font * parse_font( FILE * in_file, char const * in_name )
 
     /* Ensure in_name contains a value. */
 
-    length = strnlen_s( in_name, TYPE_MAX );
+    length = strlen( in_name );
     if( (in_name == NULL) || (length == 0) ) {
         return( out_font );
     }

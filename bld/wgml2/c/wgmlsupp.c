@@ -57,14 +57,13 @@
 
 void g_banner( void )
 {
-    if( !(GlobalFlags.bannerprinted | GlobalFlags.quiet) ) {
+    if( (GlobalFlags.bannerprinted | GlobalFlags.quiet) == 0 ) {
         out_msg( "WATCOM Script/GML V4.0 Copyright by WATCOM International Corp. 1985, 1993." CRLF );
         out_msg( banner1( "Special Edition for Open Watcom", _WGML_VERSION_ ) CRLF );
-        out_msg( banner2a() CRLF );
+        out_msg( banner2 CRLF );
         out_msg( banner3 CRLF );
         out_msg( banner3a CRLF );
-        out_msg( "Compiled with WATCOMC "xmystr(__WATCOMC__)
-                 " "__DATE__" "__TIME__ CRLF);
+        out_msg( "Compiled with WATCOMC " xmystr(__WATCOMC__) " "__DATE__" "__TIME__ CRLF);
         mem_banner();
         GlobalFlags.bannerprinted = 1;
     }
@@ -103,23 +102,24 @@ static bool free_inc_fp( void )
     inputcb *   ip;
     filecb  *   cb;
     int         rc;
+    int         save_errno;
 
     ip = input_cbs;
     while( ip != NULL ) {              // as long as input stack is not empty
         if( ip->fmflags & II_file ) {   // if file (not macro)
             if( (cb = ip->s.f) != NULL ) {
                 if( (cb->flags & FF_open) ) {   // and file is open
+                    save_errno = errno;
                     rc = fgetpos( cb->fp, &cb->pos );
                     if( rc != 0 ) {
-                        strerror_s( buff2, buf_size, errno );
-                        xx_simple_err_cc( err_file_io, buff2, cb->filename );
+                        xx_simple_err_cc( err_file_io, strerror( errno ), cb->filename );
                     }
                     rc = fclose( cb->fp );
                     if( rc != 0 ) {
-                        strerror_s( buff2, buf_size, errno );
-                        xx_simple_err_cc( err_file_io, buff2, cb->filename );
+                        xx_simple_err_cc( err_file_io, strerror( errno ), cb->filename );
                     }
                     cb->flags &= ~FF_open;
+                    errno = save_errno;
                     return( true );
                 }
             }
@@ -138,27 +138,30 @@ static bool free_inc_fp( void )
 static void reopen_inc_fp( filecb *cb )
 {
     int         rc;
-    int         erc;
-    int         erc2;
+    FILE        *fp;
 
-    if( ! cb->flags & FF_open ) {
+    if( (cb->flags & FF_open) == 0 ) {
         for( ;; ) {
-            erc = fopen_s( &cb->fp, cb->filename, "rb" );
-            if( erc == 0 ) break;
-            erc2 = errno;
-            if( errno != ENOMEM && errno != ENFILE && errno != EMFILE ) break;
-            if( !free_inc_fp() ) break; // try closing an include file
+            fp = fopen( cb->filename, "rb" );
+            cb->fp = fp;
+            if( fp != NULL )
+                break;
+            if( errno != ENOMEM
+              && errno != ENFILE
+              && errno != EMFILE )
+                break;
+            if( !free_inc_fp() ) {
+                break; // try closing an include file
+            }
         }
-        if( erc == 0 ) {
+        if( fp != NULL ) {
             rc = fsetpos( cb->fp, &cb->pos );
             if( rc != 0 ) {
-                strerror_s( buff2, buf_size, errno );
-                xx_simple_err_cc( err_file_io, buff2, cb->filename );
+                xx_simple_err_cc( err_file_io, strerror( errno ), cb->filename );
             }
             cb->flags |= FF_open;
         } else {
-            strerror_s( buff2, buf_size, erc2 );
-            xx_simple_err_cc( err_file_io, buff2, cb->filename );
+            xx_simple_err_cc( err_file_io, strerror( errno ), cb->filename );
         }
     }
     return;
@@ -275,11 +278,11 @@ void free_some_mem( void )
     if( box_line != NULL ) {
         add_box_col_stack_to_pool( box_line );
     }
-    if( cur_line != NULL ) {
-        add_box_col_set_to_pool( cur_line );
+    if( g_cur_line != NULL ) {
+        add_box_col_set_to_pool( g_cur_line );
     }
-    if( prev_line != NULL ) {
-        add_box_col_set_to_pool( prev_line );
+    if( g_prev_line != NULL ) {
+        add_box_col_set_to_pool( g_prev_line );
     }
     if( t_line != NULL ) {
         add_text_chars_to_pool( t_line );
@@ -504,8 +507,7 @@ bool get_line( bool display_line )
                             *buff2 = '\0';
                             break;
                         } else {
-                            strerror_s( buff2, buf_size, errno );
-                            xx_simple_err_cc( err_file_io, buff2, cb->filename );
+                            xx_simple_err_cc( err_file_io, strerror( errno ), cb->filename );
                         }
                     }
                 }
@@ -515,7 +517,7 @@ bool get_line( bool display_line )
         }
     }
 
-    buff2_lg = strnlen_s( buff2, buf_size );
+    buff2_lg = strlen( buff2 );
     *(buff2 + buff2_lg) = '\0';
     *(buff2 + buff2_lg + 1) = '\0';
     if( input_cbs->fmflags & II_file ) {

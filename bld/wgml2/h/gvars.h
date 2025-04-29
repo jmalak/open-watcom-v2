@@ -168,8 +168,8 @@ global doc_el_group     *   block_queue_end;    // add point for new FB blocks
 
 // box support
 global  box_col_set     *   box_col_set_pool;   // pool of box_col_set instances
-global  box_col_set     *   cur_line;           // the line from the current BX line
-global  box_col_set     *   prev_line;          // the previously drawn line
+global  box_col_set     *   g_cur_line;         // the line from the current BX line
+global  box_col_set     *   g_prev_line;        // the previously drawn line
 global  box_col_stack   *   box_col_stack_pool; // pool of box_col_stack instances
 global  box_col_stack   *   box_line;           // the current line to be drawn
 global  uint32_t            box_col_width;      // width of one column, as used with BX

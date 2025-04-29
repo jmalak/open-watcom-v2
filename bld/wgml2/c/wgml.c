@@ -327,7 +327,7 @@ static void remove_indentation( void )
             if( offset > 0 ) {
                 memset( pb, '\0', offset ); // clear rest
             }
-            buff2_lg = strnlen_s( buff2, buf_size );
+            buff2_lg = strlen( buff2 );
             p = buff2;
 //            if( GlobalFlags.research && GlobalFlags.firstpass ) {
 //                g_info( INF_INDENT_REM, buff2 );

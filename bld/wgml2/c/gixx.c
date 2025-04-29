@@ -77,7 +77,7 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
     size_t          seetextlen      = 0;    // val_len for see = <string> value
     size_t          txtlen;                 // val_len for entry value
 
-    if( input_cbs->fmflags & II_tag_mac ) {   // ensure next line is valid 
+    if( input_cbs->fmflags & II_tag_mac ) {   // ensure next line is valid
         input_cbs->s.m->ix_seen = true;     // records use of tag, even if indexing is off
     }
 
@@ -207,9 +207,9 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
                 if( hxstring[3] == lvlc ) {     // IHx only
                     printseen = true;
                     printtxt = mem_alloc( val_len + 1 );
-                    printtxtlen = val_len;
                     strncpy( printtxt, val_start, val_len );
-                    *(printtxt + val_len) = '\0';
+                    printtxt[val_len] = '\0';
+                    printtxtlen = val_len;
                 } else {                        // end-of-tag for Ix, IREF
                     p = pa;                     // restore spaces before text
                     break;

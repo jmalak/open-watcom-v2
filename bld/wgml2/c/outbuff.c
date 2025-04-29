@@ -881,7 +881,7 @@ static void set_out_file( void )
     if( temp_outfile[0] != '\0' ) {
         if( out_file != NULL )
             mem_free( out_file );
-        out_file = mem_alloc( strnlen_s( temp_outfile, _MAX_PATH ) + 1 );
+        out_file = mem_alloc( strlen( temp_outfile ) + 1 );
         strcpy_s( out_file, _MAX_PATH, temp_outfile );
     }
 
@@ -1387,7 +1387,7 @@ void ob_setup( void )
 
     /* Create (truncate) the output file. */
 
-    fopen_s( &out_file_fp, out_file, "uwb" );
+    out_file_fp = fopen( out_file, "wb" );
 
     if( out_file_fp == NULL ) {
         xx_simple_err_c( err_open_out_file, out_file );
