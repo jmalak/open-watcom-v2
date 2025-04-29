@@ -125,7 +125,7 @@
 #define SkipDot( p )        if( *(p) == '.' ) (p)++
 #define SkipSpacesTabs( p ) while( is_space_tab_char( *(p) ) ) (p)++
 
-typedef uint32_t    line_number;
+typedef unsigned    line_number;
 typedef uint8_t     text_space;
 typedef uint32_t    units_space;
 

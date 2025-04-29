@@ -659,7 +659,6 @@ static  void    print_stats( clock_t duration_ticks )
     char            linestr2[30];
     ldiv_t          hour_min;
     ldiv_t          sec_frac;
-    unsigned long   peak;
 
     g_info_lm( inf_stat_0 );
 
@@ -684,10 +683,15 @@ static  void    print_stats( clock_t duration_ticks )
     ulongtodec( err_count ? 8 : wng_count ? 4 : 0, linestr );
     g_info_lm( inf_stat_5, linestr );
 
-    peak = mem_get_peak_usage();
-    if( peak ) {
-        ulongtodec( peak, linestr );
-        g_info_lm( inf_stat_6, linestr );
+    {
+        unsigned long   peak;
+        char            numstr[30];
+
+        peak = mem_get_peak_usage();
+        if( peak ) {
+            sprintf( numstr, "%lu", peak;
+            g_info_lm( inf_stat_6, numstr );
+        }
     }
 
     // convert duration from clock ticks to HH:MM:SS.hh
@@ -739,7 +743,7 @@ static  void    init_pass( void )
     }
 
     line_from   = 1;                  // processing line range Masterdocument
-    line_to     = ULONG_MAX - 1;
+    line_to     = UINT_MAX - 1;
 
     apage               = 0;            // absolute pageno 1 - n
     page                = 0;            // current pageno (in body 1 - n)
