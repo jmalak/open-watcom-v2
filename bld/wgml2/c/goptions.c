@@ -1054,8 +1054,9 @@ static void set_warning( option * opt )
 static void set_OPTFile( option * opt )
 {
     char        attrwork[MAX_FILE_ATTR];
-    char    *   str;
+    char        *str;
     int         len;
+    FILE        *fp;
 
     if( tokennext == NULL || tokennext->bol || is_option()
         /* || tokennext->token[0] == '('  allow (t:123)file.opt construct */
@@ -1089,17 +1090,17 @@ static void set_OPTFile( option * opt )
                     for( k = level; k > 0; k-- ) {
                         if( stricmp( try_file_name, file_names[k]) == 0 ) {
                             xx_simple_err_c( err_recursive_option, try_file_name );
-                            fclose( try_fp );
+                            fclose( fp );
                             try_fp = NULL;
                             return;
                         }
                     }
                 }
                 file_names[++level] = try_file_name;
-                str = read_indirect_file( try_file_name );
+                str = read_indirect_file( fp );
                 split_tokens( str );
                 mem_free( str );
-                fclose( try_fp );
+                fclose( fp );
                 try_fp = NULL;
                 try_file_name = NULL;// free will be done via file_names[level]
                 tokennext = cmd_tokens[level];
