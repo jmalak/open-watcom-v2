@@ -147,7 +147,8 @@ static int split_tokens( char *str )
         new->bol = linestart;
         linestart = false;
         new->toklen = tokl;
-        strncpy( new->token, tokstart, tokl + 1 );
+        strncpy( new->token, tokstart, tokl );
+        new->token[tokl] = '\0';
 
         if( tok == NULL ) {
             cmd_tokens[level] = new;

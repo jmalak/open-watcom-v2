@@ -562,15 +562,17 @@ void show_include_stack( void )
 
 
     if( input_cbs != NULL ) {
+#if 0
         if( input_cbs->fmflags & II_tag_mac ) {
             sprintf( linestr, "%d", input_cbs->s.m->lineno );
             sprintf( linemac, "%d", input_cbs->s.m->mac->lineno );
             g_info( err_inf_mac_def, linestr, input_cbs->s.m->mac->name,
                     linemac, input_cbs->s.m->mac->mac_file_name);
-//        } else {
-//            sprintf( linestr, "%d", input_cbs->s.f->lineno );
-//            g_info( inf_file_line, linestr, input_cbs->s.f->filename );
+        } else {
+            sprintf( linestr, "%d", input_cbs->s.f->lineno );
+            g_info( inf_file_line, linestr, input_cbs->s.f->filename );
         }
+#endif
         ip = input_cbs->prev;
     } else {
         ip = NULL;
