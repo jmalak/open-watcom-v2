@@ -374,7 +374,7 @@ static void get_macro_line( void )
 
         cb->flags          &= ~FF_eof;
         input_cbs->fmflags &= ~II_eof;
-        strcpy_s( buff2, buf_size, cb->macline->value );
+        strcpy( buff2, cb->macline->value );
         cb->macline         = cb->macline->next;
 
         if( input_cbs->fmflags & II_macro ) {   // not invoked by a user-defined tag

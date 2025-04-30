@@ -873,7 +873,7 @@ static void set_out_file( void )
         if( out_file != NULL )
             mem_free( out_file );
         out_file = mem_alloc( strlen( temp_outfile ) + 1 );
-        strcpy_s( out_file, _MAX_PATH, temp_outfile );
+        strcpy( out_file, temp_outfile );
     }
 
     return;
@@ -905,7 +905,7 @@ static void set_out_file_attr( void )
 
                 len = 1 + strlen( "t:132" );
                 out_file_attr = mem_alloc( len );
-                strcpy_s( out_file_attr, len, "t:132" );
+                strcpy( out_file_attr, "t:132" );
 
             } else {
 
@@ -924,7 +924,7 @@ static void set_out_file_attr( void )
 
             len = 1 + strlen( "t:132" );
             out_file_attr = mem_alloc( len );
-            strcpy_s( out_file_attr, len, "t:132" );
+            strcpy( out_file_attr, "t:132" );
         }
     }
 
@@ -1056,7 +1056,7 @@ void ob_binclude( binclude_element * in_el )
     if( in_el->force_FONT0 ) {          // force fs0 under some conditions; not PS? tbd
         ob_flush();
         ps_size = strlen( fontstr );
-        strcpy_s( buffout.text, buffout.length, fontstr );
+        strcpy( buffout.text, fontstr );
         buffout.current = ps_size;
     }
 
@@ -1140,7 +1140,7 @@ void ob_graphic( graphic_element * in_el )
     ob_flush();
 
     ps_size = strlen( graphobj );
-    strcpy_s( buffout.text, buffout.length, graphobj );
+    strcpy( buffout.text, graphobj );
     buffout.current = ps_size;
     ob_flush();
 
@@ -1152,9 +1152,9 @@ void ob_graphic( graphic_element * in_el )
     ob_flush();
 
     ps_size = strlen( begindoc );
-    strcpy_s( buffout.text, buffout.length, begindoc );
+    strcpy( buffout.text, begindoc );
     buffout.current = ps_size;
-    strcpy_s( buffout.text + ps_size, buffout.length - ps_size, in_el->short_name );
+    strcpy( buffout.text + ps_size, in_el->short_name );
     buffout.current = strlen( buffout.text );
     ob_flush();
 
@@ -1177,12 +1177,12 @@ void ob_graphic( graphic_element * in_el )
     buffout.current = 0;
 
     ps_size = strlen( enddoc );
-    strcpy_s( buffout.text, buffout.length, enddoc );
+    strcpy( buffout.text, enddoc );
     buffout.current = ps_size;
     ob_flush();
 
     ps_size = strlen( restore );
-    strcpy_s( buffout.text, buffout.length, restore );
+    strcpy( buffout.text, restore );
     buffout.current = ps_size;
     ob_flush();
 
@@ -1191,7 +1191,7 @@ void ob_graphic( graphic_element * in_el )
     if( in_el->next_font > FONT0 ) {
         ob_flush();
         ps_size = strlen( fontstr );
-        strcpy_s( buffout.text, buffout.length, fontstr );
+        strcpy( buffout.text, fontstr );
         buffout.current = ps_size;
         if( ferror( in_el->fp ) ) {
             xx_simple_err_cc( err_in_file, "GRAPHIC", in_el->file );

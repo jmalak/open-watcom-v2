@@ -393,7 +393,7 @@ static char *char_convert( const char *in_val )
         ret_val[0] = '\0';
     } else {
         ret_val = mem_alloc( strlen( in_val ) + 1 );
-        strcpy_s( ret_val, strlen( in_val ) + 1, in_val );
+        strcpy( ret_val, in_val );
     }
 
     return( ret_val );

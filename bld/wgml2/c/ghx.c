@@ -203,13 +203,13 @@ void gen_heading( char * h_text, char * id, hdsrc hn_lvl, hdsrc hds_lvl )
     if( hds_lvl == hds_appendix ) {
         prefixlen = strlen( layout_work.appendix.string ) + strlen( hd_nums[hn_lvl].hnumstr );
         prefix = (char *)mem_alloc( prefixlen + 1 );
-        strcpy_s( prefix, prefixlen, layout_work.appendix.string); // prefix
-        strcat_s( prefix, prefixlen + 1, hd_nums[hn_lvl].hnumstr ); // numbered header
+        strcpy( prefix, layout_work.appendix.string ); // prefix
+        strcat( prefix, hd_nums[hn_lvl].hnumstr ); // numbered header
         headlen = prefixlen + strlen( h_text ) + 2;
         headp = (char *)mem_alloc( headlen );
         if( layout_work.hx.hx_head[hds_appendix].number_form != num_none ) {
-            strcpy_s( headp, headlen, prefix ); // numbered header
-            strcat_s( headp, headlen, " " );
+            strcpy( headp, prefix ); // numbered header
+            strcat( headp, " " );
         } else {
             *headp = '\0';
         }
@@ -219,8 +219,8 @@ void gen_heading( char * h_text, char * id, hdsrc hn_lvl, hdsrc hds_lvl )
         headp = (char *) mem_alloc( headlen );
         if( (hds_lvl < hds_abstract) &&
                 (layout_work.hx.hx_head[hds_lvl].number_form != num_none) ) {
-            strcpy_s( headp, headlen, prefix );     // numbered header
-            strcat_s( headp, headlen, " " );
+            strcpy( headp, prefix );     // numbered header
+            strcat( headp, " " );
         } else {
             *headp = '\0';
         }
@@ -237,7 +237,7 @@ void gen_heading( char * h_text, char * id, hdsrc hn_lvl, hdsrc hds_lvl )
         hd_nums[hn_lvl].headsub->value =
                 mem_realloc( hd_nums[hn_lvl].headsub->value, strlen( headp ) + 1 );
     }
-    strcpy_s( hd_nums[hn_lvl].headsub->value, strlen( headp ) + 1, headp );
+    strcpy( hd_nums[hn_lvl].headsub->value, headp );
     mem_free( headp );
 
     /* Reset $HNUMx */
@@ -246,7 +246,7 @@ void gen_heading( char * h_text, char * id, hdsrc hn_lvl, hdsrc hds_lvl )
         hd_nums[hn_lvl].hnumsub->value = mem_realloc( hd_nums[hn_lvl].hnumsub->value,
                                                             strlen( prefix ) + 1 );
     }
-    strcpy_s( hd_nums[hn_lvl].hnumsub->value, strlen( prefix ) + 1, prefix );
+    strcpy( hd_nums[hn_lvl].hnumsub->value, prefix );
 
     /* Reset $HTEXTx */
 
@@ -254,7 +254,7 @@ void gen_heading( char * h_text, char * id, hdsrc hn_lvl, hdsrc hds_lvl )
         hd_nums[hn_lvl].htextsub->value =
                 mem_realloc( hd_nums[hn_lvl].htextsub->value, strlen( h_text ) + 1 );
     }
-    strcpy_s( hd_nums[hn_lvl].htextsub->value, strlen( h_text ) + 1, h_text );
+    strcpy( hd_nums[hn_lvl].htextsub->value, h_text );
 
     /* Only create the entry on the first pass */
 
@@ -278,16 +278,16 @@ void gen_heading( char * h_text, char * id, hdsrc hn_lvl, hdsrc hds_lvl )
 
         if( prefix[0] ) {
             current = strlen( prefix );
-            hd_entry->prefix = (char *) mem_alloc( current + 1 );
-            strcpy_s(hd_entry->prefix, current + 1, prefix );
+            hd_entry->prefix = (char *)mem_alloc( current + 1 );
+            strcpy( hd_entry->prefix, prefix );
             if( layout_work.hx.hx_head[hds_lvl].number_form != num_none ) {
                 hd_entry->flags |= ffh_prefix;  // mark prefix for use
             }
         }
         txtlen = strlen( h_text );
         if( txtlen > 0 ) {              // text line not empty
-            hd_entry->text = (char *) mem_alloc( txtlen + 1 );
-            strcpy_s( hd_entry->text, txtlen + 1, h_text );
+            hd_entry->text = (char *)mem_alloc( txtlen + 1 );
+            strcpy( hd_entry->text, h_text );
         }
 
         /***********************************************************************/
@@ -530,7 +530,7 @@ void gen_heading( char * h_text, char * id, hdsrc hn_lvl, hdsrc hds_lvl )
             t_page.topheadsub->value =
                         mem_realloc( t_page.topheadsub->value, strlen( h_text ) + 1 );
         }
-        strcpy_s( t_page.topheadsub->value, strlen( h_text ) + 1, h_text );
+        strcpy( t_page.topheadsub->value, h_text );
         ProcFlags.tophead_done = true;  // will be reset when page output
     }
 
@@ -540,7 +540,7 @@ void gen_heading( char * h_text, char * id, hdsrc hn_lvl, hdsrc hds_lvl )
         t_page.botheadsub->value =
                         mem_realloc( t_page.botheadsub->value, strlen( h_text ) + 1 );
     }
-    strcpy_s( t_page.botheadsub->value, strlen( h_text ) + 1, h_text );
+    strcpy( t_page.botheadsub->value, h_text );
 
 
     if( pass > 1 ) {                    // not on first pass

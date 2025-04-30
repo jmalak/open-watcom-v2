@@ -218,7 +218,7 @@ cop_font * parse_font( FILE * in_file, char const * in_name )
     out_font->defined_name = OUT_FONT_CUR_OFF();
 
     string_ptr = OUT_FONT_CUR_PTR();
-    strcpy_s( string_ptr, length, in_name );
+    strcpy( string_ptr, in_name );
     OUT_FONT_ADD_OFF( length );
 
     /* Get the font_out_name1. */

@@ -115,7 +115,7 @@ static entry_found get_compact_entry( FILE * in_file, directory_entry * entry )
 
     /* Ensure the member_name_length is not zero or too long for the buffer. */
 
-    if( (count == 0) || ((uint16_t) count > FILENAME_MAX) ) {
+    if( (count == 0) || ((uint16_t)count > _MAX_PATH - 1) ) {
         return( not_valid_entry );
     }
 
@@ -186,7 +186,7 @@ static entry_found get_extended_entry( FILE * in_file, directory_entry * entry )
 
     /* Ensure the member_name_length is not zero or too long for the buffer. */
 
-    if( (count == 0) || ((uint16_t) count > FILENAME_MAX) ) {
+    if( (count == 0) || ((uint16_t)count > _MAX_PATH - 1) ) {
         return( not_valid_entry );
     }
 
@@ -343,7 +343,7 @@ char *get_member_name( FILE *fp, const char *fname, const char *in_name )
                             if( !stricmp( in_name, current_entry.defined_name ) ) {
                                 member_length = strlen( current_entry.member_name ) + 1;
                                 member_name = mem_alloc( member_length );
-                                strcpy_s( member_name, member_length, current_entry.member_name );
+                                strcpy( member_name, current_entry.member_name );
                                 return( member_name );
                             }
 
@@ -389,7 +389,7 @@ char *get_member_name( FILE *fp, const char *fname, const char *in_name )
                     if( !stricmp( in_name, current_entry.defined_name) ) {
                         member_length = strlen( current_entry.member_name ) + 1;
                         member_name = mem_alloc( member_length );
-                        strcpy_s( member_name, member_length, current_entry.member_name );
+                        strcpy( member_name, current_entry.member_name );
                         return( member_name );
                     }
 

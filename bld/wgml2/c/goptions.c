@@ -147,7 +147,7 @@ static int split_tokens( char *str )
         new->bol = linestart;
         linestart = false;
         new->toklen = tokl;
-        strncpy_s(new->token, new->toklen + 1, tokstart, tokl );
+        strncpy( new->token, tokstart, tokl + 1 );
 
         if( tok == NULL ) {
             cmd_tokens[level] = new;
@@ -894,7 +894,7 @@ static void set_outfile( option * opt )
         if( attrwork[0] ) {
             len = 1 + strlen( attrwork );
             out_file_attr = mem_alloc( len );
-            strcpy_s( out_file_attr, len, attrwork );
+            strcpy( out_file_attr, attrwork );
         } else {
             out_file_attr = NULL;
         }
@@ -1068,7 +1068,7 @@ static void set_OPTFile( option * opt )
         str = tokennext->token;
 
         g_info_research( inf_recognized_xxx, "option file", str );
-        strcpy_s( token_buf, buf_size, str );
+        strcpy( token_buf, str );
         if( try_file_name != NULL ) {
             mem_free( try_file_name );
             try_file_name = NULL;
@@ -1232,7 +1232,7 @@ static void set_research( option * opt )
         research_file_name[0] = '\0';   // no filename
         if( my_isalpha( *str ) ) {      // filename ?
             if( len < sizeof( research_file_name ) ) {
-                strcpy_s( research_file_name, sizeof( research_file_name ), str );
+                strcpy( research_file_name, str );
             }
             tokennext = tokennext->nxt;
             if( tokennext == NULL || tokennext->bol || is_option()

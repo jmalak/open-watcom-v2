@@ -102,7 +102,7 @@ char *get_filename_full_path( char *buff, char const * name, size_t max )
 
 static  void    set_default_extension( const char * masterfname )
 {
-    char        buff[FILENAME_MAX];
+    char        buff[_MAX_PATH];
     char    *   ext;
 
     _splitpath2( masterfname, buff, NULL, NULL, NULL, &ext );
@@ -111,7 +111,7 @@ static  void    set_default_extension( const char * masterfname )
             mem_free( def_ext);
             def_ext = mem_alloc( 1 + strlen( ext ) );
         }
-        strcpy_s( def_ext, 1 + strlen( ext ), ext );
+        strcpy( def_ext, ext );
     }
     return;
 }
@@ -164,7 +164,7 @@ static  char    * reuse_filename( const char * fn )
     }
 
     fnwk = mem_alloc( sizeof( fnstack ) + strlen( fn ) );
-    strcpy_s( fnwk->fn, 1 + strlen( fn ), fn );
+    strcpy( fnwk->fn, fn );
 
     fnwk->prev = fn_stack;
     fn_stack = fnwk;
@@ -431,7 +431,7 @@ static  void    proc_input( char * filename )
     static  inputcb *   save_cb;        // former input_cbs top entry
 
     ProcFlags.newLevelFile = 1;
-    strcpy_s( token_buf, buf_size, filename );
+    strcpy( token_buf, filename );
 
     cur_lay_file = lay_files;           // start each pass with same list
     for( ; ; ) {                        // as long as there is input
@@ -461,7 +461,7 @@ static  void    proc_input( char * filename )
             cb = input_cbs->s.f;
             cb->flags |= FF_crlf;       // delete crlf at end
             if( attrwork[0] ) {
-                strcpy_s( cb->fileattr, sizeof( cb->fileattr ), attrwork );
+                strcpy( cb->fileattr, attrwork );
             } else {
                 cb->fileattr[0] = '\0';
             }
@@ -479,7 +479,7 @@ static  void    proc_input( char * filename )
 
             if( (cur_lay_file != NULL) ) {
                 tmp_lay_file = cur_lay_file;
-                strcpy_s( token_buf, buf_size, tmp_lay_file->layfn );
+                strcpy( token_buf, tmp_lay_file->layfn );
                 cur_lay_file = tmp_lay_file->next;
                 ProcFlags.newLevelFile = 1; // start a new include FILE level
                 continue;               // with cmdline    layout option file
@@ -629,7 +629,7 @@ static  void    proc_input( char * filename )
         }
         if( cur_lay_file != NULL ) {   // any more  LAYfiles
             tmp_lay_file = cur_lay_file;
-            strcpy_s( token_buf, buf_size, tmp_lay_file->layfn );
+            strcpy( token_buf, tmp_lay_file->layfn );
             cur_lay_file = tmp_lay_file->next;
             ProcFlags.newLevelFile = 1; // start a new include file level
             continue;                   // with cmdline layout option file
@@ -712,8 +712,7 @@ static  void    init_pass( void )
 
     if( GlobalFlags.research && (research_to > 0) ) {
         if( research_file_name[0] == '\0' ) {
-            strcpy_s( research_file_name, sizeof( research_file_name ),
-                      master_fname );
+            strcpy( research_file_name, master_fname );
         }
         ProcFlags.researchfile = true;
     }

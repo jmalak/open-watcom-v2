@@ -428,7 +428,7 @@ void gml_fig( const gmltag * entry )
     depth = 0;                          // default value; depth is space reserved for some other item
     frame.type = layout_work.fig.default_frame.type;
     if( frame.type == char_frame ) {
-        strcpy_s( frame.string, str_size, layout_work.fig.default_frame.string );
+        strcpy( frame.string, layout_work.fig.default_frame.string );
     }
     place = layout_work.fig.default_place;
     max_width = t_page.last_pane->col_width;// default value regardless of number of columns
@@ -1138,11 +1138,11 @@ void gml_figcap( const gmltag * entry )
         count = strlen( layout_work.figcap.string );
         sprintf( buffer, "%d", fig_entry->number );
         count += strlen( buffer );
-        count ++;                       // for the delimiter character
-        prefix = (char *) mem_alloc( count + 1);
-        strcpy_s( prefix, count, layout_work.figcap.string );
+        count++;                       // for the delimiter character
+        prefix = (char *)mem_alloc( count + 1 );
+        strcpy( prefix, layout_work.figcap.string );
         current = strlen( prefix );
-        strcat_s( &prefix[current], count - current, buffer );
+        strcat( &prefix[current], buffer );
         current = strlen( prefix );
         prefix[current] = layout_work.figcap.delim;
         prefix[current + 1] = '\0';
@@ -1176,8 +1176,8 @@ void gml_figcap( const gmltag * entry )
         post_space = 0;                     // no additional space
         if( pass == 1 ) {                   // only on first pass
             current = strlen( p );
-            fig_entry->text = (char *) mem_alloc( current + 1 );
-            strcpy_s( fig_entry->text, current + 1, p );
+            fig_entry->text = (char *)mem_alloc( current + 1 );
+            strcpy( fig_entry->text, p );
         }
         process_text( fig_entry->text, g_curr_font );   // if text follows
     } else {

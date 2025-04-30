@@ -214,7 +214,7 @@ bool process_tag( gtentry * ge, mac_entry * me )
                 p--;
                 *p = '\0';
             }
-            strcpy_s( p, len + 1, pline->value );
+            strcpy( p, pline->value );
             mem_free( pline );
             p = p2;
         }

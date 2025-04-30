@@ -42,7 +42,7 @@ void    gml_graphic( const gmltag * entry )
 {
     bool            depth_found             = false;
     bool            file_found              = false;
-    char            file[FILENAME_MAX];
+    char            file[_MAX_PATH];
     char            rt_buff[MAX_FILE_ATTR];
     char        *   p;
     char        *   pa;
@@ -232,8 +232,8 @@ void    gml_graphic( const gmltag * entry )
         } else {
             cur_el->element.graph.next_font = g_prev_font;
         }
-        strncpy_s( cur_el->element.graph.short_name, FILENAME_MAX, file, FILENAME_MAX );
-        strncpy_s( cur_el->element.graph.file, FILENAME_MAX, try_file_name, FILENAME_MAX );
+        strncpy( cur_el->element.graph.short_name, file, _MAX_PATH );
+        strncpy( cur_el->element.graph.file, try_file_name, _MAX_PATH );
 
         if( GlobalFlags.inclist ) {
             g_info_lm( inf_curr_file, cur_el->element.graph.file );

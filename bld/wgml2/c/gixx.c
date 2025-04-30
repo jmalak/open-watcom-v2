@@ -53,7 +53,7 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
     bool            refidseen   = false;    // required by IREF & used by I2 I3
     bool            seeidseen   = false;    // used in processing IHx
     bool            seeseen     = false;    // needed to catch empty string values
-    char            hxstring[TAG_NAME_LENGTH + 1];
+    char            hxstring[TAG_NAME_LENGTH + 1 + 1];
     char            id[ID_LEN];             // holds attribute id value
     char            refid[ID_LEN];          // holds attribute refid value
     char            seeid[ID_LEN];          // holds attribute seeid value
@@ -92,8 +92,8 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
     start_doc_sect();                   // if not already done
 
     lvlc = '0' + hx_lvl;
-    *hxstring = GML_char;           // construct tagname for possible error msg
-    strcpy_s( (hxstring + 1), TAG_NAME_LENGTH, entry->tagname );
+    hxstring[0] = GML_char;           // construct tagname for possible error msg
+    strcpy( hxstring + 1, entry->tagname );
 
     pgvalue = pgnone;
 

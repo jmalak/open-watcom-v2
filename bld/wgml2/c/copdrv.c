@@ -1551,7 +1551,7 @@ cop_driver * parse_driver( FILE * in_file )
                 fontswitch_block_ptr[i].type = OUT_DRV_CUR_OFF();
 
                 string_ptr = OUT_DRV_CUR_PTR();
-                strcpy_s( string_ptr, length, current );
+                strcpy( string_ptr, current );
                 current += length;
                 OUT_DRV_ADD_OFF( length );
             } else {

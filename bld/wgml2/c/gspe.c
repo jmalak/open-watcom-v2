@@ -103,7 +103,7 @@ static  void    init_pe_line( int pe_count )
             input_cbs->pe_cb.count = pe_count;
             input_cbs->pe_cb.ll    =  strlen( buff2 ) + 1;
             input_cbs->pe_cb.line  = mem_alloc( input_cbs->pe_cb.ll );
-            strcpy_s( input_cbs->pe_cb.line, input_cbs->pe_cb.ll, buff2 );
+            strcpy( input_cbs->pe_cb.line, buff2 );
         }
     }
     return;

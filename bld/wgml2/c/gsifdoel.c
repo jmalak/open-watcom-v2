@@ -241,7 +241,7 @@ static condcode gargterm( termcb * t )
         // prepare string   quoted or unquoted
         t->term_length = arg_flen;
         t->term_string = mem_alloc( t->term_length + 1 );
-        strncpy_s( t->term_string, t->term_length + 1, tok_start, t->term_length );
+        strncpy( t->term_string, tok_start, t->term_length + 1 );
     } else {
         if( gn.argstart > gn.argstop ) {
             scan_start = gn.argstop;        // enforce end of logical record
@@ -251,7 +251,7 @@ static condcode gargterm( termcb * t )
         t->numeric = true;
         t->term_number = gn.result;
         t->term_string  = mem_alloc( sizeof( gn.resultstr ) );
-        strcpy_s( t->term_string, sizeof( gn.resultstr ), gn.resultstr );
+        strcpy( t->term_string, gn.resultstr );
         t->term_length  = gn.length;
     }
     return( cc );

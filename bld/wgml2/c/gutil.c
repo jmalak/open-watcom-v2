@@ -990,7 +990,7 @@ char * get_att_start( char * p )
                     /* changes made by the tag calling it                  */
                     /*******************************************************/
 
-                    strcpy_s( buf, strlen( buff2 ) + 1, buff2 );
+                    strcpy( buf, buff2 );
                     scan_start = buff2;
                     scan_stop  = buff2 + buff2_lg;
                     if( (*scan_start == SCR_char) ||    // cw found: end-of-tag
@@ -1122,7 +1122,7 @@ char * get_attribute( char * p )
                     /* changes made by the tag calling it                  */
                     /*******************************************************/
 
-                    strcpy_s( buf, strlen( buff2 ) + 1, buff2 );
+                    strcpy( buf, buff2 );
                     scan_start = buff2;
                     scan_stop  = buff2 + buff2_lg;
                     if( (*scan_start == SCR_char) ||    // cw found: end-of-tag
@@ -1480,9 +1480,9 @@ fwd_ref * init_fwd_ref( fwd_ref * fr_dict, const char * fr_id )
     fwd_ref *   prev;
 
     if( fr_dict == NULL ) {
-        curr = (fwd_ref *) mem_alloc( sizeof( fwd_ref ) );
+        curr = (fwd_ref *)mem_alloc( sizeof( fwd_ref ) );
         curr->next = NULL;
-        strcpy_s( curr->id, ID_LEN, fr_id );
+        strcpy( curr->id, fr_id );
         fr_dict = curr;         // first entry
     } else {
         local = fr_dict;
@@ -1494,12 +1494,12 @@ fwd_ref * init_fwd_ref( fwd_ref * fr_dict, const char * fr_id )
         if( local == NULL ) {       // curr goes at end of list
             curr = (fwd_ref *) mem_alloc( sizeof( fwd_ref ) );
             curr->next = NULL;
-            strcpy_s( curr->id, ID_LEN, fr_id );
+            strcpy( curr->id, fr_id );
             prev->next = curr;
         } else if( strcmp( local->id, fr_id ) > 0 ) {   // note: duplicate id ignored
             curr = (fwd_ref *) mem_alloc( sizeof( fwd_ref ) );
             curr->next = NULL;
-            strcpy_s( curr->id, ID_LEN, fr_id );
+            strcpy( curr->id, fr_id );
             if( prev == NULL ) {    // curr goes at start of list
                 fr_dict = curr;
             } else {

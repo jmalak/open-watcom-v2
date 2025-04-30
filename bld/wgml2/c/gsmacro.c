@@ -498,7 +498,7 @@ void    scr_dm( void )
             *p = '\0';
             work = mem_alloc( sizeof( inp_line ) + len );
             work->next = NULL;
-            strcpy_s( work->value, len + 1, nmstart );
+            strcpy( work->value, nmstart );
             if( last != NULL ) {
                 last->next = work;
             }
@@ -592,7 +592,7 @@ void    scr_dm( void )
             }
             work = mem_alloc( sizeof( inp_line ) + cb->s.f->usedlen );
             work->next = NULL;
-            strcpy_s( work->value, cb->s.f->usedlen + 1, buff2 );
+            strcpy( work->value, buff2 );
             if( last != NULL ) {
                 last->next = work;
             }

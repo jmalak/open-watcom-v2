@@ -2118,10 +2118,10 @@ void    lay_convert( const gmltag * entry )
             ++p;
         }
         *p = '\0';
-        strcpy_s( token_buf, buf_size, fnstart );
+        strcpy( token_buf, fnstart );
     } else {                            // try undocumented format
         if( *p != '\0' && *p == '.' ) {
-            strcpy_s( token_buf, buf_size, p + 1 );
+            strcpy( token_buf, p + 1 );
         }
     }
     if( *token_buf == '\0' ) {           // file name missing

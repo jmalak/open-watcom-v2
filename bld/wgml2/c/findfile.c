@@ -137,8 +137,8 @@ static FILE *try_open( char *prefix, char *filename )
 
     /* Create the full file name to search for. */
 
-    strcpy_s( buff, _MAX_PATH, prefix );
-    strcat_s( buff, _MAX_PATH, filename );
+    strcpy( buff, prefix );
+    strcat( buff, filename );
 
     /* Clear the global variables used to contain the results. */
 
@@ -184,7 +184,7 @@ static FILE *try_open( char *prefix, char *filename )
     if( fp != NULL ) {
         try_fp = fp;
         try_file_name = mem_alloc( filename_length );
-        strcpy_s( try_file_name, filename_length, buff );
+        strcpy( try_file_name, buff );
     }
     return( fp );
 }
@@ -275,7 +275,7 @@ static char *search_member_name( const char *dir, const char *filename )
 
     strcpy( buff, dir );
     strcat( buff, DIRECTORY_FILE );
-    if( strlen( buff ) >= _MAX_PATH )
+    if( strlen( buff ) > _MAX_PATH - 1 )
         return( NULL );
     fp = fopen( buff, "rb" );
     if( fp == NULL ) {
@@ -332,7 +332,7 @@ FILE *search_file_in_dirs( const char *filename, const char *defext, const char 
 
     /* Ensure filename will fit into buff. */
 
-    if( strlen( filename ) == _MAX_PATH ) {
+    if( strlen( filename ) > _MAX_PATH - 1 ) {
         xx_simple_err_c( err_file_max, filename );
         return( NULL );
     }

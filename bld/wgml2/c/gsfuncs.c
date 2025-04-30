@@ -347,7 +347,7 @@ char * scr_multi_funcs( char * in, char * pstart, char ** result, int32_t valsiz
     for( k = 0; k < parmcount; k++ ) {
         while( parms[k].redo ) {
             resbuf = alloc_resbuf( &in_wk );
-            strcpy_s( resbuf, buf_size, parms[k].a);// copy parm
+            strcpy( resbuf, parms[k].a );// copy parm
 
             ps = resbuf + (parms[k].e - parms[k].a) + 1;
             *ps = '\0';

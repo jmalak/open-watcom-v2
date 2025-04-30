@@ -162,14 +162,14 @@ void gml_figref( const gmltag * entry )
                         cur_re->u.ffh.entry->style );
             bu_len = strlen( buffer );
             ref_text = (char *) mem_alloc( len + op_len + bu_len  + 1 );
-            strcpy_s( ref_text, len + 1, cur_re->u.ffh.entry->prefix );
+            strcpy( ref_text, cur_re->u.ffh.entry->prefix );
             ref_text[len - 1] = '\0';       // remove delim
             len += (dr_len + op_len + bu_len );
             strcat( ref_text, on_page );
             strcat_s( ref_text, len + 1, buffer );
         } else {
             ref_text = (char *) mem_alloc( len + 1 );
-            strcpy_s( ref_text, len + 1, cur_re->u.ffh.entry->prefix );
+            strcpy( ref_text, cur_re->u.ffh.entry->prefix );
             ref_text[len - 1] = '\0';       // remove delim
         }
     }

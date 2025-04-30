@@ -489,7 +489,7 @@ static bool add_symvar_sub( symvar * var, char * val, sub_index sub, symsub * * 
                 var->sub_0->value = mem_realloc( var->sub_0->value,
                                                  strlen( sub_cnt ) + 1 );
             }
-            strcpy_s( var->sub_0->value, strlen( sub_cnt ) + 1, sub_cnt );
+            strcpy( var->sub_0->value, sub_cnt );
 #else
             sprintf( var->sub_0->value, "%d", var->subscript_used );  // TBD
 #endif
@@ -505,7 +505,7 @@ static bool add_symvar_sub( symvar * var, char * val, sub_index sub, symsub * * 
         newsub->base      = var;
         newsub->subscript = sub;
         newsub->value     = mem_alloc( strlen( val ) + 1 );
-        strcpy_s( newsub->value, strlen( val ) + 1, val );
+        strcpy( newsub->value, val );
 
 /*
  * insert subscript in ascending sort order
@@ -531,7 +531,7 @@ static bool add_symvar_sub( symvar * var, char * val, sub_index sub, symsub * * 
         if( strlen( newsub->value ) < strlen( val ) ) { // need more room
             newsub->value = mem_realloc( newsub->value, strlen( val ) + 1 );
         }
-        strcpy_s( newsub->value, strlen( val ) + 1, val );
+        strcpy( newsub->value, val );
     }
     *nsub = newsub;
     return( true );
@@ -671,7 +671,7 @@ int add_symvar_addr( symdict_hdl dict, char * name, char * val,
                 if( strlen( newsub->value ) < strlen( val ) ) { // need more room
                     newsub->value = mem_realloc( newsub->value, strlen( val ) + 1 );
                 }
-                strcpy_s( newsub->value, strlen( val ) + 1, val );
+                strcpy( newsub->value, val );
             }
             *sub = newsub;
             if( GlobalFlags.firstpass && (input_cbs->fmflags & II_research) ) {

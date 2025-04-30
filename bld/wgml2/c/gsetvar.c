@@ -114,9 +114,9 @@ char * scan_sym( char * p, symvar * sym, sub_index * subscript, char * * result,
             if( (sym->flags & local_var)
                 && (input_cbs->fmflags & II_tag_mac) ) {
 
-                strcpy_s( sym->name, SYM_NAME_LENGTH, MAC_STAR_NAME );
+                strcpy( sym->name, MAC_STAR_NAME );
             } else if( (sym->flags & local_var) && (input_cbs->fmflags & II_file) ) {
-                strcpy_s( sym->name, SYM_NAME_LENGTH, MAC_STAR_NAME );
+                strcpy( sym->name, MAC_STAR_NAME );
             } else {
                 scan_err = true;
             }

@@ -277,10 +277,10 @@ void find_create_ix_e_entry( ix_h_blk * ixhwork, char * ref, size_t len,
         ixewk->next = NULL;
         ixewk->entry_typ = type;
         ixewk->prt_text = NULL;
-        if( (seeidwork != NULL) && (seeidwork->prt_term_len > 0 ) ) {
-            ixewk->prt_text = mem_alloc( seeidwork->prt_term_len + 1);
+        if( (seeidwork != NULL) && (seeidwork->prt_term_len > 0) ) {
+            ixewk->prt_text = mem_alloc( seeidwork->prt_term_len + 1 );
             ixewk->prt_text[0] = '\0';
-            strcpy_s( ixewk->prt_text, seeidwork->prt_term_len + 1, seeidwork->prt_term );
+            strcpy( ixewk->prt_text, seeidwork->prt_term );
         }
         ixewk->u.pageref.page_text = mem_alloc( len + 1);
         strncpy( ixewk->u.pageref.page_text, ref, len );
