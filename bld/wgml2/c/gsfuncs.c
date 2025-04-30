@@ -249,7 +249,7 @@ char * scr_multi_funcs( char * in, char * pstart, char ** result, int32_t valsiz
 
     // collect function name
     fnlen = 0;
-    for( pchar; pchar< pstart; pchar++  ) {
+    for( ; pchar < pstart; pchar++  ) {
         fn[fnlen] = *pchar;
         if( fnlen < FUN_NAME_LENGTH ) {
             fnlen++;

@@ -309,7 +309,7 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
         txtlen--;
     }
     intrans( txt, strlen( txt ) + 1, g_curr_font );
-    for( txtlen; txtlen > 0; txtlen-- ) { // back off trailing spaces
+    for( ; txtlen > 0; txtlen-- ) { // back off trailing spaces
         if( txt[txtlen - 1] != ' ' ) {
             break;
         }
