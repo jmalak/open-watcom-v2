@@ -90,9 +90,9 @@ void process_late_subst( char * buf )
                         p = tokenstart;
                         strcpy( p, symsubval->value );  // copy value
                         if( tail[0] == '.' ) {
-                            strcat_s( buf, buf_size, tail + 1);     // append tail to buf, skipping initial "."
+                            strcat( buf, tail + 1);     // append tail to buf, skipping initial "."
                         } else {
-                            strcat_s( buf, buf_size, tail );        // append tail to buf
+                            strcat( buf, tail );        // append tail to buf
                         }
                         tokenend = tokenstart + 1;                  // restart from replaced symbol.
                     }
@@ -443,9 +443,9 @@ static bool parse_r2l( sym_list_entry * stack, char * buf, bool subscript )
             p = curr->start;
             strcpy( p, curr->value );       // copy value
             if( tail[0] == '.' ) {
-                strcat_s( buf, buf_size, tail + 1);     // append tail to buf, skipping initial "."
+                strcat( buf, tail + 1);     // append tail to buf, skipping initial "."
             } else {
-                strcat_s( buf, buf_size, tail );        // append tail to buf
+                strcat( buf, tail );        // append tail to buf
             }
             break;
         case sl_funct:
@@ -457,9 +457,9 @@ static bool parse_r2l( sym_list_entry * stack, char * buf, bool subscript )
             p = curr->start;
             strcpy( p, curr->value );       // copy value
             if( tail[0] == '.' ) {
-                strcat_s( buf, buf_size, tail + 1);     // append tail to buf, skipping initial "."
+                strcat( buf, tail + 1);     // append tail to buf, skipping initial "."
             } else {
-                strcat_s( buf, buf_size, tail );        // append tail to buf
+                strcat( buf, tail );        // append tail to buf
             }
             break;
         case sl_symbol:
@@ -483,9 +483,9 @@ static bool parse_r2l( sym_list_entry * stack, char * buf, bool subscript )
             }
             strcpy( p, curr->value );       // copy value
             if( tail[0] == '.' ) {
-                strcat_s( buf, buf_size, tail + 1);     // append tail to buf, skipping initial "."
+                strcat( buf, tail + 1);     // append tail to buf, skipping initial "."
             } else {
-                strcat_s( buf, buf_size, tail );        // append tail to buf
+                strcat( buf, tail );        // append tail to buf
             }
             if( input_cbs->fm_symbol ) {
                 /* keep value if from prior symbol which created its own logical input record */
@@ -549,7 +549,7 @@ static bool parse_r2l( sym_list_entry * stack, char * buf, bool subscript )
 }
 
 
-static void expand_subscripts( char *buf, size_t sz, const symvar *var, sub_index lo_bound, sub_index hi_bound )
+static void expand_subscripts( char *buf, const symvar *var, sub_index lo_bound, sub_index hi_bound )
 {
     const symsub    *   ws;
     bool                put_comma = false;
@@ -562,8 +562,8 @@ static void expand_subscripts( char *buf, size_t sz, const symvar *var, sub_inde
         if( (ws->subscript >= lo_bound)
           && (ws->subscript <= hi_bound) ) {
             if( put_comma )
-                strcat_s( buf, sz, ", " );
-            strcat_s( buf, sz, ws->value );
+                strcat( buf, ", " );
+            strcat( buf, ws->value );
             put_comma = true;
         }
     }
@@ -751,7 +751,7 @@ static sym_list_entry * parse_l2r( char * buf, bool splittable )
                             break;
                         }
                         curr->type = sl_symbol;
-                        expand_subscripts( curr->value, buf_size, symsubval->base, lo_bound, hi_bound );
+                        expand_subscripts( curr->value, symsubval->base, lo_bound, hi_bound );
                     } else if( rc == 2 ) {          // variable found + resolved
                         if( !ProcFlags.CW_sep_ignore && splittable && CW_sep_char != '\0' &&
                                 symsubval->value[0] == CW_sep_char &&
@@ -782,7 +782,7 @@ static sym_list_entry * parse_l2r( char * buf, bool splittable )
                             break;
                         }
                         curr->type = sl_symbol;
-                        expand_subscripts( curr->value, buf_size, symsubval->base, lo_bound, hi_bound );
+                        expand_subscripts( curr->value, symsubval->base, lo_bound, hi_bound );
                     } else if( symvar_entry.flags & local_var ) {   // undefined locals are set to ''
                         curr->type = sl_symbol;
                         curr->value[0] = '\0';

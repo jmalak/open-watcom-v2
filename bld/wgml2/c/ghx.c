@@ -225,7 +225,7 @@ void gen_heading( char * h_text, char * id, hdsrc hn_lvl, hdsrc hds_lvl )
             *headp = '\0';
         }
     }
-    strcat_s( headp, headlen, h_text );
+    strcat( headp, h_text );
 
     if( *headp == '\0' ) {              // no text on line
         ProcFlags.need_text = true;

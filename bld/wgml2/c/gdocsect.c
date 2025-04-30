@@ -332,7 +332,7 @@ static void gen_rule_head( char * letter )
             }
             line_buff.text[0] = '\0';
             for( i = 0; i < cur_limit; i++ ) {              // fill text with copies of full string
-                strcat_s( line_buff.text, line_buff.current + 1, layout_work.ixhead.frame.string );
+                strcat( line_buff.text, layout_work.ixhead.frame.string );
                 cur_width += str_width;
                 cur_count += str_count;
             }
@@ -732,8 +732,7 @@ static void gen_index( void )
                 cur_limit = frame_line_len / str_count;     // number of complete strings that will fit
                 cur_width = 0;
                 for( i = 0; i < cur_limit; i++  ) {         // fill text with full string
-                    strcat_s( frame_line_1, frame_line_len + 1,
-                              layout_work.ixhead.frame.string );
+                    strcat( frame_line_1, layout_work.ixhead.frame.string );
                     cur_width += str_count;
                 }
                 if( cur_width < frame_line_len ) {          // text not full yet

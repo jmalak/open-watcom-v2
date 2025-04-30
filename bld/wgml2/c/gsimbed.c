@@ -170,8 +170,7 @@ void    scr_im( void )
     if( (cc == pos) && (gn.result < 10) ) { // include SYSUSR0x.GML
 
         close_pu_file( gn.result );     // if still open
-        strcpy( token_buf, "SYSUSR0" );
-        strcat_s( token_buf, buf_size, gn.resultstr );
+        strcpy( token_buf, get_workfile_name( gn.result ) );
 
     } else {
         p = gn.argstart;

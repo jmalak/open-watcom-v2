@@ -361,8 +361,9 @@ extern  void    reset_pe_cb( void );
 
 
 /* gspu.c                               */
-extern  void    close_pu_file( int numb );
-extern  void    close_all_pu_files( void );
+extern char     *get_workfile_name( int numb );
+extern void     close_pu_file( int numb );
+extern void     close_all_pu_files( void );
 
 
 /* gsymvar.c                            */

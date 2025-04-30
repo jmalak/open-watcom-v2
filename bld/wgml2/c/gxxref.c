@@ -166,7 +166,7 @@ void gml_figref( const gmltag * entry )
             ref_text[len - 1] = '\0';       // remove delim
             len += (dr_len + op_len + bu_len );
             strcat( ref_text, on_page );
-            strcat_s( ref_text, len + 1, buffer );
+            strcat( ref_text, buffer );
         } else {
             ref_text = (char *) mem_alloc( len + 1 );
             strcpy( ref_text, cur_re->u.ffh.entry->prefix );
@@ -283,14 +283,14 @@ void gml_hdref( const gmltag * entry )
             len += (op_len + bu_len );
             ref_text = (char *) mem_alloc( len + 1 );
             strcpy( ref_text, "\"" );
-            strcat_s( ref_text, len + 1, cur_re->u.ffh.entry->text );
+            strcat( ref_text, cur_re->u.ffh.entry->text );
             strcat( ref_text, "\"" );
             strcat( ref_text, on_page );
-            strcat_s( ref_text, len + 1, buffer );
+            strcat( ref_text, buffer );
         } else {
             ref_text = (char *) mem_alloc( len + 1 );
             strcpy( ref_text, "\"" );
-            strcat_s( ref_text, len + 1, cur_re->u.ffh.entry->text );
+            strcat( ref_text, cur_re->u.ffh.entry->text );
             strcat( ref_text, "\"" );
         }
     }

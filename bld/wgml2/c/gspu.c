@@ -39,6 +39,18 @@ static FILE * workfile[9] =           // support for 9 workfiles SYSUSR0x.GML
     { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
 
 /***************************************************************************/
+/*  get workfile n name                                                    */
+/***************************************************************************/
+
+char *get_workfile_name( int n )
+{
+    static char     workfile_name[20] = "sysusr0x.gml";
+
+    workfile_name[7] = '0' + n;
+    return( workfile_name );
+}
+
+/***************************************************************************/
 /*  close workfile n if open                                               */
 /***************************************************************************/
 
@@ -74,12 +86,10 @@ void    close_all_pu_files( void )
 static FILE     *open_pu_file( int n )
 {
     FILE            *fp;
-    static  char    filename[20] = "sysusr0x.gml";
 
     fp = workfile[n - 1];
     if( fp == NULL ) {   // not yet open
-        filename[7] = '0' + n;
-        fp = fopen( filename, "wt" );
+        fp = fopen( get_workfile_name( n ), "wt" );
         workfile[n - 1] = fp;
     }
     return( fp );
@@ -120,7 +130,6 @@ static FILE     *open_pu_file( int n )
 /*     the file.                                                           */
 /*                                                                         */
 /***************************************************************************/
-
 
 /***************************************************************************/
 /*  scr_pu    implement .pu control word                                   */

@@ -301,7 +301,7 @@ static void insert_frame_line( void )
             cur_limit = line_buff.current / str_count;  // number of complete strings that will fit
             cur_width = 0;
             for( i = 0; i < cur_limit; i++  ) {         // fill text with full string
-                strcat_s( line_buff.text, line_buff.current + 1, frame.string );
+                strcat( line_buff.text, frame.string );
                 cur_width += strlen( frame.string );
             }
             if( cur_width < line_buff.current ) {       // text not full yet
@@ -349,7 +349,7 @@ static void insert_frame_line( void )
             }
             line_buff.text[0] = '\0';
             for( i = 0; i < cur_limit; i++ ) {              // fill text with copies of full string
-                strcat_s( line_buff.text, line_buff.current + 1, frame.string );
+                strcat( line_buff.text, frame.string );
                 cur_width += str_width;
                 cur_count += str_count;
             }
