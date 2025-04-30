@@ -274,7 +274,7 @@ static char *search_member_name( const char *dir, const char *filename )
 
     FILE    *fp;
     char    *member_name;
-    char    buff[_MAX_PATH + sizeof( DIRECTORY_FILEU )];
+    char    buff[_MAX_PATH + sizeof( DIRECTORY_FILE )];
 
     strcpy( buff, dir );
     strcat( buff, DIRECTORY_FILE );
