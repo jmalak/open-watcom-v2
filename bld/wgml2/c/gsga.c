@@ -483,11 +483,11 @@ void    scr_ga( void )
 
     cc = getarg();                      // Tagname or *
 
-    if( cc == omit || (*tok_start == '*' && tag_entry == NULL) ) {
+    if( cc == omit || (*tok_start == '*' && g_tag_entry == NULL) ) {
         // no operands or tagname * and no previous definition
         xx_err_c( err_missing_name, "" );
     }
-    if( tag_entry == NULL ) {           // error during previous .gt
+    if( g_tag_entry == NULL ) {           // error during previous .gt
         scan_restart = scan_stop + 1;   // ignore .ga
         return;
     }
@@ -506,7 +506,7 @@ void    scr_ga( void )
         }
         savetag = '*';                      // remember for possible quick access
         if( GlobalFlags.firstpass && (input_cbs->fmflags & II_research) ) {
-            out_msg("  using tagname %s\n", tagname );
+            out_msg("  using tagname %s\n", g_tagname );
         }
     } else {
         savetag = ' ';                      // no quick access
@@ -514,7 +514,7 @@ void    scr_ga( void )
         init_tag_att();                     // forget previous values for quick access
 
         len = 0;
-        pn = tagname;
+        pn = g_tagname;
         while( is_macro_char( *p ) && len < TAG_NAME_LENGTH ) {
             *pn++ = my_tolower( *p++ );     // copy lowercase tagname
             len++;
@@ -525,9 +525,9 @@ void    scr_ga( void )
             xx_err( err_tag_name_inv );     // name contains invalid or too many chars
             return;
         }
-        tag_entry = find_user_tag( &tag_dict, tagname );
-        if( tag_entry == NULL ) {
-            xx_err_c( err_user_tag, tagname );  // tagname not defined
+        g_tag_entry = find_user_tag( &tag_dict, g_tagname );
+        if( g_tag_entry == NULL ) {
+            xx_err_c( err_user_tag, g_tagname );  // tagname not defined
         }
     }
 
@@ -537,7 +537,7 @@ void    scr_ga( void )
 
     cc = getarg();                          // Attribute  name or *
 
-    if( cc == omit || (*tok_start == '*' && att_entry == NULL) ) {
+    if( cc == omit || (*tok_start == '*' && g_att_entry == NULL) ) {
         // no operands or attname * and no previous definition
         xx_err( err_att_name_inv );
         return;
@@ -552,15 +552,15 @@ void    scr_ga( void )
         }
         saveatt = '*';                      // remember for possible quick access
         if( GlobalFlags.firstpass && (input_cbs->fmflags & II_research) ) {
-            out_msg("  using attname %s\n", attname );
+            out_msg("  using attname %s\n", g_attname );
         }
-        att_flags = att_entry->attflags;
+        att_flags = g_att_entry->attflags;
     } else {
         saveatt = ' ';                      // no quick access
-        att_entry = NULL;
+        g_att_entry = NULL;
 
         len = 0;
-        pn = attname;
+        pn = g_attname;
         while( is_macro_char( *p ) && len < ATT_NAME_LENGTH ) {
             *pn++ = my_tolower( *p++ ); // copy lowercase tagname
             len++;
@@ -582,16 +582,16 @@ void    scr_ga( void )
     if( cc != omit ) {
         if( saveatt != '*' ) {          // no quickaccess for attribute
             gawk = NULL;
-            for( gawk = tag_entry->attribs; gawk != NULL;
+            for( gawk = g_tag_entry->attribs; gawk != NULL;
                  gawk = gawk->next ) {
 
-                if( !stricmp( attname, gawk->name ) ) {
+                if( !stricmp( g_attname, gawk->name ) ) {
                     att_flags = gawk->attflags; // get possible uppercase option
                     break;
                 }
             }
         } else {
-            att_flags = att_entry->attflags;
+            att_flags = g_att_entry->attflags;
         }
         cc = scan_att_optionsA( &att_flags );   // process options A
 
@@ -609,35 +609,35 @@ void    scr_ga( void )
     /*  scanning complete     add/modify attribute in dictionary           */
     /***********************************************************************/
     if( saveatt != '*' ) {              // no quickaccess for attribute
-        for( att_entry = tag_entry->attribs; att_entry != NULL;
-             att_entry = att_entry->next ) {
+        for( g_att_entry = g_tag_entry->attribs; g_att_entry != NULL;
+             g_att_entry = g_att_entry->next ) {
 
-            if( !stricmp( attname, att_entry->name ) ) {
+            if( !stricmp( g_attname, g_att_entry->name ) ) {
                 break;
             }
         }
     }
-    if( att_entry == NULL ) {           // new attribute
-        att_entry = mem_alloc( sizeof( gaentry ) );
+    if( g_att_entry == NULL ) {           // new attribute
+        g_att_entry = mem_alloc( sizeof( gaentry ) );
 
-        att_entry->next = tag_entry->attribs;
-        tag_entry->attribs = att_entry;
+        g_att_entry->next = g_tag_entry->attribs;
+        g_tag_entry->attribs = g_att_entry;
 
-        att_entry->vals = NULL;
-        att_entry->attflags = att_flags;
-        strcpy( att_entry->name, attname );
+        g_att_entry->vals = NULL;
+        g_att_entry->attflags = att_flags;
+        strcpy( g_att_entry->name, g_attname );
     } else {
-        att_entry->attflags = att_flags;// update flags
+        g_att_entry->attflags = att_flags;// update flags
     }
 
     gaval = mem_alloc( sizeof (gavalentry ) );
 
-    if( att_entry->vals == NULL ) {
-        att_entry->vals = gaval;
+    if( g_att_entry->vals == NULL ) {
+        g_att_entry->vals = gaval;
     } else {
         gavalentry  *   valwk;
 
-        for( valwk = att_entry->vals;  valwk != NULL;
+        for( valwk = g_att_entry->vals;  valwk != NULL;
                                        valwk = valwk->next ) {
             if( valwk->next == NULL ) {
                 break;                      // last entry found

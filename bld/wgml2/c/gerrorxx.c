@@ -167,7 +167,7 @@ void list_level_err( const char * xl_tag, uint8_t xl_level )
     return;
 }
 
-void att_val_err( const char * attname )
+void att_val_err( const char *attname )
 {
 //****ERROR**** SC--045: Value 'xxx' for the 'yyy' attribute is not defined
     err_count++;
@@ -278,7 +278,7 @@ void numb_err( void )
 void nottag_err( void )
 {
     err_count++;
-    g_err( err_user_tag, tagname );
+    g_err( err_user_tag, g_tagname );
     file_mac_info();
     return;
 }
@@ -291,7 +291,7 @@ void tag_name_missing_err( void )
     return;
 }
 
-void tag_text_err( const char * tagname )
+void tag_text_err( const char *tagname )
 {
 //****ERROR**** SC--038: Tag text may not be specified for the 'xxx' tag
     err_count++;
@@ -300,7 +300,7 @@ void tag_text_err( const char * tagname )
     return;
 }
 
-void tag_text_req_err( const char * tagname )
+void tag_text_req_err( const char *tagname )
 {
 //****ERROR**** SC--039: Tag text must be specified with the 'xxx' tag
     err_count++;

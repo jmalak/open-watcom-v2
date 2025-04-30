@@ -388,7 +388,7 @@ void file_mac_info_nest( void )
 
 /* specialized error functions */
 
-void att_req_err( const char * tagname, const char * attname )  // for process_tag()
+void att_req_err( const char *tagname, const char *attname )  // for process_tag()
 {
     char        one_name[12];   // attname length max plus 2 "'" plus string terminator
     uint8_t     len;
