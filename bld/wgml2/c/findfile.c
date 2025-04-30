@@ -267,17 +267,27 @@ void ff_teardown( void )
 
 static char *search_member_name( const char *dir, const char *filename )
 {
-#define DIRECTORY_FILE  "wgmlst.cop"
+#define DIRECTORY_FILE      "WGMLST.COP"
+#ifdef __UNIX__
+#define DIRECTORY_FILE_ALT  "wgmlst.cop"
+#endif
 
     FILE    *fp;
     char    *member_name;
-    char    buff[_MAX_PATH + sizeof( DIRECTORY_FILE )];
+    char    buff[_MAX_PATH + sizeof( DIRECTORY_FILEU )];
 
     strcpy( buff, dir );
     strcat( buff, DIRECTORY_FILE );
     if( strlen( buff ) > _MAX_PATH - 1 )
         return( NULL );
     fp = fopen( buff, "rb" );
+#ifdef __UNIX__
+    if( fp == NULL ) {
+        strcpy( buff, dir );
+        strcat( buff, DIRECTORY_FILE_ALT );
+        fp = fopen( buff, "rb" );
+    }
+#endif
     if( fp == NULL ) {
         return( NULL );
     }
@@ -285,6 +295,9 @@ static char *search_member_name( const char *dir, const char *filename )
     fclose( fp );
     return( member_name );
 
+#ifdef __UNIX__
+#undef DIRECTORY_FILE_ALT
+#endif
 #undef DIRECTORY_FILE
 }
 
@@ -453,27 +466,27 @@ FILE *search_file_in_dirs( const char *filename, const char *defext, const char 
             }
             *p = '\0';
 
-                /* For ds_bin_lib, set primary file from the defined name. */
+            /* For ds_bin_lib, set primary file from the defined name. */
 
-                if( sequence == ds_bin_lib ) {
+            if( sequence == ds_bin_lib ) {
 
                 /* See if dir_ptr contains a wgmlst.cop file. */
 
-                    member_name = search_member_name( dir_name, filename );
-                    if( member_name == NULL ) {
-                        continue;
-                    }
+                member_name = search_member_name( dir_name, filename );
+                if( member_name == NULL ) {
+                    continue;
+                }
 
-                    /* Construct primary_file and open it normally. */
+                /* Construct primary_file and open it normally. */
 
-                    member_length = strlen( member_name );
+                member_length = strlen( member_name );
                 pg.ext = NULL;
-                    if( memchr( member_name, '.', member_length ) == NULL ) {
-                        /* Avoid buffer overflow from member_name. */
+                if( memchr( member_name, '.', member_length ) == NULL ) {
+                    /* Avoid buffer overflow from member_name. */
 
                     if( member_length >= _MAX_PATH - 4 ) {
                         xx_simple_err_cc( err_file_max, member_name, "." COP_EXT );
-                                mem_free( member_name );
+                        mem_free( member_name );
                         return( NULL );
                     }
                     pg.ext = COP_EXT;
@@ -482,20 +495,20 @@ FILE *search_file_in_dirs( const char *filename, const char *defext, const char 
                 strlwr( member_name );
 #endif
                 _makepath( primary_file, NULL, NULL, member_name, pg.ext );
-                            mem_free( member_name );
+                mem_free( member_name );
             }
 
             fp = try_open( dir_name, primary_file );
             if( fp != NULL ) {
                 return( fp );
-                }
+            }
 
-                /* Not finding the file is only a problem for ds_bin_lib. */
+            /* Not finding the file is only a problem for ds_bin_lib. */
 
-                if( sequence == ds_bin_lib ) {
+            if( sequence == ds_bin_lib ) {
                 xx_simple_err_cc( ERR_MEM_DIR, dir_name, primary_file );
                 return( NULL );
-                }
+            }
 
             if( *alternate_file != '\0' ) {
                 fp = try_open( dir_name, alternate_file );
