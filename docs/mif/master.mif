@@ -349,7 +349,7 @@ run_wgml_new : .PROCEDURE .EXPLICIT
 {$(root_books)}.gml.ps :
     @echo BOOK : $^&
     $(noecho)set OWGMLINC=.;$(root_books);$(tmpdir);$(ps_incs);$($^&_book_incs);$(whelp_incs);$(gml_incs)
-!ifdef %OWNEWWGML
+!if defined( %OWNEWWGML ) && defined( __UNIX__ )
     $(noecho)set GMLINC=$(%OWGMLINC)
 !else
     $(noecho)set GMLINC=$(%OWGMLINC:/=\)
@@ -463,7 +463,7 @@ whelpdrv.cop : ../gml/syslib/whelpdrv.pcd
 
 gencop : .procedure .explicit
     @set GMLINC=.
-    @set GMLLIB=.
+    @set GMLLIB=
     @%make run_gendev
 
 ####################################################
@@ -632,12 +632,12 @@ compile_gml_to_xxx : .PROCEDURE
     @if not exist $*.tbl @%create $*.tbl
     @if not exist $*.kw @%create $*.kw
     $(noecho)set OWGMLINC=.;$(root_books);$(hlp_incs);$($^&_book_incs);$(whelp_incs);$(gml_incs);
-!ifdef %OWNEWWGML
+!if defined( %OWNEWWGML ) && defined( __UNIX__ )
     $(noecho)set GMLINC=$(%OWGMLINC)
 !else
     $(noecho)set GMLINC=$(%OWGMLINC:/=\)
 !endif
-    $(noecho)set GMLLIB=.
+    $(noecho)set GMLLIB=
     @%make prepare_wgml_opts
 !ifdef %OWNEWWGML
     @%make run_wgml_new
