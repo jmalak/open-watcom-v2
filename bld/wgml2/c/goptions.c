@@ -191,34 +191,35 @@ static char * bad_cmd_line( msg_ids msg, char *str, char n )
 /*  read an option file into memory                                        */
 /***************************************************************************/
 
-static char * read_indirect_file( const char * filename )
+static char * read_indirect_file( FILE *fp )
 {
-    char    *   buf;
+    char        *buf;
     char        ch;
-    char    *   str;
-    int         handle;
-    int         len;
+    char        *str;
+    size_t      len;
+    size_t      blk_len;
 
-    buf = NULL;
-    handle = open( filename, O_RDONLY | O_BINARY );
-    if( handle != -1 ) {
-        len = filelength( handle );
-        buf = mem_alloc( len + 1 );
-        read( handle, buf, len );
-        buf[len] = '\0';
-        close( handle );
-        // zip through characters changing \r into ' '
-        str = buf;
-        while( *str ) {
-            ch = *str;
-            if( ch == '\r' ) {
-                *str = ' ';
-            } else if( ch == 0x1A ) {   // if end of file
-                *str = '\0';            // - mark end of str
-                break;
-            }
-            ++str;
+    buf = mem_alloc( 1024 );
+    len = 0;
+    while( (blk_len = fread( buf, 1, 1024, fp )) == 1024 ) {
+        len += blk_len;
+    }
+    len += blk_len;
+    mem_realloc( buf, len + 1 );
+    rewind( fp );
+    fread( buf, 1, len, fp );
+    buf[len] = '\0';
+    // zip through characters changing \r into ' '
+    str = buf;
+    while( *str ) {
+        ch = *str;
+        if( ch == '\r' ) {
+            *str = ' ';
+        } else if( ch == 0x1A ) {   // if end of file
+            *str = '\0';            // - mark end of str
+            break;
         }
+        ++str;
     }
     return( buf );
 }
@@ -1080,42 +1081,45 @@ static void set_OPTFile( option * opt )
 
             buffers[level + 1] = NULL;
             file_names[level + 1] = NULL;
-            if( search_file_in_dirs( token_buf, OPT_EXT, "", ds_opt_file ) != NULL ) {
-                bool  skip = false;
-
-                fclose( try_fp );
-                try_fp = NULL;
+            fp = search_file_in_dirs( token_buf, OPT_EXT, "", ds_opt_file );
+            if( fp != NULL ) {
                 if( level > 0 ) {
                     int     k;
 
                     for( k = level; k > 0; k-- ) {
                         if( stricmp( try_file_name, file_names[k]) == 0 ) {
                             xx_simple_err_c( err_recursive_option, try_file_name );
-                            break;
+                            fclose( try_fp );
+                            try_fp = NULL;
+                            return;
                         }
                     }
                 }
-                if( !skip ) {
-                    file_names[++level] = try_file_name;
-
-                    str = read_indirect_file( try_file_name );
-                    split_tokens( str );
-                    mem_free( str );
-                    try_file_name = NULL;// free will be done via file_names[level]
-                    tokennext = cmd_tokens[level];
-                    return;
-                }
+                file_names[++level] = try_file_name;
+                str = read_indirect_file( try_file_name );
+                split_tokens( str );
+                mem_free( str );
+                fclose( try_fp );
+                try_fp = NULL;
+                try_file_name = NULL;// free will be done via file_names[level]
+                tokennext = cmd_tokens[level];
             } else {
                 xx_simple_err_c( err_file_not_found, token_buf );
             }
             if( str == NULL )  {
-                if( try_file_name != NULL ) mem_free( try_file_name );
-                if( file_names[level] != NULL ) mem_free( file_names[level] );
+                if( try_file_name != NULL ) {
+                    mem_free( try_file_name );
+                }
+                if( file_names[level] != NULL ) {
+                    mem_free( file_names[level] );
+                }
                 str = save[--level];
                 tokennext = sav_tokens[level];
             }
         } else {                        // max nesting level exceeded
-            if( try_file_name != NULL ) mem_free( try_file_name );
+            if( try_file_name != NULL ) {
+                mem_free( try_file_name );
+            }
             xx_simple_err_c( err_max_nesting_opt, token_buf );
         }
         tokennext = tokennext->nxt;
