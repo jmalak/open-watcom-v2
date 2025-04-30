@@ -155,6 +155,8 @@ void    gml_binclude( const gmltag * entry )
 
     // only set up the doc_element if the file exists
     if( search_file_in_dirs( file, "", "", ds_doc_spec ) != NULL ) {
+        size_t  len;
+
         if( depth == 0 ) {
             cur_el = alloc_doc_el(  el_binc );
         } else {
@@ -171,7 +173,12 @@ void    gml_binclude( const gmltag * entry )
         cur_el->element.binc.has_rec_type = has_rec_type;
         cur_el->element.binc.fp = try_fp;
         try_fp = NULL;
-        strncpy( cur_el->element.binc.file, try_file_name, _MAX_PATH );
+        len = strlen( try_file_name );
+        if( len > _MAX_PATH - 1 )
+            len = _MAX_PATH - 1;
+        cur_el->element.binc.file = mem_alloc( len + 1 );
+        strncpy( cur_el->element.binc.file, try_file_name, len );
+        cur_el->element.binc.file[len] = '\0';
 
         if( GlobalFlags.inclist ) {
             g_info_lm( inf_curr_file, cur_el->element.binc.file );

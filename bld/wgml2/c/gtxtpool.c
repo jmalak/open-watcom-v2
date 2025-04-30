@@ -348,7 +348,7 @@ doc_element * alloc_doc_el( element_type type )
         curr->element.binc.y_address = 0;
         curr->element.binc.at_top = false;
         curr->element.binc.has_rec_type = false;
-        curr->element.binc.file[0] = '\0';
+        curr->element.binc.file = NULL;
         curr->element.binc.eol_index = g_eol_ix;
         g_eol_ix = NULL;
         break;
@@ -370,7 +370,8 @@ doc_element * alloc_doc_el( element_type type )
         curr->element.graph.yoff = 0;
         curr->element.graph.at_top = false;
         curr->element.graph.next_font = 0;
-        curr->element.graph.file[0] = '\0';
+        curr->element.graph.short_name = NULL;
+        curr->element.graph.file = NULL;
         curr->element.graph.eol_index = g_eol_ix;
         g_eol_ix = NULL;
         break;

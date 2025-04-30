@@ -1110,9 +1110,9 @@ typedef struct {
             bool            at_top;
             bool            force_FONT0;
             bool            has_rec_type;
-    struct  eol_ix      *   eol_index;
-            FILE        *   fp;
-            char            file[_MAX_PATH];
+    struct  eol_ix          *eol_index;
+            FILE            *fp;
+            char            *file;
 } binclude_element;
 
 typedef struct {
@@ -1132,11 +1132,11 @@ typedef struct {
             int32_t         xoff;
             int32_t         yoff;
             bool            at_top;
-    struct  eol_ix      *   eol_index;
-            FILE        *   fp;
+    struct  eol_ix          *eol_index;
+            FILE            *fp;
             font_number     next_font;
-            char            short_name[_MAX_PATH];
-            char            file[_MAX_PATH];
+            char            *short_name;
+            char            *file;
 } graphic_element;
 
 typedef struct {

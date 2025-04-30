@@ -218,6 +218,8 @@ void    gml_graphic( const gmltag * entry )
 
    // only set up the doc_element if the file exists
     if( search_file_in_dirs( file, "", "", ds_doc_spec ) != NULL ) {
+        size_t  len;
+
         cur_el = init_doc_el( el_graph, depth );
         cur_el->element.graph.cur_left = t_page.cur_left;
         cur_el->element.graph.depth = depth;
@@ -232,8 +234,19 @@ void    gml_graphic( const gmltag * entry )
         } else {
             cur_el->element.graph.next_font = g_prev_font;
         }
-        strncpy( cur_el->element.graph.short_name, file, _MAX_PATH );
-        strncpy( cur_el->element.graph.file, try_file_name, _MAX_PATH );
+        len = strlen( file );
+        if( len > _MAX_PATH - 1 )
+            len = _MAX_PATH - 1;
+        cur_el->element.graph.short_name = mem_alloc( len + 1 );
+        strncpy( cur_el->element.graph.short_name, file, len );
+        cur_el->element.graph.short_name[len] = '\0';
+
+        len = strlen( try_file_name );
+        if( len > _MAX_PATH - 1 )
+            len = _MAX_PATH - 1;
+        cur_el->element.graph.short_name = mem_alloc( len + 1 );
+        strncpy( cur_el->element.graph.file, try_file_name, len );
+        cur_el->element.graph.file[len] = '\0';
 
         if( GlobalFlags.inclist ) {
             g_info_lm( inf_curr_file, cur_el->element.graph.file );
