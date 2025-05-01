@@ -31,8 +31,6 @@
 #ifndef WGML_H_INCLUDED
 #define WGML_H_INCLUDED
 
-#define __STDC_WANT_LIB_EXT1__  1   /* use safer C library             */
-
 #include <stddef.h>
 #include <stdio.h>
 #include <setjmp.h>
