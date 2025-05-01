@@ -349,6 +349,7 @@ doc_element * alloc_doc_el( element_type type )
         curr->element.binc.at_top = false;
         curr->element.binc.has_rec_type = false;
         curr->element.binc.file = NULL;
+        curr->element.binc.fp = NULL;
         curr->element.binc.eol_index = g_eol_ix;
         g_eol_ix = NULL;
         break;
@@ -372,6 +373,7 @@ doc_element * alloc_doc_el( element_type type )
         curr->element.graph.next_font = 0;
         curr->element.graph.short_name = NULL;
         curr->element.graph.file = NULL;
+        curr->element.graph.fp = NULL;
         curr->element.graph.eol_index = g_eol_ix;
         g_eol_ix = NULL;
         break;
@@ -735,13 +737,15 @@ void clear_doc_element( doc_element * a_element )
 
     for( cur_el = a_element; cur_el != NULL; cur_el = cur_el->next ) {
         switch( cur_el->type ) {
-        case el_binc :
         case el_dbox :
-        case el_graph :
         case el_hline :
         case el_vline :
         case el_vspace :
             break;      // should be nothing to do
+        case el_binc :
+        case el_graph :
+            // TODO! close files and free allocated memory
+            break;
         case el_text :
             cur_line = cur_el->element.text.first;
             while( cur_line != NULL ) {

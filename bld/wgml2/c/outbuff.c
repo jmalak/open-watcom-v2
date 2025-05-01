@@ -1053,8 +1053,9 @@ void ob_binclude( binclude_element * in_el )
         strcpy( buffout.text, fontstr );
         buffout.current = ps_size;
     }
-
-    return;
+//    fclose( in_el->fp );
+//    in_el->fp = NULL;
+//    mem_free( in_el->file );
 }
 
 
@@ -1191,8 +1192,10 @@ void ob_graphic( graphic_element * in_el )
             xx_simple_err_cc( err_in_file, "GRAPHIC", in_el->file );
         }
     }
-
-    return;
+//    fclose( in_el->fp );
+//    in_el->fp = NULL;
+//    mem_free( in_el->file );
+//    mem_free( in_el->short_name );
 }
 
 /* Function ob_insert_block().

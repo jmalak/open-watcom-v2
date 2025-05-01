@@ -258,7 +258,6 @@ static void compute_metrics( wgml_font * in_font )
  *
  * Globals Used:
  *      try_file_name contains the name of the device file, if found.
- *      try_fp contains the FILE * for the device file, if found.
  *
  * Return:
  *      on success, a cop_device instance containing the data.
@@ -267,8 +266,9 @@ static void compute_metrics( wgml_font * in_font )
 
 static cop_device * get_cop_device( char const * in_name )
 {
-    cop_device      *   out_device  = NULL;
-    cop_file_type       file_type;
+    cop_device      *out_device  = NULL;
+    cop_file_type   file_type;
+    FILE            *fp;
 
     /* Bail if no name was supplied. */
     if( !in_name ) {
@@ -277,13 +277,14 @@ static cop_device * get_cop_device( char const * in_name )
 
     /* Acquire the file, if it exists. */
 
-    if( search_file_in_dirs( in_name, "", "", ds_bin_lib ) == NULL ) {
+    fp = search_file_in_dirs( in_name, "", "", ds_bin_lib );
+    if( fp == NULL ) {
         return( out_device );
     }
 
     /* Determine if the file encodes a DEVICE block. */
 
-    file_type = parse_header( try_fp );
+    file_type = parse_header( fp );
 
     switch( file_type ) {
     case file_error:
@@ -310,14 +311,14 @@ static cop_device * get_cop_device( char const * in_name )
 
     case se_v4_1_not_dir:
 
-        /* try_fp was a same-endian version 4.1 file, but not a directory file. */
+        /* fp was a same-endian version 4.1 file, but not a directory file. */
 
-        if( !is_dev_file( try_fp ) ) {
+        if( !is_dev_file( fp ) ) {
             xx_simple_err_c( err_dev_lib_data, try_file_name );
             break;
         }
 
-        out_device = parse_device( try_fp );
+        out_device = parse_device( fp );
         if( out_device == NULL ) {
             xx_simple_err_c( err_dev_lib_data, try_file_name );
         }
@@ -330,7 +331,7 @@ static cop_device * get_cop_device( char const * in_name )
         internal_err( __FILE__, __LINE__ );
         break;
     }
-
+    fclose( fp );
     return( out_device );
 }
 
@@ -339,7 +340,10 @@ static cop_device * get_cop_device( char const * in_name )
  * containing the information in that DRIVER block.
  *
  * Parameter:
- *      in_name points to the defined name of the device.
+ *      in_name points to the defined name of the driver.
+ *
+ * Globals Used:
+ *      try_file_name contains the name of the driver file, if found.
  *
  * Returns:
  *      on success, a cop_driver instance containing the data.
@@ -348,18 +352,20 @@ static cop_device * get_cop_device( char const * in_name )
 
 static cop_driver * get_cop_driver( char const * in_name )
 {
-    cop_driver      *   out_driver  = NULL;
-    cop_file_type       file_type;
+    cop_driver      *out_driver  = NULL;
+    cop_file_type   file_type;
+    FILE            *fp;
 
     /* Acquire the file, if it exists. */
 
-    if( search_file_in_dirs( in_name, "", "", ds_bin_lib ) == NULL ) {
+    fp = search_file_in_dirs( in_name, "", "", ds_bin_lib );
+    if( fp == NULL ) {
         return( out_driver );
     }
 
     /* Determine if the file encodes a DRIVER block. */
 
-    file_type = parse_header( try_fp );
+    file_type = parse_header( fp );
 
     switch( file_type ) {
     case file_error:
@@ -386,14 +392,14 @@ static cop_driver * get_cop_driver( char const * in_name )
 
     case se_v4_1_not_dir:
 
-        /* try_fp was a same-endian version 4.1 file, but not a directory file. */
+        /* fp was a same-endian version 4.1 file, but not a directory file. */
 
-        if( !is_drv_file( try_fp ) ) {
+        if( !is_drv_file( fp ) ) {
             xx_simple_err_c( err_dev_data_file, try_file_name );
             break;
         }
 
-        out_driver = parse_driver( try_fp );
+        out_driver = parse_driver( fp );
         if( out_driver == NULL ) {
             xx_simple_err_c( err_dev_data_file, try_file_name );
         }
@@ -406,6 +412,7 @@ static cop_driver * get_cop_driver( char const * in_name )
         internal_err( __FILE__, __LINE__ );
         break;
     }
+    fclose( fp );
 
     return( out_driver );
 }
@@ -417,6 +424,9 @@ static cop_driver * get_cop_driver( char const * in_name )
  * Parameter:
  *      in_name points to the defined name of the font.
  *
+ * Globals Used:
+ *      try_file_name contains the name of the font file, if found.
+ *
  * Returns:
  *      on success, a cop_font instance containing the data.
  *      on failure, a NULL pointer.
@@ -424,18 +434,20 @@ static cop_driver * get_cop_driver( char const * in_name )
 
 static cop_font * get_cop_font( char const * in_name )
 {
-    cop_font        *   out_font    = NULL;
-    cop_file_type       file_type;
+    cop_font        *out_font    = NULL;
+    cop_file_type   file_type;
+    FILE            *fp;
 
     /* Acquire the file, if it exists. */
 
-    if( search_file_in_dirs( in_name, "", "", ds_bin_lib ) == NULL ) {
+    fp = search_file_in_dirs( in_name, "", "", ds_bin_lib );
+    if( fp == NULL ) {
         return( out_font );
     }
 
     /* Determine if the file encodes a FONT block. */
 
-    file_type = parse_header( try_fp );
+    file_type = parse_header( fp );
 
     switch( file_type ) {
     case file_error:
@@ -462,14 +474,14 @@ static cop_font * get_cop_font( char const * in_name )
 
     case se_v4_1_not_dir:
 
-        /* try_fp was a same-endian version 4.1 file, but not a directory file. */
+        /* fp was a same-endian version 4.1 file, but not a directory file. */
 
-        if( !is_fon_file( try_fp ) ) {
+        if( !is_fon_file( fp ) ) {
             xx_simple_err_c( err_dev_data_file, try_file_name );
             break;
         }
 
-        out_font = parse_font( try_fp, in_name );
+        out_font = parse_font( fp, in_name );
         if( out_font == NULL ) {
             xx_simple_err_c( err_dev_data_file, try_file_name );
         }
@@ -482,6 +494,7 @@ static cop_font * get_cop_font( char const * in_name )
         internal_err( __FILE__, __LINE__ );
         break;
     }
+    fclose( fp );
 
     return( out_font );
 }

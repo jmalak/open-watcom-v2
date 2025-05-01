@@ -176,15 +176,13 @@ static  char    * reuse_filename( const char * fn )
 /*  add info about file  to LIFO list                                      */
 /***************************************************************************/
 
-static  void    add_file_cb_entry( void )
+static  void    add_file_cb_entry( FILE *fp, const char *fname )
 {
     filecb  *   new;
     inputcb *   nip;
 
     new = mem_alloc( sizeof( filecb ) );
-    new->filename = reuse_filename( try_file_name );
-    mem_free( try_file_name );
-    try_file_name = NULL;
+    new->filename = reuse_filename( fname );
 
     nip = mem_alloc( sizeof( inputcb ) );
     nip->hidden_head = NULL;
@@ -205,13 +203,11 @@ static  void    add_file_cb_entry( void )
     new->linemax  = line_to;
     new->label_cb = NULL;
 
-    if( try_fp ) {
+    new->fp = fp;
+    if( fp != NULL ) {
         new->flags = FF_open;
-        new->fp    = try_fp;
-        try_fp     = NULL;
     } else {
         new->flags = FF_clear;
-        new->fp    = NULL;
     }
 
     nip->prev = input_cbs;
@@ -427,6 +423,7 @@ static  void    proc_input( char * filename )
     ifcb        *   ic;
     laystack    *   cur_lay_file;
     laystack    *   tmp_lay_file;
+    FILE            *fp;
 
     static  inputcb *   save_cb;        // former input_cbs top entry
 
@@ -446,7 +443,8 @@ static  void    proc_input( char * filename )
             if( attrwork[0] ) {
                 xx_warn_cc( wng_fileattr_ignored, attrwork, token_buf );
             }
-            if( search_file_in_dirs( token_buf, def_ext, alt_ext, ds_doc_spec ) != NULL ) {
+            fp = search_file_in_dirs( token_buf, def_ext, alt_ext, ds_doc_spec );
+            if( fp != NULL ) {
                 if( inc_level >= MAX_INC_DEPTH ) {
                     xx_err_c( err_max_input_nesting, token_buf );
                 }
@@ -454,9 +452,9 @@ static  void    proc_input( char * filename )
                 main_file_err( token_buf );
             }
             inc_inc_level();            // record max include level
-            add_file_cb_entry();
+            add_file_cb_entry( fp, try_file_name );
             if( new_file_parms != NULL ) {
-               add_macro_parms( new_file_parms );
+                add_macro_parms( new_file_parms );
             }
             cb = input_cbs->s.f;
             cb->flags |= FF_crlf;       // delete crlf at end

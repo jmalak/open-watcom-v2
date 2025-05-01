@@ -55,6 +55,7 @@ void    gml_graphic( const gmltag * entry )
     uint32_t        width;
     int32_t         xoff                    = 0;
     int32_t         yoff                    = 0;
+    FILE            *fp;
 
     if( (ProcFlags.doc_sect < doc_sect_gdoc) ) {
         if( (ProcFlags.doc_sect_nxt < doc_sect_gdoc) ) {
@@ -216,10 +217,9 @@ void    gml_graphic( const gmltag * entry )
     }
     set_skip_vars( NULL, NULL, NULL, 1, g_curr_font );
 
-   // only set up the doc_element if the file exists
-    if( search_file_in_dirs( file, "", "", ds_doc_spec ) != NULL ) {
-        size_t  len;
-
+    // only set up the doc_element if the file exists
+    fp = search_file_in_dirs( file, "", "", ds_doc_spec );
+    if( fp != NULL ) {
         cur_el = init_doc_el( el_graph, depth );
         cur_el->element.graph.cur_left = t_page.cur_left;
         cur_el->element.graph.depth = depth;
@@ -227,22 +227,14 @@ void    gml_graphic( const gmltag * entry )
         cur_el->element.graph.width = width;
         cur_el->element.graph.xoff = xoff;
         cur_el->element.graph.yoff = yoff;
-        cur_el->element.graph.fp = try_fp;
-        try_fp = NULL;
+        cur_el->element.graph.fp = fp;
         if( nest_cb->c_tag == t_NONE ){
             cur_el->element.graph.next_font = FONT0;
         } else {
             cur_el->element.graph.next_font = g_prev_font;
         }
-        len = strlen( file );
-        if( len > _MAX_PATH - 1 )
-            len = _MAX_PATH - 1;
-        cur_el->element.graph.short_name = mem_tokdup( file, len );
-
-        len = strlen( try_file_name );
-        if( len > _MAX_PATH - 1 )
-            len = _MAX_PATH - 1;
-        cur_el->element.graph.file = mem_tokdup( try_file_name, len );
+        cur_el->element.graph.short_name = mem_strdup( file );
+        cur_el->element.graph.file = mem_strdup( try_file_name );
 
         if( GlobalFlags.inclist ) {
             g_info_lm( inf_curr_file, cur_el->element.graph.file );

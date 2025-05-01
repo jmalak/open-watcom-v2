@@ -206,10 +206,8 @@ static entry_found get_extended_entry( FILE *fp, directory_entry * entry )
  *
  * Parameter:
  *      fp contains the FILE * for the directory file.
+ *      fname contains the name of the directory file.
  *      in_name points to the defined name to match.
- *
- * Globals Used:
- *      try_file_name contains the name of the directory file.
  *
  * Returns:
  *      on success, the corresponding member name.
@@ -226,7 +224,7 @@ char *get_member_name( FILE *fp, const char *fname, const char *in_name )
     entry_found     entry_status;
     uint16_t        entry_type;
 
-    /* See if in_name is found in try_file_name. */
+    /* See if in_name is found in directory file. */
 
     file_type = parse_header( fp );
     switch( file_type ) {

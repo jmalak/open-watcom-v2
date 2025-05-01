@@ -50,6 +50,7 @@ void    gml_binclude( const gmltag * entry )
     inputcb     *   cb                      = input_cbs;
     su              depth_su;
     uint32_t        depth;
+    FILE            *fp;
 
     memset( &AttrFlags, 0, sizeof( AttrFlags ) );   // clear all attribute flags
     if( (ProcFlags.doc_sect < doc_sect_gdoc) ) {
@@ -154,9 +155,8 @@ void    gml_binclude( const gmltag * entry )
     }
 
     // only set up the doc_element if the file exists
-    if( search_file_in_dirs( file, "", "", ds_doc_spec ) != NULL ) {
-        size_t  len;
-
+    fp = search_file_in_dirs( file, "", "", ds_doc_spec );
+    if( fp != NULL ) {
         if( depth == 0 ) {
             cur_el = alloc_doc_el(  el_binc );
         } else {
@@ -171,12 +171,8 @@ void    gml_binclude( const gmltag * entry )
         cur_el->element.binc.cur_left = t_page.cur_width;
         cur_el->element.binc.force_FONT0 = false;
         cur_el->element.binc.has_rec_type = has_rec_type;
-        cur_el->element.binc.fp = try_fp;
-        try_fp = NULL;
-        len = strlen( try_file_name );
-        if( len > _MAX_PATH - 1 )
-            len = _MAX_PATH - 1;
-        cur_el->element.binc.file = mem_tokdup( try_file_name, len );
+        cur_el->element.binc.fp = fp;
+        cur_el->element.binc.file = mem_strdup( try_file_name );
 
         if( GlobalFlags.inclist ) {
             g_info_lm( inf_curr_file, cur_el->element.binc.file );

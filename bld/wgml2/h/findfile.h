@@ -36,7 +36,8 @@
 *
 ****************************************************************************/
 
-#if !defined( FINDFILE_H_INCLUDED ) || defined( global )
+#ifndef FINDFILE_H_INCLUDED
+#define FINDFILE_H_INCLUDED
 
 #include <stdio.h>
 
@@ -46,21 +47,9 @@
  * Just #define global before including this file.
  */
 
-#ifndef global
-    #define global  extern
-#endif
-
-global  char    *   try_file_name;
-global  FILE    *   try_fp;
+extern char     try_file_name[];
 
 /* Reset so can be reused with other headers. */
-
-#undef global
-
-#endif
-
-#ifndef FINDFILE_H_INCLUDED
-#define FINDFILE_H_INCLUDED
 
 /* Extern enum declaration. */
 

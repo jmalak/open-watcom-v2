@@ -55,7 +55,6 @@ typedef struct cmd_tok {
 static bool         is_option( void ); // used before defined
 static char     *   buffers[MAX_NESTING];
 static char     *   file_names[MAX_NESTING];
-static char     *   save[MAX_NESTING];
 static char     *   opt_parm;
 static char     *   opt_scan_ptr;
 static cmd_tok  *   cmd_tokens[MAX_NESTING];
@@ -91,20 +90,20 @@ static void free_tokens( int lvl )
 static int split_tokens( char *str )
 {
     bool            linestart;
-    cmd_tok     *   tok;
+    cmd_tok     *   last_tok;
     cmd_tok     *   new;
     char            quote;
     char        *   tokstart;
     int             cnt;
-    size_t          tokl;
+    size_t          toklen;
 
     linestart = true;                   // assume start of line
     cnt = 0;                            // found tokens
 
-    tok = cmd_tokens[level];            // first token at this level
-    if( tok != NULL ) {
-        while( tok->nxt != NULL ) {
-            tok = tok->nxt;             // last token at this level
+    last_tok = cmd_tokens[level];       // first token at this level
+    if( last_tok != NULL ) {
+        while( last_tok->nxt != NULL ) {
+            last_tok = last_tok->nxt;   // last token at this level
         }
     }
 
@@ -134,28 +133,28 @@ static int split_tokens( char *str )
             str++;
         }
         cnt++;
-        tokl = str - tokstart;
+        toklen = str - tokstart;
         if( quote ) {
             str++;
         }
-        if( tokl == 0 ) {
+        if( toklen == 0 ) {
             continue;
         }
 
-        new = mem_alloc( sizeof( *new ) + tokl );
+        new = mem_alloc( sizeof( *new ) + toklen );
         new->nxt = NULL;
         new->bol = linestart;
         linestart = false;
-        new->toklen = tokl;
-        strncpy( new->token, tokstart, tokl );
-        new->token[tokl] = '\0';
+        new->toklen = toklen;
+        strncpy( new->token, tokstart, toklen );
+        new->token[toklen] = '\0';
 
-        if( tok == NULL ) {
+        if( last_tok == NULL ) {
             cmd_tokens[level] = new;
         } else {
-            tok->nxt = new;
+            last_tok->nxt = new;
         }
-        tok = new;
+        last_tok = new;
     }
     return( cnt );
 }
@@ -1064,10 +1063,6 @@ static void set_OPTFile( option * opt )
 
         g_info_research( inf_recognized_xxx, "option file", str );
         strcpy( token_buf, str );
-        if( try_file_name != NULL ) {
-            mem_free( try_file_name );
-            try_file_name = NULL;
-        }
         split_attr_file( token_buf, attrwork, sizeof( attrwork ) );
         if( attrwork[0]  ) {
             xx_warn_cc( wng_fileattr_ignored, attrwork, token_buf );
@@ -1086,41 +1081,31 @@ static void set_OPTFile( option * opt )
                         if( stricmp( try_file_name, file_names[k]) == 0 ) {
                             xx_simple_err_c( err_recursive_option, try_file_name );
                             fclose( fp );
-                            try_fp = NULL;
                             return;
                         }
                     }
                 }
-                file_names[++level] = try_file_name;
+                file_names[++level] = mem_strdup( try_file_name );
                 str = read_indirect_file( fp );
                 split_tokens( str );
                 mem_free( str );
                 fclose( fp );
-                try_fp = NULL;
-                try_file_name = NULL;// free will be done via file_names[level]
                 tokennext = cmd_tokens[level];
             } else {
                 xx_simple_err_c( err_file_not_found, token_buf );
             }
             if( str == NULL )  {
-                if( try_file_name != NULL ) {
-                    mem_free( try_file_name );
-                }
                 if( file_names[level] != NULL ) {
                     mem_free( file_names[level] );
                 }
-                str = save[--level];
                 tokennext = sav_tokens[level];
             }
         } else {                        // max nesting level exceeded
-            if( try_file_name != NULL ) {
-                mem_free( try_file_name );
-            }
             xx_simple_err_c( err_max_nesting_opt, token_buf );
         }
         tokennext = tokennext->nxt;
     }
-};
+}
 
 /***************************************************************************/
 /*  Processing routines for 'new format' options                           */
@@ -1194,7 +1179,7 @@ static void set_quiet( option * opt )
     add_symvar( global_dict, "$quiet", opt->value ? "ON" : "OFF", no_subscript,
                 predefined );
 
-};
+}
 
 
 /***************************************************************************/
@@ -1275,7 +1260,7 @@ static void set_research( option * opt )
 static void set_wscript( option * opt )
 {
     GlobalFlags.wscript = opt->value;
-};
+}
 #endif
 
 
@@ -1737,7 +1722,7 @@ int proc_options( char * string )
     g_info_research( inf_cmdline_tok_cnt, linestr );
 
     tok = cmd_tokens[level];
-    for( ; ; ) {
+    for( ;; ) {
         while( tok != NULL ) {
             sol = tok->bol;
             c = tok->token[0];

@@ -57,11 +57,14 @@
 #include "clibext.h"
 
 
+typedef char    *directory_list;
+
+
+char    try_file_name[_MAX_PATH] = { 0 };
+
 /* Local struct. */
 
 /* The count contains the number of entries in directories. */
-
-typedef char    *directory_list;
 
 /* Local data. */
 
@@ -115,7 +118,7 @@ static directory_list initialize_directory_list( const char *items_list )
  *      0 if the file is not found.
  *
  * Note:
- *      If the file is found, try_file_name and try_fp will be set to the name
+ *      If the file is found, try_file_name and fp will be set to the name
  *      as found and FILE * of the file.
  */
 
@@ -140,15 +143,7 @@ static FILE *try_open( char *prefix, char *filename )
 
     /* Clear the global variables used to contain the results. */
 
-    if( try_file_name != NULL ) {
-        mem_free( try_file_name );
-        try_file_name = NULL;
-    }
-
-    if( try_fp != NULL ) {
-        fclose( try_fp );
-        try_fp = NULL;
-    }
+    try_file_name[0] = '\0';
 
     /* Try to open the file. Return 0 on failure. */
 
@@ -180,8 +175,7 @@ static FILE *try_open( char *prefix, char *filename )
     /* Set the globals on success. */
 
     if( fp != NULL ) {
-        try_fp = fp;
-        try_file_name = mem_strdup( buff );
+        strcpy( try_file_name, buff );
     }
     return( fp );
 }
