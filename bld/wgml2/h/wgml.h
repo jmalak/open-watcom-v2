@@ -75,6 +75,8 @@ extern void         fb_hline( hline_element *in_hline );
 extern void         fb_output_textline( text_line *out_line );
 extern void         fb_start( void );
 extern void         fb_vline( vline_element *in_vline );
+extern void         init_record_buffer( record_buffer *recb, unsigned size );
+extern void         resize_record_buffer( record_buffer *recb, unsigned size );
 
 
 /* devfuncs.c                           */
@@ -135,8 +137,9 @@ extern  void        text_col_out( void );
 
 
 /* gdocsect.c                           */
-extern  void    set_section_banners( doc_section ds );
-extern  void    start_doc_sect( void );
+extern void         set_section_banners( doc_section ds );
+extern void         start_doc_sect( void );
+extern void         resize_record_buffer( record_buffer *recb, unsigned new_size );
 
 
 /* getnum.c                             */

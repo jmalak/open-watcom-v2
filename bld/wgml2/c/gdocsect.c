@@ -324,12 +324,7 @@ static void gen_rule_head( char * letter )
             cur_limit = full_line / str_width;
             cur_count = 0;
             cur_width = 0;
-            line_buff.current = cur_limit;
-            line_buff.current *= str_count;                 // length in characters
-            while( line_buff.current > line_buff.length ) {
-                line_buff.length *= 2;
-                line_buff.text = mem_realloc( line_buff.text, line_buff.length + 1 );
-            }
+            resize_record_buffer( &line_buff, cur_limit * str_count );  // length in characters
             line_buff.text[0] = '\0';
             for( i = 0; i < cur_limit; i++ ) {              // fill text with copies of full string
                 strcat( line_buff.text, layout_work.ixhead.frame.string );
@@ -574,7 +569,7 @@ static void set_cols( doc_pane * a_pane )
 static void gen_figlist( void )
 {
     char            buffer[NUM2STR_LENGTH];
-    char            postfix[sizeof( buffer ) + 1];
+    char            postfix[NUM2STR_LENGTH + 1];
     ffh_entry   *   curr;
     uint32_t        size;
 

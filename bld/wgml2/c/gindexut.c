@@ -408,9 +408,8 @@ ix_h_blk * find_create_ix_h_entry( ix_h_blk * ixhwork, ix_h_blk * ixhbase,
 
         if( printtxt != NULL ) {
             if( ixhwork->prt_term == NULL ) {
+                ixhwork->prt_term = mem_tokdup( printtxt, printtxtlen );
                 ixhwork->prt_term_len = printtxtlen;
-                ixhwork->prt_term = mem_alloc( printtxtlen + 1 );
-                strcpy( ixhwork->prt_term, printtxt );
             } else if( ixhwork->prt_term_len < printtxtlen ) {
                 ixhwork->prt_term_len = printtxtlen;
                 ixhwork->prt_term = mem_realloc( ixhwork->prt_term, printtxtlen + 1 );

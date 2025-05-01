@@ -1040,7 +1040,7 @@ char * get_text_line( char * p )
                     p++;
                 }
                 toklen = p - tok_start;
-                if( toklen < TAG_NAME_LENGTH ) {    // possible tag
+                if( toklen <= TAG_NAME_LENGTH ) {    // possible tag
                     strncpy( &tok_txt, tok_start, toklen );
                     tok_txt[toklen] = '\0';
                     if( ProcFlags.layout ) {

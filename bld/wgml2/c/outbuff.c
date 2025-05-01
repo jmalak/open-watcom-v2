@@ -313,7 +313,8 @@ static void ob_insert_ps_cmd( const char *in_block, size_t count )
 
     /* If the buffer is full, flush it. */
 
-    if( buffout.current == buffout.length ) ob_flush();
+    if( buffout.current == buffout.length )
+        ob_flush();
 
     return;
 }
@@ -1323,6 +1324,7 @@ void ob_setup( void )
 {
     int             i;
     size_t          count;
+    unsigned long   num;
 
     /* Finalize out_file and out_file_attr. */
 
@@ -1347,31 +1349,20 @@ void ob_setup( void )
         count++;
     }
 
+    num = strtoul( &out_file_attr[2], NULL, 0 );
+#if !defined( __WATCOMC__ ) && defined( __UNIX__ )
+    if( errno == ERANGE || num > UINT_MAX ) {
+#else
+    if( errno == ERANGE ) {
+#endif
+        xx_simple_err_i( err_out_rec_size2, UINT_MAX );
+    }
+
     /* Initialize the local variables. */
 
-    binc_buff.current = 0;
-    binc_buff.length = 80;
-    binc_buff.text = mem_alloc( binc_buff.length );
-
-    buffout.current = 0;
-    {
-        unsigned long   num;
-
-        num = strtoul( &out_file_attr[2], NULL, 0 );
-#if !defined( __WATCOMC__ ) && defined( __UNIX__ )
-        if( errno == ERANGE || num > UINT_MAX ) {
-#else
-        if( errno == ERANGE ) {
-#endif
-            xx_simple_err_i( err_out_rec_size2, UINT_MAX );
-        }
-        buffout.length = num;
-    }
-    buffout.text = mem_alloc( buffout.length );
-
-    translated.current = 0;
-    translated.length = 80;
-    translated.text = mem_alloc( translated.length );
+    init_record_buffer( &binc_buff, 80 );
+    init_record_buffer( &buffout, num );
+    init_record_buffer( &translated, 80 );
 
     /* Create (truncate) the output file. */
 

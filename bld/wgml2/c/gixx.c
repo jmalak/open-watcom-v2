@@ -467,7 +467,7 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
             refwork = find_refid( ix_ref_dict, id );
             if( GlobalFlags.firstpass ) {           // first pass: build dict
                 if( refwork == NULL ) {             // new entry
-                    refwork = (ref_entry *) mem_alloc( sizeof( ref_entry ) ) ;
+                    refwork = (ref_entry *)mem_alloc( sizeof( ref_entry ) ) ;
                     init_ref_entry( refwork, id );
                     refwork->flags = rf_ix;
                     refwork->u.ix.hblk = NULL;

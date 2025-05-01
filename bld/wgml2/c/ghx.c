@@ -216,7 +216,7 @@ void gen_heading( char * h_text, char * id, hdsrc hn_lvl, hdsrc hds_lvl )
     } else {
         prefix = hd_nums[hn_lvl].hnumstr;
         headlen = strlen( hd_nums[hn_lvl].hnumstr ) + strlen( h_text ) + 2;
-        headp = (char *) mem_alloc( headlen );
+        headp = (char *)mem_alloc( headlen );
         if( (hds_lvl < hds_abstract) &&
                 (layout_work.hx.hx_head[hds_lvl].number_form != num_none) ) {
             strcpy( headp, prefix );     // numbered header
@@ -299,7 +299,7 @@ void gen_heading( char * h_text, char * id, hdsrc hn_lvl, hdsrc hds_lvl )
         if( (id != NULL) && *id ) {             // add this entry to fig_ref_dict
             cur_ref = find_refid( hd_ref_dict, id );
             if( cur_ref == NULL ) {             // new entry
-                cur_ref = (ref_entry *) mem_alloc( sizeof( ref_entry ) );
+                cur_ref = (ref_entry *)mem_alloc( sizeof( ref_entry ) );
                 init_ref_entry( cur_ref, id );
                 cur_ref->flags = rf_ffh;
                 cur_ref->u.ffh.entry = hd_entry;

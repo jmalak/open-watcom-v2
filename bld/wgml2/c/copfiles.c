@@ -744,9 +744,7 @@ void cop_setup( void )
     bin_fonts = NULL;
 
     cur_token = mem_alloc( sizeof( record_buffer ) );
-    cur_token->current = 0;
-    cur_token->length = 10;
-    cur_token->text = mem_alloc( cur_token->length );
+    init_record_buffer( cur_token, 10 );
 
     for( i = 0; i < 0x100; i++) {
         ti_table[i] = i;
@@ -1658,3 +1656,19 @@ void fb_vline( vline_element * in_vline )
     return;
 }
 
+void init_record_buffer( record_buffer *recb, unsigned size )
+{
+    recb->current = 0;
+    recb->length = size;
+    recb->text = mem_alloc( recb->length + 1 );
+}
+
+void resize_record_buffer( record_buffer *recb, unsigned size )
+{
+    if( size > recb->length ) {
+        while( recb->length < size )
+            recb->length *= 2;
+        recb->text = mem_realloc( recb->text, recb->length + 1 );
+    }
+    recb->current = size;
+}

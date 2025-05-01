@@ -403,8 +403,6 @@ static void output_spaces( size_t count )
     }
     ob_insert_block( space_chars.text, count, true, true, active_font );
     current_state.x_address = desired_state.x_address;
-
-    return;
 }
 
 /* Function output_uscores().
@@ -3564,18 +3562,14 @@ void df_setup( void )
 
     /* Initialize space_chars to hold 80 space characters. */
 
-    space_chars.text = mem_alloc( 80 );
-    space_chars.length = 80;
-    space_chars.current = 0;
+    init_record_buffer( &space_chars, 80 );
     for( i = 0; i < space_chars.length; i++ )
         space_chars.text[i] = ' ';
 
     /* Initialize uscore_chars to hold 80 :UNDERSCORE characters. */
 
     uscore_char = bin_device->underscore.underscore_char;
-    uscore_chars.text = mem_alloc( 80 );
-    uscore_chars.length = 80;
-    uscore_chars.current = 0;
+    init_record_buffer( &uscore_chars, 80 );
     for( i = 0; i < uscore_chars.length; i++ ) {
         uscore_chars.text[i] = uscore_char;
     }

@@ -437,8 +437,8 @@ bool    i_content( char * p, lay_att curr, content * tm )
         pa = p;
         SkipNonSpaces( pa );
         len = pa - p;
-        if( len >= str_size )
-            len = str_size;                     // truncate to allowed length
+        if( len > STRBLK_SIZE )
+            len = STRBLK_SIZE;                     // truncate to allowed length
         strncpy( tm->string, p, len );
         tm->string[len] = '\0';
     }
@@ -1114,11 +1114,11 @@ bool    i_xx_string( char * p, lay_att curr, xx_str * tm )
     (void)curr;
 
     cvterr = false;
-    if( (val_start != NULL) && (val_len < str_size) ) {
+    if( (val_start == NULL) || (val_len > STRBLK_SIZE) ) {
+        xx_line_err_c( err_xx_string, p );
+    } else {
         strncpy( tm, val_start, val_len );
         tm[val_len] = '\0';
-    } else {
-        xx_line_err_c( err_xx_string, p );
     }
     return( cvterr );
 }

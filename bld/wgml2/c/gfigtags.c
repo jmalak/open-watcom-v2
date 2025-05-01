@@ -133,11 +133,7 @@ static void draw_box( doc_el_group * in_group )
     text_line   *   sav_line;
 
     if( bin_driver->dbox.text == NULL ) {           // DBOX not available
-        line_buff.current = width;
-        while( line_buff.current > line_buff.length ) {
-            line_buff.length *= 2;
-            line_buff.text = mem_realloc( line_buff.text, line_buff.length + 1 );
-        }
+        resize_record_buffer( &line_buff, width );
         memset( line_buff.text, bin_device->box.horizontal_line, line_buff.current );
         line_buff.text[line_buff.current] = '\0';
 
@@ -285,13 +281,10 @@ static void insert_frame_line( void )
     uint32_t        cur_limit;  // number of whole copies of frame.string that will fit into line.buff
     uint32_t        cur_width;
     uint32_t        str_width;
+    unsigned        limit;
 
     if( bin_driver->hline.text == NULL ) {              // character device
-        line_buff.current = width;
-        while( line_buff.current > line_buff.length ) {
-            line_buff.length *= 2;
-            line_buff.text = mem_realloc( line_buff.text, line_buff.length + 1 );
-        }
+        resize_record_buffer( &line_buff, width );
         if( frame.type == rule_frame ) {
             memset( line_buff.text, bin_device->box.horizontal_line, line_buff.current );
             line_buff.text[line_buff.current] = '\0';
@@ -338,15 +331,11 @@ static void insert_frame_line( void )
             cur_limit = width / str_width;
             cur_count = 0;
             cur_width = 0;
-            line_buff.current = cur_limit;
-            if( width % str_width > 0 ) {                   // partial copy will be needed
-                line_buff.current++;
+            limit = cur_limit;
+            if( (width % str_width) > 0 ) {                   // partial copy will be needed
+                limit++;
             }
-            line_buff.current *= str_count;                 // length in characters
-            while( line_buff.current > line_buff.length ) {
-                line_buff.length *= 2;
-                line_buff.text = mem_realloc( line_buff.text, line_buff.length + 1 );
-            }
+            resize_record_buffer( &line_buff, limit * str_count );  // length in characters
             line_buff.text[0] = '\0';
             for( i = 0; i < cur_limit; i++ ) {              // fill text with copies of full string
                 strcat( line_buff.text, frame.string );
@@ -374,18 +363,18 @@ static void insert_frame_line( void )
 
 
 /***************************************************************************/
-/*      :FIG [depth=’vert-space-unit’]                                     */
+/*      :FIG [depth=ï¿½vert-space-unitï¿½]                                     */
 /*           [frame=box                                                    */
 /*                  rule                                                   */
 /*                  none                                                   */
-/*                  ’character string’]                                    */
-/*           [id=’id-name’]                                                */
+/*                  ï¿½character stringï¿½]                                    */
+/*           [id=ï¿½id-nameï¿½]                                                */
 /*           [place=top                                                    */
 /*                  bottom                                                 */
 /*                  inline]                                                */
 /*           [width=page                                                   */
 /*                  column                                                 */
-/*                  ’hor-space-unit’].                                     */
+/*                  ï¿½hor-space-unitï¿½].                                     */
 /*           <paragraph elements>                                          */
 /*           <basic document elements>                                     */
 /* This tag signals the start of a figure. Each line of source text        */
@@ -474,8 +463,8 @@ void gml_fig( const gmltag * entry )
                     frame.type = char_frame;
                 }
                 if( frame.type == char_frame ) {
-                    if( val_len > str_size - 1 )
-                        val_len = str_size - 1;
+                    if( val_len > STRBLK_SIZE )
+                        val_len = STRBLK_SIZE;
                     strncpy( frame.string, val_start, val_len );
                     frame.string[val_len] = '\0';
                     if( frame.string[0] == '\0' ) {
@@ -593,7 +582,7 @@ void gml_fig( const gmltag * entry )
         if( id_seen ) {                 // add this entry to fig_ref_dict
             cur_ref = find_refid( fig_ref_dict, id );
             if( cur_ref == NULL ) {             // new entry
-                cur_ref = (ref_entry *) mem_alloc( sizeof( ref_entry ) ) ;
+                cur_ref = (ref_entry *)mem_alloc( sizeof( ref_entry ) ) ;
                 init_ref_entry( cur_ref, id );
                 cur_ref->flags = rf_ffh;
                 cur_ref->u.ffh.entry = fig_entry;
@@ -1175,9 +1164,7 @@ void gml_figcap( const gmltag * entry )
         SkipSpaces( p );                    // skip preceding spaces
         post_space = 0;                     // no additional space
         if( pass == 1 ) {                   // only on first pass
-            current = strlen( p );
-            fig_entry->text = (char *)mem_alloc( current + 1 );
-            strcpy( fig_entry->text, p );
+            fig_entry->text = mem_strdup( p );
         }
         process_text( fig_entry->text, g_curr_font );   // if text follows
     } else {

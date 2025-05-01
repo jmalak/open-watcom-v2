@@ -1450,12 +1450,12 @@ ffh_entry * init_ffh_entry( ffh_entry * ffh_list )
 
     curr = ffh_list;
     if( curr == NULL ) {            // first entry
-        curr = (ffh_entry *) mem_alloc( sizeof( ffh_entry ) );
+        curr = (ffh_entry *)mem_alloc( sizeof( ffh_entry ) );
     } else {
         while( curr->next != NULL ) {
             curr = curr->next;
         }
-        curr->next = (ffh_entry *) mem_alloc( sizeof( ffh_entry ) );
+        curr->next = (ffh_entry *)mem_alloc( sizeof( ffh_entry ) );
         curr = curr->next;
     }
     curr->next = NULL;
@@ -1493,12 +1493,12 @@ fwd_ref * init_fwd_ref( fwd_ref * fr_dict, const char * fr_id )
             local = local->next;
         }
         if( local == NULL ) {       // curr goes at end of list
-            curr = (fwd_ref *) mem_alloc( sizeof( fwd_ref ) );
+            curr = (fwd_ref *)mem_alloc( sizeof( fwd_ref ) );
             curr->next = NULL;
             strcpy( curr->id, fr_id );
             prev->next = curr;
         } else if( strcmp( local->id, fr_id ) > 0 ) {   // note: duplicate id ignored
-            curr = (fwd_ref *) mem_alloc( sizeof( fwd_ref ) );
+            curr = (fwd_ref *)mem_alloc( sizeof( fwd_ref ) );
             curr->next = NULL;
             strcpy( curr->id, fr_id );
             if( prev == NULL ) {    // curr goes at start of list

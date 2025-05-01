@@ -653,7 +653,7 @@ typedef struct getnum_block {
     char        *first;
     int         length;
     int         result;                 // result as long
-    char        resultstr[12];          // result in char format (32-bit number)
+    char        resultstr[NUM2STR_LENGTH];  // result in char format (32-bit number)
     getnumrc    error;
     char        num_sign;               // remember absolute or relative value
     condcode    cc;

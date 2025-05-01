@@ -521,9 +521,9 @@ typedef struct cop_font {
  */
 
 typedef struct {
-    size_t              current;
-    size_t              length;
-    char  *             text;
+    unsigned            current;
+    unsigned            length;
+    char                *text;
 } record_buffer;
 
 /* This struct implements the wgml_font struct in the Wiki. */

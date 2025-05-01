@@ -219,9 +219,7 @@ void init_global_vars( void )
     init_ref_dict( &hd_ref_dict );
     init_ref_dict( &ix_ref_dict );
 
-    line_buff.current   = 0;
-    line_buff.length    = 80;
-    line_buff.text      = mem_alloc( line_buff.length + 1 );
+    init_record_buffer( &line_buff, 80 );
 
     fig_fwd_refs        = NULL;
     fn_fwd_refs         = NULL;
