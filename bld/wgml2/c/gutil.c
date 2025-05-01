@@ -909,7 +909,8 @@ char *format_num( unsigned n, char *r, size_t rsize, num_style ns )
         }
         break;
     case h_style :                      // arabic
-        pos += sprintf( p, "%u", n );
+        pos1 = sprintf( p, "%u", n );
+        pos += pos1;
         if( pos >= rsize ) {
             return( NULL );             // result field overflow
         }
