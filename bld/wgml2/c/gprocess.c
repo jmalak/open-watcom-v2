@@ -77,7 +77,7 @@ void process_late_subst( char * buf )
             tokenend = p;
             if( !scan_err ) {                   // potentially qualifying symbol
                 if( symvar_entry.flags & local_var ) {  // lookup var in dict
-                    rc = find_symvar_l( input_cbs->local_dict, symvar_entry.name,
+                    rc = find_symvar_lcl( input_cbs->local_dict, symvar_entry.name,
                                         var_ind, &symsubval );
                 } else {
                     rc = find_symvar( global_dict, symvar_entry.name, var_ind,
@@ -729,7 +729,7 @@ static sym_list_entry * parse_l2r( char * buf, bool splittable )
                     }
                 } else {
                     if( symvar_entry.flags & local_var ) {  // lookup var in dict
-                        rc = find_symvar_l( input_cbs->local_dict, symvar_entry.name, var_ind,
+                        rc = find_symvar_lcl( input_cbs->local_dict, symvar_entry.name, var_ind,
                                             &symsubval );
                     } else {
                         rc = find_symvar( global_dict, symvar_entry.name, var_ind, &symsubval );

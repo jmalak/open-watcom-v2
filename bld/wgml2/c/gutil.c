@@ -860,7 +860,7 @@ char *format_num( unsigned n, char *r, size_t rsize, num_style ns )
     size_t      pos1;
     char    *   p;
     char    *   rp;
-    char        temp[MAX_L_AS_STR + 3]; // +3 for () and decimal point
+    char        temp[NUM2STR_LENGTH + 3]; // +3 for () and decimal point
     char        a1;
     char        a2;
     char        charbase;
@@ -875,10 +875,10 @@ char *format_num( unsigned n, char *r, size_t rsize, num_style ns )
         }
     }
     if( ns & (a_style | b_style) ) {    // alphabetic limit 2 'digits'
-    /************************************************************************/
-    /*  Arbitrary limit Value 728 = 2 characters    extend if needed    TBD */
-    /************************************************************************/
-        if( n >= 27*27 || (n < 1) ) {   // only 2 letters supported
+        /************************************************************************/
+        /*  Arbitrary limit Value 728 = 2 characters    extend if needed    TBD */
+        /************************************************************************/
+        if( n >= 27 * 27 || (n < 1) ) { // only 2 letters supported
             return( NULL );             // and numbers > zero
         }
         if( ns & a_style ) {

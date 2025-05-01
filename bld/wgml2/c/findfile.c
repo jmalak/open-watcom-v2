@@ -90,9 +90,7 @@ static directory_list initialize_directory_list( const char *items_list )
     directory_list  list;
     char            *p;
 
-    if( items_list == NULL )
-        items_list = "";
-    list = mem_alloc( strlen( items_list ) + 1 );
+    list = mem_strdup( items_list );
     p = list;
     if( items_list != NULL ) {
         while( *items_list != '\0' ) {
@@ -183,8 +181,7 @@ static FILE *try_open( char *prefix, char *filename )
 
     if( fp != NULL ) {
         try_fp = fp;
-        try_file_name = mem_alloc( filename_length );
-        strcpy( try_file_name, buff );
+        try_file_name = mem_strdup( buff );
     }
     return( fp );
 }
@@ -335,7 +332,7 @@ FILE *search_file_in_dirs( const char *filename, const char *defext, const char 
     char            *member_name = NULL;
     directory_list  path_list;
     directory_list  searchdirs[5];
-    size_t              member_length;
+    size_t          member_length;
     pgroup2         pg;
     directory_list  *pd;
     char            c;
@@ -457,7 +454,7 @@ FILE *search_file_in_dirs( const char *filename, const char *defext, const char 
             do {
                 ++path_list;
                 if( IS_PATH_LIST_SEP( c ) )
-                break;
+                    break;
                 *p++ = c;
             } while( (c = *path_list) != '\0' );
             c = p[-1];
@@ -482,6 +479,7 @@ FILE *search_file_in_dirs( const char *filename, const char *defext, const char 
                 member_length = strlen( member_name );
                 pg.ext = NULL;
                 if( memchr( member_name, '.', member_length ) == NULL ) {
+
                     /* Avoid buffer overflow from member_name. */
 
                     if( member_length >= _MAX_PATH - 4 ) {

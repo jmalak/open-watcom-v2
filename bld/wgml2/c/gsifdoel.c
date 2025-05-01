@@ -239,9 +239,8 @@ static condcode gargterm( termcb * t )
             }
         }
         // prepare string   quoted or unquoted
+        t->term_string = mem_tokdup( tok_start, arg_flen );
         t->term_length = arg_flen;
-        t->term_string = mem_alloc( t->term_length + 1 );
-        strncpy( t->term_string, tok_start, t->term_length + 1 );
     } else {
         if( gn.argstart > gn.argstop ) {
             scan_start = gn.argstop;        // enforce end of logical record
@@ -250,9 +249,8 @@ static condcode gargterm( termcb * t )
         }
         t->numeric = true;
         t->term_number = gn.result;
-        t->term_string  = mem_alloc( sizeof( gn.resultstr ) );
-        strcpy( t->term_string, gn.resultstr );
-        t->term_length  = gn.length;
+        t->term_string = mem_tokdup( gn.resultstr, gn.length );
+        t->term_length = gn.length;
     }
     return( cc );
 }

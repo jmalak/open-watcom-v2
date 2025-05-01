@@ -215,7 +215,7 @@ void    add_macro_parms( char * p )
     char        c;
     char    *   pa;
     char        quote;                  // delimiter character at start of parameter, if any
-    char        starbuf[12];
+    char        starbuf[NUM2STR_LENGTH];
     condcode    cc;
     int         star0;
     size_t      len;
@@ -432,7 +432,7 @@ void    scr_dm( void )
     line_number     lineno_start;
     condcode        cc;
     inputcb     *   cb;
-    char            linestr[MAX_L_AS_STR];
+    char            linestr[NUM2STR_LENGTH];
 
     cb = input_cbs;
 

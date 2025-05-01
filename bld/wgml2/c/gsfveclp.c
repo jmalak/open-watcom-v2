@@ -145,7 +145,7 @@ static  condcode    scr_veclp( parm parms[MAX_FUN_PARMS], size_t parmcount,
         if( !scan_err ) {
 
             if( symvar_entry.flags & local_var ) {  // lookup var in dict
-                rc = find_symvar_l( input_cbs->local_dict, symvar_entry.name,
+                rc = find_symvar_lcl( input_cbs->local_dict, symvar_entry.name,
                                     var_ind, &symsubval );
             } else {
                 rc = find_symvar( global_dict, symvar_entry.name, var_ind,

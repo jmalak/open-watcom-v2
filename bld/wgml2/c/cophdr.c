@@ -38,11 +38,11 @@
 
 /* Function parse_header().
  * Determine if the current position of the input stream points to the
- * start of a valid same-endian version 4.1 binary device file and, if 
+ * start of a valid same-endian version 4.1 binary device file and, if
  * it does, advance the stream to the first byte following the header.
  *
  * Parameter:
- *      in_file points the input stream.
+ *      fp points the input stream.
  *
  * Returns:
  *      dir_v4_1_se if the file is a same-endian version 4.1 directory file.
@@ -53,7 +53,7 @@
  *      file_error if an error occurred while reading the file.
  */
 
-cop_file_type parse_header( FILE * in_file )
+cop_file_type parse_header( FILE *fp )
 {
     char        count;
     char        text_version[0x0b];
@@ -61,8 +61,8 @@ cop_file_type parse_header( FILE * in_file )
 
     /* Get the count and ensure it is 0x02. */
 
-    count = fgetc( in_file );
-    if( ferror( in_file ) || feof( in_file ) ) {
+    count = fgetc( fp );
+    if( ferror( fp ) || feof( fp ) ) {
         return( file_error );
     }
 
@@ -72,8 +72,8 @@ cop_file_type parse_header( FILE * in_file )
 
     /* Get the version. */
 
-    fread( &version, 2, 1, in_file );
-    if( ferror( in_file ) || feof( in_file ) ) {
+    fread( &version, 2, 1, fp );
+    if( ferror( fp ) || feof( fp ) ) {
         return( file_error );
     }
 
@@ -81,15 +81,15 @@ cop_file_type parse_header( FILE * in_file )
     *  Note: checking 0x0c00 would, presumably, identify a different-endian
     *  version 4.1 header, if that ever becomes necessary.
     */
-        
+
     if( version != 0x000c ) {
         return( not_se_v4_1 );
     }
 
     /* Get the text_version_length and ensure it is 0x0b. */
 
-    count = fgetc( in_file );
-    if( ferror( in_file ) || feof( in_file ) ) {
+    count = fgetc( fp );
+    if( ferror( fp ) || feof( fp ) ) {
         return( file_error );
     }
 
@@ -99,8 +99,8 @@ cop_file_type parse_header( FILE * in_file )
 
     /* Verify the text_version. */
 
-    fread( &text_version, 0x0b, 1, in_file );
-    if( ferror( in_file ) || feof( in_file ) ) {
+    fread( &text_version, 0x0b, 1, fp );
+    if( ferror( fp ) || feof( fp ) ) {
         return( file_error );
     }
 
@@ -111,21 +111,21 @@ cop_file_type parse_header( FILE * in_file )
 
     /* Get the type. */
 
-    count = fgetc( in_file );
+    count = fgetc( fp );
 
     /* If there is no more data, this is not a valid .COP file. */
-    
-    if( ferror( in_file ) || feof( in_file ) ) {
+
+    if( ferror( fp ) || feof( fp ) ) {
         return( file_error );
     }
-    
+
     /* Valid header, more data exists, determine the file type. */
 
     if( count == 0x03 ) {
         return( se_v4_1_not_dir );
     }
     if( count == 0x04 ) {
-        return( dir_v4_1_se ); 
+        return( dir_v4_1_se );
     }
 
     /* Invalid file type: this cannot be a valid .COP file. */

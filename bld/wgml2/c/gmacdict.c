@@ -39,10 +39,10 @@
 #define MAC_HASH_SIZE       241
 
 typedef struct mac_dcp {
-    mac_entry       *   htbl[MAC_HASH_SIZE];    // hash table
-    long                lookups;        // lookup counter
-    long                macros;         // macro counter
-    long                compares;       // strcmp counter
+    mac_entry           *htbl[MAC_HASH_SIZE];   // hash table
+    int                 lookups;                // lookup counter
+    int                 macros;                 // macro counter
+    int                 compares;               // strcmp counter
 } mac_dcp;
 
 
@@ -238,8 +238,8 @@ void    free_macro_dict( mac_dict * * dict_parm )
         }
     }
 #if 0
-    printf( "macro lookups   : %ld\n", dict->lookups );
-    printf( "macro compares  : %ld\n", dict->compares );
+    printf( "macro lookups   : %d\n", dict->lookups );
+    printf( "macro compares  : %d\n", dict->compares );
 #endif
     mem_free( dict );
     *dict_parm = NULL;          // dictionary is empty

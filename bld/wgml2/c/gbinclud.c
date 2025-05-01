@@ -176,9 +176,7 @@ void    gml_binclude( const gmltag * entry )
         len = strlen( try_file_name );
         if( len > _MAX_PATH - 1 )
             len = _MAX_PATH - 1;
-        cur_el->element.binc.file = mem_alloc( len + 1 );
-        strncpy( cur_el->element.binc.file, try_file_name, len );
-        cur_el->element.binc.file[len] = '\0';
+        cur_el->element.binc.file = mem_tokdup( try_file_name, len );
 
         if( GlobalFlags.inclist ) {
             g_info_lm( inf_curr_file, cur_el->element.binc.file );

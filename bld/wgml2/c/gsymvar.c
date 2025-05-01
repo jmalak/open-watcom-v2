@@ -174,7 +174,7 @@ void    free_dict( symdict_hdl *pdict )
     dict = *pdict;
 #if 0
     if( dict->compares > 1000 || dict->symbols > 25 || dict->lookups > 200 ) {
-        printf( "dict %p, symbols:%6ld, lookups:%8ld, compares: %12ld\n",
+        printf( "dict %p, symbols:%6d, lookups:%8d, compares: %12d\n",
                 dict, dict->symbols, dict->lookups, dict->compares );
     }
 #endif
@@ -262,10 +262,10 @@ static void print_sym_entry( symvar * wk, int * symcnt, int * symsubcnt )
 /*                                                                         */
 /***************************************************************************/
 
-int find_symvar( symdict_hdl dict, char * name, sub_index sub, symsub * * symsubval )
+int find_symvar( symdict_hdl dict, char * name, sub_index sub, symsub **symsubval )
 {
-    symvar  *   wk;
-    symsub  *   ws;
+    symvar      *wk;
+    symsub      *ws;
     int         rc = 0;
 
     if( (*name == '$') && (dict != sys_dict) ) {// for sysxxx try system dict first
@@ -330,16 +330,16 @@ int find_symvar( symdict_hdl dict, char * name, sub_index sub, symsub * * symsub
 }
 
 /***************************************************************************/
-/*  find_symvar_l   find local symbolic variable                           */
+/*  find_symvar_lcl     find local symbolic variable                       */
 /*          if the dictionary is the local dict then                       */
 /*          search up thru the local dictionaries up to the first file     */
 /*          unless the symbol looks like an auto symbol (all numeric)      */
 /***************************************************************************/
 
-int find_symvar_l( symdict_hdl dict, char * name, sub_index sub, symsub * * symsubval )
+int find_symvar_lcl( symdict_hdl dict, char * name, sub_index sub, symsub **symsubval )
 {
-    char    *   p;
-    inputcb *   incbs;
+    char        *p;
+    inputcb     *incbs;
     int         rc;
     symdict_hdl wk;
 
@@ -378,11 +378,11 @@ int find_symvar_l( symdict_hdl dict, char * name, sub_index sub, symsub * * syms
 /*  finds deleted variables too internal routine                           */
 /***************************************************************************/
 
-static  int find_symvar_del( symdict_hdl dict, char * name, sub_index sub,
-                             symsub * * symsubval, symvar * * delentry )
+static  int find_symvar_del( symdict_hdl dict, char *name, sub_index sub,
+                             symsub **symsubval, symvar **delentry )
 {
-    symvar  *   wk;
-    symsub  *   ws;
+    symvar      *wk;
+    symsub      *ws;
     int         rc = 0;
 
     if( (*name == '$') && (dict != sys_dict) ) {// for sysxxx try system dict first
@@ -453,7 +453,7 @@ static bool check_subscript( sub_index sub )
     if( sub != no_subscript ) {
         if( (sub < min_subscript) || (sub > max_subscript) ) {
             // SC--076 Subscript index must be between -1000000 and 1000000
-            char    linestr[MAX_L_AS_STR];
+            char    linestr[NUM2STR_LENGTH];
 
             sprintf( linestr, "%d", sub );
             xx_line_err_c( err_sub_out_of_range, linestr );
@@ -472,7 +472,7 @@ static bool add_symvar_sub( symvar * var, char * val, sub_index sub, symsub * * 
     symsub  *   newsub;
     symsub  *   ws;
     symsub  *   wsv;
-//  char        sub_cnt[12];
+//  char        sub_cnt[NUM2STR_LENGTH];
 
     if( var->flags & ro ) {             // value readonly
         return( true );                 // pretend success as wgml 4.0 does

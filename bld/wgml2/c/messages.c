@@ -287,9 +287,7 @@ static void show_line_error_len( const char * pa, size_t len )
         len = 1;
     }
     cnt = pa - buff2 + len;
-    buf = mem_alloc( cnt + 1 );
-    strncpy( buf, buff2, cnt );
-    buf[cnt] = '\0';
+    buf = mem_tokdup( buff2, cnt );
     out_msg( "%s\n", buf );
     // number of characters before the offending input + "*" at start of offending input
     if( pa > buff2 ) {
@@ -316,8 +314,8 @@ static void show_line_error( const char * pa )
 
 void file_mac_info( void )
 {
-    char        linestr[MAX_L_AS_STR];
-    char        linemac[MAX_L_AS_STR];
+    char        linestr[NUM2STR_LENGTH];
+    char        linemac[NUM2STR_LENGTH];
 
     if( input_cbs != NULL ) {
         if( input_cbs->fmflags & II_tag_mac ) {
@@ -342,8 +340,8 @@ void file_mac_info( void )
 
 void file_mac_info_nest( void )
 {
-    char            linestr[MAX_L_AS_STR];
-    char            linemac[MAX_L_AS_STR];
+    char            linestr[NUM2STR_LENGTH];
+    char            linemac[NUM2STR_LENGTH];
     nest_stack  *   nw;
 
     if( input_cbs != NULL ) {
@@ -477,7 +475,7 @@ void main_file_err( const char * filename )
 
 void numb_err( void )                                           // for scr_pu()
 {
-    char    linestr[MAX_L_AS_STR];
+    char    linestr[NUM2STR_LENGTH];
 
     err_count++;
     if( input_cbs->fmflags & II_tag_mac ) {
@@ -493,7 +491,7 @@ void numb_err( void )                                           // for scr_pu()
 
 void symbol_name_length_err( const char * symname )
 {
-    char    linestr[MAX_L_AS_STR];
+    char    linestr[NUM2STR_LENGTH];
 
     err_count++;
     g_err( err_sym_long, symname );
@@ -570,7 +568,7 @@ void g_err_tag_nest( const char * tag )
 
 void g_err_if_int( void )
 {
-    char    linestr[MAX_L_AS_STR];
+    char    linestr[NUM2STR_LENGTH];
 
     if( input_cbs->fmflags & II_tag_mac ) {
         sprintf( linestr, "%d", input_cbs->s.m->lineno );
@@ -590,7 +588,7 @@ void g_err_if_int( void )
 
 void g_err_tag_mac( gtentry * ge )
 {
-    char    linestr[MAX_L_AS_STR];
+    char    linestr[NUM2STR_LENGTH];
 
     if( input_cbs->fmflags & II_tag_mac ) {
         sprintf( linestr, "%d", input_cbs->s.m->lineno );
@@ -777,7 +775,7 @@ void xx_simple_err_cc( const msg_ids errid, const char * arg1, const char * arg2
 
 void xx_source_err( const msg_ids errid )
 {
-    char    linestr[MAX_L_AS_STR];
+    char    linestr[NUM2STR_LENGTH];
 
     g_err( errid );
     if( input_cbs->fmflags & II_tag_mac ) {
@@ -794,7 +792,7 @@ void xx_source_err( const msg_ids errid )
 
 void xx_source_err_c( const msg_ids errid, const char * arg )
 {
-    char    linestr[MAX_L_AS_STR];
+    char    linestr[NUM2STR_LENGTH];
 
     g_err( errid, arg );
     if( input_cbs->fmflags & II_tag_mac ) {

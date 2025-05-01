@@ -37,7 +37,7 @@
 
 typedef struct taglist {
     struct  taglist *   nxt;
-    long                count;
+    int                 count;
     char                tagname[16];
 } taglist;
 

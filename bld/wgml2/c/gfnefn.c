@@ -55,7 +55,7 @@ static  ju_enum         justify_save;           // for ProcFlags.justify
 void gml_fn( const gmltag * entry )
 {
     bool            id_seen = false;
-    char            buffer[11];
+    char            buffer[NUM2STR_LENGTH];
     char        *   p;
     char        *   pa;
     ref_entry   *   cur_ref;
@@ -167,8 +167,7 @@ void gml_fn( const gmltag * entry )
 //skip
 //frame
 
-    format_num( fn_entry->number, buffer, sizeof( buffer ),
-                                                        layout_work.fn.number_style );
+    format_num( fn_entry->number, buffer, sizeof( buffer ), layout_work.fn.number_style );
     process_text( buffer, layout_work.fn.number_font ); // FN prefix
     t_page.cur_left = nest_cb->lm + conv_hor_unit( &layout_work.fn.align, g_curr_font );
     t_page.cur_width = t_page.cur_left;

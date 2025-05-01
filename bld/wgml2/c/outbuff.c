@@ -903,9 +903,7 @@ static void set_out_file_attr( void )
 
                 /* Use default if rec_spec is badly-formed. */
 
-                len = 1 + strlen( "t:132" );
-                out_file_attr = mem_alloc( len );
-                strcpy( out_file_attr, "t:132" );
+                out_file_attr = mem_strdup( "t:132" );
 
             } else {
 
@@ -914,17 +912,13 @@ static void set_out_file_attr( void )
                  */
 
                 len -= 1;
-                out_file_attr = mem_alloc( len );
-                strncpy( out_file_attr, &bin_driver->rec_spec[1], len - 1 );
-                out_file_attr[len - 1] = '\0';
+                out_file_attr = mem_tokdup( &bin_driver->rec_spec[1], len - 1 );
             }
         } else {
 
             /* Use default if bin_driver->rec_spec is missing. */
 
-            len = 1 + strlen( "t:132" );
-            out_file_attr = mem_alloc( len );
-            strcpy( out_file_attr, "t:132" );
+            out_file_attr = mem_strdup( "t:132" );
         }
     }
 

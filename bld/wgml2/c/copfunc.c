@@ -125,14 +125,14 @@ code_block *get_code_blocks( const char **current, uint16_t count, const char *b
 }
 
 /* Function get_p_buffer().
- * Extract one or more contiguous P-buffers from in_file.
+ * Extract one or more contiguous P-buffers from fp.
  *
  * Parameter:
- *     in_file points to the start of a P-buffer.
+ *     fp points to the start of a P-buffer.
  *
  * Modified parameter:
- *     in_file will point to the first non-P-buffer byte in the file on success.
- *     the status of in_file is unpredictable on failure.
+ *     fp will point to the first non-P-buffer byte in the file on success.
+ *     the status of fp is unpredictable on failure.
  *
  * Returns:
  *     a pointer to a p_buffer containing the raw data on success.
@@ -145,7 +145,7 @@ code_block *get_code_blocks( const char **current, uint16_t count, const char *b
  *      NULL is returned for file errors.
  */
 
-p_buffer * get_p_buffer( FILE * in_file )
+p_buffer * get_p_buffer( FILE *fp )
 {
     char        *current     = NULL;
     uint8_t     i;
@@ -156,18 +156,18 @@ p_buffer * get_p_buffer( FILE * in_file )
     /* Determine the number of contiguous P-buffers in the file. */
 
     p_count = 0;
-    test_char = fgetc( in_file );
-    if( ferror( in_file ) || feof( in_file ) ) {
+    test_char = fgetc( fp );
+    if( ferror( fp ) || feof( fp ) ) {
         return( out_buffer );
     }
     while( test_char == 80 ) {
         ++p_count;
-        fseek( in_file, 80, SEEK_CUR );
-        if( ferror( in_file ) || feof( in_file ) ) {
+        fseek( fp, 80, SEEK_CUR );
+        if( ferror( fp ) || feof( fp ) ) {
             return( out_buffer );
         }
-        test_char = fgetc( in_file );
-        if( ferror( in_file ) || feof( in_file ) ) {
+        test_char = fgetc( fp );
+        if( ferror( fp ) || feof( fp ) ) {
             return( out_buffer );
         }
     }
@@ -179,8 +179,8 @@ p_buffer * get_p_buffer( FILE * in_file )
 
     /* Rewind the file by 81 bytes per P-buffer plus 1. */
 
-    fseek( in_file, -1 * ((81 * p_count) + 1), SEEK_CUR );
-    if( ferror( in_file ) || feof( in_file ) )
+    fseek( fp, -1 * ((81 * p_count) + 1), SEEK_CUR );
+    if( ferror( fp ) || feof( fp ) )
         return( out_buffer );
 
     /* Allocate the out_buffer. */
@@ -194,8 +194,8 @@ p_buffer * get_p_buffer( FILE * in_file )
     /* Now get the data into the out_buffer. */
 
     for( i = 0; i < p_count; i++ ) {
-        test_char = fgetc( in_file );
-        if( ferror( in_file ) || feof( in_file ) ) {
+        test_char = fgetc( fp );
+        if( ferror( fp ) || feof( fp ) ) {
             mem_free( out_buffer );
             out_buffer = NULL;
             return( out_buffer );
@@ -207,8 +207,8 @@ p_buffer * get_p_buffer( FILE * in_file )
             return( out_buffer );
         }
 
-        fread( current, 80, 1, in_file );
-        if( ferror( in_file ) || feof( in_file ) ) {
+        fread( current, 80, 1, fp );
+        if( ferror( fp ) || feof( fp ) ) {
             mem_free( out_buffer );
             out_buffer = NULL;
             return( out_buffer );

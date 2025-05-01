@@ -57,7 +57,7 @@ void g_suicide( void )
         print_sym_dict( sys_dict );
     }
     out_msg( "\n\nWGML suicide\n\n" );
-    fflush( NULL );                     // TBD
+    fflush( NULL );
     if( environment ) {
         longjmp( *environment, 1 );
     }

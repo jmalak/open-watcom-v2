@@ -301,11 +301,11 @@ static  condcode    scan_att_optionsB( gavalflags * val_flags, condcode cca,
             cc = getarg();
             if( cc == quotes || cc == pos || cc == quotes0) {
                 if( arg_flen < sizeof( stringval ) ) {
-                    strncpy( stringval, tok_start, arg_flen + 1 );
+                    strncpy( stringval, tok_start, arg_flen );
+                    stringval[arg_flen] = '\0';
                     *val_flags |= val_value;
                 } else {
-                    valptr = mem_alloc( arg_flen + 1 );
-                    strncpy( valptr, tok_start, arg_flen + 1 );
+                    valptr = mem_tokdup( tok_start, arg_flen );
                     *val_flags |= val_valptr;
                 }
                 if( *att_flags & att_any ) { // default for any specified
@@ -403,7 +403,8 @@ static  condcode    scan_att_optionsB( gavalflags * val_flags, condcode cca,
             if( (cc == pos) || (cc == quotes) || (cc == quotes0) ) {
                  if( arg_flen <= VAL_LENGTH ) {
                     *val_flags |= val_value;
-                    strncpy( stringval, tok_start, arg_flen + 1 );
+                    strncpy( stringval, tok_start, arg_flen );
+                    stringval[arg_flen] = '\0';
                     if( *att_flags & att_upper ) {
                         strupr( stringval );
                     }
@@ -414,8 +415,8 @@ static  condcode    scan_att_optionsB( gavalflags * val_flags, condcode cca,
                     break;              // can be removed if neccessary
 #else
                     *val_flags |= val_valptr;
-                    valptr = mem_alloc( arg_flen + 1 );
-                    strncpy( valptr, tok_start, arg_flen + 1 );
+                    valptr = mem_tokdup( tok_start, arg_flen );
+                    valptr[arg_flen] = '\0';
                     if( *att_flags & att_upper ) {
                         strupr( valptr );
                     }

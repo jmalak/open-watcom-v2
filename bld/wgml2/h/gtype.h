@@ -53,6 +53,7 @@
 #define ATT_NAME_LENGTH     9           // :tag attr name length
 #define VAL_LENGTH          10          // max length for attribute value
                                         // longer strings will be allocated
+#define NUM2STR_LENGTH      12          // int to string conversion buffer length sNNNNNNNNNN+'\0'
 
 #define ID_LEN              15          // length of refids wgml 4 gives a warning
                                         // for lengths > 7 but processes it
@@ -61,6 +62,7 @@
 #define SYM_NAME_LENGTH     10          // symbol name length
 #define MAC_NAME_LENGTH     8           // macro name length
 #define LABEL_NAME_LENGTH   8           // label name length
+
 #define MAX_MAC_PARMS       32          // maximum macro parm count
                                         // arbitrary value, not found in docu!!!
 #define MAC_STAR_NAME       "_"         // local variable name for &*
@@ -68,7 +70,6 @@
 #define MAX_FUN_PARMS       7           // max parmcount found in documentation
 
 #define MAX_IF_LEVEL        10          // maximum nested .if s
-#define MAX_L_AS_STR        16          // long as string
 
 #define MAX_CPI             100         // not documented, assumed
 #define MAX_LPI             100         // not documented, assumed

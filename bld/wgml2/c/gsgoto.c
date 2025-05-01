@@ -152,7 +152,7 @@ void    scr_label( void )
     condcode        cc;
     getnum_block    gn;
     labelcb     *   lb;
-    char            linestr[MAX_L_AS_STR];
+    char            linestr[NUM2STR_LENGTH];
 
     SkipSpaces( scan_start );       // may be ...LABEL or ...<blanks>LABEL, skip over blanks
     if( *scan_start == '\0'  ) {    // no label?

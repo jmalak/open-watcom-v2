@@ -61,7 +61,7 @@ condcode    scr_c2d( parm parms[MAX_FUN_PARMS], size_t parmcount, char * * resul
     char            *   pend;
     condcode            cc;
     uint32_t            n;
-    char                linestr[MAX_L_AS_STR];
+    char                linestr[NUM2STR_LENGTH];
     char            *   p;
 
     if( (parmcount < 1) || (parmcount > 2) ) {// accept 2. parm, but ignore it

@@ -903,7 +903,7 @@ void    gml_eul( const gmltag * entry )
 
 static  void    gml_li_ol( const gmltag * entry )
 {
-    char            charnumber[MAX_L_AS_STR + 2];
+    char            charnumber[NUM2STR_LENGTH + 2];
     char        *   p;
     char        *   pn;
     uint32_t        num_len;
@@ -920,7 +920,7 @@ static  void    gml_li_ol( const gmltag * entry )
     p = scan_start;
 
     nest_cb->li_number++;
-    pn = format_num( nest_cb->li_number, charnumber, MAX_L_AS_STR,
+    pn = format_num( nest_cb->li_number, charnumber, NUM2STR_LENGTH,
                      nest_cb->u.ol_layout->number_style );
     if( pn != NULL ) {
         num_len = strlen( pn );

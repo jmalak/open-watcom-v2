@@ -806,13 +806,13 @@ void cop_setup( void )
 
     /* Set ProcFlags.ps_device to "true" if the driver name begins with "ps" or "PS". */
 
-    if( !strnicmp( bin_device->driver_name, "ps", 2 ) ) {
+    if( strnicmp( "ps", bin_device->driver_name, 2 ) == 0 ) {
         ProcFlags.ps_device = true;
     }
 
     /* Set ProcFlags.wh_device to "true" if the driver name begins with "whelp" or "WHELP". */
 
-    if( !strnicmp( bin_device->driver_name, "whelp", 5 ) ) {
+    if( strnicmp( "whelp", bin_device->driver_name, 5 ) == 0 ) {
         ProcFlags.wh_device = true;
     }
 
@@ -1339,7 +1339,7 @@ void cop_ti_table( const char *p )
     if( len > 0 ) {
         if( len > 2 ) { // check for ".ti set"
             if( len == 3 ) {
-                if( !strnicmp( pa, "SET", len ) ) {
+                if( strnicmp( "SET", pa, len ) == 0 ) {
                     SkipSpaces( p );        // set char start
                     pa = p;
                     SkipNonSpaces( p );     // set char start

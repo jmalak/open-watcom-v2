@@ -237,16 +237,12 @@ void    gml_graphic( const gmltag * entry )
         len = strlen( file );
         if( len > _MAX_PATH - 1 )
             len = _MAX_PATH - 1;
-        cur_el->element.graph.short_name = mem_alloc( len + 1 );
-        strncpy( cur_el->element.graph.short_name, file, len );
-        cur_el->element.graph.short_name[len] = '\0';
+        cur_el->element.graph.short_name = mem_tokdup( file, len );
 
         len = strlen( try_file_name );
         if( len > _MAX_PATH - 1 )
             len = _MAX_PATH - 1;
-        cur_el->element.graph.short_name = mem_alloc( len + 1 );
-        strncpy( cur_el->element.graph.file, try_file_name, len );
-        cur_el->element.graph.file[len] = '\0';
+        cur_el->element.graph.file = mem_tokdup( try_file_name, len );
 
         if( GlobalFlags.inclist ) {
             g_info_lm( inf_curr_file, cur_el->element.graph.file );

@@ -1106,7 +1106,7 @@ void gml_efig( const gmltag * entry )
 
 void gml_figcap( const gmltag * entry )
 {
-    char            buffer[11];
+    char            buffer[NUM2STR_LENGTH];
     char        *   prefix;
     char        *   p;
     size_t          count;

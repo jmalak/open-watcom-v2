@@ -52,9 +52,7 @@ static void show_line_error_len( const char * pa, size_t len )
 
     msg_indent = 0;
     cnt = pa - buff2 + len;
-    buf = mem_alloc( cnt + 1 );
-    strncpy( buf, buff2, cnt );
-    buf[cnt] = '\0';
+    buf = mem_tokdup( buff2, cnt );
     out_msg( "%s\n", buf );
     // number of characters before the offending input + "*" at start of offending input
     if( pa > buff2 ) {
@@ -81,8 +79,8 @@ static void show_line_error( const char * pa )
 
 void file_mac_info( void )
 {
-    char        linestr[MAX_L_AS_STR];
-    char        linemac[MAX_L_AS_STR];
+    char        linestr[NUM2STR_LENGTH];
+    char        linemac[NUM2STR_LENGTH];
 
     if( input_cbs != NULL ) {
         if( input_cbs->fmflags & II_tag_mac ) {
@@ -107,8 +105,8 @@ void file_mac_info( void )
 
 void file_mac_info_nest( void )
 {
-    char            linestr[MAX_L_AS_STR];
-    char            linemac[MAX_L_AS_STR];
+    char            linestr[NUM2STR_LENGTH];
+    char            linemac[NUM2STR_LENGTH];
     nest_stack  *   nw;
 
     if( input_cbs != NULL ) {
@@ -261,7 +259,7 @@ void parm_extra_err( const char * cw, const char * pa )
 
 void numb_err( void )
 {
-    char    linestr[MAX_L_AS_STR];
+    char    linestr[NUM2STR_LENGTH];
 
     err_count++;
     if( input_cbs->fmflags & II_tag_mac ) {

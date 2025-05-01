@@ -186,9 +186,7 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
                     }
                     if( pgvalue == pgnone ) {                // arbitrary string value
                         pgvalue = pgstring;
-                        pgtext = mem_alloc( val_len + 1 );
-                        strncpy( pgtext, val_start, val_len );// use text instead of pageno
-                        *(pgtext + val_len) = '\0';
+                        pgtext = mem_tokdup( val_start, val_len );  // use text instead of pageno
                         pgtextlen = val_len;
                     }
                 } else {                        // end-of-tag for IHx
@@ -208,9 +206,7 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
                 }
                 if( hxstring[3] == lvlc ) {     // IHx only
                     printseen = true;
-                    printtxt = mem_alloc( val_len + 1 );
-                    strncpy( printtxt, val_start, val_len );
-                    printtxt[val_len] = '\0';
+                    printtxt = mem_tokdup( val_start, val_len );
                     printtxtlen = val_len;
                 } else {                        // end-of-tag for Ix, IREF
                     p = pa;                     // restore spaces before text
@@ -250,9 +246,7 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
                 }
                 if( hx_lvl == 0 || (hxstring[3] == lvlc) ) {// :IREF :IHx
                     seeseen = true;
-                    seetext = mem_alloc( val_len + 1 );
-                    strncpy( seetext, val_start, val_len );
-                    *(seetext + val_len) = '\0';
+                    seetext = mem_tokdup( val_start, val_len );
                     seetextlen = val_len;
                 } else {                        // end-of-tag for Ix
                     p = pa;                     // restore spaces before text

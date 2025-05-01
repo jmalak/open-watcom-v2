@@ -278,13 +278,9 @@ void find_create_ix_e_entry( ix_h_blk * ixhwork, char * ref, size_t len,
         ixewk->entry_typ = type;
         ixewk->prt_text = NULL;
         if( (seeidwork != NULL) && (seeidwork->prt_term_len > 0) ) {
-            ixewk->prt_text = mem_alloc( seeidwork->prt_term_len + 1 );
-            ixewk->prt_text[0] = '\0';
-            strcpy( ixewk->prt_text, seeidwork->prt_term );
+            ixewk->prt_text = mem_tokdup( seeidwork->prt_term, seeidwork->prt_term_len );
         }
-        ixewk->u.pageref.page_text = mem_alloc( len + 1);
-        strncpy( ixewk->u.pageref.page_text, ref, len );
-        ixewk->u.pageref.page_text[len] = '\0';
+        ixewk->u.pageref.page_text = mem_tokdup( ref, len );
         ixewk->u.pageref.page_text_len = len;
 
         if( *base == NULL ) {
@@ -434,10 +430,8 @@ ix_h_blk * find_create_ix_h_entry( ix_h_blk * ixhwork, ix_h_blk * ixhbase,
         ixhwk->lower = NULL;
         ixhwk->entry = NULL;
         ixhwk->ix_lvl = lvl;
+        ixhwk->ix_term = mem_tokdup( txt, txtlen );
         ixhwk->ix_term_len = txtlen;
-        ixhwk->ix_term = mem_alloc( txtlen + 1);
-        strncpy( ixhwk->ix_term, txt, txtlen );
-        ixhwk->ix_term[txtlen] = '\0';
         if( printtxt != NULL ) {
             ixhwk->prt_term_len = printtxtlen;
             ixhwk->prt_term = printtxt;

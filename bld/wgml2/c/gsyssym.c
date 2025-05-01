@@ -84,7 +84,7 @@
 #define picka( var, flag )
 #define pickk( var, flag )
 #define pickc( var, flag ) static char syss( var )[2];              // for single char values as string
-#define pickl( var, flag ) static char syss( var )[MAX_L_AS_STR];   // for long as string and sysbxchar
+#define pickl( var, flag ) static char syss( var )[NUM2STR_LENGTH]; // for number as string and sysbxchar
 #include "gsyssym.h"
 #undef pickl
 #undef pickc
@@ -1163,7 +1163,7 @@ static  void    init_date_time( void )
 
 static  void    init_predefined_symbols( void )
 {
-    char    wkstring[MAX_L_AS_STR];
+    char    wkstring[NUM2STR_LENGTH];
 
     add_symvar( global_dict, "amp", "&", no_subscript,
                 is_AMP+predefined );

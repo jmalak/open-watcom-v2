@@ -162,6 +162,50 @@ void *mem_realloc( void * oldp, size_t size )
 
 
 /***************************************************************************/
+/*  duplicate string                                                  */
+/***************************************************************************/
+
+char *mem_strdup( const char *str )
+{
+    size_t  size;
+    char    *p;
+
+    if( str == NULL )
+        str = "";
+    size = strlen( str );
+#ifdef TRMEM
+    p = _trmem_alloc( size + 1, _trmem_guess_who(), handle );
+#else
+    p = malloc( size + 1 );
+#endif
+    if( p == NULL ) {
+        xx_simple_err( err_nomem_avail );
+    }
+    return( strcpy( p, str ) );
+}
+
+/***************************************************************************/
+/*  duplicate token                                                        */
+/***************************************************************************/
+
+char *mem_tokdup( const char *str, int size )
+{
+    char    *p;
+
+#ifdef TRMEM
+    p = _trmem_alloc( size + 1, _trmem_guess_who(), handle );
+#else
+    p = malloc( size + 1 );
+#endif
+    if( p == NULL ) {
+        xx_simple_err( err_nomem_avail );
+    }
+    strncpy( p, str, size );
+    p[size] = '\0';
+    return( p );
+}
+
+/***************************************************************************/
 /*  Free storage                                                           */
 /***************************************************************************/
 

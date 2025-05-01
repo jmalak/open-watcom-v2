@@ -86,7 +86,6 @@
 *                   y_address
 *                   y_size
 *               and a large number of local functions:
-*                   char_convert()
 *                   char_literal()
 *                   df_add()
 *                   df_bad_code()
@@ -373,32 +372,6 @@ static void fb_newline( void )
     return;
 }
 
-/* Function char_convert().
- * This function returns a dynamically-allocated copy of the parameter. If the
- * parameter is a NULL pointer, then it returns a pointer to an empty string.
- *
- * Parameter:
- *      a pointer to the alleged character value.
- *
- * Returns:
- *      a pointer to a dynamically-allocated string.
- */
-
-static char *char_convert( const char *in_val )
-{
-    char    *ret_val = NULL;
-
-    if( in_val == NULL ) {
-        ret_val = mem_alloc( 1 );
-        ret_val[0] = '\0';
-    } else {
-        ret_val = mem_alloc( strlen( in_val ) + 1 );
-        strcpy( ret_val, in_val );
-    }
-
-    return( ret_val );
-}
-
 /* Function output_spaces().
  * This function inserts the spaces, if any, needed to move the print head
  * from its current position to its desired position into the output buffer.
@@ -610,7 +583,7 @@ static void pre_text_output( void )
 
 static void *df_do_nothing_char( void )
 {
-    return( (void *)char_convert( NULL ) );
+    return( (void *)mem_strdup( NULL ) );
 }
 
 /* Function df_do_nothing_num().
@@ -939,7 +912,7 @@ static void *df_wait( void )
 
 static void *df_date( void )
 {
-    return( (void *)char_convert( date_val ) );
+    return( (void *)mem_strdup( date_val ) );
 }
 
 /* Function df_default_width().
@@ -977,7 +950,7 @@ static void *df_font_outname1( void )
 {
     char    *ret_val;
 
-    ret_val = char_convert( wgml_fonts[df_font].bin_font->font_out_name1 );
+    ret_val = mem_strdup( wgml_fonts[df_font].bin_font->font_out_name1 );
 
     return( (void *)ret_val );
 }
@@ -990,7 +963,7 @@ static void *df_font_outname2( void )
 {
     char    *ret_val;
 
-    ret_val = char_convert( wgml_fonts[df_font].bin_font->font_out_name2 );
+    ret_val = mem_strdup( wgml_fonts[df_font].bin_font->font_out_name2 );
 
     return( (void *)ret_val );
 }
@@ -1088,7 +1061,7 @@ static void *df_thickness( void )
 
 static void *df_time( void )
 {
-    return( (void *)char_convert( time_val ) );
+    return( (void *)mem_strdup( time_val ) );
 }
 
 /* Function df_wgml_header().
@@ -1097,7 +1070,7 @@ static void *df_time( void )
 
 static void *df_wgml_header( void )
 {
-    return( (void *)char_convert( wgml_header ) );
+    return( (void *)mem_strdup( wgml_header ) );
 }
 
 /* Function df_x_address().
@@ -1382,7 +1355,7 @@ static void *char_literal( void )
 
     /* Convert the character literal into a char *. */
 
-    ret_val = char_convert( current_df_data.current );
+    ret_val = mem_strdup( current_df_data.current );
     current_df_data.current += count + 1;
 
     return( (void *)ret_val );
@@ -1930,7 +1903,7 @@ static void *df_decimal( void )
 
     /* Convert and return the value. */
 
-    value = mem_alloc( 12 );
+    value = mem_alloc( NUM2STR_LENGTH );
     sprintf( value, "%d", first );
     return( value );
 }
@@ -1974,7 +1947,7 @@ static void *df_getnumsymbol( void )
 {
     char        *name    = NULL;
     parameters  my_parameters;
-    symsub      *sym_val = NULL;
+    symsub      *sym_val;
     uint32_t    ret_val = 0;
 
     /* Extract parameter offset. */
@@ -2008,7 +1981,7 @@ static void *df_getstrsymbol( void )
     char        *name    = NULL;
     char        *ret_val = NULL;
     parameters  my_parameters;
-    symsub      *sym_val = NULL;
+    symsub      *sym_val;
 
     /* Extract parameter offset. */
 
@@ -2022,11 +1995,7 @@ static void *df_getstrsymbol( void )
     /* Now get the symbol's value. */
 
     find_symvar( global_dict, name, no_subscript, &sym_val );
-    if( sym_val == NULL ) {
-        ret_val = char_convert( NULL );
-    } else {
-        ret_val = char_convert( sym_val->value );
-    }
+    ret_val = mem_strdup( ( sym_val == NULL ) ? NULL : sym_val->value );
 
     /* Free the memory allocated to the parameter. */
 
@@ -3574,7 +3543,7 @@ void df_populate_driver_table( void )
 void df_setup( void )
 {
     int         i;
-    symsub  *   sym_val = NULL;
+    symsub      *sym_val;
 
     /* When called, each of symbols "date" and "time" contains either of
      * -- the value set from the system clock; or
@@ -3583,19 +3552,10 @@ void df_setup( void )
      */
 
     find_symvar( global_dict, "date", no_subscript, &sym_val );
-    if( sym_val == NULL ) {
-        date_val = char_convert( NULL );
-    } else {
-        date_val = char_convert( sym_val->value );
-    }
+    date_val = mem_strdup( ( sym_val == NULL ) ? NULL : sym_val->value );
 
-    sym_val = NULL;
     find_symvar( global_dict, "time", no_subscript, &sym_val );
-    if( sym_val == NULL ) {
-        time_val = char_convert( NULL );
-    } else {
-        time_val = char_convert( sym_val->value );
-    }
+    time_val = mem_strdup( ( sym_val == NULL ) ? NULL : sym_val->value );
 
     /* Set has_htab to true if the device defined the :HTAB block. */
 

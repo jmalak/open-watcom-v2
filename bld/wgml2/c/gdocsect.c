@@ -371,7 +371,7 @@ static void gen_rule_head( char * letter )
 
 static void gen_ref_list( ix_e_blk * refs, font_number font )
 {
-    char            buffer[11];
+    char            buffer[NUM2STR_LENGTH];
     ix_e_blk    *   cur_ref;
     uint32_t        predict     = 0;
 
@@ -573,7 +573,7 @@ static void set_cols( doc_pane * a_pane )
 
 static void gen_figlist( void )
 {
-    char            buffer[11];
+    char            buffer[NUM2STR_LENGTH];
     char            postfix[sizeof( buffer ) + 1];
     ffh_entry   *   curr;
     uint32_t        size;
@@ -999,8 +999,8 @@ static void gen_index( void )
 static void gen_toc( void )
 {
     bool            levels[7];              // track levels
-    char            buffer[11];
-    char            postfix[12];
+    char            buffer[NUM2STR_LENGTH];
+    char            postfix[NUM2STR_LENGTH + 1];
     ffh_entry   *   curr;
     int             i;
     int             j;
@@ -1782,9 +1782,9 @@ extern void gml_egdoc( const gmltag * entry )
 /*  :gdoc sec='TOP secret, destroy before reading'                         */
 /***************************************************************************/
 
-extern void gml_gdoc( const gmltag * entry )
+extern void gml_gdoc( const gmltag *entry )
 {
-    char        *   p;
+    char        *p;
 
     (void)entry;
 
@@ -1793,12 +1793,12 @@ extern void gml_gdoc( const gmltag * entry )
     if( *p != '\0' )
         p++;
 
-    SkipSpaces( p );                    // over WS to attribute
-    if( *p != '\0' &&
-        ! (strnicmp( "sec ", p, 4 ) &&  // look for "sec " or "sec="
-           strnicmp( "sec=", p, 4 )) ) {
-        char        quote;
-        char    *   valstart;
+    SkipSpaces( p );                        // over WS to attribute
+    if( *p != '\0'
+      && ( strnicmp( "sec ", p, 4 ) == 0    // look for "sec " or "sec="
+      || strnicmp( "sec=", p, 4 ) == 0 ) ) {
+        char    quote;
+        char    *valstart;
 
         p += 3;
         SkipSpaces( p );
@@ -1806,7 +1806,8 @@ extern void gml_gdoc( const gmltag * entry )
             p++;
             SkipSpaces( p );
         }
-        if( *p == '"' || *p == '\'' ) {
+        if( *p == '"'
+          || *p == '\'' ) {
             quote = *p;
             ++p;
         } else {
@@ -1827,6 +1828,5 @@ extern void gml_gdoc( const gmltag * entry )
     if( !ProcFlags.fb_document_done ) { // the very first section/page
         do_layout_end_processing();
     }
-    return;
 }
 

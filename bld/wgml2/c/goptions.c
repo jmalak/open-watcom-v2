@@ -376,7 +376,7 @@ static void set_bind( option * opt )
 static void set_cpinch( option * opt )
 {
     char    *   p;
-    char        wkstring[MAX_L_AS_STR];
+    char        wkstring[NUM2STR_LENGTH];
 
     if( tokennext == NULL || tokennext->bol ||
         tokennext->token[0] == '(' || is_option() ) {
@@ -881,21 +881,15 @@ static void set_layout( option * opt )
 static void set_outfile( option * opt )
 {
     char    attrwork[MAX_FILE_ATTR];
-    int     len;
 
     if( tokennext == NULL || tokennext->bol || is_option() ) {
         xx_simple_err_cc( err_miss_inv_opt_value, opt->option, "" );
     } else {
-        len = tokennext->toklen;
-        out_file = mem_alloc( len + 1 );
-        strncpy( out_file, tokennext->token, len );
-        out_file[len] = '\0';
+        out_file = mem_tokdup( tokennext->token, tokennext->toklen );
 
         split_attr_file( out_file, attrwork, sizeof( attrwork ) );
-        if( attrwork[0] ) {
-            len = 1 + strlen( attrwork );
-            out_file_attr = mem_alloc( len );
-            strcpy( out_file_attr, attrwork );
+        if( attrwork[0] != '\0' ) {
+            out_file_attr = mem_strdup( attrwork );
         } else {
             out_file_attr = NULL;
         }
@@ -910,8 +904,8 @@ static void set_outfile( option * opt )
 
 static void set_passes( option * opt )
 {
-    char        linestr[MAX_L_AS_STR];
-    char        linestr2[MAX_L_AS_STR];
+    char        linestr[NUM2STR_LENGTH];
+    char        linestr2[NUM2STR_LENGTH];
     char    *   p;
 
     if( tokennext == NULL || tokennext->bol ||
@@ -1681,12 +1675,8 @@ static cmd_tok * process_master_filename( cmd_tok * tok )
 {
     char        attrwork[MAX_FILE_ATTR];
     char    *   p;
-    int         len;
 
-    len = tok->toklen;
-    p = mem_alloc( len + 1 );
-    strncpy( p, tok->token, len );
-    p[len] = '\0';
+    p = mem_tokdup( tok->token, tok->toklen );
     g_info_research( inf_recognized_xxx, "document source file", p );
     strip_quotes( p );
     if( master_fname != NULL ) {         // more than one master file ?
@@ -1694,10 +1684,9 @@ static cmd_tok * process_master_filename( cmd_tok * tok )
         bad_cmd_line( err_doc_duplicate, tok->token, ' ' );
     } else {
         split_attr_file( p , attrwork, sizeof( attrwork ) );
-        if( attrwork[0]  ) {
+        if( attrwork[0] != '\0' ) {
             xx_warn_cc( wng_fileattr_ignored, attrwork, p );
-            master_fname_attr = mem_alloc( 1 + strlen( attrwork ) );
-            strcpy( master_fname_attr, attrwork );
+            master_fname_attr = mem_strdup( attrwork );
         } else {
             master_fname_attr = NULL;
         }
@@ -1718,8 +1707,8 @@ int proc_options( char * string )
 {
     bool        sol;                    // start of line switch
     char        c;
-    char        linestr[MAX_L_AS_STR];
-    char        linestr2[MAX_L_AS_STR];
+    char        linestr[NUM2STR_LENGTH];
+    char        linestr2[NUM2STR_LENGTH];
     char    *   p;
     char    *   s_after_dq;
     cmd_tok *   tok;

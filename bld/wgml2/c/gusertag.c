@@ -173,7 +173,7 @@ static bool check_att_value( gaentry * ga, gtentry * ge, symdict_hdl loc_dict )
 bool process_tag( gtentry * ge, mac_entry * me )
 {
     bool            processed;
-    char            longwork[20];
+    char            longwork[NUM2STR_LENGTH];
     char        *   p;
     char        *   p2;
     char        *   pa;

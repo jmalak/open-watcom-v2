@@ -238,7 +238,7 @@ static  void    del_input_cb_entry( void )
     free_dict( &wk->local_dict );
     if( wk->if_cb != NULL ) {
 //      if( wk->if_cb->if_level > 0 ) {
-//          char    linestr[MAX_L_AS_STR];
+//          char    linestr[NUM2STR_LENGTH];
 //
 //          sprintf( linestr, "%d", wk->if_cb->if_level );
 //          xx_err_c( err_if_level, linestr );
@@ -505,7 +505,7 @@ static  void    proc_input( char * filename )
 
             if( !get_line( true ) ) {
                 if( ProcFlags.goto_active ) {   // goto active at EOF
-                    char    linestr[MAX_L_AS_STR];
+                    char    linestr[NUM2STR_LENGTH];
 
                     ProcFlags.goto_active = false;
                     if( input_cbs->fmflags & II_tag_mac ) {
@@ -655,10 +655,11 @@ static  void    proc_input( char * filename )
 
 static  void    print_stats( clock_t duration_ticks )
 {
-    char            linestr[30];
+    char            linestr[NUM2STR_LENGTH];
     char            linestr2[30];
     ldiv_t          hour_min;
     ldiv_t          sec_frac;
+    unsigned long   peak;
 
     g_info_lm( inf_stat_0 );
 
@@ -682,23 +683,18 @@ static  void    print_stats( clock_t duration_ticks )
     sprintf( linestr, "%d", err_count ? 8 : wng_count ? 4 : 0 );
     g_info_lm( inf_stat_5, linestr );
 
-    {
-        unsigned long   peak;
-        char            numstr[30];
-
-        peak = mem_get_peak_usage();
-        if( peak ) {
-            sprintf( numstr, "%lu", peak );
-            g_info_lm( inf_stat_6, numstr );
-        }
+    peak = mem_get_peak_usage();
+    if( peak ) {
+        sprintf( linestr2, "%lu", peak );
+        g_info_lm( inf_stat_6, linestr2 );
     }
 
     // convert duration from clock ticks to HH:MM:SS.hh
     hour_min = ldiv( duration_ticks / CLOCKS_PER_SEC / 60L, 60L );
     sec_frac  = ldiv( duration_ticks, CLOCKS_PER_SEC );
-    sprintf( linestr, "%02d:%02d:%02d.%02d",
+    sprintf( linestr2, "%02d:%02d:%02d.%02d",
         (int)hour_min.quot, (int)hour_min.rem, (int)(sec_frac.quot % 60), (int)(sec_frac.rem / 10) );
-    g_info_lm( inf_stat_7, linestr );
+    g_info_lm( inf_stat_7, linestr2 );
 }
 
 
