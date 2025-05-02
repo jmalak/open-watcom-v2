@@ -520,7 +520,7 @@ static cop_font * find_cop_font( char const * in_name )
     cop_font    *   retval  = NULL;
 
     for( current = bin_fonts; current != NULL; current = current->next_font ) {
-        if( !stricmp( in_name, current->defined_name ) ) {
+        if( stricmp( in_name, current->defined_name ) == 0 ) {
             retval = current;
             break;
         }
@@ -561,7 +561,7 @@ static device_font * find_dev_font( char const * in_name )
 
     current = &bin_device->devicefonts;
     for( i = 0; i < current->font_count; i++ ) {
-        if( !stricmp( in_name, current->fonts[i].font_name ) ) {
+        if( stricmp( in_name, current->fonts[i].font_name ) == 0 ) {
             retval = &current->fonts[i];
             break;
         }
@@ -596,7 +596,7 @@ static fontstyle_block * find_style( char const * in_name )
 
     current = &bin_driver->fontstyles;
     for( i = 0; i < current->count; i++ ) {
-        if( !stricmp( in_name, current->fontstyleblocks[i].type ) ) {
+        if( stricmp( in_name, current->fontstyleblocks[i].type ) == 0 ) {
             retval = &current->fontstyleblocks[i];
             break;
         }
@@ -631,7 +631,7 @@ static fontswitch_block * find_switch( char const * in_name )
 
     current = &bin_driver->fontswitches;
     for( i = 0; i < current->count; i++ ) {
-        if( !stricmp( in_name, current->fontswitchblocks[i].type ) ) {
+        if( stricmp( in_name, current->fontswitchblocks[i].type ) == 0 ) {
             retval = &current->fontswitchblocks[i];
             break;
         }
@@ -864,7 +864,7 @@ void cop_setup( void )
         } else {
             gen_cnt++;
             if( bin_device->underscore.specified_font && (bin_device->underscore.font_name != NULL) ) {
-                if( stricmp( bin_device->box.font_name, bin_device->underscore.font_name ) ) {
+                if( stricmp( bin_device->box.font_name, bin_device->underscore.font_name ) != 0 ) {
                     gen_cnt++;
                 }
             }

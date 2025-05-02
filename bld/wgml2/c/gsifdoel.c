@@ -494,11 +494,11 @@ void    scr_if( void )
                     continue;           // do next conditions
                 }
             } else {
-                if( !strnicmp( scan_start, "and ", 4 ) ) {
+                if( !strnicmp( "and ", scan_start, 4 ) ) {
                     logical = AND;
                     scan_start += 4;
                     continue;           // do next conditions
-                } else if( !strnicmp( scan_start, "or ", 3 ) ) {
+                } else if( !strnicmp( "or ", scan_start, 3 ) ) {
                         logical = OR;
                         scan_start += 3;
                         continue;       // do next conditions
@@ -699,7 +699,7 @@ void    scr_do( void )
     cc = getarg();
 
     cb->if_flags[cb->if_level].ifcwdo = false;
-    if( cc == omit || !strnicmp( tok_start, "begin", 5 )) {
+    if( cc == omit || strnicmp( "begin", tok_start, 5 ) == 0 ) {
         if( !(cb->if_flags[cb->if_level].ifthen
             || cb->if_flags[cb->if_level].ifelse)
             || cb->if_flags[cb->if_level].ifdo ) {
@@ -714,7 +714,7 @@ void    scr_do( void )
         scan_restart = scan_stop + 1;
         return;
     } else {
-        if( !strnicmp( tok_start, "end", 3 )) {
+        if( strnicmp( "end", tok_start, 3 ) == 0 ) {
             if( (input_cbs->fmflags & II_research) && GlobalFlags.firstpass ) {
                 show_ifcb( "doend", cb );
             }

@@ -313,7 +313,7 @@ static bool split_input_buffer( void )
         /*******************************************************************/
 
         if( (*buff2 == GML_char)
-          && strnicmp( buff2 + 1, "cmt.", 4 ) == 0 ) {
+          && strnicmp( "cmt.", buff2 + 1, 4 ) == 0 ) {
             return( false );
         }
 
@@ -341,7 +341,7 @@ static bool split_input_buffer( void )
             } else {
                 k = 1;
             }
-            if( strnicmp( buff2 + k, "dm ", 3 ) == 0 ) {
+            if( strnicmp( "dm ", buff2 + k, 3 ) == 0 ) {
                 return( false );
             }
 

@@ -74,7 +74,7 @@ void    gml_binclude( const gmltag * entry )
             if( ProcFlags.reprocess_line ) {
                 break;
             }
-            if( !strnicmp( "file", p, 4 ) ) {
+            if( strnicmp( "file", p, 4 ) == 0 ) {
                 p += 4;
                 p = get_value( p );
                 if( AttrFlags.file ) {
@@ -99,7 +99,7 @@ void    gml_binclude( const gmltag * entry )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( !strnicmp( "depth", p, 5 ) ) {
+            } else if( strnicmp( "depth", p, 5 ) == 0 ) {
                 p += 5;
                 p = get_value( p );
                 if( AttrFlags.depth ) {
@@ -120,7 +120,7 @@ void    gml_binclude( const gmltag * entry )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( !strnicmp( "reposition", p, 10 ) ) {
+            } else if( strnicmp( "reposition", p, 10 ) == 0 ) {
                 p += 10;
                 p = get_value( p );
                 if( AttrFlags.reposition ) {
@@ -131,9 +131,9 @@ void    gml_binclude( const gmltag * entry )
                 if( g_att_val.val_name == NULL ) {
                     break;
                 }
-                if( !strnicmp( "start", g_att_val.val_name, 5 ) ) {
+                if( strnicmp( "start", g_att_val.val_name, 5 ) == 0 ) {
                     reposition = true;  // moving following text down by depth
-                } else if( !strnicmp( "end", g_att_val.val_name, 3 ) ) {
+                } else if( strnicmp( "end", g_att_val.val_name, 3 ) == 0 ) {
                     reposition = false; // device at proper position after insertion
                 } else {
                     xx_line_err_c( err_inv_att_val, g_att_val.val_name );

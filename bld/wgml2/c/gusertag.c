@@ -125,7 +125,7 @@ static bool check_att_value( gaentry * ga, gtentry * ge, symdict_hdl loc_dict )
             }
         }
         if( valp != NULL ) {
-            if( !strcmp( token_buf, valp ) ) {
+            if( strcmp( token_buf, valp ) == 0 ) {
                 scan_err = false;       // value is allowed
                 break;
             }

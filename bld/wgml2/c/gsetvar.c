@@ -283,7 +283,7 @@ void    scr_se( void )
     scan_err = false;
     p = scan_sym( scan_start, &sym, &subscript, NULL, false );
 
-    if( strcmp( sym.name, MAC_STAR_NAME ) != 0 ) {  // remove trailing blanks from all symbols except *
+    if( strcmp( MAC_STAR_NAME, sym.name ) != 0 ) {  // remove trailing blanks from all symbols except *
         valstart = p;
         for( len = strlen( p ); len-- > 0; ) {
             if( p[len] != ' ' ) {

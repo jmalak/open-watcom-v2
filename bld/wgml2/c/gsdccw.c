@@ -336,17 +336,17 @@ void    scr_dc( void )
     } else if( o_len == 1 ) {           // option malformed
         xx_line_err_cc( err_parm_invalid, o_p, o_p );
     } else if( o_len == 2 ) {           // BS CW LB LI PS RB TB TI
-        if( !strnicmp( o_p, "BS", 2 ) ) {
+        if( strnicmp( "BS", o_p, 2 ) == 0 ) {
             xx_line_warn_cc( wng_dc_opt, o_p, o_p );
             scan_restart = v_p + v_len;
-        } else if( !strnicmp( o_p, "CW", 2 ) ) {
+        } else if( strnicmp( "CW", o_p, 2 ) == 0 ) {
             if( v_len == 0 ) {
                 c = ';';                    // default is ;
             } else if( v_len == 1 ) {
                 c = *v_p;
             } else if( v_len > 2 ) {
                 if( v_len == 3 ) {
-                    if( strnicmp( v_p, "OFF", 3 ) ) {
+                    if( strnicmp( "OFF", v_p, 3 ) != 0 ) {
                         xx_line_err_ci( err_dc_not_off, v_p, v_len );  // only OFF is valid
                     }
                     c = '\0';                   // OFF is 0
@@ -359,25 +359,25 @@ void    scr_dc( void )
             scan_restart = v_p + v_len;
             CW_sep_char = c;
             add_to_sysdir( "$cw", CW_sep_char );
-        } else if( !strnicmp( o_p, "LB", 2 ) ) {
+        } else if( strnicmp( "LB", o_p, 2 ) == 0 ) {
             xx_line_warn_cc( wng_dc_opt, o_p, o_p );
             scan_restart = v_p + v_len;
-        } else if( !strnicmp( o_p, "LI", 2 ) ) {
+        } else if( strnicmp( "LI", o_p, 2 ) == 0 ) {
             xx_line_warn_cc( wng_dc_opt, o_p, o_p );
             scan_restart = v_p + v_len;
-        } else if( !strnicmp( o_p, "PS", 2 ) ) {
+        } else if( strnicmp( "PS", o_p, 2 ) == 0 ) {
             xx_line_warn_cc( wng_dc_opt, o_p, o_p );
             scan_restart = v_p + v_len;
-        } else if( !strnicmp( o_p, "RB", 2 ) ) {
+        } else if( strnicmp( "RB", o_p, 2 ) == 0 ) {
             xx_line_warn_cc( wng_dc_opt, o_p, o_p );
-        } else if( !strnicmp( o_p, "TB", 2 ) ) {
+        } else if( strnicmp( "TB", o_p, 2 ) == 0 ) {
             if( v_len == 0 ) {
                 c = 0x09;                       // default is 0x09
             } else if( v_len == 1 ) {
                 c = *v_p;
             } else if( v_len > 2 ) {
                 if( v_len == 3 ) {
-                    if( strnicmp( v_p, "OFF", 3 ) ) {
+                    if( strnicmp( "OFF", v_p, 3 ) != 0 ) {
                         xx_line_err_ci( err_dc_not_off, v_p, v_len );  // only OFF is valid
                     }
                     c = 0x09;                   // OFF is 0x09
@@ -394,21 +394,21 @@ void    scr_dc( void )
             string[0] = c;
             add_to_sysdir( "$tb", tab_char );
             add_to_sysdir( "$tab", tab_char );
-        } else if( !strnicmp( o_p, "TI", 2 ) ) {
+        } else if( strnicmp( "TI", o_p, 2 ) == 0 ) {
             xx_line_warn_cc( wng_dc_opt, o_p, o_p );
             scan_restart = v_p + v_len;
         } else {
             xx_line_err_cc( err_parm_invalid, o_p, o_p );  // option invalid
         }
     } else if( o_len == 3 ) {           // GML IXB IXI IXJ MCS PIX SUB SUP
-        if( !strnicmp( o_p, "GML", 3 ) ) {
+        if( strnicmp( "GML", o_p, 3 ) == 0 ) {
             if( v_len == 0 ) {
                 c = ' ';                        // default is blank
             } else if( v_len == 1 ) {
                 c = *v_p;
             } else if( v_len > 2 ) {
                 if( v_len == 3 ) {
-                    if( strnicmp( v_p, "OFF", v_len ) ) {
+                    if( strnicmp( "OFF", v_p, v_len ) != 0 ) {
                         xx_line_err_ci( err_dc_not_off, v_p, v_len );  // only OFF is valid
                     }
                     c = ' ';                    // OFF is blank
@@ -425,39 +425,39 @@ void    scr_dc( void )
             string[0] = c;
             add_symvar( global_dict, "gml", string, no_subscript, predefined );
             add_to_sysdir( "$gml", GML_char );
-        } else if( !strnicmp( o_p, "IXB", 3 ) ) {
+        } else if( strnicmp( "IXB", o_p, 3 ) == 0 ) {
             xx_line_warn_cc( wng_dc_opt, o_p, o_p );
             scan_restart = v_p + v_len;
-        } else if( !strnicmp( o_p, "IXI", 3 ) ) {
+        } else if( strnicmp( "IXI", o_p, 3 ) == 0 ) {
             xx_line_warn_cc( wng_dc_opt, o_p, o_p );
             scan_restart = v_p + v_len;
-        } else if( !strnicmp( o_p, "IXJ", 3 ) ) {
+        } else if( strnicmp( "IXJ", o_p, 3 ) == 0 ) {
             xx_line_warn_cc( wng_dc_opt, o_p, o_p );
             scan_restart = v_p + v_len;
-        } else if( !strnicmp( o_p, "MCS", 3 ) ) {
+        } else if( strnicmp( "MCS", o_p, 3 ) == 0 ) {
             xx_line_warn_cc( wng_dc_opt, o_p, o_p );
             scan_restart = v_p + v_len;
-        } else if( !strnicmp( o_p, "PIX", 3 ) ) {
+        } else if( strnicmp( "PIX", o_p, 3 ) == 0 ) {
             xx_line_warn_cc( wng_dc_opt, o_p, o_p );
             scan_restart = v_p + v_len;
-        } else if( !strnicmp( o_p, "SUB", 3 ) ) {
+        } else if( strnicmp( "SUB", o_p, 3 ) == 0 ) {
             xx_line_warn_cc( wng_dc_opt, o_p, o_p );
             scan_restart = v_p + v_len;
-        } else if( !strnicmp( o_p, "SUP", 3 ) ) {
+        } else if( strnicmp( "SUP", o_p, 3 ) == 0 ) {
             xx_line_warn_cc( wng_dc_opt, o_p, o_p );
             scan_restart = v_p + v_len;
         } else {
             xx_line_err_cc( err_parm_invalid, o_p, o_p );  // option invalid
         }
     } else if( o_len == 4 ) {           // CONT HYPH HYTR LINB PUNC STOP WORD
-        if( !strnicmp( o_p, "CONT", 4 ) ) {
+        if( strnicmp( "CONT", o_p, 4 ) == 0 ) {
             if( v_len == 0 ) {
                 c = ' ';                        // default is blank
             } else if( v_len == 1 ) {
                 c = *v_p;
             } else if( v_len > 2 ) {
                 if( v_len == 3 ) {
-                    if( strnicmp( v_p, "OFF", 3 ) ) {
+                    if( strnicmp( "OFF", v_p, 3 ) != 0 ) {
                         xx_line_err_ci( err_dc_not_off, v_p, v_len );  // only OFF is valid
                     }
                     c = ' ';                    // OFF is blank
@@ -472,19 +472,19 @@ void    scr_dc( void )
             scan_restart = v_p + v_len;
             CONT_char = c;
             add_to_sysdir( "$cont", CONT_char );
-        } else if( !strnicmp( o_p, "HYPH", 4 ) ) {
+        } else if( strnicmp( "HYPH", o_p, 4 ) == 0 ) {
             xx_line_warn_cc( wng_dc_opt, o_p, o_p );
             scan_restart = v_p + v_len;
-        } else if( !strnicmp( o_p, "HYTR", 4 ) ) {
+        } else if( strnicmp( "HYTR", o_p, 4 ) == 0 ) {
             xx_line_warn_cc( wng_dc_opt, o_p, o_p );
             scan_restart = v_p + v_len;
-        } else if( !strnicmp( o_p, "LINB", 4 ) ) {
+        } else if( strnicmp( "LINB", o_p, 4 ) == 0 ) {
             xx_line_warn_cc( wng_dc_opt, o_p, o_p );
             scan_restart = v_p + v_len;
-        } else if( !strnicmp( o_p, "PUNC", 4 ) ) {
+        } else if( strnicmp( "PUNC", o_p, 4 ) == 0 ) {
             xx_line_warn_cc( wng_dc_opt, o_p, o_p );
             scan_restart = v_p + v_len;
-        } else if( !strnicmp( o_p, "STOP", 4 ) ) {
+        } else if( strnicmp( "STOP", o_p, 4 ) == 0 ) {
 
             /***************************************************************************/
             /*  when the documentation refers to "script", this may be quite literal:  */
@@ -497,14 +497,14 @@ void    scr_dc( void )
             /***************************************************************************/
 
             scan_restart = v_p + v_len;
-        } else if( !strnicmp( o_p, "WORD", 4 ) ) {
+        } else if( strnicmp( "WORD", o_p, 4 ) == 0 ) {
             xx_line_warn_cc( wng_dc_opt, o_p, o_p );
             scan_restart = v_p + v_len;
         } else {
             xx_line_err_cc( err_parm_invalid, o_p, o_p );  // option invalid
         }
     } else if( o_len == 5 ) {           // XTEXT
-        if( !strnicmp( o_p, "XTEXT", 5 ) ) {
+        if( strnicmp( "XTEXT", o_p, 5 ) == 0 ) {
             xx_line_warn_cc( wng_dc_opt, o_p, o_p );
             scan_restart = v_p + v_len;
         } else {

@@ -130,7 +130,7 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
                 break;
             }
 
-            if( !strnicmp( "id", p, 2 ) ) {
+            if( strnicmp( "id", p, 2 ) == 0 ) {
                 p += 2;
                 p = get_refid_value( p, id );
                 if( val_start == NULL ) {
@@ -145,7 +145,7 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( !strnicmp( "refid", p, 5 ) ) {
+            } else if( strnicmp( "refid", p, 5 ) == 0 ) {
                 p += 5;
                 p = get_refid_value( p, refid );
                 if( val_start == NULL ) {
@@ -165,7 +165,7 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( !strnicmp( "pg", p, 2 ) ) {
+            } else if( strnicmp( "pg", p, 2 ) == 0 ) {
                 p += 2;
                 p = get_att_value( p );
 
@@ -176,11 +176,11 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
                 if( (hx_lvl == 0) || (hxstring[2] == lvlc) ) {
                     pgseen = true;
                     if( quote_char == '\0' ) {  // value not quoted
-                        if( !strnicmp( "start", val_start, 5 ) ) {
+                        if( strnicmp( "start", val_start, 5 ) == 0 ) {
                             pgvalue = pgstart;
-                        } else if( !strnicmp( "end", val_start, 3 ) ) {
+                        } else if( strnicmp( "end", val_start, 3 ) == 0 ) {
                             pgvalue = pgend;
-                        } else if( !strnicmp( "major", val_start, 5 ) ) {
+                        } else if( strnicmp( "major", val_start, 5 ) == 0 ) {
                             pgvalue = pgmajor;
                         }
                     }
@@ -196,7 +196,7 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( !strnicmp( "print", p, 5 ) ) {
+            } else if( strnicmp( "print", p, 5 ) == 0 ) {
                 p += 5;
                 p = get_att_value( p );
 
@@ -215,7 +215,7 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( !strnicmp( "seeid", p, 5 ) ) {
+            } else if( strnicmp( "seeid", p, 5 ) == 0 ) {
                 p += 5;
                 p = get_refid_value( p, seeid );
                 if( val_start == NULL ) {
@@ -236,7 +236,7 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( !strnicmp( "see", p, 3 ) ) {
+            } else if( strnicmp( "see", p, 3 ) == 0 ) {
                 p += 3;
                 p = get_att_value( p );
 
@@ -255,7 +255,7 @@ static void gml_ixxx_common( const gmltag * entry, int hx_lvl )
                 if( ProcFlags.tag_end_found ) {
                     break;
                 }
-            } else if( !strnicmp( "ix", p, 2 ) ) {
+            } else if( strnicmp( "ix", p, 2 ) == 0 ) {
                 p += 2;
                 p = get_att_value( p );
                 gn.argstart = val_start;

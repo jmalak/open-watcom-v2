@@ -188,7 +188,7 @@ static void scan_gml( void )
 
     if( GlobalFlags.firstpass && (cb->fmflags & II_research) ) {
 
-        if(  stricmp( tok_start + 1, "cmt" ) ) {   // quiet for :cmt.
+        if( stricmp( "cmt", tok_start + 1 ) != 0 ) {   // quiet for :cmt.
 
             if( cb->fmflags & II_tag_mac ) {
                 printf_research( "L%d    %c%s tag found in macro %s(%d)\n\n",
@@ -280,7 +280,7 @@ static void scan_gml( void )
             tag = find_sys_tag( tok_upper, toklen );
             if( tag != NULL ) {
                 if( GlobalFlags.firstpass
-                  && strcmp(tok_upper, "LAYOUT" ) == 0
+                  && strcmp( "LAYOUT", tok_upper ) == 0
                   && ProcFlags.fb_document_done ) {
                     xx_err( err_lay_too_late );
                 }
@@ -301,7 +301,7 @@ static void scan_gml( void )
                 /*******************************************************************/
 
                 if( (tag->tagclass & (ip_start_tag | ip_end_tag | index_tag)) == 0
-                  && strcmp( tag->tagname, "SET") ) {
+                  && strcmp( "SET", tag->tagname ) != 0 ) {
                     ProcFlags.force_pc = false;
                 }
 
@@ -596,7 +596,7 @@ static void     scan_script( void )
             }
             ProcFlags.CW_noblank = false;           // blank after CW is default
             if( ProcFlags.literal  ) {              // .li active
-                if( !strcmp( token_buf, "li" ) ) {  // .li
+                if( strcmp( "li", token_buf ) == 0 ) {  // .li
                     ProcFlags.CW_noblank = (*p != ' ');
                     scan_start = p; // found, process
                     scr_kwds[k].tagproc();
@@ -937,7 +937,7 @@ const gmltag *find_sys_tag( char *token, size_t toklen )
 
     for( k = 0; k < GML_TAGMAX; ++k ) {
         if( toklen == gml_tags[k].taglen ) {
-            if( !stricmp( gml_tags[k].tagname, token ) ) {
+            if( stricmp( gml_tags[k].tagname, token ) == 0 ) {
                 return( &gml_tags[k] );
             }
         }
@@ -958,7 +958,7 @@ const gmltag *find_lay_tag( char *token, size_t toklen )
 
     for( k = 0; k < LAY_TAGMAX; ++k ) {
         if( toklen == lay_tags[k].taglen ) {
-            if( !stricmp( lay_tags[k].tagname, token ) ) {
+            if( stricmp( lay_tags[k].tagname, token ) == 0 ) {
                 return( &lay_tags[k] );
             }
         }

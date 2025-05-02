@@ -105,7 +105,7 @@ cop_file_type parse_header( FILE *fp )
     }
 
     text_version[0x0b] = '\0';
-    if( strcmp( text_version, "V4.1 PC/DOS" ) ) {
+    if( strcmp( "V4.1 PC/DOS", text_version ) != 0 ) {
         return( not_bin_dev );
     }
 

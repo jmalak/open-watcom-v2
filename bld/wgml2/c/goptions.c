@@ -247,7 +247,7 @@ static int get_num_value( const char *p )
 
 static void ign_option( option * opt )
 {
-    if( strcmp( opt->option, "wscript" ) ) {// ignore wscript without msg
+    if( strcmp( "wscript", opt->option ) != 0 ) {   // ignore wscript without msg
         xx_warn_c( wng_ign_option, opt->option );
     }
     if( opt->parmcount > 0 ) {
@@ -675,7 +675,7 @@ static void set_font( option * opt )
         pts[4] = '\0';
         len = opts[0]->toklen;
         p = opts[0]->token;
-        if( !strcmp( p, "''" ) ) {
+        if( strcmp( "''", p ) == 0 ) {
             for( i = 0; i < 4; i++ ) pts[i] = '0';
             pts[4] = '\0';
             len = opts[1]->toklen;
@@ -755,7 +755,7 @@ static void set_font( option * opt )
         }
         *pw = '\0';
 
-        if( !strcmp( opts[1]->token, "''" ) ) {
+        if( strcmp( "''", opts[1]->token ) == 0 ) {
             for( i = 0; i < 4; i++ ) pts[i] = '0';
             pts[4] = '\0';
             len = opts[2]->toklen;

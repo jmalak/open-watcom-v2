@@ -1419,7 +1419,7 @@ static void *df_cancel( void )
     first = process_parameter();
 
     if( wgml_fonts[df_font].font_style != NULL ) {
-        if( !stricmp( first, wgml_fonts[df_font].font_style->type ) ) {
+        if( stricmp( first, wgml_fonts[df_font].font_style->type ) == 0 ) {
             if( wgml_fonts[df_font].font_style->startvalue != NULL ) {
                 df_interpret_driver_functions( wgml_fonts[df_font].font_style->startvalue->text );
             }
@@ -1427,7 +1427,7 @@ static void *df_cancel( void )
     }
 
     if( wgml_fonts[df_font].font_switch != NULL ) {
-        if( !stricmp( first, wgml_fonts[df_font].font_switch->type ) ) {
+        if( stricmp( first, wgml_fonts[df_font].font_switch->type ) == 0 ) {
             if( wgml_fonts[df_font].font_switch->startvalue != NULL ) {
                 df_interpret_driver_functions( wgml_fonts[df_font].font_switch->startvalue->text );
             }
@@ -1793,7 +1793,7 @@ static void *df_ifeqs( void )
 
     /* if_eqs: skip the controlled functions if the values are not equal. */
 
-    if( strcmp( first, second ) )
+    if( strcmp( first, second ) != 0 )
         skip_functions();
 
     /* Free the memory allocated to produce the parameters */
@@ -1839,7 +1839,8 @@ static void *df_ifnes( void )
 
     /* if_nes: skip the controlled functions if the values are equal. */
 
-    if( !strcmp( first, second ) ) skip_functions();
+    if( strcmp( first, second ) == 0 )
+        skip_functions();
 
     /* Free the memory allocated to produce the parameters */
 
@@ -2480,7 +2481,7 @@ static void fb_font_switch( void )
             df_font = desired_state.font;
             to_string = df_font_outname1();
             if( !do_now )
-                do_now = ( strcmp( from_string, to_string ) );
+                do_now = ( strcmp( from_string, to_string ) != 0 );
             mem_free( from_string );
             mem_free( to_string );
         }
@@ -2494,7 +2495,7 @@ static void fb_font_switch( void )
             df_font = desired_state.font;
             to_string = df_font_outname2();
             if( !do_now )
-                do_now = ( strcmp( from_string, to_string ) );
+                do_now = ( strcmp( from_string, to_string ) != 0 );
             mem_free( from_string );
             mem_free( to_string );
         }
@@ -2508,7 +2509,7 @@ static void fb_font_switch( void )
             df_font = desired_state.font;
             to_string = df_font_resident();
             if( !do_now )
-                do_now = ( strcmp( from_string, to_string ) );
+                do_now = ( strcmp( from_string, to_string ) != 0 );
             mem_free( from_string );
             mem_free( to_string );
         }

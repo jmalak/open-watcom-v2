@@ -288,7 +288,7 @@ int find_symvar( symdict_hdl dict, char * name, sub_index sub, symsub **symsubva
 
     while( wk != NULL) {
         dict->compares++;
-        if( !strcmp( wk->name, name ) ) {
+        if( strcmp( wk->name, name ) == 0 ) {
             if( wk->flags & deleted ) {
                 break;                  // symbol name is deleted
             }
@@ -404,7 +404,7 @@ static  int find_symvar_del( symdict_hdl dict, char *name, sub_index sub,
 
     while( wk != NULL) {
         dict->compares++;
-        if( !strcmp( wk->name, name ) ) {
+        if( strcmp( wk->name, name ) == 0 ) {
             if( wk->flags & deleted ) {
                 *delentry = wk;
                 rc = -1;                // deleted symbol found
@@ -665,7 +665,7 @@ int add_symvar_addr( symdict_hdl dict, char * name, char * val,
         case 2 :              // symbol + subscript found, or not subscripted
             newsub->base->flags &= ~deleted;// reset deleted switch
             newsub->base->flags |= f;   // use flags given
-            if( (newsub->base->flags & ro) || !strcmp( newsub->value, val ) ) {
+            if( (newsub->base->flags & ro) || strcmp( newsub->value, val ) == 0 ) {
                 ;             // do nothing var is readonly or value is unchanged
             } else {
                 if( strlen( newsub->value ) < strlen( val ) ) { // need more room

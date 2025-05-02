@@ -170,7 +170,7 @@ ref_entry   * find_refid( ref_entry * dict, const char * name )
     wk = NULL;
     if( strlen( name ) > 0 ) {          // don't match case with no id
         for( curr = dict; curr != NULL; curr = curr->next ) {
-            if( !strcmp( curr->id, name ) ) {
+            if( strcmp( curr->id, name ) == 0 ) {
                 wk = curr;
                 break;
             }
@@ -197,8 +197,8 @@ void    print_ref_dict( ref_entry * dict, const char * type )
     cnt = 0;
     if( dict != NULL ) {
         out_msg( "\nList of %s entries:\n\n", type );
-        if( strcmp( "INDEX", type ) ) {
-            withnumber = strcmp( "HDREF", type );   // true for :FIG and :FN
+        if( strcmp( "INDEX", type ) != 0 ) {
+            withnumber = ( strcmp( "HDREF", type ) != 0 );   // true for :FIG and :FN
             for( wk = dict; wk != NULL; wk = wk->next ) {
                 len = strlen( wk->id );
                 if( withnumber ) {

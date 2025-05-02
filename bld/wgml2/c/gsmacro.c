@@ -471,8 +471,8 @@ void    scr_dm( void )
     *p   = '\0';
     macro_line_count = 0;
 
-    compend   = !stricmp( tok_start, "end" );
-    compbegin = !stricmp( tok_start, "begin" );
+    compend   = stricmp( "end", tok_start ) == 0;
+    compbegin = stricmp( "begin", tok_start ) == 0;
     if( !(compbegin | compend) ) { // only .dm macname /line1/line2/ possible
         char    sepchar;
 
@@ -581,7 +581,7 @@ void    scr_dm( void )
                         p = scan_start;
                         save = *p;
                         *p = '\0';
-                        if( stricmp( tok_start, "end") ) {
+                        if( stricmp( "end", tok_start ) != 0 ) {
                             // SC--002 The control word parameter '%s' is invalid
                             xx_source_err_c( err_mac_def_inv, tok_start );
                         }
