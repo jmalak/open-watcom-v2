@@ -227,7 +227,7 @@ cdsay .
 [ INCLUDE "<OWROOT>/bld/hlpview/builder.ctl" ]
 # Build help compilers
 [ IFDEF <OWNEWWGML> 1 ]
-[ INCLUDE "<OWROOT>/bld/wgml/builder.ctl" ]
+[ INCLUDE "<OWROOT>/bld/wgml2/builder.ctl" ]
 [ ENDIF ]
 [ INCLUDE "<OWROOT>/bld/hcdos/builder.ctl" ]
 [ INCLUDE "<OWROOT>/bld/hcwin/builder.ctl" ]
