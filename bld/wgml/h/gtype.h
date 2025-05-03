@@ -47,8 +47,9 @@
 #define TAG_NAME_LENGTH 15              // :tag name length
 #define SYM_NAME_LENGTH 10              // symbol name length
 
-#define LINENO_MAX  ( _UI32_MAX - 1 )
+#define LINENO_MAX      ( _UI32_MAX - 1 )
 
+#define SEEK_POSBACK(x) (-(long)(x))
 
 /***************************************************************************/
 /*  Space units Horiz + Vert              to be redesigned      TBD        */

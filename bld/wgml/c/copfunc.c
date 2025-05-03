@@ -175,7 +175,7 @@ p_buffer * get_p_buffer( FILE * in_file )
 
     /* Rewind the file by 81 bytes per P-buffer plus 1. */
 
-    fseek( in_file, -1 * ((81 * p_count) + 1), SEEK_CUR );
+    fseek( in_file, SEEK_POSBACK( 81 * p_count + 1 ), SEEK_CUR );
     if( ferror( in_file ) || feof( in_file ) )
         return( out_buffer );
 
