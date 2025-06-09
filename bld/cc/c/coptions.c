@@ -459,7 +459,7 @@ static void AnalyseAnyTargetOptions( OPT_STORAGE *data )
         GenSwitches &= ~CGSW_GEN_NO_OPTIMIZATION;
         break;
     case OPT_ENUM_opt_size_time_default:
-        // OptSize = 50; default value
+        OptSize = 50; /* default value */
         break;
     default:
         DbgNever();
