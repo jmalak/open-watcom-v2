@@ -40,7 +40,7 @@
 #ifdef __QNX__
     #include "slibqnx.h"
 #endif
-#include "exitwmsg.h"
+#include "clibsupp.h"
 #include "iofhdr.h"
 #include "fltsupp.h"
 
@@ -48,7 +48,7 @@ extern "C" {
 
 static void _no_support_loaded( void )
 {
-    _plib_fatal( "C++ floating-point support not loaded", 1 );
+    __clib_fatal( "C++ floating-point support not loaded", 1 );
     // never return
 }
 

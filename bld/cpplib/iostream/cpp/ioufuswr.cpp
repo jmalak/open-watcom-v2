@@ -37,7 +37,8 @@
 #include <iostream>
 #endif
 #include "ioutil.h"
-#include "liballoc.h"
+#include "clibsupp.h"
+
 
 void *__WATCOM_ios::find_user_word( std::ios *pios, int index ) {
 
@@ -62,7 +63,7 @@ void *__WATCOM_ios::find_user_word( std::ios *pios, int index ) {
 // values we need.
 // "last_wptr" points at the last group of values.
 
-    wptr = (ios_word_values *)_plib_malloc( sizeof( ios_word_values )
+    wptr = (ios_word_values *)__clib_malloc( sizeof( ios_word_values )
                                    + index * sizeof( ipvalue ) );
     if( wptr == NULL ) {
         return( NULL );

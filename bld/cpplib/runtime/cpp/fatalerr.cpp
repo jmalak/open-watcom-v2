@@ -33,7 +33,7 @@
 
 #include "cpplib.h"
 #include <cstdlib>
-#include "exitwmsg.h"
+#include "clibsupp.h"
 
 
 extern "C"
@@ -42,6 +42,6 @@ void CPPLIB( fatal_runtime_error )( // FATAL RUNTIME ERROR
     char *msg,                      // - diagnostic message
     int code )                      // - exit code
 {
-    _plib_fatal( msg, code );
+    __clib_fatal( msg, code );
     // never return
 }
