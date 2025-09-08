@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-*  Copyright (c) 2004-2010 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2004-2025 The Open Watcom Contributors. All Rights Reserved.
 *
 *  ========================================================================
 *
@@ -61,7 +61,6 @@ global char         *g_tok_start;       // start of scanned token
 global unsigned     arg_flen;           // arg length
 global locflags     rs_loc;             // restricted location
 
-global int          switch_char;        // DOS switch character
 global char         *alt_ext;           // alternate extension
 global char         *def_ext;           // default extension
 global char         ampchar;            // symbol substitution/attribute/function marker
@@ -133,8 +132,6 @@ global global_flags GlobalFlags;        // global flags
 
 global proc_flags   ProcFlags;          // processing flags
 
-global attr_flags   AttrFlags;          // attribute flags
-
 global char         *token_buf;
 
 global char         *workbuf;           // work for input buffer
@@ -196,6 +193,9 @@ global eol_ix       *g_eol_ix;          // global list of eol_ix instances
 global ix_h_blk     *index_dict;        // index structure dictionary
 global ix_h_blk     *ixhtag[3];         // current entry for each level in index
 global ref_entry    *ix_ref_dict;       // reference id dictionary :Ix :IHx :IREF
+
+// NOTE support
+global unsigned     note_lm;            // left margin on entering NOTE
 
 // page number format
 global num_style    pgnum_style[PGNST_max];

@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-*  Copyright (c) 2004-2009 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2004-2025 The Open Watcom Contributors. All Rights Reserved.
 *
 *  ========================================================================
 *
@@ -81,20 +81,16 @@ typedef struct  ban_sections {
 #define STRBLK_SIZE     120             // max string length in layout TBD
                                         // no value found in documentation
 typedef enum def_frame_type {
-    none_frame,
-    box_frame,
-    rule_frame,
-    char_frame
+    FRAME_none,
+    FRAME_box,
+    FRAME_rule,
+    FRAME_char
 } def_frame_type;
 
 typedef struct def_frame {
     def_frame_type      type;
     xx_str              string[STRBLK_SIZE + 1];
 } def_frame;
-
-/***************************************************************************/
-/*  definition for note_string for :NOTE tag and others                    */
-/***************************************************************************/
 
 /***************************************************************************/
 /*  definitions for :Hx tag number form and page position                  */

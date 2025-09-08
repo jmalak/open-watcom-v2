@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-*  Copyright (c) 2004-2010 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2004-2025 The Open Watcom Contributors. All Rights Reserved.
 *
 *  ========================================================================
 *
@@ -249,7 +249,7 @@ static void gen_rule_head( char * letter )
     } else {                                            // page-oriented device
         full_line = frame_line_len;
         full_line += wgml_fonts[layout_work.ixhead.font].width.table[*(unsigned char *)letter];
-        if( layout_work.ixhead.frame.type == rule_frame ) {
+        if( layout_work.ixhead.frame.type == FRAME_rule ) {
 
         /*******************************************************************/
         /* This uses code written originally for use with control word BX  */
@@ -277,7 +277,7 @@ static void gen_rule_head( char * letter )
             h_line_el->element.hline.h_start = t_page.cur_width;
             h_line_el->element.hline.h_len = full_line;
             insert_col_main( h_line_el );
-        } else {                        // char_frame
+        } else {                        // FRAME_char
             cur_limit = full_line / str_width;
             cur_count = 0;
             cur_width = 0;
@@ -658,8 +658,8 @@ static void gen_index( void )
 
     /* Set up for device/frame selected by the LAYOUT tag IXHEAD*/
 
-    if( layout_work.ixhead.frame.type != none_frame ) {
-        if( layout_work.ixhead.frame.type == box_frame ) {  // frame is box
+    if( layout_work.ixhead.frame.type != FRAME_none ) {
+        if( layout_work.ixhead.frame.type == FRAME_box ) {  // frame is box
             if( bin_driver->dbox.text == NULL ) {           // character device
                 memset( &frame_line_1[1], bin_device->box.chars.horizontal_line, frame_line_len - 2 );
                 frame_line_1[0] = bin_device->box.chars.top_left;
@@ -671,11 +671,11 @@ static void gen_index( void )
                 frame_line_3[0] = bin_device->box.chars.bottom_left;
                 frame_line_3[frame_line_len - 1 ] = bin_device->box.chars.bottom_right;
             }
-        } else if( layout_work.ixhead.frame.type == rule_frame  ) { // rule frame
+        } else if( layout_work.ixhead.frame.type == FRAME_rule ) { // rule frame
             if( bin_driver->hline.text == NULL ) {          // character device
                 memset( frame_line_1, bin_device->box.chars.horizontal_line, frame_line_len );
             }
-        } else if( layout_work.ixhead.frame.type == char_frame ) {   // frame is 'character string'
+        } else if( layout_work.ixhead.frame.type == FRAME_char ) {   // frame is 'character string'
             str_count = strlen( layout_work.ixhead.frame.string );
             str_width = 0;
             for( i = 0; i < strlen( layout_work.ixhead.frame.string ); i++ ) {
@@ -774,21 +774,21 @@ static void gen_index( void )
                 t_page.cur_width += ixh_indent;
 
                 switch( layout_work.ixhead.frame.type ) {
-                case none_frame:
+                case FRAME_none:
                     process_text( letter, layout_work.ixhead.font );
                     break;
-                case box_frame:
+                case FRAME_box:
                     if( !ProcFlags.col_started ) {      // at top of page
                         g_top_skip = wgml_fonts[layout_work.ixhead.font].line_height;
                     }
                     gen_box_head( letter );
                     break;
-                case rule_frame:
+                case FRAME_rule:
                     if( !ProcFlags.col_started ) {      // at top of page
                         g_top_skip = wgml_fonts[layout_work.ixhead.font].line_height;
                     }
                     /* fall through */
-                case char_frame:                   // no top-of-page correction in wgml 4.0
+                case FRAME_char:                   // no top-of-page correction in wgml 4.0
                     gen_rule_head( letter );
                     break;
                 default:
@@ -1753,40 +1753,54 @@ extern void gml_gdoc( const gmltag *entry )
 {
     char            *p;
     char            *pa;
+    att_name_type   attr_name;
+    att_val_type    attr_val;
+    struct {
+        unsigned    sec :1;
+    } AttrFlags;
 
     (void)entry;
 
     g_scan_err = false;
+    memset( &AttrFlags, 0, sizeof( AttrFlags ) );   // clear all attribute flags
     p = g_scandata.s;
-    if( *p != '\0' )
-        p++;
-
-    SkipSpaces( p );                        // over WS to attribute
-    if( *p != '\0'
-      && ( strnicmp( "sec ", p, 4 ) == 0    // look for "sec " or "sec="
-      || strnicmp( "sec=", p, 4 ) == 0 ) ) {
-        char    quote;
-
-        p += 3;
-        SkipSpaces( p );
-        if( *p == '=' ) {
-            p++;
-            SkipSpaces( p );
-        }
-        if( *p == '"'
-          || *p == '\'' ) {
-            quote = *p;
-            ++p;
-        } else {
-            quote = ' ';
-        }
-        pa = p;
-        while( *p != '\0' && *p != quote ) {
-            ++p;
-        }
-        add_symvar( global_dict, "$sec", pa, p - pa, SI_no_subscript, SF_none );
-    } else {
+    if( *p == '.' ) {
         add_symvar( global_dict, "$sec", "", 0, SI_no_subscript, SF_none ); // set null string
+    } else {
+        for( ;; ) {
+            p = get_tag_att_name( p, &pa, &attr_name );
+            if( ProcFlags.reprocess_line )
+                break;
+            if( ProcFlags.tag_end_found )
+                break;
+            if( strcmp( "sec", attr_name.attname.t ) == 0 ) {
+                p = get_att_value( p, &attr_val );
+                if( AttrFlags.sec ) {
+                    xx_line_err_exit_ci( ERR_ATT_DUP, attr_name.tok.s,
+                        attr_val.tok.s - attr_name.tok.s + attr_val.tok.l);
+                    /* never return */
+                }
+                AttrFlags.sec = true;
+                if( attr_val.tok.s == NULL ) {
+                    add_symvar( global_dict, "$sec", "", 0, SI_no_subscript, SF_none ); // set null string
+                    break;
+                } else {
+                    add_symvar( global_dict, "$sec", p, strlen( p ), SI_no_subscript, SF_none );
+                }
+                if( ProcFlags.tag_end_found ) {
+                    break;
+                }
+            } else {
+                xx_line_err_exit_c( ERR_TAG_NOT_TEXT, p );
+                /* never return */
+            }
+        }
+    }
+
+    SkipDot( p );
+    if( (*p != '\0') ) {
+        xx_line_err_exit_c( ERR_TAG_NOT_TEXT, p );
+        /* never return */
     }
 
     gml_doc_xxx( DSECT_gdoc );

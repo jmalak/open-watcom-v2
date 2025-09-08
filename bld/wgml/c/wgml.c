@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-*  Copyright (c) 2004-2010 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2004-2025 The Open Watcom Contributors. All Rights Reserved.
 *
 *  ========================================================================
 *
@@ -626,7 +626,7 @@ static  void    proc_input( char * filename )
             /***************************************************************/
 
             if( (nest_cb != NULL) && (nest_cb->gtag != T_NONE) ) {
-                g_tag_nest_err_exit( nest_cb->gtag + 1 );// eXXX expected
+                g_tag_nest_err_exit( nest_cb->gtag );// eXXX expected
                 /* never return */
             }
         }

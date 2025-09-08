@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2015-2022 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2015-2025 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -25,7 +25,7 @@
 *
 *  ========================================================================
 *
-* Description:  Covers for several base Windows API functions.
+* Description:  Covers for several base Windows API functions (16-bit code).
 *
 ****************************************************************************/
 
@@ -35,42 +35,63 @@
 #include <string.h>
 #include <dos.h>
 #include <windows.h>
+#include "bool.h"
 #include "winext.h"
 #include "_windpmi.h"
 #include "winstubs.h"
 #include "windata.h"
 
+
+extern void PutByte( char, WORD, DWORD );
+#pragma aux PutByte = \
+        "shl  edx,16"       \
+        "mov  dx,ax"        \
+        "mov  es:[edx],bl"  \
+    __parm      [__bl] [__es] [__dx __ax] \
+    __value     \
+    __modify    [__dx]
+
+extern char GetByte( WORD, DWORD );
+#pragma aux GetByte = \
+        "shl  edx,16"       \
+        "mov  dx,ax"        \
+        "mov  al,es:[edx]"  \
+    __parm      [__es] [__dx __ax] \
+    __value     [__al] \
+    __modify    [__dx]
+
 /*
  * GetAlias - get a 16 bit alias to 32 bit memory
  */
-void GetAlias( LPLPVOID name )
+DWORD GetAlias( LPDWORD ptr )
 {
     DWORD       alias;
+    DWORD       orig;
 
-    if( *name == NULL ) {
-        return;
+    orig = *ptr;
+    if( orig >= 0xFFFF0000 ) {
+        *ptr = orig & 0xFFFFL;
+//    } else if( orig >= DataSelectorSize ) {
+    } else if( orig ) {
+        _WDPMI_GetAlias( orig, &alias );
+        *ptr = alias;
     }
-    if( (DWORD)( *name ) >= 0xFFFF0000 ) {
-        *name = (LPVOID)(DWORD)((DWORD)( *name ) & 0xFFFFL);
-        return;
-    }
-//    if( (DWORD) (*name) >= DataSelectorSize )
-//        return;
-
-    _DPMIGetAlias( (DWORD)*name, &alias );
-    *name = (LPSTR)alias;
+    return( orig );
 
 } /* GetAlias */
 
 /*
- * ReleaseAlias - give back a 16 bit alias to 32 bit memory
+ * ReleaseAlias - give back a orig data to 32 bit memory
  */
-void ReleaseAlias( LPVOID orig, LPVOID ptr )
+void ReleaseAlias( LPDWORD ptr, DWORD orig )
 {
-    if( orig == ptr ) {
-        return;
+    DWORD   alias;
+
+    alias = *ptr;
+    if( alias != orig ) {
+        *ptr = orig;
+        _WDPMI_FreeAlias( alias );
     }
-    _DPMIFreeAlias( ((DWORD)ptr) >> 16 );
 
 } /* ReleaseAlias */
 
@@ -109,18 +130,15 @@ BOOL FAR PASCAL __PeekMessage( LPMSG msg, HWND a, WORD b, WORD c, WORD d )
  */
 BOOL  FAR PASCAL __RegisterClass( LPWNDCLASS wc )
 {
-    WNDCLASS    nwc;
     BOOL        rc;
+    DWORD       odata1;
+    DWORD       odata2;
 
-    nwc = *wc;
-
-    GetAlias( &nwc.lpszMenuName );
-    GetAlias( &nwc.lpszClassName );
-
-    rc = RegisterClass( &nwc );
-
-    ReleaseAlias( wc->lpszMenuName, nwc.lpszMenuName );
-    ReleaseAlias( wc->lpszClassName, nwc.lpszClassName );
+    odata1 = GETALIAS( &wc->lpszMenuName );
+    odata2 = GETALIAS( &wc->lpszClassName );
+    rc = RegisterClass( wc );
+    RELEASEALIAS( &wc->lpszClassName, odata2 );
+    RELEASEALIAS( &wc->lpszMenuName, odata1 );
 
     return( rc );
 
@@ -132,13 +150,13 @@ BOOL  FAR PASCAL __RegisterClass( LPWNDCLASS wc )
  */
 BOOL FAR PASCAL __ModifyMenu( HMENU a, WORD b, WORD fl, WORD d, LPSTR z )
 {
-    DWORD       tmp;
+    DWORD       alias;
     BOOL        rc;
 
     if( !( ( (fl & MF_OWNERDRAW) != 0 ) || ( (fl & MF_BITMAP) != 0 ) ) && z != NULL ) {
-        _DPMIGetAlias( (DWORD)z, &tmp );
-        rc = ModifyMenu( a, b, fl, d, (LPSTR)tmp );
-        _DPMIFreeAlias( tmp >> 16 );
+        _WDPMI_GetAlias( (DWORD)z, &alias );
+        rc = ModifyMenu( a, b, fl, d, (LPSTR)alias );
+        _WDPMI_FreeAlias( alias );
     } else {
         rc = ModifyMenu( a, b, fl, d, z );
     }
@@ -151,13 +169,13 @@ BOOL FAR PASCAL __ModifyMenu( HMENU a, WORD b, WORD fl, WORD d, LPSTR z )
  */
 BOOL  FAR PASCAL __InsertMenu( HMENU a, WORD b, WORD fl, WORD d, LPSTR z )
 {
-    DWORD       tmp;
+    DWORD       alias;
     BOOL        rc;
 
     if( !( ( (fl & MF_OWNERDRAW) != 0 ) || ( (fl & MF_BITMAP) != 0 ) ) && z != NULL ) {
-        _DPMIGetAlias( (DWORD)z, &tmp );
-        rc = InsertMenu( a, b, fl, d, (LPSTR)tmp );
-        _DPMIFreeAlias( tmp >> 16 );
+        _WDPMI_GetAlias( (DWORD)z, &alias );
+        rc = InsertMenu( a, b, fl, d, (LPSTR)alias );
+        _WDPMI_FreeAlias( alias );
     } else {
         rc = InsertMenu( a, b, fl, d, z );
     }
@@ -170,13 +188,13 @@ BOOL  FAR PASCAL __InsertMenu( HMENU a, WORD b, WORD fl, WORD d, LPSTR z )
  */
 BOOL  FAR PASCAL __AppendMenu( HMENU a, WORD fl, WORD c, LPSTR z )
 {
-    DWORD       tmp;
+    DWORD       alias;
     BOOL        rc;
 
     if( !( ( (fl & MF_OWNERDRAW) != 0 ) || ( (fl & MF_BITMAP) != 0 ) ) && z != NULL ) {
-        _DPMIGetAlias( (DWORD)z, &tmp );
-        rc = AppendMenu( a, fl, c, (LPSTR)tmp );
-        _DPMIFreeAlias( tmp >> 16 );
+        _WDPMI_GetAlias( (DWORD)z, &alias );
+        rc = AppendMenu( a, fl, c, (LPSTR)alias );
+        _WDPMI_FreeAlias( alias );
     } else {
         rc = AppendMenu( a, fl, c, z );
     }
@@ -190,48 +208,28 @@ BOOL  FAR PASCAL __AppendMenu( HMENU a, WORD fl, WORD c, LPSTR z )
 int FAR PASCAL __Escape( HDC a, int b, int c, LPSTR d, LPSTR e )
 {
     int         rc;
-    LPSTR       od;
+    DWORD       odata;
 
     /*
      * no alias for d yet, since sometimes it is a function pointer
      * (bloody microsoft weenies)
      */
-    if( b != SETABORTPROC ) {
-        od = d;
-        GetAlias( (LPLPVOID)&d );
-    }
     if( b == NEXTBAND ) {
         RECT    r;
 
         r = *(LPRECT)e;
         rc = Escape( a, b, c, NULL, &r );
         *(LPRECT)e = r;
-    }  else {
+    } else if( b == SETABORTPROC ) {
         rc = Escape( a, b, c, d, e );
+    } else {
+        odata = GETALIAS( &d );
+        rc = Escape( a, b, c, d, e );
+        RELEASEALIAS( &d, odata );
     }
-    if( b != SETABORTPROC )
-        ReleaseAlias( od, d );
     return( rc );
 
 } /* __Escape */
-
-extern void PutByte( char, WORD, DWORD );
-#pragma aux PutByte = \
-        "shl  edx,16"       \
-        "mov  dx,ax"        \
-        "mov  es:[edx],bl"  \
-    __parm      [__bl] [__es] [__dx __ax] \
-    __value     \
-    __modify    [__dx]
-
-extern char GetByte( WORD, DWORD );
-#pragma aux GetByte = \
-        "shl  edx,16"       \
-        "mov  dx,ax"        \
-        "mov  al,es:[edx]"  \
-    __parm      [__es] [__dx __ax] \
-    __value     [__al] \
-    __modify    [__dx]
 
 /*
  * __GetInstanceData - cover for get instance data.
@@ -271,14 +269,15 @@ int FAR PASCAL __GetInstanceData( HANDLE a, DWORD offset, int len )
  */
 LPSTR FAR PASCAL __AnsiPrev( LPSTR a, LPSTR b )
 {
-    LPSTR       res,b2;
+    LPSTR       b2;
+    LPSTR       res;
     DWORD       alias;
 
-    _DPMIGetAlias( (DWORD)a, &alias );
+    _WDPMI_GetAlias( (DWORD)a, &alias );
     b2 = (LPSTR)( alias + ( (DWORD)b - (DWORD)a ) );
     res = AnsiPrev( (LPSTR)alias, b2 );
     res = a + ( (DWORD)res - (DWORD)alias );
-    _DPMIFreeAlias( alias >> 16 );
+    _WDPMI_FreeAlias( alias );
     return( res );
 
 } /* __AnsiPrev */
@@ -293,10 +292,10 @@ LPSTR FAR PASCAL __AnsiNext( LPSTR a )
     LPSTR       res;
     DWORD       alias;
 
-    _DPMIGetAlias( (DWORD)a, &alias );
+    _WDPMI_GetAlias( (DWORD)a, &alias );
     res = AnsiNext( (LPSTR)alias );
     res = (LPSTR)( (DWORD)a + ( (DWORD)res - (DWORD)alias ) );
-    _DPMIFreeAlias( alias >> 16 );
+    _WDPMI_FreeAlias( alias );
     return( res );
 
 } /* __AnsiNext */
@@ -304,17 +303,17 @@ LPSTR FAR PASCAL __AnsiNext( LPSTR a )
 /*
  * __StartDoc - cover function for StartDoc
  */
-int FAR PASCAL __StartDoc( HDC hdc, DOCINFO FAR *di )
+int FAR PASCAL __StartDoc( HDC hdc, LPDOCINFO di )
 {
-    DOCINFO     ldi;
     int         rc;
+    DWORD       odata1;
+    DWORD       odata2;
 
-    ldi = *di;
-    GetAlias( (LPLPVOID)&ldi.lpszDocName );
-    GetAlias( (LPLPVOID)&ldi.lpszOutput );
-    rc = StartDoc( hdc, &ldi );
-    ReleaseAlias( (LPVOID)di->lpszDocName, (LPVOID)ldi.lpszDocName );
-    ReleaseAlias( (LPVOID)di->lpszOutput,  (LPVOID)ldi.lpszOutput );
+    odata1 = GETALIAS( &di->lpszDocName );
+    odata2 = GETALIAS( &di->lpszOutput );
+    rc = StartDoc( hdc, di );
+    RELEASEALIAS( &di->lpszOutput, odata2 );
+    RELEASEALIAS( &di->lpszDocName, odata1 );
     return( rc );
 
 } /* __StartDoc */
@@ -327,18 +326,20 @@ BOOL FAR PASCAL __WinHelp( HWND hwnd, LPCSTR hfile, UINT cmd, DWORD data )
     DWORD       odata;
     BOOL        rc;
 
-    odata = data;
     switch( cmd ) {
     case HELP_KEY:
     case HELP_PARTIALKEY:
     case HELP_MULTIKEY:
     case HELP_COMMAND:
     case HELP_SETWINPOS:
-        GetAlias( (LPLPVOID)&data );
+        odata = GETALIAS( &data );
+        rc = WinHelp( hwnd, hfile, cmd, data );
+        RELEASEALIAS( &data, odata );
+        break;
+    default:
+        rc = WinHelp( hwnd, hfile, cmd, data );
         break;
     }
-    rc = WinHelp( hwnd, hfile, cmd, data );
-    ReleaseAlias( (LPVOID)odata, (LPVOID)data );
     return( rc );
 
 } /* __WinHelp */

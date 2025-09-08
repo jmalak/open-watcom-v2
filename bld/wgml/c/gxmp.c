@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-*  Copyright (c) 2004-2008 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2004-2025 The Open Watcom Contributors. All Rights Reserved.
 *
 *  ========================================================================
 *
@@ -78,9 +78,11 @@ void gml_xmp( const gmltag * entry )
     g_keep_nest( "Example" );           // catch nesting errors
 
     if( is_ip_tag( nest_cb->gtag ) ) {                 // inline phrase not closed
-        g_tag_nest_err_exit( nest_cb->gtag + 1 ); // end tag expected
+        g_tag_nest_err_exit( nest_cb->gtag ); // end tag expected
         /* never return */
     }
+
+    ProcFlags.block_starting = true;    // to catch empty blocks
 
     font_save = g_curr_font;
     g_curr_font = layout_work.xmp.font;
@@ -194,7 +196,7 @@ void gml_exmp( const gmltag * entry )
     (void)entry;
 
     if( is_ip_tag( nest_cb->gtag ) ) {                 // inline phrase not closed
-        g_tag_nest_err_exit( nest_cb->gtag + 1 ); // end tag expected
+        g_tag_nest_err_exit( nest_cb->gtag ); // end tag expected
         /* never return */
     }
 
@@ -206,7 +208,7 @@ void gml_exmp( const gmltag * entry )
     g_blank_text_lines = 0;
 
     scr_process_break();
-    if( cur_group_type != GRT_xmp ) {        // no preceding :XMP tag
+    if( cur_group_type != GRT_xmp ) {       // no preceding :XMP tag
         g_tag_prec_err_exit( T_XMP );
         /* never return */
     }
@@ -216,6 +218,12 @@ void gml_exmp( const gmltag * entry )
     t_page.cur_left = nest_cb->lm;
     t_page.max_width = nest_cb->rm;
     g_post_skip = nest_cb->post_skip;       // shift post_skip to follow eXMP
+
+    if( ProcFlags.block_starting ) {        // block is empty
+        g_subs_skip += g_post_skip;
+        g_post_skip = 0;
+        ProcFlags.block_starting = false;
+    }
 
     wk = nest_cb;
     nest_cb = nest_cb->prev;

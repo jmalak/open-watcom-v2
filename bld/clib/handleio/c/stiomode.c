@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2017-2020 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2017-2025 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -58,35 +58,31 @@ extern  unsigned _HUGEDATA __init_mode[_NFILES];
 
 static  unsigned _init_NFiles;          // original __NFiles value;
 
-void __grow_iomode( int num )
+void _WCNEAR __grow_iomode( int num )
 {
     unsigned    *new;
 
     _AccessIOB();
     if( __io_mode == __init_mode ) {
         _init_NFiles = __NFiles;
-        new = (unsigned *) lib_malloc( num * sizeof( unsigned ) );
+        new = lib_malloc( num * sizeof( *new ) );
         if( new != NULL ) {
-            memcpy( new, __init_mode, __NFiles * sizeof(unsigned) );
+            memcpy( new, __init_mode, __NFiles * sizeof( *new ) );
         }
     } else {
-        #if defined(__NETWARE__)
-            new = (unsigned *) lib_realloc( __io_mode, num * sizeof( unsigned ), __NFiles * sizeof( unsigned ) );
-        #else
-            new = (unsigned *) lib_realloc( __io_mode, num * sizeof( unsigned ) );
-        #endif
+        new = lib_realloc( __io_mode, num * sizeof( *new ) );
     }
     if( new == NULL ) {
         _RWD_errno = ENOMEM;
     } else {
-        memset( &new[__NFiles], 0, (num-__NFiles)*sizeof(unsigned) );
+        memset( &new[__NFiles], 0, ( num - __NFiles ) * sizeof( *new ) );
         __io_mode = new;
         __NFiles = num;
     }
     _ReleaseIOB();
 }
 
-void __shrink_iomode( void )
+static void _WCNEAR __shrink_iomode( void )
 {
     _AccessIOB();
     // free any malloc'd iomode array
@@ -98,12 +94,12 @@ void __shrink_iomode( void )
     _ReleaseIOB();
 }
 
-AYI(__shrink_iomode,INIT_PRIORITY_IOSTREAM);
+AYIN( __shrink_iomode, INIT_PRIORITY_IOSTREAM );
 
 
-#if defined(__OS2__) && !defined(_M_I86)
+#if defined(__OS2_32BIT__)
 
-static void __preinit_iomode_os2(void)
+static void __preinit_iomode_os2( void )
 {
     LONG    req_count;
     ULONG   curr_max_fh;
@@ -116,7 +112,6 @@ static void __preinit_iomode_os2(void)
         __grow_iomode( curr_max_fh );
         __NHandles = curr_max_fh;   // same as __set_handles
     }
-
 }
 
 AXI( __preinit_iomode_os2, INIT_PRIORITY_RUNTIME );
@@ -125,26 +120,29 @@ AXI( __preinit_iomode_os2, INIT_PRIORITY_RUNTIME );
 
 #define _INITIALIZED    _DYNAMIC
 
-signed __SetIOMode( int handle, unsigned value )
+int _WCNEAR __SetIOMode_grow( int handle, unsigned value )
 {
     int         i;
 
     if( handle >= __NFiles ) {
-        i = __NFiles;           // 20 -> (20+10+1) -> 31
-                                // 31 -> (31+15+1) -> 47
-                                // 47 -> (47+23+1) -> 71
-        __grow_iomode( i + (i > 1) + 1 );
+        i = __NFiles;
+        /*
+         * 20 -> (20+10+1) -> 31
+         * 31 -> (31+15+1) -> 47
+         * 47 -> (47+23+1) -> 71
+         * ...
+         */
+        __grow_iomode( i + (i >> 1) + 1 );
     }
     if( handle >= __NFiles ) {
         // return an error indication (errno should be set to ENOMEM)
         return( -1 );
-    } else {
-        if( value != 0 ) {
-            __ChkTTYIOMode( handle );
-            __io_mode[handle] = value | _INITIALIZED;
-        } else {
-            __io_mode[handle] = value;    /* we're closing it; smite _INITIALIZED */
-        }
-        return( handle );
     }
+    if( value != 0 ) {
+        __ChkTTYIOMode( handle );
+        __io_mode[handle] = value | _INITIALIZED;
+    } else {
+        __io_mode[handle] = value;    /* we're closing it; smite _INITIALIZED */
+    }
+    return( handle );
 }

@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-*  Copyright (c) 2004-2010 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2004-2025 The Open Watcom Contributors. All Rights Reserved.
 *
 *  ========================================================================
 *
@@ -53,6 +53,11 @@ void    gml_binclude( const gmltag * entry )
     FILE            *fp;
     att_name_type   attr_name;
     att_val_type    attr_val;
+    struct {
+        unsigned    file        :1;
+        unsigned    depth       :1;
+        unsigned    reposition  :1;
+    } AttrFlags;
 
     memset( &AttrFlags, 0, sizeof( AttrFlags ) );   // clear all attribute flags
     if( (ProcFlags.doc_sect < DSECT_gdoc) ) {

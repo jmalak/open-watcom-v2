@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-*  Copyright (c) 2004-2010 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2004-2025 The Open Watcom Contributors. All Rights Reserved.
 *
 *  ========================================================================
 *
@@ -76,7 +76,7 @@ static void gml_xl_lp_common( g_tags t )
 
     if( t != T_LP ) {
         if( is_ip_tag( nest_cb->gtag ) ) {         // inline phrase not closed
-            g_tag_nest_err_exit( nest_cb->gtag + 1 );   // end tag expected
+            g_tag_nest_err_exit( nest_cb->gtag );   // end tag expected
             /* never return */
         }
     }
@@ -167,7 +167,7 @@ static void gml_xl_lp_common( g_tags t )
 
 void gml_dl( const gmltag * entry )
 {
-    bool            compact     =   false;
+    bool            compact = false;
     bool            dl_break;
     char            *p;
     char            *pa;
@@ -198,6 +198,8 @@ void gml_dl( const gmltag * entry )
     } else {
         dl_cur_level = 1;
     }
+
+    ProcFlags.block_starting = true;    // to catch empty lists
 
     dl_break = dl_layout->line_break;
     headhi = layout_work.dthd.font;
@@ -314,6 +316,8 @@ void gml_gl( const gmltag * entry )
         start_doc_sect();
     }
 
+    ProcFlags.block_starting = true;    // to catch empty lists
+
     termhi = layout_work.gt.font;
 
     p = g_scandata.s;
@@ -378,7 +382,7 @@ void gml_gl( const gmltag * entry )
 
     g_text_spacing = nest_cb->u.gl_layout->spacing;
 
-    g_scandata.s = g_scandata.e + 1;
+    g_scandata.s = g_scandata.e;
     return;
 }
 
@@ -408,6 +412,8 @@ void gml_ol( const gmltag * entry )
     if( !ProcFlags.start_section ) {
         start_doc_sect();
     }
+
+    ProcFlags.block_starting = true;    // to catch empty lists
 
     p = g_scandata.s;
     SkipSpaces( p );                        // over spaces
@@ -466,7 +472,7 @@ void gml_ol( const gmltag * entry )
 
     g_text_spacing = nest_cb->u.ol_layout->spacing;
 
-    g_scandata.s = g_scandata.e + 1;
+    g_scandata.s = g_scandata.e;
     return;
 }
 
@@ -495,6 +501,8 @@ void gml_sl( const gmltag * entry )
     if( !ProcFlags.start_section ) {
         start_doc_sect();
     }
+
+    ProcFlags.block_starting = true;    // to catch empty lists
 
     p = g_scandata.s;
     SkipSpaces( p );                        // over spaces
@@ -552,7 +560,7 @@ void gml_sl( const gmltag * entry )
 
     g_text_spacing = nest_cb->u.sl_layout->spacing;
 
-    g_scandata.s = g_scandata.e + 1;
+    g_scandata.s = g_scandata.e;
     return;
 }
 
@@ -581,6 +589,8 @@ void gml_ul( const gmltag * entry )
     if( !ProcFlags.start_section ) {
         start_doc_sect();
     }
+
+    ProcFlags.block_starting = true;    // to catch empty lists
 
     p = g_scandata.s;
     SkipSpaces( p );                        // over spaces
@@ -639,7 +649,7 @@ void gml_ul( const gmltag * entry )
 
     g_text_spacing = nest_cb->u.ul_layout->spacing;
 
-    g_scandata.s = g_scandata.e + 1;
+    g_scandata.s = g_scandata.e;
     return;
 }
 
@@ -656,15 +666,7 @@ static bool    gml_exl_entry( const gmltag *entry )
     if( nest_cb->gtag == T_LP ) {           // terminate :LP if active
         end_lp();
     }
-
-    if( nest_cb->gtag != get_topn( entry->u.tagid ) ) {         // unexpected exxx tag
-        if( nest_cb->gtag == T_NONE ) {
-            g_tag_no_err_exit( entry->u.tagid );                // no exxx expected, no tag active
-        } else {
-            g_tag_nest_err_exit( get_tclo( nest_cb->gtag ) );   // exxx expected
-        }
-        /* never return */
-    }
+    check_close_tag_err_exit( entry->u.tagid );
     return( true );
 }
 
@@ -733,7 +735,7 @@ static void     gml_exl_common( const gmltag * entry )
 
     ProcFlags.need_li_lp = false;       // :LI or :LP no longer needed
     dl_gl_starting = false;
-    g_scandata.s = g_scandata.e + 1;
+    g_scandata.s = g_scandata.e;
 }
 
 
@@ -906,7 +908,7 @@ static  void    gml_li_ol( const gmltag * entry )
         process_text( p, g_curr_font ); // if text follows
     }
 
-    g_scandata.s = g_scandata.e + 1;
+    g_scandata.s = g_scandata.e;
     return;
 }
 
@@ -955,7 +957,7 @@ static  void    gml_li_sl( const gmltag * entry )
         process_text( p, g_curr_font ); // if text follows
     }
 
-    g_scandata.s = g_scandata.e + 1;
+    g_scandata.s = g_scandata.e;
     return;
 }
 
@@ -1024,7 +1026,7 @@ static  void    gml_li_ul( const gmltag * entry )
 
     t_page.cur_left = nest_cb->lm + nest_cb->left_indent + nest_cb->align;
 
-    g_scandata.s = g_scandata.e + 1;
+    g_scandata.s = g_scandata.e;
     return;
 }
 
@@ -1062,7 +1064,7 @@ void    gml_li( const gmltag * entry )
         break;
     case T_DL :
     case T_GL :
-        g_tag_nest_err_exit( nest_cb->gtag + 1 ); // end tag expected
+        g_tag_nest_err_exit( nest_cb->gtag ); // end tag expected
         /* never return */
     default:
         break;
@@ -1102,6 +1104,8 @@ void    gml_lp( const gmltag * entry )
         ProcFlags.para_starting = false;    // clear for this tag's first break
     }
     scr_process_break();
+
+    ProcFlags.block_starting = true;    // to catch empty lists
 
     nest_cb->compact = false;
     nest_cb->font = g_curr_font;
@@ -1144,7 +1148,7 @@ void    gml_lp( const gmltag * entry )
         process_text( p, g_curr_font ); // if text follows
     }
 
-    g_scandata.s = g_scandata.e + 1;
+    g_scandata.s = g_scandata.e;
     return;
 }
 
@@ -1209,7 +1213,7 @@ void gml_dthd( const gmltag * entry )
         } else {
             ProcFlags.need_text = true;
         }
-        g_scandata.s = g_scandata.e + 1;
+        g_scandata.s = g_scandata.e;
     }
 
     ProcFlags.need_ddhd = true;
@@ -1278,7 +1282,7 @@ void gml_ddhd( const gmltag * entry )
         ProcFlags.need_text = true;
     }
 
-    g_scandata.s = g_scandata.e + 1;
+    g_scandata.s = g_scandata.e;
     return;
 }
 
@@ -1360,7 +1364,7 @@ void gml_dt( const gmltag * entry )
         } else {
             ProcFlags.need_text = true;
         }
-        g_scandata.s = g_scandata.e + 1;
+        g_scandata.s = g_scandata.e;
     }
 
     ProcFlags.need_dd = true;
@@ -1442,7 +1446,7 @@ void gml_dd( const gmltag * entry )
         }
     }
 
-    g_scandata.s = g_scandata.e + 1;
+    g_scandata.s = g_scandata.e;
     return;
 }
 
@@ -1507,7 +1511,7 @@ void gml_gt( const gmltag * entry )
         } else {
             ProcFlags.need_text = true;
         }
-        g_scandata.s = g_scandata.e + 1;
+        g_scandata.s = g_scandata.e;
     }
 
     ProcFlags.need_gd = true;
@@ -1533,8 +1537,9 @@ void gml_gt( const gmltag * entry )
 
 void gml_gd( const gmltag * entry )
 {
-    char    *   p;
-    char        delim[3];
+    char                *p;
+    char            delim[3];
+    text_chars          *marker;
 
     (void)entry;
 
@@ -1558,7 +1563,26 @@ void gml_gd( const gmltag * entry )
     delim[0] = nest_cb->u.gl_layout->delim;
     delim[1] = CONT_char;
     delim[2] = '\0';
+    ProcFlags.concat = true;        // even if was false on entry
     process_text( delim, g_curr_font );
+
+    /* This is from GD processing, hence marker type used */
+
+    if( ProcFlags.wh_device ) {             // Insert a marker
+        marker = process_word( NULL, 0, g_curr_font, false );
+        marker->f_switch = FSW_from;         // emit marker
+        marker->x_address = t_page.cur_width;
+        t_line->last->next = marker;
+        marker->prev = t_line->last;
+        t_line->last = marker;
+        marker = process_word( NULL, 0, g_curr_font, false );
+        marker->f_switch = FSW_full;         // emit marker
+        marker->x_address = t_page.cur_width;
+        t_line->last->next = marker;
+        marker->prev = t_line->last;
+        t_line->last = marker;
+        marker = NULL;
+    }
 
     g_curr_font = layout_work.gd.font;
     g_prev_font = g_curr_font;
@@ -1581,7 +1605,7 @@ void gml_gd( const gmltag * entry )
         process_text( p, g_curr_font ); // if text follows
     }
 
-    g_scandata.s = g_scandata.e + 1;
+    g_scandata.s = g_scandata.e;
     return;
 }
 

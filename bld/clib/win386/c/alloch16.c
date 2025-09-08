@@ -2,6 +2,7 @@
 *
 *                            Open Watcom Project
 *
+* Copyright (c) 2025      The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -35,29 +36,18 @@
 #include "windpmi.h"
 
 
-extern void ClearFS_GS( void );
-#pragma aux ClearFS_GS = \
-        "xor eax,eax"   \
-        "mov fs,eax"    \
-        "mov gs,eax"    \
-    __parm              [] \
-    __value             \
-    __modify __exact    [__eax __fs __gs]
-
-DWORD AllocHugeAlias16( void *offset, DWORD size )
+DWORD AllocHugeAlias16( void *offs32, DWORD size )
 {
-    DWORD       ptr;
+    DWORD       alias;
 
-    if( DPMIGetHugeAlias( (DWORD)offset, &ptr, size ) )
+    if( WDPMIGetHugeAlias( (DWORD)offs32, &alias, size ) )
         return( 0 );
-    return( ptr );
+    return( alias );
 
 } /* AllocHugeAlias16 */
 
 void FreeHugeAlias16( DWORD alias, DWORD size )
 {
-
-    ClearFS_GS();
-    DPMIFreeHugeAlias( alias, size );
+    WDPMIFreeHugeAlias( alias, size );
 
 } /* FreeAlias16 */

@@ -2,7 +2,7 @@
 ;*
 ;*                            Open Watcom Project
 ;*
-;* Copyright (c) 2002-2022 The Open Watcom Contributors. All Rights Reserved.
+;* Copyright (c) 2002-2025 The Open Watcom Contributors. All Rights Reserved.
 ;*    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 ;*
 ;*  ========================================================================
@@ -40,6 +40,7 @@ include stword.inc
 include env87.inc
 include fstatus.inc
 include fpeint.inc
+include int21.inc
 
 _emu_init_start segment word public 'EMU'
 _emu_init_start ends
@@ -83,7 +84,7 @@ ifndef  __OS2__
 Save87  dw      0
         dw      0
 
-defp    __Init_FPE_handler
+defn    __Init_FPE_handler
         _guess                          ; guess initialization required
           cmp   word ptr CS:Save87+2,0  ; - quit if already initialized
           _quif ne                      ; - ...
@@ -97,7 +98,7 @@ defp    __Init_FPE_handler
           push  ES                      ; - ...
           mov   AH,35h                  ; - get old interrupt handler
           mov   AL,FPE_INT              ; - for INT 2 (INT 10 on NEC)
-          int   21h                     ; - ...
+          int21h                        ; - ...
           mov   CS:Save87,BX            ; - save old interrupt handler
           mov   CS:Save87+2,ES          ; - ...
           mov   AH,25h                  ; - set new interrupt handler
@@ -105,7 +106,7 @@ defp    __Init_FPE_handler
           push  CS                      ; - set DS:DX to address of new handler
           pop   DS                      ; - ...
           mov   DX,offset __FPEHandler  ; - ...
-          int   21h                     ; - ...
+          int21h                        ; - ...
           pop   ES                      ; - restore registers
           pop   DS                      ; - ...
           pop   DX                      ; - ...
@@ -116,7 +117,7 @@ defp    __Init_FPE_handler
         ret
 endproc __Init_FPE_handler
 
-defp    __Fini_FPE_handler
+defn    __Fini_FPE_handler
         _guess                          ; guess handler was initialized
           cmp   word ptr CS:Save87+2,0  ; - quit if not initialized
           _quif e                       ; - ...
@@ -136,7 +137,7 @@ defp    __Fini_FPE_handler
           mov   AL,FPE_INT              ; - for INT 2 (INT 10 on NEC)
           mov   DS,CS:Save87+2          ; - get address of old handler
           mov   DX,CS:Save87            ; - ...
-          int   21h                     ; - ...
+          int21h                        ; - ...
           pop   BP                      ; - restore BP
           pop   DS                      ; - restore registers
           pop   DX                      ; - ...

@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-*  Copyright (c) 2004-2009 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2004-2025 The Open Watcom Contributors. All Rights Reserved.
 *
 *  ========================================================================
 *
@@ -49,9 +49,12 @@ typedef struct {
 /***************************************************************************/
 static const char * const str_tags[] = {
     "NONE",
-    #define pick( name, length, routine, gmlflags, locflags, classflags )  #name,
+    #define pick1(n,l,r,g,o,c) #n,
+    #define pick2(n1,l1,r1,g1,o1,c1,n2,l2,r2,g2,o2,c2) \
+                pick1(n1,l1,r1,g1,o1,c1) pick1(n2,l2,r2,g2,o2,c2)
     #include "gtags.h"
-    #undef pick
+    #undef pick2
+    #undef pick1
 //    #define pick( name, routine, flags )  extern void routine( void );
 //    #include "gscrcws.h" TBD
 //    #undef pick
@@ -588,7 +591,7 @@ void g_tag_err_exit( g_tags gtag )
 
 void g_tag_nest_err_exit( g_tags gtag )
 {
-    g_tag_common_err( gtag, true );         // nested tag stack display
+    g_tag_common_err( get_tclo( gtag ), true );         // nested tag stack display
     err_exit();
     /* never return */
 }
@@ -645,6 +648,18 @@ void g_tag_no_err_exit( g_tags gtag )
     err_count++;
     err_exit();
     /* never return */
+}
+
+void check_close_tag_err_exit( g_tags gtag )
+{
+    if( nest_cb->gtag != get_topn( gtag ) ) {       // unexpected exxx tag
+        if( nest_cb->gtag == T_NONE ) {
+            g_tag_no_err_exit( gtag );              // no exxx expected
+        } else {
+            g_tag_nest_err_exit( nest_cb->gtag );   // exxx expected
+        }
+        /* never return */
+    }
 }
 
 void g_tag_prec_err_exit( g_tags gtag )

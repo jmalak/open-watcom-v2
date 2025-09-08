@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-*  Copyright (c) 2004-2010 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2004-2025 The Open Watcom Contributors. All Rights Reserved.
 *
 *  ========================================================================
 *
@@ -465,6 +465,7 @@ NO_RETURN( extern void  g_tag_err_exit( g_tags gtag ) );
 NO_RETURN( extern void  g_tag_mac_err_exit( const gtentry *ge ) );
 NO_RETURN( extern void  g_tag_nest_err_exit( g_tags gtag ) );
 NO_RETURN( extern void  g_tag_no_err_exit( g_tags gtag ) );
+extern void check_close_tag_err_exit( g_tags gtag );
 NO_RETURN( extern void  g_tag_prec_err_exit( g_tags gtag ) );
 NO_RETURN( extern void  g_tag_rsloc_err_exit( locflags inloc, const char *pa ) );
 NO_RETURN( extern void  keep_nest_err_exit( const char *arg1, const char *arg2 ) );
@@ -525,9 +526,12 @@ extern void         show_include_stack( void );
 /*
  * prototypes for the gml tag processing routines
  */
-#define pick( name, length, routine, gmlflags, locflags, classflags )  extern void routine( const gmltag *entry );
+#define pick1(n,l,r,g,o,c) extern void r( const gmltag *entry );
+#define pick2(n1,l1,r1,g1,o1,c1,n2,l2,r2,g2,o2,c2) \
+            pick1(n1,l1,r1,g1,o1,c1) pick1(n2,l2,r2,g2,o2,c2)
 #include "gtags.h"
-#undef pick
+#undef pick2
+#undef pick1
 
 /*
  * prototypes for the layout tag processing routines

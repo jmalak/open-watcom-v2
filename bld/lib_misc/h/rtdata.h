@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2002-2022 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2002-2025 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -83,13 +83,12 @@ typedef struct _87state {
 extern __stream_link        *__OpenStreams;
 extern __stream_link        *__ClosedStreams;
 extern char                 * _WCNEAR __env_mask;  /* ptr to char array of flags */
-extern void                 (*__FPE_handler_exit)( void );
+extern void                 _WCNEAR (*__FPE_handler_exit)( void );
 #if !defined( __NETWARE__ )
 _WCRTDATA extern  int       _cbyte;
 _WCRTDATA extern  int       _cbyte2;
           extern  int       _child;
 _WCRTDATA extern  unsigned  _curbrk;
-          extern  int       _commode;
   #if defined( __WATCOMC__ ) && defined( _M_IX86 )
     #pragma aux             _child "_*";
   #endif
@@ -150,6 +149,7 @@ extern unsigned char            __isPC98;   /* is NEC PC-98 hardware */
     #define _RWD_amblksiz       _amblksiz
     #define _RWD_curbrk         _curbrk
     #define _RWD_dynend         _dynend
+    #define _RWD_commode        _commode
 #endif
 #if defined( __DOS__ ) || defined( _M_I86 ) && !defined( __QNX__ )
     #define _RWD_psp            _psp
@@ -165,12 +165,17 @@ extern unsigned char            __isPC98;   /* is NEC PC-98 hardware */
 #if defined( _M_I86 )
     #define _RWD_HShift         _HShift
     #define _RWD_osmode         _osmode
-    #define _osmode_REALMODE()  (_RWD_osmode == 0)
-    #define _osmode_PROTMODE()  (_RWD_osmode)
+    #define _osmode_REALMODE()  (_RWD_osmode == DOS_MODE)
+    #define _osmode_PROTMODE()  (_RWD_osmode == OS2_MODE)
 #endif
 #if !defined( __NETWARE__ )
     #define _RWD_osmajor        _osmajor
     #define _RWD_osminor        _osminor
+#endif
+#if defined( __WINDOWS__ )
+    #define _RWD_winmajor       _winmajor
+    #define _RWD_winminor       _winminor
+    #define _RWD_winver         _winver
 #endif
 #if defined( __NT__ )
     #define _RWD_osbuild        _osbuild

@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-*  Copyright (c) 2004-2009 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2004-2025 The Open Watcom Contributors. All Rights Reserved.
 *
 *  ========================================================================
 *
@@ -153,6 +153,21 @@ void    lay_index( const gmltag * entry )
     lay_att             curr;
     att_name_type       attr_name;
     att_val_type        attr_val;
+    struct {
+        unsigned    post_skip       :1;
+        unsigned    pre_top_skip    :1;
+        unsigned    left_adjust     :1;
+        unsigned    right_adjust    :1;
+        unsigned    spacing         :1;
+        unsigned    columns         :1;
+        unsigned    see_string      :1;
+        unsigned    see_also_string :1;
+        unsigned    header          :1;
+        unsigned    index_string    :1;
+        unsigned    page_eject      :1;
+        unsigned    page_reset      :1;
+        unsigned    font            :1;
+    } AttrFlags;
 
     p = g_scandata.s;
     cvterr = false;

@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-*  Copyright (c) 2004-2010 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2004-2025 The Open Watcom Contributors. All Rights Reserved.
 *
 *  ========================================================================
 *
@@ -484,9 +484,12 @@ typedef struct scrtag {
 /***************************************************************************/
 
 typedef enum g_tags {
-    #define pick( name, length, routine, gmlflags, locflags, classname )  T_##name,
+    #define pick1(n,l,r,g,o,c) T_##n,
+    #define pick2(n1,l1,r1,g1,o1,c1,n2,l2,r2,g2,o2,c2) \
+                pick1(n1,l1,r1,g1,o1,c1) pick1(n2,l2,r2,g2,o2,c2)
     #include "gtags.h"
-    #undef pick
+    #undef pick2
+    #undef pick1
     T_NONE,
 //    #define pick( name, routine, flags )  T_##name,
 //    #include "gscrcws.h" TBD
@@ -866,8 +869,8 @@ typedef struct tag_cb {
     unsigned        lm;                 // left margin on entry
     unsigned        rm;                 // max width on entry
     int             align;              // current attribute value
-    int             left_indent;        // current attribute value
-    int             right_indent;       // current attribute value
+    unsigned        left_indent;        // current attribute value
+    unsigned        right_indent;       // current attribute value
     unsigned        post_skip;          // current attribute value
     unsigned        tsize;              // current attribute value
     unsigned        xl_pre_skip;        // parent list pre_skip value (used by LP)
@@ -1221,7 +1224,7 @@ typedef struct doc_page {
     unsigned        page_width;         // page right margin
     unsigned        max_width;          // maximum width (page or column)
     int             cur_left;           // net adjustment to left margin (can be negative)
-    int             cur_width;          // current width
+    unsigned        cur_width;          // current width
     doc_pane        *last_pane;
     doc_column      *cur_col;           // quick access to t_page.last_pane->cols[t_page.last_pane->cur_col]
     doc_element     *last_col_main;
@@ -1588,10 +1591,8 @@ typedef struct proc_flags {
     unsigned        force_pc            : 1;// use PC tag processing on text not preceded by a tag or control word
     unsigned        utc                 : 1;// user tag with "continue" is active
     unsigned        in_trans            : 1;// esc char is specified (.ti set x)
-    unsigned        reprocess_line      : 1;// unget for current input line
     unsigned        sk_2nd              : 1;// .sk follows blank lines of .sp
     unsigned        sk_co               : 1;// CO OFF and .sk -1 or .sk n, n > 0 done
-    unsigned        tag_end_found       : 1;// '.' ending tag found
     unsigned        skips_valid         : 1;// controls set_skip_vars() useage
     unsigned        new_pagenr          : 1;// FIG/heading page number changed
     unsigned        first_hdr           : 1;// first header done
@@ -1602,17 +1603,25 @@ typedef struct proc_flags {
     unsigned        no_bx_hline         : 1;// determines if a horizontal line is to be emitted or not
     unsigned        top_line            : 1;// determines if current line is at top of page
     unsigned        vline_done          : 1;// determines if a vertical line was done
-    unsigned        keep_left_margin    : 1;// for indent NOTE tag paragraph
     unsigned        skip_blank_line     : 1;// for XMP/eXMP blocks in macros
     unsigned        in_reduced          : 1;// position resulting from IN reduced to left edge of device page
     unsigned        dd_starting         : 1;// DD after break had no text (in next scr_process_break())
-    unsigned        para_starting       : 1;// :LP, :P or :PC had no text (in scr_process_break())
-    unsigned        para_has_text       : 1;// :LP, :P, :PB or :PC had text (used by PB)
     unsigned        titlep_starting     : 1;// AUTHOR or TITLE had no text (in scr_process_break())
     unsigned        space_fnd           : 1;// last input record ended with a space character
     unsigned        force_op            : 1;// force overprint (used with BX CAN/BX DEL)
     unsigned        op_done             : 1;// overprint done (used for heading page adjustment)
     unsigned        overprint           : 1;// .sk -1 active or not
+
+    unsigned        block_starting      : 1;// P, PC, LP, NOTE, DL, FIG, GL, LQ, XMP block starting
+    unsigned        keep_left_margin    : 1;// for indented NOTE tag paragraph (and others)
+    unsigned        note_starting       : 1;// :NOTE had no text (in scr_process_break())
+    unsigned        para_starting       : 1;// :LP, :P or :PC had no text (in scr_process_break())
+    unsigned        para_has_text       : 1;// :LP, :P, :PB or :PC had text (used by PB)
+
+    unsigned        no_equal_sign       : 1;// equal sign not found after attribute name (whitespace allowed)
+    unsigned        no_value_found      : 1;// value not found after attribute name =
+    unsigned        reprocess_line      : 1;// unget for current input line
+    unsigned        tag_end_found       : 1;// '.' ending tag found
 
     unsigned        ix_seen             : 1;// index tag/cw preceded current text (indexing on or not)
     unsigned        post_ix             : 1;// index tag/cw preceded current text (indexing on)
@@ -1648,102 +1657,12 @@ typedef struct proc_flags {
     unsigned        lay_specified       : 1;// LAYOUT option or :LAYOUT tag seen
     unsigned        banner              : 1;// within layout banner definition
     unsigned        banregion           : 1;// within layout banregion definition
+
     l_tags          lay_xxx;                // active :layout sub tag
 
     ju_enum         justify             : 8;// .ju on half off ...
 
 } proc_flags;                           // processing flags
-
-/***************************************************************************/
-/*  Attribute flags; used to catch duplicate/missing required attributes   */
-/*  Note: must be zeroed before each use                                   */
-/***************************************************************************/
-
-typedef struct attr_flags {
-    unsigned        align           : 1;
-    unsigned        abstract_string : 1;
-    unsigned        appendix_string : 1;
-    unsigned        binding         : 1;
-    unsigned        backm_string    : 1;
-    unsigned        body_string     : 1;
-    unsigned        bullet          : 1;
-    unsigned        bullet_translate : 1;
-    unsigned        bullet_font     : 1;
-    unsigned        case_a          : 1;    // using just "case" causes compiler problems
-    unsigned        columns         : 1;
-    unsigned        contents        : 1;
-    unsigned        date_form       : 1;
-    unsigned        default_frame   : 1;
-    unsigned        default_place   : 1;
-    unsigned        delim           : 1;
-    unsigned        depth           : 1;
-    unsigned        display_heading : 1;
-    unsigned        display_in_toc  : 1;
-    unsigned        docnum_string   : 1;
-    unsigned        docsect         : 1;
-    unsigned        figcap_string   : 1;
-    unsigned        file            : 1;
-    unsigned        fill_string     : 1;
-    unsigned        font            : 1;
-    unsigned        frame           : 1;
-    unsigned        group           : 1;
-    unsigned        gutter          : 1;
-    unsigned        hoffset         : 1;
-    unsigned        header          : 1;
-    unsigned        indent          : 1;
-    unsigned        index_delim     : 1;
-    unsigned        index_string    : 1;
-    unsigned        input_esc       : 1;
-    unsigned        ixhead_frame    : 1;
-    unsigned        justify         : 1;
-    unsigned        left_adjust     : 1;
-    unsigned        left_indent     : 1;
-    unsigned        left_margin     : 1;
-    unsigned        level           : 1;
-    unsigned        line_break      : 1;
-    unsigned        line_indent     : 1;
-    unsigned        line_left       : 1;
-    unsigned        max_group       : 1;
-    unsigned        note_string     : 1;
-    unsigned        number_font     : 1;
-    unsigned        number_form     : 1;
-    unsigned        number_reset    : 1;
-    unsigned        number_style    : 1;
-    unsigned        page_eject      : 1;
-    unsigned        page_position   : 1;
-    unsigned        page_reset      : 1;
-    unsigned        para_indent     : 1;
-    unsigned        place           : 1;
-    unsigned        post_skip       : 1;
-    unsigned        pouring         : 1;
-    unsigned        pre_lines       : 1;
-    unsigned        pre_skip        : 1;
-    unsigned        pre_top_skip    : 1;
-    unsigned        preface_string  : 1;
-    unsigned        refdoc          : 1;
-    unsigned        refnum          : 1;
-    unsigned        refplace        : 1;
-    unsigned        region_position : 1;
-    unsigned        reposition      : 1;
-    unsigned        right_adjust    : 1;
-    unsigned        right_indent    : 1;
-    unsigned        right_margin    : 1;
-    unsigned        script_format   : 1;
-    unsigned        section_eject   : 1;
-    unsigned        see_string      : 1;
-    unsigned        see_also_string : 1;
-    unsigned        size            : 1;
-    unsigned        skip            : 1;
-    unsigned        spacing         : 1;
-    unsigned        stop_eject      : 1;
-    unsigned        string_font     : 1;
-    unsigned        threshold       : 1;
-    unsigned        toc_levels      : 1;
-    unsigned        top_margin      : 1;
-    unsigned        voffset         : 1;
-    unsigned        width           : 1;
-    unsigned        wrap_indent     : 1;
-} attr_flags;                           // attribute flags
 
 /***************************************************************************/
 /*  structure for parsed tag attribute names and values                    */

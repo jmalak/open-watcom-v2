@@ -2,6 +2,7 @@
 *
 *                            Open Watcom Project
 *
+* Copyright (c) 2025      The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -45,7 +46,7 @@
     #define PARM2REG
 #endif
 
-extern void __InitRtns( unsigned );
+extern void _WCNEAR __InitRtns( unsigned );
 #if defined( _M_IX86 )
   #pragma aux __InitRtns "*" __parm [PARM1REG]
 #endif
@@ -54,12 +55,8 @@ extern void __InitRtns( unsigned );
 //      priority is <= PARM1REG (really [0-255])
 //      PARM1REG==255 -> run all init routines
 //      PARM1REG==15  -> run init routines whose priority is <= 15
-#if defined( _M_I86 )
-  extern void __far __FInitRtns( unsigned );
-  #pragma aux __FInitRtns "*" __parm [PARM1REG]
-#endif
 
-extern void __FiniRtns( unsigned, unsigned );
+extern void _WCNEAR __FiniRtns( unsigned, unsigned );
 #if defined( _M_IX86 )
   #pragma aux __FiniRtns "*" __parm [PARM1REG] [PARM2REG]
 #endif
@@ -70,14 +67,6 @@ extern void __FiniRtns( unsigned, unsigned );
 //      PARM1REG==0 ,PARM2REG==255 -> run all fini routines
 //      PARM1REG==16,PARM2REG==255 -> run fini routines in range 16...255
 //      PARM1REG==16,PARM2REG==40  -> run fini routines in range 16...40
-#if defined( _M_I86 )
-  extern void __far __FFiniRtns( unsigned, unsigned );
-  #pragma aux __FFiniRtns "*" __parm [PARM1REG] [PARM2REG]
-#endif
-
-#if defined(__OS2__) && defined(__386__)
-  #define EXIT_PRIORITY_CLIB              0x00009F00
-#endif
 
 #undef PARM1REG
 #undef PARM2REG

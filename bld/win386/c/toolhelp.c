@@ -2,6 +2,7 @@
 *
 *                            Open Watcom Project
 *
+* Copyright (c) 2025      The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -24,7 +25,7 @@
 *
 *  ========================================================================
 *
-* Description:  Covers for select toolhelp.dll routines.
+* Description:  Covers for select toolhelp.dll routines (16-bit code).
 *
 ****************************************************************************/
 
@@ -34,6 +35,7 @@
 #include <string.h>
 #include <windows.h>
 #include <toolhelp.h>
+#include "bool.h"
 #include "winext.h"
 #include "_windpmi.h"
 #include "_toolhlp.h"
@@ -42,8 +44,8 @@
 extern LPVOID FAR BackPatch_toolhelp( char *strx );
 #pragma aux BackPatch_toolhelp __parm [__ax]
 
-static DWORD (FAR PASCAL *toolhelpMemoryRead)(WORD wSel, DWORD dwOffset, void FAR* lpBuffer, DWORD dwcb);
-static DWORD (FAR PASCAL *toolhelpMemoryWrite)(WORD wSel, DWORD dwOffset, void FAR* lpBuffer, DWORD dwcb);
+static DWORD (FAR PASCAL *toolhelpMemoryRead)(WORD wSel, DWORD dwOffset, LPVOID lpBuffer, DWORD dwcb);
+static DWORD (FAR PASCAL *toolhelpMemoryWrite)(WORD wSel, DWORD dwOffset, LPVOID lpBuffer, DWORD dwcb);
 
 /*
  * __MemoryRead - cover for toolhelp MemoryRead
@@ -59,9 +61,9 @@ DWORD FAR PASCAL __MemoryRead( WORD sel, DWORD off, LPVOID buff, DWORD cb )
             return( 0 );
         }
     }
-    _DPMIGetHugeAlias( (DWORD) buff, &alias, cb );
+    _WDPMI_GetHugeAlias( (DWORD) buff, &alias, cb );
     rc = toolhelpMemoryRead( sel, off, (LPVOID) alias, cb );
-    _DPMIFreeHugeAlias( alias, cb );
+    _WDPMI_FreeHugeAlias( alias, cb );
 
     return( rc );
 
@@ -81,9 +83,9 @@ DWORD FAR PASCAL __MemoryWrite( WORD sel, DWORD off, LPVOID buff, DWORD cb )
             return( 0 );
         }
     }
-    _DPMIGetHugeAlias( (DWORD) buff, &alias, cb );
+    _WDPMI_GetHugeAlias( (DWORD) buff, &alias, cb );
     rc = toolhelpMemoryWrite( sel, off, (LPVOID) alias, cb );
-    _DPMIFreeHugeAlias( alias, cb );
+    _WDPMI_FreeHugeAlias( alias, cb );
 
     return( rc );
 

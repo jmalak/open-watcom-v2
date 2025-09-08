@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2017-2020 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2017-2025 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -39,13 +39,12 @@
 #include "fileacc.h"
 #include "rtcheck.h"
 #include "iomode.h"
-#include "seterrno.h"
 #include "defwin.h"
 #include "close.h"
 #include "thread.h"
 
 
-int __close( int handle )
+int _WCNEAR __close( int handle )
 {
     APIRET      rc;
     int         rv;
@@ -58,17 +57,15 @@ int __close( int handle )
     rc = DosClose( handle );
     if( rc != 0 ) {
         rv = __set_errno_dos( rc );
-    } else {
 #ifdef DEFAULT_WINDOWING
-        if( _WindowsCloseWindow != NULL ) {
-            res = _WindowsIsWindowedHandle( handle );
-            if( res != NULL ) {
-                _WindowsRemoveWindowedHandle( handle );
-                _WindowsCloseWindow( res );
-            }
+    } else {
+        if( _WindowsCloseWindow != NULL
+          && (res = _WindowsIsWindowedHandle( handle )) != NULL ) {
+            _WindowsRemoveWindowedHandle( handle );
+            _WindowsCloseWindow( res );
         }
 #endif
     }
-    __SetIOMode_nogrow( handle, 0 );
+    __SetIOMode( handle, 0 );
     return( rv );
 }
