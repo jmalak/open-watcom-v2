@@ -49,7 +49,7 @@
 
 
 /* Our send/receive buffer size */
-#define DNS_BUFFER_SIZE     0xFFFF
+#define DNS_BUFFER_SIZE     0x1000
 
 struct __dns_header
 {
@@ -125,6 +125,7 @@ static int _from_dns_name_format( char *dest, const char *reader, const char *bu
 
         } else {
 
+            reader++;
             /* If we havent jumped to another location then we can count up */
             if( jumped == 0 )
                 count += c + 1;
@@ -170,7 +171,7 @@ static size_t _to_dns_name_format( char *dest, const char *src )
     return( p );
 }
 
-static char **_add_string_to_list( char **addr_list, char *text )
+static char **_add_item_to_list( char **addr_list, char *text )
 {
     int     i;
     char    **lptr;
@@ -190,15 +191,15 @@ static char **_add_string_to_list( char **addr_list, char *text )
     return( addr_list );
 }
 
-static char **_add_address_to_list( char **addr_list, struct in_addr addr )
+static char **_add_address_to_list( char **addr_list, struct in_addr *addr )
 {
     char *allocated_address;
 
-    allocated_address = malloc( 64 );
+    allocated_address = malloc( sizeof( struct in_addr ) );
     if( allocated_address != NULL )
-        strcpy( allocated_address, inet_ntoa( addr ) );
+        memcpy( allocated_address, addr, sizeof( struct in_addr ) );
 
-    return( _add_string_to_list( addr_list, allocated_address ) );
+    return( _add_item_to_list( addr_list, allocated_address ) );
 }
 
 int _dns_query( const char *name, int query_type, in_addr_t dnsaddr, struct hostent *res )
@@ -308,6 +309,7 @@ int _dns_query( const char *name, int query_type, in_addr_t dnsaddr, struct host
 
     /* We only support IPv4 right now. */
     res->h_addrtype = AF_INET;
+    res->h_length = sizeof(struct in_addr);
 
     for( i = 0; i < n_answers; i++ ) {
         int     rdata_length;
@@ -319,7 +321,7 @@ int _dns_query( const char *name, int query_type, in_addr_t dnsaddr, struct host
         answers[i].resource = (struct __dns_response_data *)reader;
         reader += sizeof( struct __dns_response_data );
         rdata_length = ntohs( *(uint16_t *)reader );
-        reader += sizeof( uint16_t * );
+        reader += sizeof( uint16_t );
 
         if( ntohs( answers[i].resource->type ) == DNSQ_TYPE_A ) { /* IPv4 encountered */
 
@@ -334,7 +336,8 @@ int _dns_query( const char *name, int query_type, in_addr_t dnsaddr, struct host
 
             lptr = (struct in_addr *)answers[i].rdata;
 
-            res->h_addr_list = _add_address_to_list( res->h_addr_list, *lptr );
+            res->h_addr_list = _add_address_to_list( res->h_addr_list, lptr );
+            answers[i].rdata = NULL;
             ret = 1;
         } else {
             /* Answer should just be a string */
@@ -346,7 +349,7 @@ int _dns_query( const char *name, int query_type, in_addr_t dnsaddr, struct host
                         res->h_name = answers[i].name;
                         answers[i].name = NULL;
                     } else {
-                        res->h_aliases = _add_string_to_list( res->h_aliases, answers[i].name );
+                        res->h_aliases = _add_item_to_list( res->h_aliases, answers[i].name );
                         answers[i].name = NULL;
                     }
                 }
@@ -357,6 +360,11 @@ int _dns_query( const char *name, int query_type, in_addr_t dnsaddr, struct host
 
 dns_cleanup:
 
+#if defined( __LINUX__ )
+    close( query_socket );
+#else
+#error please provide closesocket( query_socket ) for your OS
+#endif
     if( answers != NULL && dns != NULL ) {
         for( i = 0; i < n_answers; i++ ) {
             if( answers[i].name != NULL )

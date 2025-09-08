@@ -2,6 +2,7 @@
 *
 *                            Open Watcom Project
 *
+* Copyright (c) 2025      The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -29,6 +30,7 @@
 ****************************************************************************/
 
 
+#define __FUNCTION_DATA_ACCESS
 #include "variety.h"
 #include <mbstring.h>
 #include "mbchar.h"
@@ -50,9 +52,9 @@ _WCRTLINK int (_ismbblead)( const unsigned int ch )
  * which will initialize the default multibyte code page.
  */
 
-static void __mbInitOnStartup( void )
+static void _WCNEAR __mbInitOnStartup( void )
 {
     __mbinit( 0 );
 }
 
-AXI( __mbInitOnStartup, INIT_PRIORITY_LIBRARY )
+AXIN( __mbInitOnStartup, INIT_PRIORITY_LIBRARY )

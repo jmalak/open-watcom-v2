@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2017-2023 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2017-2025 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -25,7 +25,7 @@
 *
 *  ========================================================================
 *
-* Description:  Set handle to binary mode __set_binary function prototype
+* Description:  Set handle to binary mode __clib_set_binary function prototype
 *                (used by Fortran)
 *
 ****************************************************************************/
@@ -36,6 +36,7 @@
 #if defined(__NT__)
     #include <windows.h>
 #endif
+#include "clibsupp.h"
 #include "iomode.h"
 #if defined( __DOS__ )
     #include "tinyio.h"
@@ -43,7 +44,7 @@
 #endif
 
 
-int __set_binary( int handle )
+_WCRTLINK int __clib_set_binary( int handle )
 {
     unsigned        iomode_flags;
 
@@ -59,7 +60,7 @@ int __set_binary( int handle )
         if( TINY_ERROR( rc ) ) {
             return( __set_errno_dos( TINY_INFO( rc ) ) );
         }
-        rc = TinySetDeviceInfo( handle, TINY_INFO(rc) | TIO_CTL_RAW );
+        rc = TinySetDeviceInfo( handle, TINY_INFO( rc ) | TIO_CTL_RAW );
         if( TINY_ERROR( rc ) ) {
             return( __set_errno_dos( TINY_INFO( rc ) ) );
         }

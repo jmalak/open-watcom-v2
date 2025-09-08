@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2002-2024 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2002-2025 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -209,6 +209,15 @@ static bool ScanOptionsArg( const char * arg, pp_flags *ppflags )
     return( contok );
 } /* ScanOptionsArg */
 
+static bool CmdScanSwitchChar( char c )
+{
+#ifdef __UNIX__
+    return( c == '-' );
+#else
+    return( c == '-' || c == '/' );
+#endif
+}
+
 static int ParseVariable( const char *var, char **argv, char *buf )
 /*****************************************************************/
 {
@@ -221,14 +230,12 @@ static int ParseVariable( const char *var, char **argv, char *buf )
      */
 
     const char  *start;
-    int         switchchar;
     int         argc;
     char        *bufend;
     char        *bufstart;
     bool        got_quote;
     bool        output_data;
 
-    switchchar = _dos_switch_char();
     output_data = ( buf != NULL ) && ( argv != NULL );
     bufstart = buf;
     bufend = buf;
@@ -241,7 +248,7 @@ static int ParseVariable( const char *var, char **argv, char *buf )
         if( output_data ) {
             bufstart = bufend;
         }
-        if( *var == switchchar || *var == '-' ) {
+        if( CmdScanSwitchChar( *var ) ) {
             if( output_data ) {
                 *bufend++ = *var;
             }
@@ -344,15 +351,13 @@ static bool doScanParams( int argc, char *argv[], pp_flags *ppflags )
 /*******************************************************************/
 {
     const char  *arg;
-    int         switchchar;
     bool        contok;         /* continue with main execution */
     int         currarg;
 
     contok = true;
-    switchchar = _dos_switch_char();
     for( currarg = 0; currarg < argc && contok; currarg++ ) {
         arg = argv[currarg];
-        if( *arg == switchchar || *arg == '-' ) {
+        if( CmdScanSwitchChar( *arg ) ) {
             contok = ScanOptionsArg( arg + 1, ppflags ) && contok;
         } else if( *arg == '@' ) {
             contok = scanEnvVarOrFile( arg + 1, ppflags ) && contok;
@@ -404,7 +409,7 @@ int main( int argc, char *argv[] )
     if( argc < 2 ) {
         wcpp_quit( usageMsg, "No filename specified" );
     } else if( argc == 2 ) {
-        if( !strcmp( argv[1], "?" ) ) {
+        if( strcmp( argv[1], "?" ) == 0 ) {
             wcpp_quit( usageMsg, NULL );
         }
     }

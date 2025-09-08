@@ -2,7 +2,7 @@
 ;*
 ;*                            Open Watcom Project
 ;*
-;* Copyright (c) 2002-2024 The Open Watcom Contributors. All Rights Reserved.
+;* Copyright (c) 2002-2025 The Open Watcom Contributors. All Rights Reserved.
 ;*    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 ;*
 ;*  ========================================================================
@@ -356,7 +356,7 @@ error_exit:
 ; may be only called from startup code, after that there is
 ; nowhere to exit to!
 
-__do_exit_with_msg_:
+__do_exit_with_msg_ proc near
         push    edx                     ; save return code
         push    eax                     ; save address of msg
         mov     edx,offset ConsoleName
@@ -382,16 +382,35 @@ nextc:  lodsb                           ; get char
 exit_code_eax:
         or      eax,eax
         je      do_exit
+exit_code_eax2:
         push    eax                     ; don't destroy error code
         call    __CommonTerm            ; terminate the runtime
         pop     eax
+__do_exit_with_msg_ endp
 
 do_exit:
         mov     si,DGROUP
         mov     ds,esi
         lss     esp,caller_stack
+        mov     caller_ss,0             ; caller_ss is used as a flag if do_exit can be jumped to
         ret
+
 __DLLstart_ endp
+
+        public  "C",__exit
+__exit  proc    near
+ifdef __STACK__
+        pop     eax                     ; get return code into eax
+endif
+        cmp     caller_ss,0             ; exit via do_exit possible?
+        jnz     exit_code_eax2
+
+;--- if caller_ss == 0, then _exit() has been called from inside an exported function.
+;--- this cannot be handled gracefully.
+;--- optionally display an error msg here?
+        mov     ah,4Ch
+        int     21h
+__exit  endp
 
         public  __GETDS
         align   4

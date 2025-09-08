@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2002-2023 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2002-2025 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -71,6 +71,7 @@ trap_retval TRAP_FILE( get_config )( void )
     ret->file.path_separator[1] = '/';
     ret->file.line_eol[0] = '\r';
     ret->file.line_eol[1] = '\n';
+    ret->file.list_separator = ';';
     return( sizeof( *ret ) );
 }
 
@@ -143,6 +144,7 @@ trap_retval TRAP_FILE( open )( void )
 trap_retval TRAP_FILE( seek )( void )
 {
     DWORD               pos;
+    DWORD               error;
     file_seek_req       *acc;
     file_seek_ret       *ret;
     HANDLE              h;
@@ -158,7 +160,10 @@ trap_retval TRAP_FILE( seek )( void )
     }
     pos = SetFilePointer( h, acc->pos, NULL, local_seek_method[acc->mode] );
     if( pos == INVALID_SET_FILE_POINTER ) {
-        ret->err = GetLastError();
+        error = GetLastError();
+        if( error != NO_ERROR ) {
+            ret->err = error;
+        }
     }
     ret->pos = pos;
     return( sizeof( *ret ) );

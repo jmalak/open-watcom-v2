@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2002-2023 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2002-2025 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -35,11 +35,8 @@
 #include "walloca.h"
 #include "linkstd.h"
 #include "pcobj.h"
-#include "alloc.h"
 #include "dbginfo.h"
 #include "newmem.h"
-#include "msg.h"
-#include "wlnkmsg.h"
 #include "virtmem.h"
 #include "objnode.h"
 #include "loadfile.h"
@@ -50,8 +47,8 @@
 #include "ring.h"
 #include "dbgcomm.h"
 #include "dbgwat.h"
-#include "machtype.h"
 #include "wdbginfo.h"
+#include "felang.h"
 
 #include "clibext.h"
 
@@ -128,7 +125,7 @@ void ODBIInit( section *sect )
     Master.exe_minor_ver = EXE_MINOR_VERSION;
     Master.obj_major_ver = 0;
     Master.obj_minor_ver = 0;
-    DBISourceLang = LangAlloc( 1, "C" );
+    DBISourceLang = LangAlloc( sizeof( FE_LANG_C ) - 1, FE_LANG_C );
     DBISourceLang->next = NULL;
     _PermAlloc( sect->dbg_info, sizeof( debug_info ) );
     memset( sect->dbg_info, 0, sizeof( debug_info ) );  //assumes NULL == 0

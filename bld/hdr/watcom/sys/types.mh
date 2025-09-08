@@ -10,6 +10,10 @@
 
 :include owrtlink.sp
 
+:segment LINUX
+:include incdir.sp
+
+:endsegment
 :segment LINUX | QNX
 #ifndef _LIMITS_H_INCLUDED
  #include <limits.h>
@@ -46,8 +50,6 @@
 :include pthread1.sp
 :include pthread2.sp
 
-:include incdir.sp
-
 #include _ARCH_INCLUDE(sys/types.h)
 #include _ARCH_INCLUDE(sys/sysmacros.h)
 
@@ -66,13 +68,14 @@ typedef unsigned char   u_char;
 typedef unsigned short  u_short;
 typedef unsigned int    u_int;
 typedef unsigned long   u_long;
-typedef unsigned __int64 u_quad_t;
-typedef __int64         quad_t;
+typedef unsigned long long u_quad_t;
+typedef long long       quad_t;
 typedef quad_t          *qaddr_t;
 typedef int             key_t;
 :include ext.sp
 :include loff_t.sp
 :include off64_t.sp
+:include fstypes.sp
 :include extepi.sp
 
 :elsesegment QNX

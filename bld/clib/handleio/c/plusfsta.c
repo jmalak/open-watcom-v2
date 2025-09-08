@@ -2,6 +2,7 @@
 *
 *                            Open Watcom Project
 *
+* Copyright (c) 2025      The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -55,7 +56,7 @@
 #define __text        0x0080    // - open as text file
 #define __binary      0x0100    // - open as binary file
 
-_WCRTLINK int __plusplus_fstat( int handle, int *pios_mode )
+_WCRTLINK int __clib_fstat( int handle, int *pios_mode )
 {
     int ios_mode;
 
@@ -83,26 +84,26 @@ _WCRTLINK int __plusplus_fstat( int handle, int *pios_mode )
     } else {
         ios_mode |= __in | __out;
     }
-#elif __RDOS__
+#elif defined( __RDOS__ )
 
     /* unused parameters */ (void)handle;
 
     ios_mode = __in | __out | __text;
 #else
-    int flags;
+    unsigned    iomode_flags;
 
-    flags = __GetIOMode( handle );
+    iomode_flags = __GetIOMode( handle );
     ios_mode = 0;
-    if( flags & _APPEND ) {
+    if( iomode_flags & _APPEND ) {
         ios_mode = __append;
     }
-    if( flags & _READ ) {
+    if( iomode_flags & _READ ) {
         ios_mode |= __in;
     }
-    if( flags & _WRITE ) {
+    if( iomode_flags & _WRITE ) {
         ios_mode |= __out;
     }
-    if( flags & _BINARY ) {
+    if( iomode_flags & _BINARY ) {
         ios_mode |= __binary;
     } else {
         ios_mode |= __text;

@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2002-2024 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2002-2025 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -48,15 +48,12 @@
 #include "iopath.h"
 #include "wreslang.h"
 #include "cvttable.h"
+#include "infcomm.h"
 
 #include "clibext.h"
 
 
-#define SECTION_BUF_SIZE 8192   // allow long text strings
-
-#define BLOCKSIZE       512
-
-#define RoundUp( size, limit )  ( ( ( size + limit - 1 ) / limit ) * limit )
+#define SECTION_BUF_SIZE _8K    // allow long text strings
 
 #define IS_EMPTY(p)     ((p)[0] == '\0' || (p)[0] == '.' && (p)[1] == '\0')
 
@@ -78,7 +75,7 @@ typedef struct path_info {
 
 typedef struct size_list {
     struct size_list    *next;
-    long                size;
+    unsigned            size;
     time_t              stamp;
     char                type;
     char                redist;
@@ -128,7 +125,6 @@ static LIST                 *BootTextList = NULL;
 static LIST                 *ExeList = NULL;
 static LIST                 *TargetList = NULL;
 static LIST                 *LabelList = NULL;
-static LIST                 *UpgradeList = NULL;
 static LIST                 *AutoSetList = NULL;
 static LIST                 *AfterList = NULL;
 static LIST                 *BeforeList = NULL;
@@ -140,7 +136,6 @@ static LIST                 *ErrMsgList = NULL;
 static LIST                 *SetupErrMsgList = NULL;
 static wres_lang_id         Lang = LANG_RLE_ENGLISH;
 static bool                 Utf8 = false;
-static bool                 Upgrade = false;
 static bool                 Verbose = false;
 static bool                 IgnoreMissingFiles = false;
 static bool                 CreateMissingFiles = false;
@@ -323,8 +318,8 @@ static void AddToList( LIST *new, LIST **list )
 }
 
 
-static long FileSize( const char *file )
-/**************************************/
+static unsigned FileSize( const char *file )
+/******************************************/
 {
     struct stat         stat_buf;
 
@@ -332,7 +327,7 @@ static long FileSize( const char *file )
         printf( "Can't find '%s'\n", file );
         return( 0 );
     } else {
-        return( RoundUp( stat_buf.st_size, BLOCKSIZE ) );
+        return( __ROUND_UP_SIZE_INF( stat_buf.st_size ) );
     }
 }
 
@@ -369,8 +364,6 @@ bool CheckParms( int *pargc, char **pargv[] )
                 AddToList( new, &Include );
             } else if( tolower( (*pargv)[1][1] ) == 'u' && tolower( (*pargv)[1][2] ) == 't' && tolower( (*pargv)[1][3] ) == 'f' && (*pargv)[1][4] == '8') {
                 Utf8 = true;
-            } else if( tolower( (*pargv)[1][1] ) == 'u' ) {
-                Upgrade = true;
             } else if( tolower( (*pargv)[1][1] ) == 'v' ) {
                 Verbose = true;
             } else if( tolower( (*pargv)[1][1] ) == 'f' ) {
@@ -392,7 +385,6 @@ bool CheckParms( int *pargc, char **pargv[] )
         printf( "-v         verbose operation\n" );
         printf( "-i<path>   include path for setup scripts\n" );
         printf( "-l<num>    generate installer for <num> language\n" );
-        printf( "-u         create upgrade setup script\n" );
         printf( "-utf8      input files are in UTF-8 encoding\n" );
         printf( "-d<string> specify string to add to Application section\n" );
         printf( "-f         force script creation if files missing (testing only)\n" );
@@ -468,8 +460,8 @@ static char *GetBracketedString( const char *src, const char **end )
 }
 
 
-int AddPath( const char *path, int target, int parent )
-/*****************************************************/
+int AddPathIndex( const char *path, int target, int parent )
+/**********************************************************/
 {
     int                 count;
     PATH_INFO           *newitem, *curr, **owner;
@@ -499,28 +491,28 @@ int AddPath( const char *path, int target, int parent )
 }
 
 
-int AddPathTree( char *path, int target )
-/***************************************/
+int AddPathTreeIndex( char *path, int target )
+/********************************************/
 {
     int         parent;
     char        *p;
 
     if( path == NULL )
         return( -1 );
-    parent = AddPath( ".", target, -1 );
+    parent = AddPathIndex( ".", target, -1 );
     for( p = path; (p = strchr( p, '\\' )) != NULL; ) {
         *p = '/';
     }
     p = strchr( path, '/' );
     while( p != NULL ) {
         *p = '\0';
-        parent = AddPath( path, target, parent );
+        parent = AddPathIndex( path, target, parent );
         if( parent == 0 )
             return( 0 );
         *p = '/';
         p = strchr( p + 1, '/' );
     }
-    return( AddPath( path, target, parent ) );
+    return( AddPathIndex( path, target, parent ) );
 }
 
 static int mkdir_nested( const char *path )
@@ -604,7 +596,7 @@ bool AddFile( char *path, char *old_path, char type, char redist, char *file, co
 {
     int                 path_dir, old_path_dir, target;
     FILE_INFO           *newitem, *curr, **owner;
-    long                act_size;
+    unsigned            act_size;
     time_t              time;
     struct stat         stat_buf;
     char                *p;
@@ -647,7 +639,7 @@ bool AddFile( char *path, char *old_path, char type, char redist, char *file, co
     } else if( stat( src, &stat_buf ) != 0 ) {
         printf( "'%s' does not exist\n", src );
         if( IgnoreMissingFiles ) {
-            act_size = 1024;
+            act_size = INFBLK2SIZE( 2 );
             time = 0;
 //            return( true );
         } else if( CreateMissingFiles ) {
@@ -685,7 +677,7 @@ bool AddFile( char *path, char *old_path, char type, char redist, char *file, co
     printf( "\r%s                              \r", file );
     fflush( stdout );
 #endif
-    act_size = RoundUp( act_size, 512 );
+    act_size = __ROUND_UP_SIZE_INF( act_size );
 
     // strip target off front of path
     if( *path == '%' ) {
@@ -713,11 +705,11 @@ bool AddFile( char *path, char *old_path, char type, char redist, char *file, co
     }
 
     // handle sub-directories in path before full path
-    path_dir = AddPathTree( path, target );
+    path_dir = AddPathTreeIndex( path, target );
     if( path_dir == 0 ) {
         return( false );
     }
-    old_path_dir = AddPathTree( old_path, target );
+    old_path_dir = AddPathTreeIndex( old_path, target );
     p = file;
 #ifndef __UNIX__
     if( p[0] != '\0' && p[1] == ':' ) {
@@ -943,7 +935,6 @@ bool ReadList( FILE *fp )
 #define STRING_deletefile       "deletefile="
 #define STRING_deletedir        "deletedir="
 #define STRING_language         "language="
-#define STRING_upgrade          "upgrade="
 #define STRING_forcedll         "forcedll="
 #define STRING_assoc            "assoc="
 #define STRING_errmsg           "errmsg="
@@ -1056,8 +1047,6 @@ static bool processLine( const char *line, LIST **list )
         AddToList( new, &ExeList );
     } else if( STRING_IS( line, new, STRING_label ) ) {
         AddToList( new, &LabelList );
-    } else if( STRING_IS( line, new, STRING_upgrade ) ) {
-        AddToList( new, &UpgradeList );
     } else if( STRING_IS( line, new, STRING_deletedialog ) ) {
         new->type = DELETE_DIALOG;
         AddToList( new, &DeleteList );
@@ -1178,8 +1167,16 @@ static char *encode36( char *buffer, unsigned long value )
     return( buffer );
 }
 
-static void fput36( FILE *fp, long value )
-/****************************************/
+static void fput36u( FILE *fp, unsigned long value )
+/**************************************************/
+{
+    char        buff[30];
+
+    fprintf( fp, "%s", encode36( buff, value ) );
+}
+
+static void fput36s( FILE *fp, long value )
+/*****************************************/
 {
     char        buff[30];
 
@@ -1195,17 +1192,17 @@ void DumpSizes( FILE *fp, FILE_INFO *curr )
 {
     size_list   *csize;
 
-    fput36( fp, curr->num_files );
+    fput36s( fp, curr->num_files );
     fprintf( fp, "," );
     if( curr->num_files > 1 ) {
         fprintf( fp, "\\\n" );
     }
     for( csize = curr->sizes; csize != NULL; csize = csize->next ) {
         fprintf( fp, "%s!", csize->name );
-        fput36( fp, csize->size/512 );
+        fput36u( fp, SIZE2INFBLK( csize->size ) );
         fprintf( fp, "!" );
         if( csize->redist != '\0' ) {
-            fput36( fp, (long)( csize->stamp ) );
+            fput36u( fp, (unsigned long)( csize->stamp ) );
         }
         fprintf( fp, "!" );
         if( csize->dst_var != NULL ) {
@@ -1286,8 +1283,8 @@ static void DumpFile( FILE *out, const char *fname )
 }
 
 
-static void CreateScript( long init_size, unsigned padding )
-/**********************************************************/
+static void CreateScript( unsigned init_size, unsigned padding )
+/**************************************************************/
 {
     FILE                *fp;
     FILE_INFO           *curr;
@@ -1305,9 +1302,6 @@ static void CreateScript( long init_size, unsigned padding )
     fprintf( fp, "[Application]\n" );
     for( list = AppSection; list != NULL; list = list->next ) {
         fprintf( fp, "%s\n", list->item );
-    }
-    if( Upgrade ) {
-        fprintf( fp, "IsUpgrade=1\n" );
     }
     fprintf( fp, "\n[Targets]\n" );
     for( list = TargetList; list != NULL; list = list->next ) {
@@ -1329,9 +1323,9 @@ static void CreateScript( long init_size, unsigned padding )
     for( curr = FileList; curr != NULL; curr = curr->next ) {
         fprintf( fp, "%s,", curr->pack );
         DumpSizes( fp, curr );
-        fput36( fp, curr->path );
+        fput36s( fp, curr->path );
         fprintf( fp, "," );
-        fput36( fp, curr->old_path );
+        fput36s( fp, curr->old_path );
         fprintf( fp, ",%s\n", curr->condition );
     }
 
@@ -1422,13 +1416,6 @@ static void CreateScript( long init_size, unsigned padding )
         }
     }
 
-    if( UpgradeList != NULL ) {
-        fprintf( fp, "\n[Upgrade]\n" );
-        for( list = UpgradeList; list != NULL; list = list->next ) {
-            fprintf( fp, "%s\n", list->item );
-        }
-    }
-
     if( ForceDLLInstallList != NULL ) {
         fprintf( fp, "\n[ForceDLLInstall]\n" );
         for( list = ForceDLLInstallList; list != NULL; list = list->next ) {
@@ -1459,10 +1446,9 @@ static void CreateScript( long init_size, unsigned padding )
 
     fprintf( fp, "\n[End]\n" );
 
-    while( padding != 0 ) {
+    while( padding-- > 0 ) {
         /* add some padding to bring the size up to old size */
         fputc( ' ', fp );
-        --padding;
     }
 
     fclose( fp );
@@ -1474,8 +1460,10 @@ static void MakeScript( void )
 {
     FILE_INFO           *curr;
     size_list           *csize;
-    long                act_size;
-    long                size, old_size, inf_size;
+    unsigned            act_size;
+    unsigned            size;
+    unsigned            old_size;
+    unsigned            setup_inf_size;
     LIST                *list;
 
     act_size = 0;
@@ -1484,32 +1472,32 @@ static void MakeScript( void )
             act_size += csize->size;
         }
     }
-    printf( "Installed size = %ld\n", act_size );
+    printf( "Installed size = %u\n", act_size );
 
 //  place SETUP.EXE, *.EXE on the 1st disk
     size = FileSize( Setup );
     for( list = ExeList; list != NULL; list = list->next ) {
         size += FileSize( list->item );
     }
-    inf_size = 0;
+    setup_inf_size = 0;
     old_size = 0;
     for ( ;; ) {
         /* keep creating script until size stabilizes */
-        CreateScript( size + inf_size, 0 );
-        inf_size = FileSize( "setup.inf" );
-        if( old_size > inf_size ) {
+        CreateScript( size + setup_inf_size, 0 );
+        setup_inf_size = FileSize( "setup.inf" );
+        if( old_size > setup_inf_size ) {
             /*
                 If the new size of the install script is less than the
                 old size, we can create the script with some padding
                 to bring it up to the old size. This prevents us from
                 going into an oscillation between two sizes.
             */
-            CreateScript( size + old_size, old_size - inf_size );
-            inf_size = old_size;
+            CreateScript( size + old_size, old_size - setup_inf_size );
+            setup_inf_size = old_size;
         }
-        if( old_size == inf_size )
+        if( old_size == setup_inf_size )
             break;
-        old_size = inf_size;
+        old_size = setup_inf_size;
     }
 }
 

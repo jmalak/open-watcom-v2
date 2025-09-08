@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2017-2020 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2017-2025 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -41,6 +41,8 @@
     #include "os2fil64.h"
 #elif defined( __DOS__ ) || defined( __WINDOWS__ )
     #include "tinyio.h"
+#elif defined( __NETWARE__ )
+    #include "nw_lib.h"
 #endif
 #include "rterrno.h"
 #include "i64.h"
@@ -52,25 +54,20 @@
 #include "thread.h"
 
 
-#ifndef INVALID_SET_FILE_POINTER
-    #define INVALID_SET_FILE_POINTER 0xFFFFFFFF
-#endif
-
 #define LODWORD(x) (((unsigned_64 *)&x)->u._32[I64LO32])
 #define HIDWORD(x) (((unsigned_64 *)&x)->u._32[I64HI32])
 
 #ifdef __INT64__
 
-_WCRTLINK __int64 __lseeki64( int handle, __int64 offset, int origin )
+__int64 _WCNEAR __lseeki64( int handle, __int64 offset, int origin )
 {
-#if defined( __NT__ ) || defined( __OS2__ ) || defined( __LINUX__ )
+#if defined( __NT__ ) || defined( __OS2_32BIT__ ) || defined( __LINUX__ )
     __int64         pos;
 
     __handle_check( handle, -1 );
 
   #if defined( __OS2__ )
     {
-    #if !defined( _M_I86 )
         APIRET          rc;
 
         if( __os2_DosSetFilePtrL != NULL ) {
@@ -79,34 +76,32 @@ _WCRTLINK __int64 __lseeki64( int handle, __int64 offset, int origin )
                 return( __set_errno_dos( rc ) );
             }
         } else {
-    #endif
             if( offset > LONG_MAX || offset < LONG_MIN ) {
                 _RWD_errno = EINVAL;
                 return( -1LL );
             }
             pos = (unsigned long)__lseek( handle, offset, origin );
-            if( pos == INVALID_SET_FILE_POINTER ) {
-                pos = -1LL;
+            if( (long)pos == -1L ) {
+                return( -1LL );
             }
-    #if !defined( _M_I86 )
         }
-    #endif
     }
   #elif defined( __NT__ )
     {
-        DWORD           rc;
-        LONG            offset_hi;
-        int             error;
+        DWORD           pos_lo;
+        DWORD           error;
+        LONG            pos_hi;
 
-        offset_hi = HIDWORD( offset );
-        rc = SetFilePointer( __getOSHandle( handle ), LODWORD( offset ), &offset_hi, origin );
-        if( rc == INVALID_SET_FILE_POINTER ) {  // this might be OK so
-            error = GetLastError();             // check for sure JBS 04-nov-99
+        pos_hi = HIDWORD( offset );
+        pos_lo = SetFilePointer( __getOSHandle( handle ), LODWORD( offset ), &pos_hi, origin );
+        if( pos_lo == INVALID_SET_FILE_POINTER ) {
+            // this might be OK so check for error
+            error = GetLastError();
             if( error != NO_ERROR ) {
                 return( __set_errno_dos( error ) );
             }
         }
-        U64Set( (unsigned_64 *)&pos, rc, offset_hi );
+        U64Set( (unsigned_64 *)&pos, pos_lo, pos_hi );
     }
   #elif defined( __LINUX__ )
     if( _llseek( handle, LODWORD( offset ), HIDWORD( offset ), &pos, origin ) ) {
@@ -122,7 +117,7 @@ _WCRTLINK __int64 __lseeki64( int handle, __int64 offset, int origin )
         return( -1LL );
     }
     pos = __lseek( handle, offset, origin );
-    if( pos == INVALID_SET_FILE_POINTER ) {
+    if( pos == -1L ) {
         return( -1LL );
     }
     return( (unsigned long)pos );
@@ -131,10 +126,17 @@ _WCRTLINK __int64 __lseeki64( int handle, __int64 offset, int origin )
 
 #else
 
-_WCRTLINK long __lseek( int handle, long offset, int origin )
+long _WCNEAR __lseek( int handle, long offset, int origin )
 {
-#if defined( __DOS__ ) || defined( __WINDOWS__ )
+#if defined( __NT__ )
+    DWORD               pos;
+    DWORD               error;
+#elif defined( __DOS__ ) || defined( __WINDOWS__ )
     uint_32             pos;
+    tiny_ret_t          rc;
+#elif defined( __OS2__ )
+    unsigned long       pos;
+    APIRET              rc;
 #else
     unsigned long       pos;
 #endif
@@ -142,23 +144,21 @@ _WCRTLINK long __lseek( int handle, long offset, int origin )
     __handle_check( handle, -1 );
 
 #if defined( __OS2__ )
-    {
-        APIRET          rc;
-
-        rc = DosChgFilePtr( handle, offset, origin, &pos );
-        if( rc != 0 ) {
-            return( __set_errno_dos( rc ) );
-        }
+    rc = DosChgFilePtr( handle, offset, origin, &pos );
+    if( rc != 0 ) {
+        return( __set_errno_dos( rc ) );
     }
 #elif defined( __NT__ )
     pos = SetFilePointer( __getOSHandle( handle ), offset, 0, origin );
     if( pos == INVALID_SET_FILE_POINTER ) {
-        return( __set_errno_nt() );
+        // this might be OK so check for error
+        error = GetLastError();
+        if( error != NO_ERROR ) {
+            return( __set_errno_dos( error ) );
+        }
     }
 #elif defined( __DOS__ ) || defined( __WINDOWS__ )
     {
-        tiny_ret_t      rc;
-
         rc = TinyLSeek( handle, offset, origin, &pos );
         if( TINY_ERROR( rc ) ) {
             return( __set_errno_dos( TINY_INFO( rc ) ) );

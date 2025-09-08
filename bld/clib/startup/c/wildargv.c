@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2002-2019 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2002-2025 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -34,7 +34,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <direct.h>
+#include <dirent.h>
 #include <malloc.h>
 #include <tchar.h>
 
@@ -235,7 +235,7 @@ static int _make_argv( TCHAR *p, TCHAR ***argv )
     return( argc );
 }
 
-void __INIT_ARGV( void )
+void _WCNEAR __INIT_ARGV( void )
 {
     TCHAR *cln;
 
@@ -251,7 +251,7 @@ void __INIT_ARGV( void )
     __targv = ___ARGV;      /* from stdlib.h */
 }
 
-void __FINI_ARGV( void )
+void _WCNEAR __FINI_ARGV( void )
 {
     if( _ARGV != NULL ) {
         if( (_ARGC > 1) && (_ARGV[1] != NULL) ) {

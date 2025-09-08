@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2024      The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2024-2025 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -32,7 +32,6 @@
 
 
 #include <ctype.h>
-#include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
 #include "wio.h"
@@ -74,6 +73,9 @@ typedef struct _MatchingInfo {
     ListElem *          found;
 } MatchingInfo;
 
+struct orl_io_struct {
+    FILE                *fp;
+};
 
 /*
  * Static data.
@@ -103,7 +105,7 @@ static int is_name_mangled( const char *symbol )
 static int hash_compare( const void *item1, const void *item2 )
 /*************************************************************/
 {
-    return( !strcmp( (const char*)item1, (const char*)item2 ) );
+    return( strcmp( (const char*)item1, (const char*)item2 ) == 0 );
 }
 
 
@@ -180,15 +182,15 @@ static unsigned hash_symbol_name( const void *symbol )
 /*
  * Used by ORL.
  */
-static void *obj_read( FILE *fp, size_t len )
-/*******************************************/
+static void *obj_read( struct orl_io_struct *orlio, size_t len )
+/**************************************************************/
 {
     ListElem *          newelem;
 
     newelem = AllocMem( sizeof( ListElem ) + len - 1 );
     newelem->next = bufflist;
     bufflist = newelem;
-    if( fread( newelem->buff, 1, len, fp ) != len ) {
+    if( fread( newelem->buff, 1, len, orlio->fp ) != len ) {
         FreeMem( newelem );
         return( NULL );
     }
@@ -199,10 +201,10 @@ static void *obj_read( FILE *fp, size_t len )
 /*
  * Used by ORL.
  */
-static int obj_seek( FILE *fp, long pos, int where )
-/**************************************************/
+static int obj_seek( struct orl_io_struct *orlio, long pos, int where )
+/*********************************************************************/
 {
-    return( fseek( fp, pos, where ) );
+    return( fseek( orlio->fp, pos, where ) );
 }
 
 
@@ -251,52 +253,52 @@ static orl_return do_orl_symbol( orl_symbol_handle o_symbol )
 static int handle_obj_file( const char *filename, orl_handle o_hnd )
 /******************************************************************/
 {
-    orl_file_handle     o_fhnd;
-    orl_file_format     o_format;
-    orl_file_type       o_filetype;
-    orl_sec_handle      o_symtab;
-    orl_return          o_rc;
-    FILE                *fp;
+    orl_file_handle         o_fhnd;
+    orl_file_format         o_format;
+    orl_file_type           o_filetype;
+    orl_sec_handle          o_symtab;
+    orl_return              o_rc;
+    struct orl_io_struct    orlio;
 
     /*** Make ORL interested in the file ***/
-    fp = fopen( filename, "rb" );
-    if( fp == NULL ) {
+    orlio.fp = fopen( filename, "rb" );
+    if( orlio.fp == NULL ) {
         return( 0 );
     }
-    o_format = ORLFileIdentify( o_hnd, fp );
+    o_format = ORLFileIdentify( o_hnd, &orlio );
     if( o_format == ORL_UNRECOGNIZED_FORMAT ) {
-        fclose( fp );
+        fclose( orlio.fp );
         return( 0 );
     }
-    o_fhnd = ORLFileInit( o_hnd, fp, o_format );
+    o_fhnd = ORLFileInit( o_hnd, &orlio, o_format );
     if( o_fhnd == NULL ) {
-        fclose( fp );
+        fclose( orlio.fp );
         return( 0 );
     }
     o_filetype = ORLFileGetType( o_fhnd );
     if( o_filetype != ORL_FILE_TYPE_OBJECT ) {
-        fclose( fp );
+        fclose( orlio.fp );
         return( 0 );
     }
 
     /*** Scan the file's symbol table ***/
     o_symtab = ORLFileGetSymbolTable( o_fhnd );
     if( o_symtab == NULL ) {
-        fclose( fp );
+        fclose( orlio.fp );
         return( 0 );
     }
     o_rc = ORLSymbolSecScan( o_symtab, do_orl_symbol );
     if( o_rc != ORL_OKAY ) {
-        fclose( fp );
+        fclose( orlio.fp );
         return( 0 );
     }
     o_rc = ORLFileFini( o_fhnd );
     if( o_rc != ORL_OKAY ) {
-        fclose( fp );
+        fclose( orlio.fp );
         return( 0 );
     }
 
-    fclose( fp );
+    fclose( orlio.fp );
     return( 1 );
 }
 
@@ -558,19 +560,19 @@ static int matching_callback( const void *name_, void *info_ )
     /*** Try to match this symbol ***/
     switch( info->findmode ) {
     case MATCH_MODE_EXACT:
-        if( !strcmp( name, info->basename ) ) {
+        if( strcmp( name, info->basename ) == 0 ) {
             addit = true;
         }
         break;
     case MATCH_MODE_UNDERBAR_SYMBOL:
         sprintf( matchstr, "_%s", info->basename );
-        if( !strcmp( name, matchstr ) ) {
+        if( strcmp( name, matchstr ) == 0 ) {
             addit = true;
         }
         break;
     case MATCH_MODE_SYMBOL_UNDERBAR:
         sprintf( matchstr, "%s_", info->basename );
-        if( !strcmp( name, matchstr ) ) {
+        if( strcmp( name, matchstr ) == 0 ) {
             addit = true;
         }
         break;

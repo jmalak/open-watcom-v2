@@ -2,7 +2,7 @@
 ;*
 ;*                            Open Watcom Project
 ;*
-;* Copyright (c) 2002-2024 The Open Watcom Contributors. All Rights Reserved.
+;* Copyright (c) 2002-2025 The Open Watcom Contributors. All Rights Reserved.
 ;*    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 ;*
 ;*  ========================================================================
@@ -54,10 +54,10 @@ include extender.inc
 FLG_NO87        equ     1
 FLG_LFN         equ     1
 
-PHARLAP_PSP_SEL equ     24h
-PHARLAP_ENV_SEL equ     2ch
+SEL_PHARLAP_PSP equ     24h
+SEL_PHARLAP_ENV equ     2ch
 
-DOS_PSP_ENV_SEG equ     2ch
+PSP_ENV_SEG     equ     2ch
 
 
         assume  nothing
@@ -187,8 +187,6 @@ around: sti                             ; enable interrupts
         mov     ebx,esp                 ; get sp
         mov     _STACKTOP,ebx           ; set stack top
         mov     _curbrk,ebx             ; set first available memory location
-        mov     ax,PHARLAP_PSP_SEL      ; get segment address of PSP
-        mov     _psp,ax                 ; save segment address of PSP
 ;
 ;       get DOS & Extender version number
 ;
@@ -213,7 +211,9 @@ normal_pharlap:                         ; - endif
         sub     bl,'1' - X_PHARLAP_V1   ; - ASCII -> bin version
         mov     al,bl                   ; - save major version number
         push    eax                     ; - save version number
-        mov     es,_psp                 ; - point to PSP
+        mov     eax,SEL_PHARLAP_PSP     ; get segment address of PSP
+        mov     _psp,ax                 ; save segment address of PSP
+        mov     es,eax                  ; - point to PSP
         mov     ebx,es:[5Ch]            ; - get highest addr used
         add     ebx,000000FFFh          ; - round up to 4K boundary
         and     ebx,0FFFFF000h          ; - ...
@@ -225,7 +225,7 @@ normal_pharlap:                         ; - endif
         int     21h                     ; - ...
         pop     eax                     ; - restore version number
         mov     ebx,ds                  ; - get value of Phar Lap data segment
-        mov     cx,PHARLAP_ENV_SEL      ; - PharLap environment segment
+        mov     cx,SEL_PHARLAP_ENV      ; - PharLap environment segment
         jmp short know_extender         ; else
 
 not_pharlap:                            ; - assume DOS/4G or compatible
@@ -248,14 +248,15 @@ rat9:                                   ; - endif
         jz      rat10                   ; - then
         mov     ah,XS_RATIONAL_NONZEROBASE; - DOS/4G non-zero based data
 rat10:                                  ; - endif
-        mov     _psp,es                 ; - save segment address of PSP
-        mov     cx,es:[DOS_PSP_ENV_SEG] ; - get environment segment into cx
-        jmp short know_extender         ; else
+        jmp short save_psp              ; else
 
 not_rational:                           ; - check other extenders
 
 unknow_extender:                        ; - unknown extender
         xor     eax,eax
+save_psp:
+        mov     _psp,es                 ; - save segment address of PSP
+        mov     cx,es:[PSP_ENV_SEG]     ; - get environment segment into cx
 know_extender:                          ; endif
         mov     _Extender,al            ; record extender type
         mov     _ExtenderSubtype,ah     ; record extender subtype
@@ -358,7 +359,7 @@ zerobss:mov     dl,cl                   ; save bottom 2 bits of count in edx
         sub     ebp,ebp                 ; ebp=0 indicate end of ebp chain
         mov     eax,0FFH                ; run all initalizers
         call    __InitRtns              ; call initializer routines
-        call    __CMain
+        jmp     __CMain                 ; never return
 _cstart_ endp
 
 ;       don't touch AL in __exit, it has the return code
@@ -376,7 +377,7 @@ endif
 ;       EAX - pointer to message to print
 ;       EDX - exit code
 
-__do_exit_with_msg_:                    ; never return
+__do_exit_with_msg_ proc near           ; never return
         push    edx                     ; save return code
         push    eax                     ; save address of msg
         mov     edx,offset ConsoleName
@@ -405,6 +406,8 @@ L7:
         pop     eax                     ; restore return code from stack
         mov     ah,04cH                 ; DOS call to exit with return code
         int     021h                    ; back to DOS
+__do_exit_with_msg_ endp
+
 __exit  endp
 
 ;

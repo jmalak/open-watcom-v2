@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2002-2024 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2002-2025 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -152,30 +152,18 @@ static void reScanGetNextCharUndo( int c )
     CompFlags.rescan_buffer_done = false;
 }
 
-unsigned hashpjw( const char *s )
-/*******************************/
+static unsigned hashpjw( const char *s, size_t len )
+/**************************************************/
 {
     unsigned        h;
-    unsigned char   c;
+    size_t          i;
 
     h = *(const unsigned char *)s++;
-    if( h != 0 ) {
-        c = *s++;
-        if( c != '\0' ) {
-            h = ( h << 4 ) + c;
-            for( ;; ) {
-                h &= 0x0fff;
-                c = *s++;
-                if( c == '\0' )
-                    break;
-                h = ( h << 4 ) + c;
-                h = ( h ^ (h >> 12) ) & 0x0fff;
-                c = *s++;
-                if( c == '\0' )
-                    break;
-                h = ( h << 4 ) + c;
-                h = h ^ (h >> 12);
-            }
+    if( len > 1 ) {
+        h = ( ( h << 4 ) + *(const unsigned char *)s++ ) & 0x0fff;
+        for( i = 2; i < len; i++) {
+            h = ( h << 4 ) + *(const unsigned char *)s++;
+            h = ( h ^ ( h >> 12 ) ) & 0x0fff;
         }
     }
     return( h );
@@ -186,7 +174,9 @@ id_hash_idx CalcHashID( const char *id )
 {
     unsigned    hash;
 
-    hash = hashpjw( id );
+    if( *id == '\0' )
+        return( 0 );
+    hash = hashpjw( id, strlen( id ) );
     return( (id_hash_idx)( hash % ID_HASH_SIZE ) );
 }
 
@@ -195,9 +185,10 @@ mac_hash_idx CalcHashMacro( const char *id )
 {
     unsigned    hash;
 
-    hash = hashpjw( id );
+    if( *id == '\0' )
+        return( 0 );
+    hash = hashpjw( id, strlen( id ) );
 #if ( MACRO_HASH_SIZE > 0x0ff0 ) && ( MACRO_HASH_SIZE < 0x0fff )
-    hash &= 0x0fff;
     if( hash >= MACRO_HASH_SIZE ) {
         hash -= MACRO_HASH_SIZE;
     }
@@ -205,6 +196,14 @@ mac_hash_idx CalcHashMacro( const char *id )
     hash = hash % MACRO_HASH_SIZE;
 #endif
     return( (mac_hash_idx)hash );
+}
+
+str_hash_idx CalcStringHash( STR_HANDLE lit )
+/*******************************************/
+{
+    if( lit->length == 0 )
+        return( 0 );
+    return( (str_hash_idx)( hashpjw( lit->literal, lit->length ) % STRING_HASH_SIZE ) );
 }
 
 TOKEN KwLookup( const char *buf, size_t len )
@@ -615,6 +614,53 @@ is64:
     return( ret );
 }
 
+
+static cnv_cc Cnv2( void )
+/*************************/
+{
+    const char      *curr;
+    unsigned char   c;
+    size_t          len;
+    unsigned        value;
+    uint64          value64;
+    cnv_cc          ret;
+
+    /*
+     * skip the 0b start of the binary number
+     */
+    curr = Buffer + 2;
+    len = TokenLen - 2;
+    value = 0;
+    while( len-- > 0 ) {
+        c = *curr;
+        if( value & 0x80000000 ) {
+            /*
+             * value needs 64 bit
+             */
+            goto is64;
+        }
+        if( c == '0' || c == '1' ) {
+            value = value + value + ( c - '0' );
+        }
+        ++curr;
+    }
+    Constant = value;
+    return( CNV_32 );
+is64:
+    ret = CNV_64;
+    U32ToU64( value, &value64 );
+    do {
+        c = *curr;
+        if( U64Cnv2( &value64, c - '0' ) ) {
+            ret = CNV_OVR;
+        }
+        ++curr;
+    } while( len-- > 0 );
+    Constant64 = value64;
+    return( ret );
+}
+
+
 static cnv_cc Cnv10( void )
 /*************************/
 {
@@ -667,7 +713,7 @@ static TOKEN doScanNum( void )
     TOKEN       token;
 
     struct {
-        enum { CON_DEC, CON_HEX, CON_OCT, CON_ERR } form;
+        enum { CON_DEC, CON_HEX, CON_OCT, CON_BIN, CON_ERR } form;
         enum { SUFF_NONE,SUFF_U, SUFF_L,SUFF_UL,  SUFF_I, SUFF_UI,
                SUFF_LL,SUFF_ULL } suffix;
     } con;
@@ -702,6 +748,25 @@ static TOKEN doScanNum( void )
                 con.form = CON_ERR;
                 if( diagnose_lex_error() ) {
                     CErr1( ERR_INVALID_HEX_CONSTANT );
+                }
+            }
+        } else if(( c == 'b' || c == 'B' ) &&
+            ( CompFlags.extensions_enabled || ( CompVars.cstd >= STD_C23 ))) {
+            bad_token_type = ERR_INVALID_BINARY_CONSTANT;
+            con.form = CON_BIN;
+            c = WriteBufferCharNextChar( c );
+            while( c == '0' || c == '1' ) {
+                c = WriteBufferCharNextChar( c );
+            }
+
+            if( TokenLen == 2 ) {
+                /*
+                 * just collected a 0b
+                 */
+                BadTokenInfo = ERR_INVALID_BINARY_CONSTANT;
+                con.form = CON_ERR;
+                if( diagnose_lex_error() ) {
+                    CErr1( ERR_INVALID_BINARY_CONSTANT );
                 }
             }
         } else {
@@ -762,6 +827,9 @@ static TOKEN doScanNum( void )
         break;
     case CON_DEC:
         ov = Cnv10();
+        break;
+    case CON_BIN:
+        ov = Cnv2();
         break;
     case CON_ERR:
         ov = CNV_32;
@@ -1303,8 +1371,6 @@ static TOKEN ScanSlash( void )
     return( token );
 }
 
-#define OUTC(x)     if(ofn != NULL) ofn(x)
-
 static msg_codes doScanHex( int max, escinp_fn ifn, escout_fn ofn )
 /******************************************************************
  * Warning! this function is also used from cstring.c
@@ -1326,7 +1392,8 @@ static msg_codes doScanHex( int max, escinp_fn ifn, escout_fn ofn )
             break;
         if( ( CharSet[c] & (C_HX | C_DI) ) == 0 )
             break;
-        OUTC( c );
+        if( ofn != NULL )
+            ofn( c );
         if( CharSet[c] & C_HX )
             c = (( c | HEX_MASK ) - HEX_BASE ) + 10 + '0';
         if( value & 0xF0000000 )
@@ -1369,7 +1436,8 @@ int ESCChar( int c, escinp_fn ifn, msg_codes *perr_msg, escout_fn ofn )
         n = 0;
         i = 3;
         while( i-- > 0 && c >= '0' && c <= '7' ) {
-            OUTC( c );
+            if( ofn != NULL )
+                ofn( c );
             n = n * 8 + c - '0';
             c = ifn();
         }
@@ -1377,13 +1445,15 @@ int ESCChar( int c, escinp_fn ifn, msg_codes *perr_msg, escout_fn ofn )
         /*
          * get hex escape sequence
          */
-        OUTC( c );
+        if( ofn != NULL )
+            ofn( c );
         err_msg = doScanHex( 127, ifn, ofn );
         if( err_msg != ERR_NONE )
             *perr_msg = err_msg;
         n = Constant;
     } else {
-        OUTC( c );
+        if( ofn != NULL )
+            ofn( c );
         switch( c ) {
         case 'a':
             c = ESCAPE_a;

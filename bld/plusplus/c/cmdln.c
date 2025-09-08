@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2002-2023 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2002-2025 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -110,9 +110,9 @@ static MEPTR defineStringMacro( const char *name )
     MEPTR mentry;
     char const *save = CmdScanAddr();
 
-    CmdScanInit( name );
+    CmdScanLineInit( name );
     mentry = DefineCmdLineMacro( false );
-    CmdScanInit( save );
+    CmdScanLineInit( save );
     return( mentry );
 }
 
@@ -333,7 +333,7 @@ void InitModInfo( void )
 {
     memset( &CompVars, 0, sizeof( CompVars ) );
 
-    SET_STD( CXX98 );
+    CompVars.cxxstd = STD_CXXPRE98;
     PackAmount = TARGET_PACKING;
     GblPackAmount = PackAmount;
     SrcFileSetTab( DEF_TAB_WIDTH );

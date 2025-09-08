@@ -2,6 +2,7 @@
 *
 *                            Open Watcom Project
 *
+* Copyright (c) 2025      The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -46,6 +47,7 @@
 #include "guistats.h"
 #include "guiutils.h"
 
+#include "clibint.h"
 #include "clibext.h"
 
 
@@ -56,6 +58,11 @@ typedef enum {
 } DIR_PARAM_STACK_OPS;
 
 
+#if defined( __WATCOMC__ ) && defined( _M_IX86 )
+unsigned char   _8087 = 0;
+unsigned char   _real87 = 0;
+#endif
+
 static bool SetupOperations( void )
 /*********************************/
 {
@@ -63,12 +70,6 @@ static bool SetupOperations( void )
 
     // are we doing an UnInstall?
     uninstall = VarGetBoolVal( UnInstall );
-
-    if( GetVariableBoolVal( "IsUpgrade" ) ) {
-        if( !CheckUpgrade() ) {
-            return( false );
-        }
-    }
 
     DoSpawn( WHEN_BEFORE );
 
@@ -168,7 +169,7 @@ static bool DoMainLoop( dlg_state *state )
     char                *diags;
     bool                got_disk_sizes = false;
     int                 i;
-    VBUF                temp;
+    VBUF                temp_vbuf;
     char                *next;
     bool                ret = false;
 
@@ -180,7 +181,7 @@ static bool DoMainLoop( dlg_state *state )
         p = "Welcome";
     }
     i = 0;
-    diags = list = GUIStrDup( p, NULL );
+    diags = list = GUIStrDup( p );
     for( ;; ) {
         diag_list[i] = diags;
         next = strchr( diags, ',' );
@@ -193,7 +194,7 @@ static bool DoMainLoop( dlg_state *state )
     diag_list[i + 1] = NULL;
     /* process installation dialogs */
 
-    VbufInit( &temp );
+    VbufInit( &temp_vbuf );
     *state = DLG_NEXT;
     i = 0;
     for( ;; ) {
@@ -201,7 +202,7 @@ static bool DoMainLoop( dlg_state *state )
             break;
         if( diag_list[i] == NULL ) {
             if( GetVariableBoolVal( "DoCopyFiles" ) ) {
-                if( !CheckDrive( true ) ) {
+                if( !CheckFsys( true ) ) {
                     i = 0;
                 }
             }
@@ -221,7 +222,7 @@ static bool DoMainLoop( dlg_state *state )
         if( stricmp( diag_list[i], "GetDiskSizesHere" ) == 0 ) {
             if( *state == DLG_NEXT ) {
                 SimSetNeedGetDiskSizes();
-                ResetDiskInfo();
+                ResetAllFsysInfo();
                 got_disk_sizes = true;
             }
         } else {
@@ -238,12 +239,12 @@ static bool DoMainLoop( dlg_state *state )
             CancelSetup = true;
             break;
         } else if( *state == DLG_NEXT && stricmp( diag_list[i], "DstDir" ) == 0 ) {
-            VbufSetStr( &temp, GetVariableStrVal( "DstDir" ) );
-            VbufRemEndDirSep( &temp );
-            SetVariableByName_vbuf( "DstDir", &temp );
+            VbufSetStr( &temp_vbuf, GetVariableStrVal( "DstDir" ) );
+            VbufRemEndDirSep( &temp_vbuf );
+            SetVariableByName_vbuf( "DstDir", &temp_vbuf );
         }
         if( got_disk_sizes ) {
-            if( !CheckDrive( false ) ) {
+            if( !CheckFsys( false ) ) {
                 break;
             }
         }
@@ -275,7 +276,7 @@ static bool DoMainLoop( dlg_state *state )
             i = 0;
         }
     } /* for */
-    VbufFree( &temp );
+    VbufFree( &temp_vbuf );
     GUIMemFree( list );
 
     return( ret );
@@ -302,7 +303,7 @@ void GUImain( void )
 
     if( SetupPreInit( argc, argv ) ) {
         SetupInit();
-        InitGlobalVarList();
+        InitVarsList();
         VbufInit( &inf_name );
         VbufInit( &src_path );
         VbufInit( &arc_name );
@@ -318,6 +319,8 @@ void GUImain( void )
             VbufAddDirSep( &current_dir );
             ok = false;
             while( !ok && InitInfo( &inf_name, &src_path ) ) {
+
+                InitFsysInfo();
 
                 ok = DoMainLoop( &state );
 
@@ -352,9 +355,12 @@ void GUImain( void )
                     VbufMakepath( &src_path, &drive, &dir, NULL, NULL );
                     VbufRemEndDirSep( &src_path );
                 }
+
+                FiniFsysInfo();
+
                 FreeDefaultDialogs();
                 FreeAllStructs();
-                FreeGlobalVarList( false );
+                FreeVarsList( false );
                 ConfigModified = false;
             } /* while */
             VbufFree( &dir );
@@ -370,7 +376,7 @@ void GUImain( void )
         VbufFree( &arc_name );
         VbufFree( &src_path );
         VbufFree( &inf_name );
-        FreeGlobalVarList( true );
+        FreeVarsList( true );
         SetupFini();
     }
 }

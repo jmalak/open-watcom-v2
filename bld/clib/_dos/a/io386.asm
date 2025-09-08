@@ -2,6 +2,7 @@
 ;*
 ;*                            Open Watcom Project
 ;*
+;* Copyright (c) 2025      The Open Watcom Contributors. All Rights Reserved.
 ;*    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 ;*
 ;*  ========================================================================
@@ -24,8 +25,7 @@
 ;*
 ;*  ========================================================================
 ;*
-;* Description:  WHEN YOU FIGURE OUT WHAT THIS FILE DOES, PLEASE
-;*               DESCRIBE IT HERE!
+;* Description:  DOS 32-bit code only
 ;*
 ;*****************************************************************************
 
@@ -36,7 +36,7 @@ include mdef.inc
 include struct.inc
 include int21.inc
 
-        xrefp   __doserror_
+        xrefn   __doserror_
         modstart dosio
 
         defp    _dos_read

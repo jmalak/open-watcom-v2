@@ -2,6 +2,7 @@
 ;*
 ;*                            Open Watcom Project
 ;*
+;* Copyright (c) 2025      The Open Watcom Contributors. All Rights Reserved.
 ;*    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 ;*
 ;*  ========================================================================
@@ -24,8 +25,7 @@
 ;*
 ;*  ========================================================================
 ;*
-;* Description:  WHEN YOU FIGURE OUT WHAT THIS FILE DOES, PLEASE
-;*               DESCRIBE IT HERE!
+;* Description:  16-bit code only
 ;*
 ;*****************************************************************************
 
@@ -35,12 +35,12 @@
 include mdef.inc
 include struct.inc
 
-        xrefp   "C",__set_errno_dos
+        xrefn   "C",__set_errno_dos
         modstart doserror
 
         xdefp   __doserror_
 ;
-        defp    __doserror_
+        defn    __doserror_
         _if     c               ; if error
           push  AX              ; - save return code
           call  __set_errno_dos ; - set errno
@@ -53,7 +53,7 @@ include struct.inc
 
         xdefp   __doserror1_
 ;
-        defp    __doserror1_
+        defn    __doserror1_
         _if     c               ; if error
           call  __set_errno_dos ; - set errno, return -1
         _else                   ; else

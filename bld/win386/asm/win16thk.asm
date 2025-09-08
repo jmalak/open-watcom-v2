@@ -2,7 +2,7 @@
 ;*
 ;*                            Open Watcom Project
 ;*
-;* Copyright (c) 2002-2022 The Open Watcom Contributors. All Rights Reserved.
+;* Copyright (c) 2002-2025 The Open Watcom Contributors. All Rights Reserved.
 ;*    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 ;*
 ;*  ========================================================================
@@ -41,8 +41,8 @@
 ;****************************************************************************
 .386p
 
-extrn   _DPMIGetAlias_:near
-extrn   _DPMIFreeAlias_:near
+extrn   _WDPMI_GetAlias_:near
+extrn   _WDPMI_FreeAlias_:near
 extrn   _SaveSP:DWORD           ; save for stack
 extrn   _EntryStackSave:DWORD   ; save for stack
 extrn   _DataSelector:WORD      ; selector obtained for 32-bit area
@@ -84,7 +84,7 @@ Get16Alias:
         sub     sp,4                    ; allocate space for aliased pointer
         mov     si,sp                   ; point es:si at allocated space
         push    cx                      ; push return address
-        call    _DPMIGetAlias_          ; get alias
+        call    _WDPMI_GetAlias_        ; get alias - DX:AX, ES:SI
         mov     es, _DataSelector       ; reload es
         ret                             ; return
 
@@ -103,8 +103,9 @@ L0c:    pop     eax                     ; get aliased pointer
         pop     edx                     ; get original pointer
         cmp     eax,edx                 ; compare them
         je      short L0d               ; if different, then
-        shr     eax,16                  ; - get selector
-        call    _DPMIFreeAlias_         ; - free it
+        mov     edx,eax                 ; - get alias pointer to DX:AX
+        shr     edx,16                  ; - ...
+        call    _WDPMI_FreeAlias_       ; - free it - DX:AX
 L0d:                                    ; endif
         cmp     sp,bp                   ; are we done?
         jne     L0c                     ; jump if not done
@@ -270,8 +271,9 @@ nest2:; _loop                           ; loop
           mov   es:[edx],ebx            ; - restore old value
           cmp   eax,ebx                 ; - compare them
           je    short nest3             ; - if different, then
-            shr   eax,16                ; - - get selector
-            call  _DPMIFreeAlias_       ; - - free it
+            mov   edx,eax               ; - - get alias pointer to DX:AX
+            shr   edx,16                ; - - ...
+            call  _WDPMI_FreeAlias_     ; - - free it - DX:AX
             mov   es,_DataSelector      ; - - load 32-bit data segment
 nest3:                                  ; - endif
           dec   cx                      ; - decrement count

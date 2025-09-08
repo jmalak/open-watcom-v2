@@ -243,12 +243,9 @@ IOMap           dw 0            ;displacement to I/O map.
 ;
 tPL3Stack       db tPL2StackSize dup (0)
 tPL2Stack       db tPL1StackSize dup (0)
-
-;tPL1Stack      db tPL0StackSize dup (0)
-tPL1Stack       DD      0       ; make WASM happy
-                db tPL0StackSize-4 dup (0)
-
+tPL1Stack       db tPL0StackSize dup (0)
 tPL0Stack       dw ?
+
 TSSFields       ends
 
 NewHeaderStruc  struc
@@ -437,8 +434,33 @@ IFrame16        ends
 
 IFrame          struct
     i_eip       dd 0
-    i_cs        dw 0,0
+    i_cs        dd 0
     i_eflags    dd 0
     i_esp       dd 0
-    i_ss        dw 0,0
+    i_ss        dd 0
 IFrame          ends
+
+GRegs struct
+gr_edi  dd ?
+gr_esi  dd ?
+gr_ebp  dd ?
+gr_esp  dd ?
+gr_ebx  dd ?
+gr_edx  dd ?
+gr_ecx  dd ?
+gr_eax  dd ?
+GRegs ends
+
+SRegs struct
+sr_gs   dw ?,?
+sr_fs   dw ?,?
+sr_es   dw ?,?
+sr_ds   dw ?,?
+SRegs ends
+
+SRegs16 struct
+sr16_gs dw ?
+sr16_fs dw ?
+sr16_es dw ?
+sr16_ds dw ?
+SRegs16 ends

@@ -50,10 +50,12 @@ __0:
 ;
 ;BX     - File handle.
 ;
-;Carry set on error else,
+;On Exit:-
+;
+;Carry set on error and EAX is error code else,
 ;
 ;ECX    - Expanded data length.
-;EDX    - Compressed data length.
+;EAX    - Compressed data length.
 ;
 GetCWCInfo      proc    near
         push    ebx
@@ -137,13 +139,17 @@ GetCWCInfo      endp
 ;
 ;On Exit:-
 ;
+;Carry set on error and EAX is error code
+;
 ;EAX    - Exit status.
-;       0 = No problems
 ;       1 = Error during file access.
 ;       2 = Bad data.
 ;       3 = Not a CWC'd file.
 ;
+; else
+;
 ;ECX    - Length of data produced.
+;EAX    - 0 (No problems)
 ;
 DecodeCWC       proc    near
         cld
@@ -163,9 +169,9 @@ DecodeCWC       proc    near
         mov     decode_c_handle,bx      ;Store the handle.
         mov     d[OutAddr],edi  ;Store destination.
         mov     w[OutAddr+4],es ;/
-;
-;Setup disk buffer variables.
-;
+        ;
+        ;Setup disk buffer variables.
+        ;
         push    ds
         mov     ds,apiDSeg
         assume ds:_cwMain
@@ -179,9 +185,9 @@ DecodeCWC       proc    near
         mov     cDiskBufferMax,ecx
         mov     cDiskBufferSeg,ax
         mov     cDiskBufferReal,bx
-;
-;Get the header so we can check which type it is.
-;
+        ;
+        ;Get the header so we can check which type it is.
+        ;
         mov     edx,offset decode_c_head
         mov     cx,size decode_c_struc
         mov     ah,3fh
@@ -205,9 +211,9 @@ DecodeCWC       proc    near
         dec     eax
         mov     d[dec2_Masker+2],eax
         mov     ebx,d[decode_c_head.DecC_Len]
-;
-;Get on with decodeing the data.
-;
+        ;
+        ;Get on with decodeing the data.
+        ;
         les     edi,OutAddr
         mov     ds,cDiskBufferSeg
         xor     esi,esi
@@ -216,9 +222,9 @@ DecodeCWC       proc    near
         add     esi,4
         mov     dl,32
         mov     dh,dl
-;
-;The main decompresion loop.
-;
+        ;
+        ;The main decompresion loop.
+        ;
         align 4
 dec2_0: _DCD_ReadBit
         jnc     dec2_1
@@ -440,10 +446,11 @@ dec2_exit:
         pop     edx
         pop     ebx
         ret
-;
-;Re-fill the disk buffer.
-;
+        ;
 dec2_FillBuffer:
+        ;
+        ;Re-fill the disk buffer.
+        ;
         pushad
         push    ds
         push    es

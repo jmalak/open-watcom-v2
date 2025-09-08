@@ -2,6 +2,7 @@
 *
 *                            Open Watcom Project
 *
+* Copyright (c) 2025      The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -33,26 +34,18 @@
 #include "variety.h"
 #include "widechar.h"
 #include <stdlib.h>
+#include <stdbool.h>
+#include "tinyio.h"
 #include "_process.h"
 
-#if defined(_M_IX86)
-extern  char    _DOS_Switch_Char( void );
-#pragma aux _DOS_Switch_Char = \
-        "mov    ax,3700h"   \
-        "int 21h"           \
-    __parm __caller     [] \
-    __value             [__dl] \
-    __modify __exact    [__ax __dl]
-#endif
 
-
-CHAR_TYPE *__F_NAME(__Slash_C,__wSlash_C)( CHAR_TYPE *switch_c, unsigned char use_slash )
+CHAR_TYPE *__F_NAME(__Slash_C,__wSlash_C)( CHAR_TYPE *switch_c, bool use_slash )
 {
     if( use_slash ) {
         switch_c[0] = STRING( '/' );
     } else {
-#if defined( _M_I86 ) || defined( __DOS__ )
-        switch_c[0] = _DOS_Switch_Char();
+#if defined( __DOS__ )
+        switch_c[0] = TinyGetSwitchChar();
 #else
         switch_c[0] = STRING( '/' );
 #endif

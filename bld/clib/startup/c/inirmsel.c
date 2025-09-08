@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2024      The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2024-2025 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -45,7 +45,8 @@ extern short __get_ds( void );
     __value             [__ax] \
     __modify __exact    [__ax]
 
-unsigned short  _ExtenderRealModeSelector;
+unsigned short          _ExtenderRealModeSelector;
+static unsigned char    dpmi_sel = 0;
 
 static void init( void )
 {
@@ -57,7 +58,7 @@ static void init( void )
         _ExtenderRealModeSelector = 0x34 | (__get_ds() & 0x03);
     } else if( _IsRationalZeroBase() || _IsCodeBuilder() ) {
         _ExtenderRealModeSelector = __get_ds();
-    } else if( _IsRationalNonZeroBase() ) {
+    } else if( _DPMI || _IsRationalNonZeroBase() ) {
 #endif
         long    sel;
 
@@ -66,6 +67,10 @@ static void init( void )
             __fatal_runtime_error( "Unable to allocate real mode selector", -1 );
             // never return
         }
+        /*
+         * allocated selector has zero base and limit
+         */
+        dpmi_sel = 1;
         _ExtenderRealModeSelector = sel;
         if( DPMISetSegmentLimit( _ExtenderRealModeSelector, 0xfffff ) ) {
             __fatal_runtime_error( "Unable to set limit of real mode selector", -1 );
@@ -80,13 +85,9 @@ static void init( void )
 
 static void fini( void )
 {
-#ifdef __DOS__
-    if( _IsRationalNonZeroBase() ) {
-#endif
+    if( dpmi_sel ) {
         DPMIFreeLDTDescriptor( _ExtenderRealModeSelector );
-#ifdef __DOS__
     }
-#endif
 }
 
 AXI( init, INIT_PRIORITY_FPU )

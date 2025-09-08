@@ -2,6 +2,7 @@
 ;*
 ;*                            Open Watcom Project
 ;*
+;* Copyright (c) 2025      The Open Watcom Contributors. All Rights Reserved.
 ;*    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 ;*
 ;*  ========================================================================
@@ -24,8 +25,7 @@
 ;*
 ;*  ========================================================================
 ;*
-;* Description:  WHEN YOU FIGURE OUT WHAT THIS FILE DOES, PLEASE
-;*               DESCRIBE IT HERE!
+;* Description:  32-bit code only
 ;*
 ;*****************************************************************************
 
@@ -36,7 +36,7 @@ include mdef.inc
 include struct.inc
 include int21.inc
 
-        xrefp   "C",__set_EINVAL
+        xrefn   "C",__set_EINVAL
         modstart dosdisk
 
         defp    _dos_getdiskfree

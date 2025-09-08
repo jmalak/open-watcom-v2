@@ -192,6 +192,16 @@ static bool checkSTD( unsigned *value )
                 cstd = STD_C89;
             } else if( CmdRecogChar( '9' ) && CmdRecogChar( '9' ) ) {
                 cstd = STD_C99;
+            } else if( CmdRecogChar( '1' ) ) {
+                if( CmdRecogChar( '1' ) ) {
+                    cstd = STD_C11;
+                } else if( CmdRecogChar( '7' ) ) {
+                    cstd = STD_C17;
+                } else {
+                    BadCmdLineChar();
+                }
+            } else if( CmdRecogChar( '2' ) && CmdRecogChar( '3' ) ) {
+                cstd = STD_C23;
             } else {
                 BadCmdLineChar();
             }
@@ -220,7 +230,7 @@ static bool scanDefine( OPT_STRING **p )
 {
     /* unused parameters */ (void)p;
 
-    CmdScanInit( Define_UserMacro( CmdScanAddr(), CompFlags.extended_defines ) );
+    CmdScanLineInit( Define_UserMacro( CmdScanAddr(), CompFlags.extended_defines ) );
     switch_start = CmdScanAddr();
     return( true );
 }
@@ -232,7 +242,7 @@ static bool scanDefinePlus( OPT_STRING **p )
     if( CmdScanSwEnd() ) {
         CompFlags.extended_defines = true;
     } else {
-        CmdScanInit( Define_UserMacro( CmdScanAddr(), true ) );
+        CmdScanLineInit( Define_UserMacro( CmdScanAddr(), true ) );
         switch_start = CmdScanAddr();
     }
     return( true );
@@ -425,8 +435,8 @@ static void AnalyseAnyTargetOptions( OPT_STORAGE *data )
         GenSwitches |= CGSW_GEN_I_MATH_INLINE;      // -om
         data->oi = true;                            // -oi
         GenSwitches |= CGSW_GEN_LOOP_OPTIMIZATION;  // -ol
-        Inline_Threshold = 20;                      // -oe
-        TOGGLE( inline ) = true;
+        Inline_Threshold = 20;                      // -oe=20
+        TOGGLE( inline ) = true;                    // ...
         GenSwitches |= CGSW_GEN_INS_SCHEDULING;     // -or
         TOGGLE( check_stack ) = false;              // -s
         break;
@@ -449,7 +459,7 @@ static void AnalyseAnyTargetOptions( OPT_STORAGE *data )
         GenSwitches &= ~CGSW_GEN_NO_OPTIMIZATION;
         break;
     case OPT_ENUM_opt_size_time_default:
-        // OptSize = 50; default value
+        OptSize = 50;
         break;
     default:
         DbgNever();
@@ -882,7 +892,7 @@ static void ProcOptions( OPT_STORAGE *data, const char *str )
 
     if( str != NULL ) {
         level = -1;
-        CmdScanInit( str );
+        CmdScanLineInit( str );
         for( ;; ) {
             CmdScanSkipWhiteSpace();
             ch = CmdScanChar();
@@ -901,7 +911,7 @@ static void ProcOptions( OPT_STORAGE *data, const char *str )
                             penv = ptr;
                         }
                         if( penv != NULL ) {
-                            save[level] = CmdScanInit( penv );
+                            save[level] = CmdScanLineInit( penv );
                             buffers[level] = ptr;
                         }
                     }
@@ -916,11 +926,11 @@ static void ProcOptions( OPT_STORAGE *data, const char *str )
                 if( level < 0 )
                     break;
                 CMemFree( buffers[level] );
-                CmdScanInit( save[level] );
+                CmdScanLineInit( save[level] );
                 level--;
                 continue;
             }
-            if( _IS_SWITCH_CHAR( ch ) ) {
+            if( CmdScanSwitchChar( ch ) ) {
                 switch_start = CmdScanAddr() - 1;
                 OPT_PROCESS( data );
             } else {  /* collect  file name */

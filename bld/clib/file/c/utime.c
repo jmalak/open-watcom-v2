@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2002-2023 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2002-2025 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -70,7 +70,7 @@ typedef struct {
 #if defined( __WATCOM_LFN__ )
 
 #ifdef _M_I86
-extern lfn_ret_t __dos_utime_lfn( const char *path, unsigned time, unsigned date, unsigned mode );
+extern lfn_ret_t __dos_utime_lfn( const char *path, unsigned date, unsigned time, unsigned mode );
   #ifdef __BIG_DATA__
     #pragma aux __dos_utime_lfn = \
             "push   ds"         \
@@ -78,41 +78,41 @@ extern lfn_ret_t __dos_utime_lfn( const char *path, unsigned time, unsigned date
             "mov    ds,ax"      \
             "mov    ax,7143h"   \
             "stc"               \
-            "int 21h"           \
+            __INT_21            \
             "pop    ds"         \
             "call __lfnerror_0" \
-        __parm __caller     [__dx __ax] [__cx] [__di] [__bx] \
+        __parm __caller     [__dx __ax] [__di] [__cx] [__bx] \
         __value             [__dx __ax] \
         __modify __exact    [__ax __dx]
   #else
     #pragma aux __dos_utime_lfn = \
             "mov    ax,7143h"   \
             "stc"               \
-            "int 21h"           \
+            __INT_21            \
             "call __lfnerror_0" \
-        __parm __caller     [__dx] [__cx] [__di] [__bx] \
+        __parm __caller     [__dx] [__di] [__cx] [__bx] \
         __value             [__dx __ax] \
         __modify __exact    [__ax __dx]
   #endif
 #endif
 
-static lfn_ret_t _dos_utime_lfn( const char *fname, unsigned time, unsigned date, unsigned mode )
+static lfn_ret_t _dos_utime_lfn( const char *fname, unsigned date, unsigned time, unsigned mode )
 /***********************************************************************************************/
 {
   #ifdef _M_I86
-    return( __dos_utime_lfn( fname, time, date, mode ) );
+    return( __dos_utime_lfn( fname, date, time, mode ) );
   #else
-    call_struct     dpmi_rm;
+    dpmi_regs_struct    dr;
 
     strcpy( RM_TB_PARM1_LINEAR, fname );
-    memset( &dpmi_rm, 0, sizeof( dpmi_rm ) );
-    dpmi_rm.ds  = RM_TB_PARM1_SEGM;
-    dpmi_rm.edx = RM_TB_PARM1_OFFS;
-    dpmi_rm.ecx = time;
-    dpmi_rm.ebx = mode;
-    dpmi_rm.edi = date;
-    dpmi_rm.eax = 0x7143;
-    return( __dpmi_dos_call_lfn( &dpmi_rm ) );
+    memset( &dr, 0, sizeof( dr ) );
+    dr.ds  = RM_TB_PARM1_SEGM;
+    dr.r.x.edx = RM_TB_PARM1_OFFS;
+    dr.r.x.ecx = time;
+    dr.r.x.ebx = mode;
+    dr.r.x.edi = date;
+    dr.r.x.eax = 0x7143;
+    return( __dpmi_dos_call_lfn( &dr ) );
   #endif
 }
 
@@ -239,12 +239,12 @@ _WCRTLINK int __F_NAME(utime,_wutime)( CHAR_TYPE const *fname, struct utimbuf co
     if( _RWD_uselfn ) {
         lfn_ret_t   rc;
 
-        rc = _dos_utime_lfn( fname, dostms.wr_time, dostms.wr_date, 3 );
+        rc = _dos_utime_lfn( fname, dostms.wr_date, dostms.wr_time, 3 );
         if( LFN_ERROR( rc ) ) {
             return( __set_errno_dos( LFN_INFO( rc ) ) );
         }
         if( LFN_OK( rc ) ) {
-            rc = _dos_utime_lfn( fname, dostms.ac_time, dostms.ac_date, 5 );
+            rc = _dos_utime_lfn( fname, dostms.ac_date, dostms.ac_time, 5 );
             if( LFN_ERROR( rc ) ) {
                 return( __set_errno_dos( LFN_INFO( rc ) ) );
             }

@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2002-2023 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2002-2025 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -34,13 +34,11 @@
 #include <stdlib.h>
 #include <float.h>
 #if defined( __WINDOWS__ )
-  #include <i86.h>
-#endif
-#if defined( __WINDOWS__ )
-  #include <windows.h>
+    #include <i86.h>
+    #include <windows.h>
 #elif defined( __OS2__ )
-  #define INCL_DOSDEVICES
-  #include <wos2.h>
+    #define INCL_DOSDEVICES
+    #include <wos2.h>
 #endif
 #include "rtdata.h"
 #include "rtfpehdl.h"
@@ -48,7 +46,7 @@
 #include "grabfp87.h"
 #include "init8087.h"
 #if defined( __QNX__ )
-#include "osinfqnx.h"
+    #include "osinfqnx.h"
 #endif
 
 #if defined( __WINDOWS_386__ )
@@ -91,11 +89,25 @@ extern void __init_80x87( void );
     __modify __exact    []
 #endif
 
+#if defined( __NETWARE__ )
+extern short __87present( void );
+#pragma aux __87present = \
+        "smsw  ax"          \
+        "test  ax,4"        \
+        "jne short no_emu"  \
+        "xor   ax,ax"       \
+    "no_emu:"               \
+        "mov   ax,1"        \
+    __parm              [] \
+    __value             [__ax] \
+    __modify __exact    [__ax]
+#endif
+
 /* 0 => no x87; 1 => 8087; 2 => 80287; 3 => 80387 */
 extern unsigned char _WCI86NEAR __x87id( void );
 #pragma aux __x87id "*"
 
-#if defined( _M_IX86 ) && !defined( __UNIX__ ) && !defined( __OS2_386__ )
+#if defined( _M_IX86 ) && !defined( __UNIX__ ) && !defined( __OS2_32BIT__ )
 
 extern void __fsave( _87state * );
 extern void __frstor( _87state * );
@@ -193,7 +205,7 @@ static void __rest_8087( _87state *fst )
     __frstor( fst );
 }
 
-#endif  /* _M_IX86 && !__UNIX__ && !__OS2_386__ */
+#endif  /* _M_IX86 && !__UNIX__ && !__OS2_32BIT__ */
 
 _WCRTLINK void _fpreset( void )
 {
@@ -202,9 +214,9 @@ _WCRTLINK void _fpreset( void )
     }
 }
 
-void __init_8087( void )
+void _WCNEAR __init_8087( void )
 {
-#if defined( _M_IX86 ) && !defined( __UNIX__ ) && !defined( __OS2_386__ )
+#if defined( _M_IX86 ) && !defined( __UNIX__ ) && !defined( __OS2_32BIT__ )
     if( _RWD_real87 != 0 ) {            /* if our emulator, don't worry */
         _RWD_Save8087 = __save_8087;    /* point to real save 8087 routine */
         _RWD_Rest8087 = __rest_8087;    /* point to real restore 8087 routine */
@@ -213,7 +225,7 @@ void __init_8087( void )
     _fpreset();
 }
 
-#if defined( __DOS__ ) || defined( __OS2_286__ )
+#if defined( __DOS__ ) || defined( __OS2_16BIT__ )
 
 extern unsigned char _bin_to_ascii_offs( unsigned char c );
 #pragma aux _bin_to_ascii_offs = \
@@ -237,14 +249,13 @@ static void _WCI86FAR __default_sigfpe_handler( int fpe_sig )
 }
 #endif
 
-#if defined( __OS2__ )
-
-void __chk8087( void )
-/********************/
+void _WCNEAR __chk8087( void )
+/****************************/
 {
+#if defined( __OS2__ )
     char    devinfo;
 
-#if defined( _M_I86 )
+  #if defined( _M_I86 )
     if( _RWD_8087 == 0 ) {
         DosDevConfig( &devinfo, 3, 0 );
         if( devinfo == 0 ) {
@@ -260,7 +271,7 @@ void __chk8087( void )
     if( _RWD_8087 ) {
         _RWD_FPE_handler = __default_sigfpe_handler;
     }
-#else
+  #else
     DosDevConfig( &devinfo, DEVINFO_COPROCESSOR );
     if( devinfo == 0 ) {
         _RWD_real87 = 0;
@@ -268,50 +279,20 @@ void __chk8087( void )
         _RWD_real87 = __x87id();
     }
     _RWD_8087 = _RWD_real87;
-#endif
+  #endif
     _fpreset();
-}
-
 #elif defined( __QNX__ )
-
-void __chk8087( void )
-/********************/
-{
     _RWD_real87 = __r87;
     _RWD_8087 = __87;
     _fpreset();
-}
-
 #elif defined( __LINUX__ )
-
-void __chk8087( void )
-/********************/
-{
     // TODO: We really need to call Linux and determine if the machine
     //       has a real FPU or not, so we can properly work with an FPU
     //       emulator.
     _RWD_real87 = __x87id();
     _RWD_8087 = _RWD_real87;
     _fpreset();
-}
-
 #elif defined( __NETWARE__ )
-
-extern short __87present( void );
-#pragma aux __87present = \
-        "smsw  ax"          \
-        "test  ax,4"        \
-        "jne short no_emu"  \
-        "xor   ax,ax"       \
-    "no_emu:"               \
-        "mov   ax,1"        \
-    __parm              [] \
-    __value             [__ax] \
-    __modify __exact    [__ax]
-
-extern void __chk8087( void )
-/*****************************/
-{
     if( _RWD_8087 == 0 ) {
         if( __87present() ) {
             _RWD_8087 = 3;      /* 387 */
@@ -319,32 +300,14 @@ extern void __chk8087( void )
         }
         __init_80x87();
     }
-}
-
 #elif defined( __NT__ ) || defined( __RDOS__ )
-
-void __chk8087( void )
-/********************/
-{
     _RWD_real87 = __x87id();
     _RWD_8087 = _RWD_real87;
     __init_8087();
-}
-
 #elif defined( __RDOSDEV__ )
-
-void __chk8087( void )
-/********************/
-{
     _RWD_real87 = 1;
     _RWD_8087 = _RWD_real87;
-}
-
 #elif defined( __DOS__ )
-
-void __chk8087( void )
-/********************/
-{
     if( _RWD_8087 != 0 ) {          /* if we already know we have an 80x87 */
   #if defined( _M_I86 )
         if( __dos87real )
@@ -369,13 +332,7 @@ void __chk8087( void )
     if( _RWD_8087 ) {
         _RWD_FPE_handler = __default_sigfpe_handler;
     }
-}
-
 #elif defined( __WINDOWS__ )
-
-void __chk8087( void )
-/********************/
-{
     if( _RWD_8087 != 0 )             /* if we already know we have an 80x87 */
         return;                      /* this prevents real87 from being set */
                                      /* when we have an emulator */
@@ -386,8 +343,8 @@ void __chk8087( void )
         _RWD_real87 = __x87id();     /* initialize even when NO87 is defined */
         _RWD_8087 = _RWD_real87;     /* this handles the fpi87 and NO87 case */
         __init_8087();
-    } else {
   #if defined( __WINDOWS_386__ )
+    } else {
         // check to see if emulator is loaded
         union REGS regs;
         regs.w.ax = 0xfa00;
@@ -403,6 +360,5 @@ void __chk8087( void )
         _RWD_8087 = 0;               /* then we want to pretend that the */
         _RWD_real87 = 0;             /* coprocessor doesn't exist */
     }
-}
-
 #endif
+}

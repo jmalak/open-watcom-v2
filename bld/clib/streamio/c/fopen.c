@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2017-2017 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2017-2025 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -34,6 +34,7 @@
 #include "widechar.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include <ctype.h>
 #ifdef __WIDECHAR__
     #include <wctype.h>
@@ -50,6 +51,7 @@
 #include "rtdata.h"
 #include "rterrno.h"
 #include "fileacc.h"
+#include "commode.h"
 #include "openmode.h"
 #include "defwin.h"
 #include "streamio.h"
@@ -63,14 +65,14 @@
     #define PMODE   (S_IREAD | S_IWRITE)
 #endif
 
-int __F_NAME(__open_flags,__wopen_flags)( const CHAR_TYPE *modestr, int *extflags )
+unsigned _WCNEAR __F_NAME(__open_flags,__wopen_flags)( const CHAR_TYPE *modestr, int *extflags )
 {
-    int                 flags;
-    int                 alive = 1;
-    int                 gotplus = 0;
-    int                 gottextbin = 0;
+    unsigned            flags;
+    bool                alive;
+    bool                gotplus;
+    bool                gottextbin;
 #ifndef __NETWARE__
-    int                 gotcommit = 0;
+    bool                gotcommit;
 #endif
 
     flags = 0;
@@ -78,7 +80,7 @@ int __F_NAME(__open_flags,__wopen_flags)( const CHAR_TYPE *modestr, int *extflag
 #ifdef __NETWARE__
         *extflags = 0;
 #else
-        if( _commode == _COMMIT ) {
+        if( _RWD_commode == _COMMIT ) {
             *extflags = _COMMIT;
         } else {
             *extflags = 0;
@@ -116,48 +118,54 @@ int __F_NAME(__open_flags,__wopen_flags)( const CHAR_TYPE *modestr, int *extflag
      * a text, not binary, stream.  Also for MS compatability, scanning
      * stops at any unrecognized character, without causing failure.
      */
+    alive = true;
+    gottextbin = false;
+    gotplus = false;
+#ifndef __NETWARE__
+    gotcommit = false;
+#endif
     while( (*modestr != NULLCHAR) && alive ) {
         switch( *modestr ) {
         case STRING( '+' ):
             if( gotplus ) {
-                alive = 0;
+                alive = false;
             } else {
                 flags |= _READ | _WRITE;
-                gotplus = 1;
+                gotplus = true;
             }
             break;
         case STRING( 't' ):
             if( gottextbin ) {
-                alive = 0;
+                alive = false;
             } else {
-                gottextbin = 1;
+                gottextbin = true;
             }
             break;
         case STRING( 'b' ):
             if( gottextbin ) {
-                alive = 0;
+                alive = false;
             } else {
 #ifndef __UNIX__
                 flags |= _BINARY;
 #endif
-                gottextbin = 1;
+                gottextbin = true;
             }
             break;
 #ifndef __NETWARE__
         case STRING( 'c' ):
             if( gotcommit ) {
-                alive = 0;
+                alive = false;
             } else {
                 *extflags |= _COMMIT;
-                gotcommit = 1;
+                gotcommit = true;
             }
             break;
         case STRING( 'n' ):
             if( gotcommit ) {
-                alive = 0;
+                alive = false;
             } else {
                 *extflags &= ~_COMMIT;
-                gotcommit = 1;
+                gotcommit = true;
             }
             break;
 #endif
@@ -182,9 +190,9 @@ int __F_NAME(__open_flags,__wopen_flags)( const CHAR_TYPE *modestr, int *extflag
 }
 
 
-static FILE *__F_NAME(__doopen,__wdoopen)( const CHAR_TYPE *name,
+static FILE * _WCNEAR __F_NAME(__doopen,__wdoopen)( const CHAR_TYPE *name,
                        CHAR_TYPE    mode,
-                       int          file_flags,
+                       unsigned     file_flags,
                        int          extflags,
                        int          shflag,     /* sharing flag */
                        FILE *       fp )
@@ -250,19 +258,19 @@ static FILE *__F_NAME(__doopen,__wdoopen)( const CHAR_TYPE *name,
     }
     fp->_flag |= file_flags;
     fp->_cnt = 0;
-    fp->_bufsize = 0;                       /* was BUFSIZ JBS 31-may-91 */
+    fp->_bufsize = 0;                       /* was BUFSIZ */
 #ifndef __NETWARE__
-    _FP_ORIENTATION(fp) = _NOT_ORIENTED; /* initial orientation */
-    _FP_EXTFLAGS(fp) = extflags;
+    _FP_ORIENTATION( fp ) = _NOT_ORIENTED;  /* initial orientation */
+    _FP_EXTFLAGS( fp ) = extflags;
 #endif
 #if defined( __NT__ ) || defined( __OS2__ ) || defined( __UNIX__ )
-    _FP_PIPEDATA(fp).isPipe = 0;        /* not a pipe */
+    _FP_PIPEDATA( fp ).isPipe = 0;          /* not a pipe */
 #endif
     _FP_BASE( fp ) = NULL;
     if( file_flags & _APPEND ) {
         fseek( fp, 0L, SEEK_END );
     }
-    __chktty( fp );                         /* JBS 28-aug-90 */
+    __chktty( fp );
     return( fp );
 }
 
@@ -271,7 +279,7 @@ _WCRTLINK FILE *__F_NAME(_fsopen,_wfsopen)( const CHAR_TYPE *name,
                                 const CHAR_TYPE *access_mode, int shflag )
 {
     FILE *          fp;
-    int             file_flags;
+    unsigned        file_flags;
     int             extflags;
 
     /* validate access_mode */
@@ -282,9 +290,7 @@ _WCRTLINK FILE *__F_NAME(_fsopen,_wfsopen)( const CHAR_TYPE *name,
 
     fp = __allocfp();
     if( fp != NULL ) {
-        fp = __F_NAME(__doopen,__wdoopen)( name, *access_mode,
-                                           file_flags, extflags,
-                                           shflag, fp );
+        fp = __F_NAME(__doopen,__wdoopen)( name, *access_mode, file_flags, extflags, shflag, fp );
     }
     return( fp );
 }
@@ -295,7 +301,7 @@ _WCRTLINK FILE *__F_NAME(fopen,_wfopen)( const CHAR_TYPE *name, const CHAR_TYPE 
     return( __F_NAME(_fsopen,_wfsopen)( name, access_mode, OPENMODE_DENY_COMPAT ) );
 }
 
-static FILE *close_file( FILE *fp )
+static FILE * _WCNEAR close_file( FILE *fp )
 {
     __stream_link * link;
     __stream_link **owner;
@@ -334,7 +340,7 @@ _WCRTLINK FILE *__F_NAME(freopen,_wfreopen)( const CHAR_TYPE *name,
                                 const CHAR_TYPE *access_mode, FILE *fp )
 {
     int             hdl;
-    int             file_flags;
+    unsigned        file_flags;
     int             extflags;
 
     _ValidFile( fp, 0 );
@@ -355,9 +361,7 @@ _WCRTLINK FILE *__F_NAME(freopen,_wfreopen)( const CHAR_TYPE *name,
 #endif
     fp = close_file( fp );
     if( fp != NULL ) {
-        fp = __F_NAME(__doopen,__wdoopen)( name, *access_mode,
-                                           file_flags, extflags,
-                                           0, fp );
+        fp = __F_NAME(__doopen,__wdoopen)( name, *access_mode, file_flags, extflags, 0, fp );
     }
     _ReleaseFileH( hdl );
     return( fp );

@@ -28,6 +28,8 @@ memory_model_386 = s
 memory_model_386 = s
 !endif
 
+additional_remove_subdirs = v2objs
+
 !include cproj.mif
 !include defrule.mif
 defrule_key = v2
@@ -229,10 +231,10 @@ grlib_template = $(common_objs) $(eng_nonwin_objs) $(eng_objs) $(eng_svga_objs)
 !endif
 special_objs = $(special_common_objs) $(special_eng_svga_objs) $(special_eng_nonwin_objs) $(special_eng_objs)
 
-modshared_dummy=yes
-modshared_font8x8=yes
-modshared_global=yes
-modshared_hercfont=yes
+modshared_f_dummy=yes
+modshared_f_font8x8=yes
+modshared_f_global=yes
+modshared_f_hercfont=yes
 
 #
 # LIB
@@ -271,11 +273,7 @@ wsplice_extra_opts =
 wsplice_extra_opts = -d"depends.dep"
 !endif
 
-wsplice_opts_dos = -kDOS
-wsplice_opts_os2 = -kDOS
-wsplice_opts_qnx = -kQNX -u
-wsplice_opts_win = -kDOS
-
-wsplice_opts = $(wsplice_extra_opts) $(wsplice_opts_$(host_os))
-
 !include $(graphlib_dir)/headers.mif
+
+$(additional_remove_subdirs) :
+    mkdir $@

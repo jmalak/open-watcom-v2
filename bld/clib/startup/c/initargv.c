@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2002-2022 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2002-2025 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -36,8 +36,9 @@
 #include <stddef.h>
 #include "initarg.h"
 
-    void __Init_Argv( void ) { }
-    void __Fini_Argv( void ) { }
+void _WCNEAR __Init_Argv( void ) {}
+void _WCNEAR __Fini_Argv( void ) {}
+
 #else
 
 #include "dll.h"        // needs to be first
@@ -59,11 +60,11 @@
  * This doesn't work for far pointer's
  */
 #if defined( _M_I86 )
-    #define ALIGN_SIZE( __x ) __ROUND_UP_SIZE( __x, 2 )
+    #define ALIGN_SIZE( __x ) __ROUND_UP_SIZE_WORD( __x )
 #elif defined( _M_IX86 )
-    #define ALIGN_SIZE( __x ) __ROUND_UP_SIZE( __x, 4 )
+    #define ALIGN_SIZE( __x ) __ROUND_UP_SIZE_DWORD( __x )
 #else
-    #define ALIGN_SIZE( __x ) __ROUND_UP_SIZE( __x, 8 )
+    #define ALIGN_SIZE( __x ) __ROUND_UP_SIZE_QWORD( __x )
 #endif
 
 _WCRTDATA static CHAR_TYPE  *__F_NAME(__CmdLine,__wCmdLine);    /* cmdline buffer */
@@ -188,7 +189,7 @@ static void *__F_NAME( _getargv, _wgetargv )(
     size = ALIGN_SIZE( size );
 
 #if defined(__REAL_MODE__) && defined(__BIG_DATA__)
-  #if defined(__OS2_286__)
+  #if defined(__OS2_16BIT__)
     if( _osmode_REALMODE() ) {
         cmdline = ncmd = lib_nmalloc( size );
         if( ncmd == NULL ) {
@@ -220,7 +221,7 @@ static void *__F_NAME( _getargv, _wgetargv )(
     return( cmdline );
 }
 
-void __F_NAME(__Init_Argv,__wInit_Argv)( void )
+void _WCNEAR __F_NAME(__Init_Argv,__wInit_Argv)( void )
 {
     __F_NAME( __CmdLine, __wCmdLine ) = __F_NAME( _getargv, _wgetargv )(
         __historical_splitparms,
@@ -233,7 +234,7 @@ void __F_NAME(__Init_Argv,__wInit_Argv)( void )
     __F_NAME( ___Argv, ___wArgv ) = __F_NAME( _argv, _wargv );
 }
 
-void __F_NAME(__Fini_Argv,__wFini_Argv)( void )
+void _WCNEAR __F_NAME(__Fini_Argv,__wFini_Argv)( void )
 {
     if( __F_NAME(__CmdLine,__wCmdLine) != NULL ) {
         lib_free( __F_NAME(__CmdLine,__wCmdLine) );

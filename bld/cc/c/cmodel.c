@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2002-2024 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2002-2025 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -32,6 +32,7 @@
 
 
 #include "cvars.h"
+#include "cmdscan.h"
 #include "scan.h"
 #include "pdefn2.h"
 #include <ctype.h>
@@ -54,7 +55,7 @@ static bool EqualChar( int c )
         || c == '=' );
 }
 
-static size_t get_namelen( const char *start )
+static size_t get_token_len( const char *start )
 {
     char        c;
     const char  *src;
@@ -64,9 +65,7 @@ static size_t get_namelen( const char *start )
             break;
         if( c == ' ' )
             break;
-        if( c == '-' )
-            break;
-        if( c == SwitchChar ) {
+        if( CmdScanSwitchChar( c ) ) {
             break;
         }
     }
@@ -81,7 +80,7 @@ static char *Def_Macro_Tokens( const char *str, bool multiple_tokens, macro_flag
     bool        ppscan_mode;
     TOKEN       token;
 
-    mlen = get_namelen( str );
+    mlen = get_token_len( str );
     if( mlen == 0 ) {
         CErr1( ERR_NO_MACRO_ID_COMMAND_LINE );
         return( (char *)str );
@@ -278,7 +277,6 @@ void MiscMacroDefs( void )
 
 void InitModInfo( void )
 {
-    OptSize = 50;
     UndefNames = NULL;
     WholeFName = NULL;
     ObjectFileName = NULL;

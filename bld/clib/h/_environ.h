@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2002-2021 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2002-2025 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -56,7 +56,7 @@ extern int      __findenvadd( const char *name );
 extern int      __findenvdel( const char *name );
 extern int      __setenv( const char *name, const char *newvalue, int overwrite );
 extern int      __putenv( const char *env_string );
-#ifdef CLIB_USE_OTHER_ENV
+#ifdef CLIB_USE_ALT_ENV
 extern void     __create_wide_environment( void );
 extern int      __wfindenvadd( const wchar_t *name );
 extern int      __wfindenvdel( const wchar_t *name );
@@ -64,16 +64,16 @@ extern int      __wsetenv( const wchar_t *name, const wchar_t *newvalue, int ove
 extern int      __wputenv( const wchar_t *env_string );
 #endif
 
-extern void     __setenvp( void );
+extern void     _WCNEAR __setenvp( void );
 #if !defined(__NETWARE__)
-extern void     __freeenvp( void );
+extern void     _WCNEAR __freeenvp( void );
 #endif
 
 #ifdef CLIB_UPDATE_OS_ENV
 #if defined( __NT__ )
-extern int      __os_env_update_wide( const wchar_t *name, const wchar_t *value );
+extern int      _WCNEAR __os_env_update_wide( const wchar_t *name, const wchar_t *value );
 #endif
-extern int      __os_env_update_narrow( const char *name, const char *value );
+extern int      _WCNEAR __os_env_update_narrow( const char *name, const char *value );
 #endif
 
 #endif

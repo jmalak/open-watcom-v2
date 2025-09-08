@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2015-2023 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2015-2025 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -25,7 +25,7 @@
 *
 *  ========================================================================
 *
-* Description:  DPMI function wrappers for Win386.
+* Description:  DPMI function wrappers for Win386 (16-bit code).
 *
 ****************************************************************************/
 
@@ -58,16 +58,18 @@ typedef struct memblk {
 
 static bool                     WrapAround;
 static WORD                     hugeIncrement;
-static WORD                     firstCacheSel,lastCacheSel;
+static WORD                     firstCacheSel;
+static WORD                     lastCacheSel;
 static WORD                     cacheUseCount;
 static WORD                     StackCacheSel;
-static DWORD                    StackBase, StackBase_64K;
+static DWORD                    StackBase;
+static DWORD                    StackBase_64K;
 static alias_cache_entry        aliasCache[MAX_CACHE];
 static WORD                     currSelCount;
-static char                     SelBitArray[MAX_SELECTORS / 8];
+static BYTE                     SelBitArray[MAX_SELECTORS / 8];
 static memblk                   *MemBlkList;
 
-static unsigned char BitMask[] = { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
+static BYTE         BitMask[] = { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
 /*
  * addToSelList - add selector to list of non-cached selectors
  */
@@ -89,18 +91,20 @@ static void removeFromSelList( WORD sel )
 } /* removeFromSelList */
 
 /*
- * _DPMIGetAliases - get alias descriptors for some memory
+ * _WDPMI_GetAliases - get alias descriptors for some memory
  */
-WORD _DPMIGetAliases( DWORD offset, DWORD __far *res, WORD cnt)
+bool _WDPMI_GetAliases( DWORD offs32, LPDWORD palias, WORD count )
 {
-    long                sel;
+    WORD                sel;
     WORD                i;
-    DWORD               limit,base;
+    DWORD               limit;
+    DWORD               base;
     alias_cache_entry   *ace;
+    wdpmi_ret           dpmirc;
 
-    if( offset == 0L ) {
-        *res = 0L;
-        return( 0 );
+    *palias = 0L;
+    if( offs32 == 0L ) {
+        return( false );
     }
 
     /*
@@ -112,45 +116,46 @@ WORD _DPMIGetAliases( DWORD offset, DWORD __far *res, WORD cnt)
      * happens when we are aliasing a chunk in the last 64K of the
      * 32-bit segment).
      */
-    if( cnt == 1 ) {
-        if( offset < StackBase_64K && offset >= StackBase ) {
-            *res = (((DWORD)StackCacheSel) << 16) + offset - StackBase;
-            return( 0 );
+    if( count == 1 ) {
+        if( offs32 < StackBase_64K && offs32 >= StackBase ) {
+            ALIAS_OFFS( palias ) = offs32 - StackBase;
+            ALIAS_SEL( palias ) = StackCacheSel;
+            return( false );
         }
         if( cacheUseCount < MAX_CACHE ) {
             ace = &aliasCache[0];
             for( i = 0; i < MAX_CACHE; i++ ) {
                 if( !ace->in_use ) {
-                    base = DataSelectorBase + offset;
+                    base = DataSelectorBase + offs32;
                     if( base != ace->base ) {
                         ace->base = base;
-                        DPMISetSegmentBaseAddress( ace->sel, base );
+                        WDPMI_SetSegmentBaseAddress( ace->sel, base );
                     }
-                    *res = ((DWORD)ace->sel) << 16;
+                    ALIAS_SEL( palias ) = ace->sel;
                     ace->in_use = true;
                     cacheUseCount++;
-                    return( 0 );
+                    return( false );
                 }
                 ace += 1;
             }
         }
     }
-    if( cnt == 0 ) {
-        cnt = 1;
+    if( count == 0 ) {
+        count = 1;
     }
 
     /*
      * get a descriptor
      */
-    *res = 0L;
-    sel = DPMIAllocateLDTDescriptors( cnt );
-    if( sel < 0 ) {
-        return( 666 );
+    dpmirc = WDPMI_AllocateLDTDescriptors( count );
+    if( WDPMI_ERROR( dpmirc ) ) {
+        return( true );
     }
-    *res = sel << 16;
-    limit = cnt * 0x10000 - 1;
+    sel = WDPMI_INFO( dpmirc );
+    ALIAS_SEL( palias ) = sel;
+    limit = count * 0x10000 - 1;
 
-    for( i = 0; i < cnt; i++ ) {
+    for( i = 0; i < count; i++ ) {
 
 #if 0
         /*
@@ -166,39 +171,37 @@ WORD _DPMIGetAliases( DWORD offset, DWORD __far *res, WORD cnt)
         /*
          * set new limit, address, and access rights
          */
-        if( limit > 1024L * 1024L ) {
-            DPMISetDescriptorAccessRights( sel, DPL + DESC_ACCESS_DATA16BIG );
-        } else {
-            DPMISetDescriptorAccessRights( sel, DPL + DESC_ACCESS_DATA16 );
-        }
-        DPMISetSegmentBaseAddress( sel, DataSelectorBase + offset );
-        DPMISetSegmentLimit( sel, limit );
+        WDPMI_SetDescriptorAccessRights( sel, DPL + (( limit > 1024L * 1024L ) ? DESC_ACCESS_DATA16BIG : DESC_ACCESS_DATA16) );
+        WDPMI_SetSegmentBaseAddress( sel, DataSelectorBase + offs32 );
+        WDPMI_SetSegmentLimit( sel, limit );
         addToSelList( sel );
         sel += hugeIncrement;
-        offset += 0x10000;
+        offs32 += 0x10000;
         limit  -= 0x10000;
     }
 
-    return( 0 );
+    return( false );
 
-} /* _DPMIGetAliases */
+} /* _WDPMI_GetAliases */
 
 /*
- * _DPMIGetAlias - get alias descriptor for some memory
+ * _WDPMI_GetAlias - get alias descriptor for some memory
  */
-WORD _DPMIGetAlias( DWORD offset, DWORD __far *res )
+bool _WDPMI_GetAlias( DWORD offs32, LPDWORD palias )
 {
-    return( _DPMIGetAliases( offset, res, 1 ) );
+    return( _WDPMI_GetAliases( offs32, palias, 1 ) );
 
-} /* _DPMIGetAlias */
+} /* _WDPMI_GetAlias */
 
 /*
- * _DPMIFreeAlias - free alias descriptor
+ * _WDPMI_FreeAlias - free alias descriptor
  */
-void _DPMIFreeAlias( WORD sel )
+void _WDPMI_FreeAlias( DWORD alias )
 {
     alias_cache_entry   *ace;
+    WORD                sel;
 
+    sel = ALIAS_SEL( &alias );
     if( sel == 0 || sel == StackCacheSel ) {
         return;
     }
@@ -211,32 +214,34 @@ void _DPMIFreeAlias( WORD sel )
         return;
     }
     removeFromSelList( sel );
-    DPMIFreeLDTDescriptor( sel );
+    WDPMI_FreeLDTDescriptor( sel );
 
-} /* _DPMIFreeAlias */
+} /* _WDPMI_FreeAlias */
 
-WORD _DPMIGetHugeAlias( DWORD offset, DWORD __far *res, DWORD size )
+bool _WDPMI_GetHugeAlias( DWORD offs32, LPDWORD palias, DWORD size )
 {
     DWORD       no64k;
 
     no64k = Align64K( size );
-    return( _DPMIGetAliases( offset, res, 1 + (WORD)( no64k / 0x10000L ) ) );
+    return( _WDPMI_GetAliases( offs32, palias, 1 + (WORD)( no64k / 0x10000L ) ) );
 }
 
-void _DPMIFreeHugeAlias( DWORD desc, DWORD size )
+void _WDPMI_FreeHugeAlias( DWORD alias, DWORD size )
 {
     DWORD       no64k;
-    WORD        cnt,sel,i;
+    WORD        count;
+    WORD        sel;
+    WORD        i;
 
-    sel = desc >> 16;
+    sel = ALIAS_SEL( &alias );
     if( sel == 0 ) {
         return;
     }
     no64k = Align64K( size );
-    cnt = 1 + (WORD)( no64k / 0x10000L );
-    for( i = 0; i < cnt; i++ ) {
+    count = 1 + (WORD)( no64k / 0x10000L );
+    for( i = 0; i < count; i++ ) {
         removeFromSelList( sel );
-        DPMIFreeLDTDescriptor( sel );
+        WDPMI_FreeLDTDescriptor( sel );
         sel += hugeIncrement;
     }
 }
@@ -245,24 +250,24 @@ void _DPMIFreeHugeAlias( DWORD desc, DWORD size )
  * WINDPMIFN( .. ) functions are the ones called by the 32-bit application
  */
 
-unsigned short WINDPMIFN( DPMIGetAlias )( unsigned long offset, unsigned long __far *res )
+bool WINDPMIFN( WDPMIGetAlias )( DWORD offs32, LPDWORD palias )
 {
-    return( _DPMIGetAlias( offset, res ) );
+    return( _WDPMI_GetAlias( offs32, palias ) );
 }
 
-void WINDPMIFN( DPMIFreeAlias )( unsigned long desc )
+void WINDPMIFN( WDPMIFreeAlias )( DWORD alias )
 {
-    _DPMIFreeAlias( desc );
+    _WDPMI_FreeAlias( alias );
 }
 
-unsigned short WINDPMIFN( DPMIGetHugeAlias )( unsigned long offset, unsigned long __far *res, unsigned long size )
+bool WINDPMIFN( WDPMIGetHugeAlias )( DWORD offs32, LPDWORD palias, DWORD size )
 {
-    return( _DPMIGetHugeAlias( offset, res, size ) );
+    return( _WDPMI_GetHugeAlias( offs32, palias, size ) );
 }
 
-void WINDPMIFN( DPMIFreeHugeAlias )( unsigned long desc, unsigned long size )
+void WINDPMIFN( WDPMIFreeHugeAlias )( DWORD alias, DWORD size )
 {
-    _DPMIFreeHugeAlias( desc, size );
+    _WDPMI_FreeHugeAlias( alias, size );
 }
 
 /*
@@ -270,130 +275,101 @@ void WINDPMIFN( DPMIFreeHugeAlias )( unsigned long desc, unsigned long size )
  */
 static void setLimitAndAddr( WORD sel, DWORD addr, DWORD len, WORD type )
 {
+    WORD    rights;
 
-    DPMISetSegmentBaseAddress( sel, addr );
+    WDPMI_SetSegmentBaseAddress( sel, addr );
     --len;
-    if( len >= 1024L * 1024L ) {
-        if( type == DESC_ACCESS_CODE ) {
-            DPMISetDescriptorAccessRights( sel, DPL + DESC_ACCESS_CODE32BIG );
-        } else {
-            DPMISetDescriptorAccessRights( sel, DPL + DESC_ACCESS_DATA32BIG );
-        }
-    } else {
-        if( type == DESC_ACCESS_CODE ) {
-            DPMISetDescriptorAccessRights( sel, DPL + DESC_ACCESS_CODE32SMALL );
-        } else {
-            DPMISetDescriptorAccessRights( sel, DPL + DESC_ACCESS_DATA32SMALL );
-        }
-    }
-    DPMISetSegmentLimit( sel, len );
+    rights = ( len >= 1024L * 1024L )
+        ? (( type == DESC_ACCESS_CODE ) ? DESC_ACCESS_CODE32BIG : DESC_ACCESS_DATA32BIG )
+        : (( type == DESC_ACCESS_CODE ) ? DESC_ACCESS_CODE32SMALL : DESC_ACCESS_DATA32SMALL );
+    WDPMI_SetDescriptorAccessRights( sel, DPL + rights );
+    WDPMI_SetSegmentLimit( sel, len );
 
 } /* setLimitAndAddr */
 
 /*
  * InitFlatAddrSpace - initialize flat address space
  */
-WORD InitFlatAddrSpace( DWORD baseaddr, DWORD len )
+bool InitFlatAddrSpace( DWORD baseaddr, DWORD len )
 {
-    long        sel;
     descriptor  desc;
+    wdpmi_ret   dpmirc;
 
-    hugeIncrement = DPMIGetNextSelectorIncrementValue();
+    hugeIncrement = WDPMI_GetNextSelectorIncrementValue();
     /*
      * get a code selector pointing to the memory
      */
-    sel = DPMIAllocateLDTDescriptors( 1 );
-    if( sel < 0 ) {
-        return( 4 );
+    dpmirc = WDPMI_AllocateLDTDescriptors( 1 );
+    if( WDPMI_ERROR( dpmirc ) ) {
+        return( true );
     }
-    CodeEntry.seg = sel;
-    setLimitAndAddr( sel, baseaddr, len, DESC_ACCESS_CODE );
+    CodeEntry.seg = WDPMI_INFO( dpmirc );
+    setLimitAndAddr( CodeEntry.seg, baseaddr, len, DESC_ACCESS_CODE );
     CodeSelectorBase = baseaddr;
-
     /*
      * get a data and stack selector pointing to the memory
      */
-    sel = DPMIAllocateLDTDescriptors( 2 );
-    if( sel < 0 ) {
-        DPMIFreeLDTDescriptor( CodeEntry.seg );
-        return( 4 );
+    dpmirc = WDPMI_AllocateLDTDescriptors( 2 );
+    if( WDPMI_ERROR( dpmirc ) ) {
+        WDPMI_FreeLDTDescriptor( CodeEntry.seg );
+        return( true );
     }
-    DataSelector = sel;
-    setLimitAndAddr( sel, baseaddr, len, DESC_ACCESS_DATA );
-    StackSelector = sel + hugeIncrement;
-//    setLimitAndAddr( StackSelector, baseaddr, StackSize, DESC_ACCESS_DATA );
-//      The code generator sometimes uses EBP as general purpose
-//      register for accessing data that is not in the STACK segment
-//      so we must access the same space as DS
+    DataSelector = WDPMI_INFO( dpmirc );
+    StackSelector = DataSelector + hugeIncrement;
+    /*
+     *  The code generator sometimes uses EBP as general purpose
+     *  register for accessing data that is not in the STACK segment
+     *  so we must access the same space as DATA segment
+     */
+    setLimitAndAddr( DataSelector, baseaddr, len, DESC_ACCESS_DATA );
     setLimitAndAddr( StackSelector, baseaddr, len, DESC_ACCESS_DATA );
     WrapAround = false;
-    if( DPMIGetDescriptor( DataSelector, &desc ) == 0 ) {
+    if( WDPMI_GetDescriptor( DataSelector, &desc ) == 0 ) {
         if( GET_DESC_LIMIT_NUM( desc ) == 0x000FFFFF ) {
             WrapAround = true;
         } else {
             WrapAround = false;
         }
     }
-    return( 0 );
+    return( false );
 
 } /* InitFlatAddrSpace */
 
 /*
- * _DPMIGet32 - get a 32-bit segment
+ * _WDPMI_Get32 - get a 32-bit segment
  */
-WORD _DPMIGet32( dpmi_mem_block _FAR *adata, DWORD len )
+bool _WDPMI_Get32( wdpmi_mem_block _DLLFAR *adata, DWORD len )
 {
-    int         rc;
+    return( WDPMI_AllocateMemoryBlock( adata, len ) != 0 );
 
-    /*
-     * the return codes 4 and 5 are the same as WINMEM32.DLL's return
-     * codes.  Hysterical raisins.
-     */
-
-    /*
-     * get memory region
-     */
-#ifdef DLL32
-    rc = _fDPMIAllocateMemoryBlock( adata, len );
-#else
-    rc = DPMIAllocateMemoryBlock( adata, len );
-#endif
-    if( rc ) {
-        return( 5 );
-    }
-    return( 0 );
-
-} /* _DPMIGet32 */
+} /* _WDPMI_Get32 */
 
 /*
- * _DPMIFree32 - free a 32-bit handle
+ * _WDPMI_Free32 - free a 32-bit handle
  */
-void _DPMIFree32( DWORD handle )
+void _WDPMI_Free32( DWORD handle )
 {
-    DPMIFreeLDTDescriptor( DataSelector );
-    DPMIFreeLDTDescriptor( StackSelector );
-    DPMIFreeLDTDescriptor( CodeEntry.seg );
-    DPMIFreeMemoryBlock( handle );
+    WDPMI_FreeMemoryBlock( handle );
 
-} /* _DPMIFree32 */
+} /* _WDPMI_Free32 */
 
 /*
- * WINDPMIFN( DPMIAlloc ) function - allocate a new block of memory
+ * allocate a new block of memory
  * called by the 32-bit application
  */
-unsigned long WINDPMIFN( DPMIAlloc )( unsigned long size )
+DWORD WINDPMIFN( WDPMIAlloc )( DWORD size )
 {
-    dpmi_mem_block  adata;
+    wdpmi_mem_block adata;
     memblk          *p;
 
     for( ;; ) {
-        if( _DPMIGet32( &adata, size ) ) {
+        if( _WDPMI_Get32( &adata, size ) ) {
             adata.linear = DataSelectorBase;        // cause NULL to be returned
             break;
         }
         p = (memblk *)LocalAlloc( LMEM_FIXED, sizeof( memblk ) );
         if( p == NULL ) {
-            DPMIFreeMemoryBlock( adata.handle );
+            _WDPMI_Free32( adata.handle );
             adata.linear = DataSelectorBase;        // cause NULL to be returned
             break;
         }
@@ -402,24 +378,28 @@ unsigned long WINDPMIFN( DPMIAlloc )( unsigned long size )
         p->addr   = adata.linear;
         p->size   = size;
         MemBlkList = p;
+        /*
+         * if we are on NT or OS/2, try again until we get a memory
+         * block with address higher than our DataSelectorBase
+         */
         if( WrapAround || adata.linear >= DataSelectorBase ) {
             break;
         }
-        // if we are on NT or OS/2, try again until we get a memory
-        // block with address higher than our DataSelectorBase
     }
     if( !WrapAround && MemBlkList != NULL ) {
-        /* free up any memory allocated that is below DataSelectorBase */
+        /*
+         * free up any memory allocated that is below DataSelectorBase
+         */
         while( (p = MemBlkList->next) != NULL ) {
             if( p->addr >= DataSelectorBase )
                 break;
-            DPMIFreeMemoryBlock( p->handle );
+            _WDPMI_Free32( p->handle );
             MemBlkList->next = p->next;
             LocalFree( (HLOCAL)p );
         }
         p = MemBlkList;
         if( p->addr < DataSelectorBase ) {
-            DPMIFreeMemoryBlock( p->handle );
+            _WDPMI_Free32( p->handle );
             MemBlkList = p->next;
             LocalFree( (HLOCAL)p );
         }
@@ -428,10 +408,9 @@ unsigned long WINDPMIFN( DPMIAlloc )( unsigned long size )
 }
 
 /*
- * WINDPMIFN( DPMIFree ) function - free a block of memory allocated by WINDPMIFN( DPMIAlloc )
- * called by the 32-bit application
+ * free a block of memory allocated by the 32-bit application
  */
-unsigned short WINDPMIFN( DPMIFree )( unsigned long addr )
+bool WINDPMIFN( WDPMIFree )( DWORD addr )
 {
     memblk      *p;
     memblk      *prev;
@@ -440,18 +419,23 @@ unsigned short WINDPMIFN( DPMIFree )( unsigned long addr )
     prev = NULL;
     for( p = MemBlkList; p != NULL; p = p->next ) {
         if( p->addr == addr ) {
-            DPMIFreeMemoryBlock( p->handle );
+            _WDPMI_Free32( p->handle );
             if( prev == NULL ) {
                 MemBlkList = p->next;
             } else {
                 prev->next = p->next;
             }
             LocalFree( (HLOCAL)p );
-            return( 0 );                // indicate success
+            return( false );            // indicate success
         }
         prev = p;
     }
-    return( -1 );                       // indicate error
+    return( true );                     // indicate error
+}
+
+DWORD WINDPMIFN( WDPMIAliasToFlat )( DWORD alias )
+{
+    return( WDPMI_GetSegmentBaseAddress( ALIAS_SEL( alias ) ) - DataSelectorBase + ALIAS_OFFS( alias ) );
 }
 
 void FreeDPMIMemBlocks( void )
@@ -460,43 +444,36 @@ void FreeDPMIMemBlocks( void )
 
     while( (p = MemBlkList) != NULL ) {
         MemBlkList = p->next;
-        DPMIFreeMemoryBlock( p->handle );
+        _WDPMI_Free32( p->handle );
         LocalFree( (HLOCAL)p );
     }
 }
 
 /*
- * GetDataSelectorInfo - collect data about current 32-bit data segment
- */
-void GetDataSelectorInfo( void )
-{
-    DataSelectorBase = DPMIGetSegmentBaseAddress( DataSelector );
-
-} /* GetDataSelectorInfo */
-
-/*
  * InitSelectorCache - allocate the selector cache
  */
-int InitSelectorCache( void )
+bool InitSelectorCache( void )
 {
-    long        sel;
+    WORD        sel;
     int         i;
+    wdpmi_ret   dpmirc;
 
-    sel = DPMIAllocateLDTDescriptors( MAX_CACHE + 2 );
-    if( sel < 0 ) {
-        return( sel );
+    dpmirc = WDPMI_AllocateLDTDescriptors( MAX_CACHE + 2 );
+    if( WDPMI_ERROR( dpmirc ) ) {
+        return( true );
     }
+    sel = WDPMI_INFO( dpmirc );
     firstCacheSel = sel;
     for( i = 0; i < MAX_CACHE + 2; i++ ) {
         if( i < MAX_CACHE ) {
             aliasCache[i].sel = sel;
-            aliasCache[i].limit = 0xFFFF;
+            aliasCache[i].limit = 0xFFFFL;
             aliasCache[i].base = 0L;
             aliasCache[i].in_use = false;
             lastCacheSel = sel;
         }
-        DPMISetDescriptorAccessRights( sel, DPL + DESC_ACCESS_DATA16 );
-        DPMISetSegmentLimit( sel, 0xFFFF );
+        WDPMI_SetDescriptorAccessRights( sel, DPL + DESC_ACCESS_DATA16 );
+        WDPMI_SetSegmentLimit( sel, 0xFFFFL );
         sel += hugeIncrement;
     }
     StackCacheSel = lastCacheSel + hugeIncrement;
@@ -506,8 +483,8 @@ int InitSelectorCache( void )
         StackBase = SaveSP - 0x10000;
     }
     StackBase_64K = SaveSP;
-    DPMISetSegmentBaseAddress( StackCacheSel, DataSelectorBase + StackBase );
-    return( 0 );
+    WDPMI_SetSegmentBaseAddress( StackCacheSel, DataSelectorBase + StackBase );
+    return( false );
 
 } /* InitSelectorCache */
 
@@ -520,11 +497,11 @@ void FiniSelectorCache( void )
 
     for( i = 0; i < MAX_CACHE; i++ ) {
         if( aliasCache[i].sel != NULL ) {
-            DPMIFreeLDTDescriptor( aliasCache[i].sel );
+            WDPMI_FreeLDTDescriptor( aliasCache[i].sel );
         }
     }
-    DPMIFreeLDTDescriptor( StackCacheSel );
-    DPMIFreeLDTDescriptor( Int21Selector );
+    WDPMI_FreeLDTDescriptor( StackCacheSel );
+    WDPMI_FreeLDTDescriptor( Int21Selector );
 
 } /* FiniSelectorCache */
 
@@ -534,10 +511,10 @@ void FiniSelectorCache( void )
  */
 void FiniSelList( void )
 {
-    int             i;
-    int             j;
+    WORD            i;
+    WORD            j;
     WORD            sel;
-    unsigned char   mask;
+    BYTE            mask;
 
     i = currSelCount;
     j = 0;
@@ -547,7 +524,7 @@ void FiniSelList( void )
             sel = (j << (3 + 3)) | (firstCacheSel & 7);
             while( mask != 0 ) {
                 if( mask & 1 ) {
-                    DPMIFreeLDTDescriptor( sel );
+                    WDPMI_FreeLDTDescriptor( sel );
                     --i;
                     if( i == 0 ) {
                         return;

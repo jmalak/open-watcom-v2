@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2002-2020 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2002-2025 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -35,6 +35,7 @@
 #include "widechar.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include <io.h>
 #include <process.h>
 #if defined( __NT__ )
@@ -54,17 +55,16 @@ _WCRTLINK int __F_NAME(system,_wsystem)( const CHAR_TYPE *cmd )
 #if defined(__WINDOWS__)
     if( cmd == NULL ) {
         return( 0 );
-    } else {
-        _RWD_errno = ENOENT;
-        return( -1 );
     }
+    _RWD_errno = ENOENT;
+    return( -1 );
 #else
-    register CHAR_TYPE *name;
-    CHAR_TYPE switch_c[4];
-    unsigned char use_cmd;
-    int ret_code;
+    register CHAR_TYPE  *name;
+    CHAR_TYPE           switch_c[4];
+    bool                use_cmd;
+    int                 ret_code;
   #if defined( __NT__ )
-    int tmp_fileinfo;
+    int                 tmp_fileinfo;
   #endif
 
   #if defined( __NT__ )
@@ -85,20 +85,13 @@ _WCRTLINK int __F_NAME(system,_wsystem)( const CHAR_TYPE *cmd )
         return( 0 );    /* indicate no COMMAND.COM available */
   #endif
     }
-  #if defined( __NT__ )
-    use_cmd = 1;
-  #elif defined(__OS2__)
-    #if defined(_M_I86)
-
+  #if defined( __NT__ ) \
+    || defined(__OS2_32BIT__)
+    use_cmd = true;
+  #elif defined(__OS2_16BIT__)
     use_cmd = _osmode_PROTMODE();
-
-    #else
-
-    use_cmd = 1;
-
-    #endif
   #else
-    use_cmd = 0;
+    use_cmd = false;
   #endif
     if( name == NULL ) {
         name = use_cmd ? STRING( "CMD.EXE" ) : STRING( "COMMAND.COM" );
@@ -111,7 +104,7 @@ _WCRTLINK int __F_NAME(system,_wsystem)( const CHAR_TYPE *cmd )
   #endif
 
     ret_code = __F_NAME(spawnlp,_wspawnlp)( P_WAIT, name, use_cmd ? STRING( "CMD" ) : STRING( "COMMAND" ),
-                        __F_NAME(__Slash_C,__wSlash_C)(switch_c, use_cmd), cmd, NULL );
+                        __F_NAME(__Slash_C,__wSlash_C)( switch_c, use_cmd ), cmd, NULL );
 
   #if defined( __NT__ )
     /* set file handle inheritance to what it was */

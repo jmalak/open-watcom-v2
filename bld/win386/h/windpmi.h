@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2015-2016 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2015-2025 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -30,22 +30,23 @@
 ****************************************************************************/
 
 
-#ifdef __WINDOWS__
-  #ifdef _M_I86
+#include "bool.h"
+
+
+#ifdef _M_I86
     #define WINFAR16        __far
     #define WINDPMIFN(x)    __pascal __far __ ## x
-  #else
+#else
     #define WINFAR16
     #define WINDPMIFN(x)    __pascal x
-  #endif
-
-extern unsigned long    WINDPMIFN( DPMIAlloc )( unsigned long );
-extern unsigned short   WINDPMIFN( DPMIFree )( unsigned long );
-extern unsigned short   WINDPMIFN( DPMIGetAlias )( unsigned long, unsigned long WINFAR16 * );
-extern void             WINDPMIFN( DPMIFreeAlias )( unsigned long );
-extern unsigned short   WINDPMIFN( DPMIGetHugeAlias )( unsigned long, unsigned long WINFAR16 *, unsigned long );
-extern void             WINDPMIFN( DPMIFreeHugeAlias )( unsigned long, unsigned long );
-// not implemented functions
-extern unsigned short   WINDPMIFN( DPMIResizeDS )( unsigned long );
-
 #endif
+
+extern DWORD    WINDPMIFN( WDPMIAlloc )( DWORD size );
+extern bool     WINDPMIFN( WDPMIFree )( DWORD ptr );
+extern bool     WINDPMIFN( WDPMIGetAlias )( DWORD offs32, DWORD WINFAR16 *palias );
+extern void     WINDPMIFN( WDPMIFreeAlias )( DWORD alias );
+extern bool     WINDPMIFN( WDPMIGetHugeAlias )( DWORD offs32, DWORD WINFAR16 *palias, DWORD size );
+extern void     WINDPMIFN( WDPMIFreeHugeAlias )( DWORD alias, DWORD size );
+extern DWORD    WINDPMIFN( WDPMIAliasToFlat )( DWORD alias );
+// not implemented functions
+extern bool     WINDPMIFN( WDPMIResizeDS )( DWORD size );

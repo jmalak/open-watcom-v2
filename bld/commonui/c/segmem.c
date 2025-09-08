@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2002-2022 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2002-2025 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -36,50 +36,48 @@
 #include "bool.h"
 #include "wdebug.h"
 #include "descript.h"
+#include "dpmi.h"
 #include "segmem.h"
 
+
+/*
+ * following in-line code must be 32-bit code in 16-bit segment
+ */
 void PushAll( void );
+#pragma aux PushAll = ".386" "pusha" \
+    __parm __caller [] __value __modify __exact [__sp]
+
 void PopAll( void );
-#pragma aux PushAll = ".386" "pusha"
-#pragma aux PopAll = ".386" "popa" __modify [__ax __bx __cx __dx __sp __bp __di __si]
+#pragma aux PopAll = ".386" "popa" \
+    __parm __caller [] __value __modify __exact [__ax __bx __cx __dx __sp __bp __di __si]
 
-extern DWORD _GetASelectorLimit( WORD );
-#pragma aux _GetASelectorLimit = \
-        ".386" \
-        "movzx edx,ax" \
+extern DWORD _GetASelectorSize( WORD );
+#pragma aux _GetASelectorSize = \
+        ".386"          \
+        "movzx edx,ax"  \
+        "xor   eax,eax" \
         "lsl   eax,edx" \
-        "inc   eax" \
-        "mov   edx,eax" \
-        "shr   edx,16" \
-    __parm      [__ax] \
-    __value     [__dx __ax] \
-    __modify    []
-
-extern bool _IsValidSelector( WORD );
-#pragma aux _IsValidSelector = \
-        ".386" \
-        "verr ax" \
-        "mov  al,0" \
-        "jnz  L1" \
-        "mov  al,1" \
-    "L1:" \
-    __parm      [__ax] \
-    __value     [__al] \
-    __modify    []
+        "jnz short L1"  \
+        "inc   eax"     \
+    "L1: mov   edx,eax" \
+        "shr   edx,16"  \
+    __parm __caller [__ax] \
+    __value         [__dx __ax] \
+    __modify __exact [__ax __dx]
 
 /*
  * WDebug386 must be defined in a program using these procedures
  */
 extern bool             WDebug386;
 
-DWORD GetASelectorLimit( WORD sel )
+DWORD GetASelectorSize( WORD sel )
 {
-    return( _GetASelectorLimit( sel ) );
+    return( _GetASelectorSize( sel ) );
 }
 
 bool IsValidSelector( WORD sel )
 {
-    return( _IsValidSelector( sel ) );
+    return( IsReadSelector( sel ) );
 }
 
 /*

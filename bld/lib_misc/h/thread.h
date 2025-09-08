@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2017-2021 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2017-2025 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -55,6 +55,8 @@
 
 #include "sema4.h"
 
+#include "threadfn.h"
+
 #if defined(_M_IX86)
   #pragma pack(__push,1);
 #else
@@ -105,7 +107,7 @@ typedef struct thread_data {
     char                        __asctimeP[26];
     char                        __allocated;    // vs auto
     char                        __resize;       // storage has realloc pending
-#ifdef __SW_BM
+#ifdef __MT__
   #if defined( __NT__ ) || defined( __RDOS__ ) || defined( __OS2__ ) && !defined( _M_I86 )
     __EXCEPTION_RECORD          *xcpt_handler;
   #endif

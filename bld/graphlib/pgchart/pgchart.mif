@@ -24,6 +24,8 @@ memory_model_386 = f
 memory_model_i86 = l
 !endif
 
+additional_remove_subdirs = v2objs
+
 !include cproj.mif
 !include defrule.mif
 defrule_key = v2
@@ -92,9 +94,7 @@ libtarg_name          = chart2
 #
 # rc and others
 #
-wsplice_opts_dos = -kDOS
-wsplice_opts_os2 = -kDOS
-wsplice_opts_qnx = -kQNX -u
-wsplice_opts_win = -kDOS
-
 !include $(graphlib_dir)/headers.mif
+
+$(additional_remove_subdirs) :
+    mkdir $@

@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2002-2021 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2002-2025 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -51,10 +51,13 @@
 #include "banner.h"
 #include "touch.h"
 #include "wtmsg.h"
-#include "_dtaxxx.h"
-#include "d2ttime.h"
 #include "pathgrp2.h"
+#if defined(__NT__)
+    #include <windows.h>
+    #include "_dtaxxx.h"
+#endif
 
+#include "clibint.h"
 #include "clibext.h"
 
 
@@ -253,7 +256,25 @@ static void incFilesOwnTime( char *full_name, struct dirent *dir, struct utimbuf
 #elif defined( __NT__ )
     ftime = DTAXXX_TSTAMP_OF( dir->d_dta );
 #else
-    ftime = _d2ttime( dir->d_date, dir->d_time );
+    /*
+     * DOS date/time format
+     */
+    {
+        struct tm t;
+        unsigned short  date = dir->d_date;
+        unsigned short  time = dir->d_time;
+
+        t.tm_year = ((date >> 9) & 0x007f) + 80;
+        t.tm_mon  = ((date >> 5) & 0x000f) - 1;
+        t.tm_mday = (date & 0x001f);
+        t.tm_hour = ((time >> 11) & 0x001f);
+        t.tm_min  = ((time >> 5) & 0x003f);
+        t.tm_sec  = (time & 0x001f) * 2;
+        t.tm_wday = -1;
+        t.tm_yday = -1;
+        t.tm_isdst = -1;
+        ftime = mktime( &t );
+    }
 #endif
     ptime = localtime( &ftime );
     touchTime = *ptime;
@@ -457,7 +478,7 @@ static void doTouch( void )
         }
         _splitpath2( item, pg.buffer, &pg.drive, &pg.dir, NULL, NULL );
         number_of_successful_touches = 0;
-#if defined(__LINUX__) || defined(__OSX__)
+#if defined(__LINUX__) || defined(__OSX__) || defined(__BSD__)
         strcpy( full_name, item );
         dire = NULL;
         number_of_successful_touches += doTouchFile( full_name, dire, &stamp );
@@ -544,6 +565,11 @@ static void doTouch( void )
 int main( int argc, char **argv )
 /*******************************/
 {
+#ifndef __WATCOMC__
+    _argc = argc;
+    _argv = argv;
+#endif
+
     if( !MsgInit() )
         return( 1 );
     if( !processOptions( argc, argv ) )

@@ -8,7 +8,7 @@ on:
 
 jobs:
   check_run:
-    if: github.repository == 'open-watcom/open-watcom-v2'
+    if: github.repository == 'open-watcom/open-watcom-v2' || github.repository == vars.OWREPO
     name: Check if to run
     runs-on: ubuntu-latest
     outputs:
@@ -31,7 +31,7 @@ jobs:
         include:
         - owtools: 'GCC'
           arch:    'x64'
-          image:   'ubuntu-20.04'
+          image:   'ubuntu-22.04'
           tools:   'gcc'
         - owtools: 'GCC'
           arch:    'a64'
@@ -53,8 +53,8 @@ jobs:
         include:
         - owtools: 'VISUALC'
           arch:    'x64'
-          image:   'windows-2019'
-          tools:   'vs2019'
+          image:   'windows-2022'
+          tools:   'vs2022'
     name: Windows ${{ matrix.arch }} ${{ matrix.tools }}
     uses: "./.github/workflows/rel-nt.yml"
     with:
@@ -121,6 +121,9 @@ jobs:
       uses: "./.github/actions/install"
       with:
         target:     ${{ matrix.asset }}
+        tools_nt:   'vs2022'
+        tools_lnx:  'gcc'
+        tools_osx:  'clang'
         owdebug:    ${{ vars.OWDEBUG }}
   release:
     needs: Installers

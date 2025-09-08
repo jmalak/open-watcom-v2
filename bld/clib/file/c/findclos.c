@@ -2,7 +2,7 @@
 *
 *                            Open Watcom Project
 *
-* Copyright (c) 2017-2017 The Open Watcom Contributors. All Rights Reserved.
+* Copyright (c) 2017-2025 The Open Watcom Contributors. All Rights Reserved.
 *    Portions Copyright (c) 1983-2002 Sybase, Inc. All Rights Reserved.
 *
 *  ========================================================================
@@ -37,7 +37,7 @@
     #include <windows.h>
 #elif defined( __OS2__ )
     #include <os2.h>
-#elif __RDOS__
+#elif defined( __RDOS__ )
     #include <rdos.h>
     #include "find.h"
     #include "liballoc.h"
@@ -47,27 +47,27 @@
 #endif
 
 
-_WCRTLINK int _findclose( intptr_t handle )
+_WCRTLINK int _findclose( intptr_t osffh )
 {
 #if defined( __NT__ )
-    if( FindClose( (HANDLE)handle ) != TRUE ) {
+    if( FindClose( (HANDLE)osffh ) == 0 ) {
         return( -1 );
     }
 #elif defined( __OS2__ )
-    if( DosFindClose( (HDIR)handle ) ) {
+    if( DosFindClose( (HDIR)osffh ) ) {
         return( -1 );
     }
 #elif defined( __RDOS__ )
-    RDOSFINDTYPE    *handlebuf = (RDOSFINDTYPE *)handle;
+    RDOSFINDTYPE    *handlebuf = (RDOSFINDTYPE *)osffh;
 
     RdosCloseDir( handlebuf->handle );
-    lib_free( (void *)handle );
+    lib_free( (void *)osffh );
     return( 0 );
 #else   /* DOS */
     unsigned        rc;
 
-    rc = _dos_findclose( (struct find_t *)handle );
-    lib_free( (void *)handle );
+    rc = _dos_findclose( (struct find_t *)osffh );
+    lib_free( (void *)osffh );
     if( rc ) {
         return( -1 );
     }
