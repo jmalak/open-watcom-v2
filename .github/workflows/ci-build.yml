@@ -36,28 +36,23 @@ jobs:
         pre:
         - name:  '1.9'
           id:    '1.9'
-          os:    'nt'
           image: 'windows-2025'
-        - name: '2.0'
+        - name: '2.0 (2023)'
           id:   '2.0'
           tag:  '2023-01-01-Build'
-          os:   'nt'
           image: 'windows-2025'
     name: Bootstrap Test OW ${{ matrix.pre.name }} Windows
     runs-on: ${{ matrix.pre.image }}
     steps:
     - name: checkout
       uses: actions/checkout@v4
-    - name: Open Watcom setup
-      uses: open-watcom/setup-watcom@v0
-      with:
-        version: ${{ matrix.pre.id }}
-        tag:     ${{ matrix.pre.tag }}
-    - name: Test
+    - name: Test Bootstrap
       uses: "./.github/actions/testboot"
       with:
-        hostos:     ${{ matrix.pre.os }}
+        ow_version: ${{ matrix.pre.id }}
+        ow_tag:     ${{ matrix.pre.tag }}
         owdebug:    ${{ vars.OWDEBUG }}
+        testmode:   ${{ vars.TESTMODE }}
   Linux-pre:
     needs: start-start
     strategy:
@@ -65,28 +60,23 @@ jobs:
         pre:
         - name:  '1.9'
           id:    '1.9'
-          os:    'lnx'
           image: 'ubuntu-latest'
-        - name:  '2.0'
+        - name:  '2.0 (2023)'
           id:    '2.0'
           tag:   '2023-01-01-Build'
-          os:    'lnx'
           image: 'ubuntu-latest'
     name: Bootstrap Test OW ${{ matrix.pre.name }} Linux
     runs-on: ${{ matrix.pre.image }}
     steps:
     - name: checkout
       uses: actions/checkout@v4
-    - name: Open Watcom setup
-      uses: open-watcom/setup-watcom@v0
-      with:
-        version: ${{ matrix.pre.id }}
-        tag:     ${{ matrix.pre.tag }}
-    - name: Test
+    - name: Test Bootstrap
       uses: "./.github/actions/testboot"
       with:
-        hostos:     ${{ matrix.pre.os }}
+        ow_version: ${{ matrix.pre.id }}
+        ow_tag:     ${{ matrix.pre.tag }}
         owdebug:    ${{ vars.OWDEBUG }}
+        testmode:   ${{ vars.TESTMODE }}
   Linux:
     needs:
     - Linux-pre
@@ -112,7 +102,6 @@ jobs:
       tools:        ${{ matrix.bld.tools }}
       owtools:      ${{ matrix.bld.owtools }}
       image:        ${{ matrix.bld.image }}
-      owdebug:      ${{ vars.OWDEBUG }}
   Windows:
     needs:
     - Windows-pre
@@ -130,7 +119,6 @@ jobs:
       tools:        ${{ matrix.bld.tools }}
       owtools:      ${{ matrix.bld.owtools }}
       image:        ${{ matrix.bld.image }}
-      owdebug:      ${{ vars.OWDEBUG }}
   OSX:
     needs: start-start
     strategy:
@@ -154,7 +142,6 @@ jobs:
       relpath:      ${{ matrix.bld.relpath }}
       owtools:      ${{ matrix.bld.owtools }}
       image:        ${{ matrix.bld.image }}
-      owdebug:      ${{ vars.OWDEBUG }}
   snapshot-both:
     needs:
     - Linux
@@ -177,12 +164,11 @@ jobs:
       id: owsnapshot
       uses: "./.github/actions/snapshot"
       with:
-        hostos:     'lnx'
         gitpath:    'rel'
         owdebug:    ${{ vars.OWDEBUG }}
         testmode:   ${{ vars.TESTMODE }}
     - if: github.event_name == 'pull_request' && vars.TESTMODE == ''
-      name: Upload owsnapshot (Pull Request)
+      name: Upload OW snapshot (Pull Request)
       uses: actions/upload-artifact@v4
       with:
         name:           'owsnapshot'
@@ -201,6 +187,6 @@ jobs:
       name: Call to delete Artifacs ${{ github.event_name == 'pull_request' && '(Pull Request)' || '(Last CI Build)' }}
       uses: "./.github/actions/artfdelc"
       with:
-        exclude:    ${{ github.event_name == 'pull_request' && 'owsnapshot' }}
+        exclude:    ${{ github.event_name == 'pull_request' && 'owsnapshot' || '' }}
         owdebug:    ${{ vars.OWDEBUG }}
         owcurlopts: ${{ vars.OWCURLOPTS }}

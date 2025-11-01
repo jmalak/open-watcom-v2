@@ -3,9 +3,6 @@ run-name: OW Tests
 on:
   workflow_call:
     inputs:
-      hostos:
-        required: true
-        type: string
       suffix:
         required: true
         type: string
@@ -44,7 +41,19 @@ jobs:
       - name: ${{ matrix.test.title }}
         uses: ./.github/actions/tests
         with:
-          hostos: ${{ inputs.hostos }}
           suffix: ${{ inputs.suffix }}
           path: ${{ matrix.test.path }}
           skip: ${{ matrix.test.skip }}
+  testboot-x:
+    name: Test Bootstrap
+    runs-on: ${{ inputs.image }}
+    timeout-minutes: 90
+    steps:
+    - name: checkout
+      uses: actions/checkout@v4
+    - name: Test Bootstrap
+      uses: "./.github/actions/testboot"
+      with:
+        suffix:     ${{ inputs.suffix }}
+        owdebug:    ${{ vars.OWDEBUG }}
+        testmode:   ${{ vars.TESTMODE }}

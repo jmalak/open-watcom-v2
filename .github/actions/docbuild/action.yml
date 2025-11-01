@@ -16,17 +16,12 @@ inputs:
     required: false
     default: ''
     type: string
-  hostos:
-    description: 'host os'
-    required: false
-    default: ''
-    type: string
-  suffixi:
+  suffix:
     description: 'run-time artifact suffix'
     required: false
     default: ''
     type: string
-  suffixo:
+  doc_suffix:
     description: 'documentation artifact suffix'
     required: false
     default: ''
@@ -59,14 +54,10 @@ inputs:
 runs:
   using: composite
   steps:
-  - uses: "./.github/actions/dosboxin"
-    with:
-      hostos:       ${{ inputs.hostos }}
   - uses: "./.github/actions/artfload"
     with:
-      hostos:       ${{ inputs.hostos }}
       gitpath:      'build binbuild'
-      artifact:     "build ${{ inputs.suffixi }}"
+      artifact:     "build ${{ inputs.suffix }}"
       noarchive:    ${{ inputs.noarchive }}
       owdebug:      ${{ inputs.owdebug }}
   - name: Documentation Build
@@ -86,9 +77,8 @@ runs:
     shell: cmd
   - uses: "./.github/actions/artfsave"
     with:
-      hostos:       ${{ inputs.hostos }}
       gitpath:      ${{ inputs.relpath }}
-      artifact:     "rel ${{ inputs.suffixo }}"
+      artifact:     "rel ${{ inputs.doc_suffix }}"
       noarchive:    ${{ inputs.noarchive }}
       owdebug:      ${{ inputs.owdebug }}
       testmode:     ${{ inputs.testmode }}

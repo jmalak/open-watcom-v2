@@ -18,9 +18,7 @@ on:
       image:
         required: true
         type: string
-      owdebug:
-        required: true
-        type: string
+
 jobs:
   boot-osx:
     name: Bootstrap
@@ -31,11 +29,10 @@ jobs:
     - name: Bootstrap
       uses: "./.github/actions/boot"
       with:
-        hostos:     'osx'
         args:       ${{ inputs.tools }}
         suffix:     "osx ${{ inputs.arch }} ${{ inputs.tools }}"
         owtools:    ${{ inputs.owtools }}
-        owdebug:    ${{ inputs.owdebug }}
+        owdebug:    ${{ vars.OWDEBUG }}
   build-osx:
     name: Build
     needs: boot-osx
@@ -44,13 +41,14 @@ jobs:
     steps:
     - name: checkout
       uses: actions/checkout@v4
+    - name: Install DOSBOX
+      uses: "./.github/actions/dosboxin"
     - name: Build
       uses: "./.github/actions/build"
       with:
-        hostos:     'osx'
         args:       ${{ inputs.tools }}
         relpath:    ${{ inputs.relpath }}
         suffix:     "osx ${{ inputs.arch }} ${{ inputs.tools }}"
         owtools:    ${{ inputs.owtools }}
-        owdebug:    ${{ inputs.owdebug }}
+        owdebug:    ${{ vars.OWDEBUG }}
         testmode:   ${{ vars.TESTMODE }}

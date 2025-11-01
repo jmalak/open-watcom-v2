@@ -44,7 +44,6 @@ jobs:
       tools:        ${{ matrix.tools }}
       owtools:      ${{ matrix.owtools }}
       image:        ${{ matrix.image }}
-      owdebug:      ${{ vars.OWDEBUG }}
   Windows:
     needs: check_run
     if: needs.check_run.outputs.runit
@@ -62,7 +61,6 @@ jobs:
       tools:        ${{ matrix.tools }}
       owtools:      ${{ matrix.owtools }}
       image:        ${{ matrix.image }}
-      owdebug:      ${{ vars.OWDEBUG }}
   OSX:
     needs: check_run
     if: needs.check_run.outputs.runit
@@ -87,7 +85,6 @@ jobs:
       relpath:      ${{ matrix.relpath }}
       owtools:      ${{ matrix.owtools }}
       image:        ${{ matrix.image }}
-      owdebug:      ${{ vars.OWDEBUG }}
   Installers:
     needs:
     - Linux
@@ -176,7 +173,6 @@ jobs:
     - name: ${{ matrix.title }} Asset
       uses: "./.github/actions/ghassets"
       with:
-        hostos:     'lnx'
         target:     ${{ matrix.asset }}
         drelid:     ${{ needs.release.outputs.drelid }}
         mrelid:     ${{ needs.release.outputs.mrelid }}

@@ -15,9 +15,6 @@ on:
       image:
         required: true
         type: string
-      owdebug:
-        required: true
-        type: string
 jobs:
   boot-nt:
     name: Bootstrap
@@ -32,11 +29,10 @@ jobs:
     - name: Bootstrap
       uses: "./.github/actions/boot"
       with:
-        hostos:     'nt'
         args:       ${{ inputs.tools }}
         suffix:     "nt ${{ inputs.arch }} ${{ inputs.tools }}"
         owtools:    ${{ inputs.owtools }}
-        owdebug:    ${{ inputs.owdebug }}
+        owdebug:    ${{ vars.OWDEBUG }}
   build-nt:
     needs: boot-nt
     name: Build
@@ -49,14 +45,15 @@ jobs:
         git config --global core.autocrlf input
     - name: checkout
       uses: actions/checkout@v4
+    - name: Install DOSBOX
+      uses: "./.github/actions/dosboxin"
     - name: Build
       uses: "./.github/actions/build"
       with:
-        hostos:     'nt'
         args:       ${{ inputs.tools }}
         suffix:     "nt ${{ inputs.arch }} ${{ inputs.tools }}"
         owtools:    ${{ inputs.owtools }}
-        owdebug:    ${{ inputs.owdebug }}
+        owdebug:    ${{ vars.OWDEBUG }}
         testmode:   ${{ vars.TESTMODE }}
   docsbuild:
     needs: boot-nt
@@ -85,22 +82,22 @@ jobs:
         git config --global core.autocrlf input
     - name: checkout
       uses: actions/checkout@v4
+    - name: Install DOSBOX
+      uses: "./.github/actions/dosboxin"
     - name: Documentation
       uses: "./.github/actions/docbuild"
       with:
-        hostos:     'nt'
         args:       ${{ inputs.tools }}
         target:     ${{ matrix.doctype }}
-        suffixi:    "nt ${{ inputs.arch }} ${{ inputs.tools }}"
-        suffixo:    "${{ matrix.doctype }} ${{ inputs.tools }}"
+        suffix:     "nt ${{ inputs.arch }} ${{ inputs.tools }}"
+        doc_suffix: "${{ matrix.doctype }} ${{ inputs.tools }}"
         owtools:    ${{ inputs.owtools }}
-        owdebug:    ${{ inputs.owdebug }}
+        owdebug:    ${{ vars.OWDEBUG }}
         testmode:   ${{ vars.TESTMODE }}
   tests-nt:
     needs: build-nt
     name: Tests
     uses: ./.github/workflows/tests.yml
     with:
-      hostos:   'nt'
       suffix:   "nt ${{ inputs.arch }} ${{ inputs.tools }}"
       image:    ${{ inputs.image }}

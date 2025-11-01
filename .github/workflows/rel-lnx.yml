@@ -15,9 +15,6 @@ on:
       image:
         required: true
         type: string
-      owdebug:
-        required: true
-        type: string
 jobs:
   boot-lnx:
     name: Bootstrap
@@ -28,11 +25,10 @@ jobs:
     - name: Bootstrap
       uses: "./.github/actions/boot"
       with:
-        hostos:     'lnx'
         args:       ${{ inputs.tools }}
         suffix:     "lnx ${{ inputs.arch }} ${{ inputs.tools }}"
         owtools:    ${{ inputs.owtools }}
-        owdebug:    ${{ inputs.owdebug }}
+        owdebug:    ${{ vars.OWDEBUG }}
   build-lnx:
     needs: boot-lnx
     name: Build
@@ -41,14 +37,15 @@ jobs:
     steps:
     - name: checkout
       uses: actions/checkout@v4
+    - name: Install DOSBOX
+      uses: "./.github/actions/dosboxin"
     - name: Build
       uses: "./.github/actions/build"
       with:
-        hostos:     'lnx'
         args:       ${{ inputs.tools }}
         suffix:     "lnx ${{ inputs.arch }} ${{ inputs.tools }}"
         owtools:    ${{ inputs.owtools }}
-        owdebug:    ${{ inputs.owdebug }}
+        owdebug:    ${{ vars.OWDEBUG }}
         testmode:   ${{ vars.TESTMODE }}
   tests-lnx:
     name: Tests
@@ -56,6 +53,5 @@ jobs:
     needs: build-lnx
     uses: ./.github/workflows/tests.yml
     with:
-      hostos:   'lnx'
       suffix:   "lnx ${{ inputs.arch }} ${{ inputs.tools }}"
       image:    ${{ inputs.image }}
